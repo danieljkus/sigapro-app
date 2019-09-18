@@ -1,0 +1,181 @@
+import React, { Component } from 'react';
+import { View, Text, Platform, Image, TouchableOpacity } from 'react-native';
+
+import { StackNavigator, DrawerNavigator, withNavigation } from 'react-navigation';
+
+import SplashScreen from './SplashScreen';
+import BemVindoScreen from './BemVindoScreen';
+import LoginScreen from './LoginScreen';
+import HomeScreen from './HomeScreen';
+import TrocarFilialScreen from './TrocarFilialScreen';
+
+import MedicaoTanqueScreen from './MedicaoTanqueScreen';
+import MedicoesTanqueScreen from './MedicoesTanqueScreen';
+
+import PreDigitacaoNotaScreen from './PreDigitacaoNotaScreen';
+import PreDigitacaoNotasScreen from './PreDigitacaoNotasScreen';
+import BarCodeScreen from './BarCodeScreen';
+
+import FichaViagemScreen from './FichaViagemScreen';
+
+import Icon from '../components/Icon';
+import Drawer from '../components/Drawer';
+import Colors from '../values/Colors';
+
+import HeaderBackButton from 'react-navigation/src/views/Header/HeaderBackButton'
+
+const defaultNavigationOptions = Platform.select({
+    ios: {
+        headerTintColor: Colors.primary,
+        headerTitleStyle: {
+            color: Colors.textPrimaryDark,
+        }
+    }, android: {
+        headerTintColor: Colors.textOnPrimary,
+        headerStyle: {
+            backgroundColor: Colors.primary
+        },
+    }
+});
+defaultNavigationOptions.headerBackTitle = "Voltar";
+defaultNavigationOptions.drawerLockMode = 'locked-closed';
+
+const MenuButton = withNavigation((props) => {
+    const { navigation } = props;
+    return (
+        <TouchableOpacity onPress={() => navigation.navigate('DrawerOpen')}>
+            <Icon family="MaterialIcons"
+                name="menu"
+                color={Colors.textOnPrimary}
+                style={{ padding: 16 }} />
+        </TouchableOpacity>
+    )
+})
+
+const HomeStackNavigator = StackNavigator({
+    SplashScreen: {
+        screen: SplashScreen,
+        navigationOptions: {
+            header: () => null,
+            ...defaultNavigationOptions
+        }
+    },
+    BemVindoScreen: {
+        screen: BemVindoScreen,
+        navigationOptions: {
+            header: () => null,
+            ...defaultNavigationOptions
+        }
+    },
+    LoginScreen: {
+        screen: LoginScreen,
+        navigationOptions: {
+            title: "Login",
+            ...defaultNavigationOptions
+        }
+    },
+    TrocarFilialScreen: {
+        screen: TrocarFilialScreen,
+        navigationOptions: {
+            title: "Trocar de Filial",
+            ...defaultNavigationOptions
+        }
+    },
+    HomeScreen: {
+        screen: HomeScreen,
+        navigationOptions: {
+            title: "Home",
+            headerLeft: <MenuButton />,
+            ...defaultNavigationOptions,
+            drawerLockMode: 'unlocked',
+        }
+    },
+
+
+    MedicoesTanqueScreen: {
+        screen: MedicoesTanqueScreen,
+        navigationOptions: {
+            title: "Medições do Tanque",
+            ...defaultNavigationOptions,
+        }
+    },
+    MedicaoTanqueScreen: {
+        screen: MedicaoTanqueScreen,
+        navigationOptions: {
+            title: "Medir Tanque",
+            ...defaultNavigationOptions
+        }
+    },
+
+    FichaViagemScreen: {
+        screen: FichaViagemScreen,
+        navigationOptions: {
+            title: "Ficha de Viagem",
+            ...defaultNavigationOptions
+        }
+    },
+
+    PreDigitacaoNotasScreen: {
+        screen: PreDigitacaoNotasScreen,
+        navigationOptions: {
+            title: "NFEs Pré-Digitadas",
+            ...defaultNavigationOptions
+        }
+    },
+    PreDigitacaoNotaScreen: {
+        screen: PreDigitacaoNotaScreen,
+        navigationOptions: {
+            title: "Pré-Digitação de NFEs",
+            ...defaultNavigationOptions
+        }
+    },
+    BarCodeScreen: {
+        screen: BarCodeScreen,
+        navigationOptions: {
+            title: "Escanear código de barras",
+            header: () => null,
+            ...defaultNavigationOptions
+        }
+    },
+
+}, {
+        headerMode: 'float',
+        mode: 'modal',
+        headerLayoutPreset: 'center',
+        navigationOptions: {
+            headerStyle: {
+                backgroundColor: Colors.primary,
+            },
+            headerTitleStyle: {
+                color: Colors.textOnPrimary
+            },
+            headerTintColor: Colors.textOnPrimary,
+            headerBackTitleStyle: {
+                color: Colors.textOnPrimary,
+            },
+            // headerLeft: (props) => {
+            //     return <HeaderBackButton {...props} tintColor={Colors.textOnPrimary} />
+            // }
+        },
+    });
+
+
+
+const HomeDrawerNavigator = DrawerNavigator(
+    {
+        HomeStack: {
+            screen: HomeStackNavigator
+        }
+    },
+    {
+        contentComponent: Drawer,
+    }
+)
+
+export default class AppNavigator extends Component {
+    render() {
+        return (
+            <HomeDrawerNavigator />
+        )
+    }
+}
