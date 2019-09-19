@@ -35,3 +35,18 @@ export const getEmpresa = async () => {
     return token ? jwtDecode(token).empresa : null;
 }
 
+export const getFilial = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).filial : null;
+}
+
+export const getGrupoPerm = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).grupo : null;
+}
+
+export const getPermissoes = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).permissoes : null;
+}
+

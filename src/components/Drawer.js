@@ -6,7 +6,7 @@ import { NavigationActions } from 'react-navigation';
 
 import Icon from './Icon';
 import Colors from '../values/Colors';
-import { removeToken, getUsuario, getEmpresa } from '../utils/LoginManager';
+import { removeToken, getUsuario, getFilial, getPermissoes } from '../utils/LoginManager';
 
 const DrawerItem = ({ text, onPress }) => {
     return (
@@ -40,8 +40,11 @@ class Drawer extends PureComponent {
         getUsuario().then(usuario => {
             this.setState({ usuario });
         })
-        getEmpresa().then(empresa => {
-            this.setState({ empresa });
+        getPermissoes().then(permissoes => {
+            this.setState({ permissoes });
+        })
+        getFilial().then(filial => {
+            this.setState({ filial });
         })
     }
 
@@ -63,7 +66,7 @@ class Drawer extends PureComponent {
 
     render() {
         const { navigation } = this.props;
-        const { usuario, empresa } = this.state;
+        const { usuario, filial } = this.state;
         if (!usuario) return null;
         return (
             <View style={{ flex: 1 }}>
@@ -88,7 +91,7 @@ class Drawer extends PureComponent {
                             color: Colors.textSecondaryLight
                         }}
                     >
-                        Usuário: {usuario.adm_usu_usuario}
+                        Usuário: {usuario.adm_pes_nome}
                     </Text>
                     <Text
                         style={{
@@ -96,7 +99,7 @@ class Drawer extends PureComponent {
                             color: Colors.textSecondaryLight
                         }}
                     >
-                        Filial: {usuario.adm_usu_filial}
+                        Filial: {filial}
                     </Text>
                 </View>
 
@@ -137,17 +140,10 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {((usuario.adm_usu_usuario === 'SUPER') ||
-                                (usuario.adm_usu_usuario === 'FRANCIS') ||
-                                (usuario.adm_usu_usuario === 'FILOMENA')) ?
-                                (
-                                    <DrawerItem
-                                        text="Trocar Filial"
-                                        onPress={() => navigation.navigate('TrocarFilialScreen')}
-                                    />
-
-                                ) : null
-                            }
+                            <DrawerItem
+                                text="Trocar Filial"
+                                onPress={() => navigation.navigate('TrocarFilialScreen')}
+                            />
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 

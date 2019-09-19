@@ -18,30 +18,25 @@ export default class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            carregandoEmpresa: false,
             loading: false,
             usuario: '',
             senha: '',
-            empresa: 0,
-            empresaSelect: [{ label: "Selecione uma Empresa", key: 0 }],
         };
     }
 
     onFormSubmit = (event) => {
-        const { empresa } = this.state;
-        if ((checkFormIsValid(this.refs)) && empresa) {
+        if (checkFormIsValid(this.refs)) {
             this.postLogin();
         }
     }
 
     postLogin = () => {
         this.setState({ loading: true });
-        const { usuario, senha, empresa } = this.state;
+        const { usuario, senha } = this.state;
 
         axios.post("/usuarios/login", {
             usuario,
             senha,
-            empresa,
             tipoAcesso: 'SIGAPRO'
         }).then(async response => {
             await saveToken(response.data.token);
@@ -79,48 +74,8 @@ export default class LoginScreen extends Component {
         this.setState(state);
     }
 
-    buscaEmpresas = () => {
-        const { usuario } = this.state;
-        if (usuario) {
-            this.setState({ empresaSelect: [], carregandoEmpresa: true });
-
-            axios.get('/listaEmpresasLogin', {
-                params: {
-                    usuario: usuario
-                }
-            }).then(response => {
-                const { data } = response;
-                const empresaSelect = data.map(regList => {
-                    return {
-                        key: regList.adm_emp_codigo,
-                        label: regList.adm_pes_nome
-                    }
-                });
-
-                if (data.length > 0) {
-                    this.setState({
-                        empresaSelect,
-                        empresa: empresaSelect[0].key,
-                        carregandoEmpresa: false
-                    })
-                } else {
-                    this.setState({
-                        empresaSelect: [{ label: "Selecione uma Empresa", key: 0 }],
-                        carregandoEmpresa: false,
-                    });
-                }
-            }).catch(error => {
-                console.warn(error.response);
-                this.setState({
-                    empresaSelect: [{ label: "Selecione uma Empresa", key: 0 }],
-                    carregandoEmpresa: false,
-                });
-            })
-        }
-    }
-
     render() {
-        const { usuario, senha, empresa, empresaSelect, loading, carregandoEmpresa } = this.state;
+        const { usuario, senha, loading } = this.state;
 
         return (
             <View style={{ flex: 1, }}>
@@ -170,7 +125,6 @@ export default class LoginScreen extends Component {
                                 ref="usuario"
                                 value={usuario}
                                 onChange={this.onInputChange}
-                                onBlur={this.buscaEmpresas}
                                 validator={text => Boolean(text)} // verifica se o campo está vazio ou válido
                                 required={true}
                                 errorMessage="Informe o usuário de acesso."
@@ -201,38 +155,6 @@ export default class LoginScreen extends Component {
                                 }}
                             />
                         </View>
-
-                        {/* <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                            {carregandoEmpresa
-                                ? (
-                                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                        <ActivityIndicator
-                                            style={{
-                                                margin: 10,
-                                            }}
-                                        />
-                                        <Text>
-                                            Buscando Empresas
-                                        </Text>
-                                        <Divider />
-                                    </View>
-                                )
-                                : (
-                                    <TextInput
-                                        label="Empresa"
-                                        type="select"
-                                        id="empresa"
-                                        ref="empresa"
-                                        options={empresaSelect}
-                                        onChange={this.onInputChange}
-                                        required={true}
-                                        errorMessage="Selecione uma Empresa."
-                                        value={empresa}
-                                    />
-                                )
-                            }
-
-                        </View> */}
 
                         <Divider />
 
