@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
-import { validateSenha, checkFormIsValid } from '../utils/Validator';
+import { checkFormIsValid } from '../utils/Validator';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
-import { getUsuario } from '../utils/LoginManager';
 
 export default class TrocarFilialScreen extends Component {
 
@@ -28,14 +27,6 @@ export default class TrocarFilialScreen extends Component {
         this.setState(state);
     }
 
-    componentDidMount() {
-        getUsuario().then(usuario => {
-            this.setState({
-                pes_codigo: usuario.pes_codigo,
-            });
-        })
-    }
-
     onFormSubmit = (event) => {
         if (checkFormIsValid(this.refs)) {
             this.onSalvarRegistro();
@@ -48,7 +39,7 @@ export default class TrocarFilialScreen extends Component {
         this.setState({ salvado: true, loading: true });
         const { usuario, filial } = this.state;
 
-        axios.put('/usuarios/updateFilial/' + usuario + '/' + filial)
+        axios.put('/usuarios/updateFilialSIGAPRO/' + usuario + '/' + filial)
             .then(response => {
                 this.props.navigation.goBack(null);
             }).catch(ex => {
@@ -85,9 +76,10 @@ export default class TrocarFilialScreen extends Component {
                                 id="usuario"
                                 ref="usuario"
                                 value={usuario}
-                                maxLength={10}
+                                maxLength={11}
                                 onChange={this.onInputChange}
                                 validator={value => !!value}
+                                keyboardType="numeric"
                                 required={true}
                                 errorMessage="Usuário é obrigatório"
                                 style={{ textTransform: 'uppercase' }}
@@ -98,12 +90,12 @@ export default class TrocarFilialScreen extends Component {
                                 id="filial"
                                 ref="filial"
                                 value={filial}
-                                maxLength={4}
+                                maxLength={5}
                                 onChange={this.onInputChange}
                                 validator={value => !!value}
+                                keyboardType="numeric"
                                 required={true}
                                 errorMessage="A filial é obrigatória"
-                                keyboardType="numeric" // ou decimal-pad para float
                             />
                         </View>
 

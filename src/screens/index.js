@@ -9,14 +9,10 @@ import LoginScreen from './LoginScreen';
 import HomeScreen from './HomeScreen';
 import TrocarFilialScreen from './TrocarFilialScreen';
 
-import MedicaoTanqueScreen from './MedicaoTanqueScreen';
-import MedicoesTanqueScreen from './MedicoesTanqueScreen';
+import EscalaVeiculoScreen from './EscalaVeiculoScreen';
+import EscalaVeiculosScreen from './EscalaVeiculosScreen';
 
-import PreDigitacaoNotaScreen from './PreDigitacaoNotaScreen';
-import PreDigitacaoNotasScreen from './PreDigitacaoNotasScreen';
 import BarCodeScreen from './BarCodeScreen';
-
-import FichaViagemScreen from './FichaViagemScreen';
 
 import Icon from '../components/Icon';
 import Drawer from '../components/Drawer';
@@ -92,43 +88,22 @@ const HomeStackNavigator = StackNavigator({
     },
 
 
-    MedicoesTanqueScreen: {
-        screen: MedicoesTanqueScreen,
+    EscalaVeiculoScreen: {
+        screen: EscalaVeiculoScreen,
         navigationOptions: {
-            title: "Medições do Tanque",
+            title: "Escala do Veículo",
             ...defaultNavigationOptions,
         }
     },
-    MedicaoTanqueScreen: {
-        screen: MedicaoTanqueScreen,
+    EscalaVeiculosScreen: {
+        screen: EscalaVeiculosScreen,
         navigationOptions: {
-            title: "Medir Tanque",
+            title: "Escala dos Veículos",
             ...defaultNavigationOptions
         }
     },
 
-    FichaViagemScreen: {
-        screen: FichaViagemScreen,
-        navigationOptions: {
-            title: "Ficha de Viagem",
-            ...defaultNavigationOptions
-        }
-    },
-
-    PreDigitacaoNotasScreen: {
-        screen: PreDigitacaoNotasScreen,
-        navigationOptions: {
-            title: "NFEs Pré-Digitadas",
-            ...defaultNavigationOptions
-        }
-    },
-    PreDigitacaoNotaScreen: {
-        screen: PreDigitacaoNotaScreen,
-        navigationOptions: {
-            title: "Pré-Digitação de NFEs",
-            ...defaultNavigationOptions
-        }
-    },
+    
     BarCodeScreen: {
         screen: BarCodeScreen,
         navigationOptions: {

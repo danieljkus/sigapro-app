@@ -106,37 +106,10 @@ class Drawer extends PureComponent {
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{ flex: 1 }}>
-                            {/* <DrawerItem
-                                text="Ficha de Viagem"
-                                onPress={() => navigation.navigate('FichaViagemScreen')}
-                            />
-
                             <DrawerItem
-                                text="Medir Tanque"
-                                onPress={() => navigation.navigate('MedicoesTanqueScreen')}
-                            />
-
-                            <DrawerItem
-                                text="Pré-Digitar NFe"
-                                onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
-                            /> */}
-
-                            {/* <DrawerItem
                                 text="Escala dos Veículos"
-                                onPress={() => navigation.navigate('')}
-                            /> */}
-                            {/* <DrawerItem
-                                text="Chack-list Manutenção"
-                                onPress={() => navigation.navigate('')}
-                            /> */}
-                            {/* <DrawerItem
-                                text="Check-list Pneus"
-                                onPress={() => navigation.navigate('')}
-                            /> */}
-                            {/* <DrawerItem 
-                                    text="Pedido de Peças"
-                                    onPress={() => navigation.navigate('')} 
-                             /> */}
+                                onPress={() => navigation.navigate('EscalaVeiculosScreen')}
+                            />
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 

@@ -126,6 +126,7 @@ export default class LoginScreen extends Component {
                                 value={usuario}
                                 onChange={this.onInputChange}
                                 validator={text => Boolean(text)} // verifica se o campo está vazio ou válido
+                                keyboardType="numeric"
                                 required={true}
                                 errorMessage="Informe o usuário de acesso."
                                 autoCapitalize="none"
@@ -146,6 +147,7 @@ export default class LoginScreen extends Component {
                                 onChange={this.onInputChange}
                                 secureTextEntry={true}
                                 validator={validateSenha}
+                                keyboardType="numeric"
                                 required={true}
                                 errorMessage="Informe a Senha de acesso."
                                 style={{
