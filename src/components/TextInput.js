@@ -117,7 +117,7 @@ class TextInput extends PureComponent {
                                     borderRadius: 2,
                                 },
                                 dateText: {
-                                    fontSize: 14,
+                                    fontSize: fontSize,
                                     color: Colors.textPrimaryDark,
                                 },
                                 dateTouchBody: {

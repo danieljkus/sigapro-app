@@ -21,13 +21,20 @@ const styles = StyleSheet.create({
 
 const FloatActionButton = (props) => {
     const {
-        iconFamily, iconName, iconColor, backgroundColor,
-        onPress,
+        iconFamily, iconName, iconColor, backgroundColor, onPress,
+        marginBottom = 25, marginRight = 24
     } = props;
     return (
-        <View style={[styles.fab, { backgroundColor }]}>
+        <View
+            style={[
+                styles.fab,
+                { bottom: marginBottom },
+                { right: marginRight },
+                { backgroundColor }
+            ]}
+        >
             <TouchableOpacity onPress={onPress} style={styles.content}>
-                <View style={styles.content}                >
+                <View style={styles.content}>
                     <Icon family={iconFamily} name={iconName} color={iconColor} size={24} />
                 </View>
             </TouchableOpacity>

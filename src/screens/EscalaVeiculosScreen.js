@@ -1,88 +1,147 @@
 import React, { Component } from 'react';
-import { View, Text, Alert, FlatList, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
-const { OS } = Platform;
-
-import moment from 'moment';
+import {
+    View, Text, FlatList, Modal,
+    Platform, TouchableOpacity,
+    Alert, ActivityIndicator, ScrollView
+} from 'react-native';
+import { Icon, Card, Divider } from 'react-native-elements';
+import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
-import { Card, Divider } from 'react-native-elements';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
-import { ProgressDialog } from 'react-native-simple-dialogs';
+import Button from '../components/Button';
+import TextInput from '../components/TextInput';
+import { maskDate } from '../utils/Maskers';
+import moment from 'moment';
 
-const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
+const { OS } = Platform;
+const DATE_FORMAT = 'DD/MM/YYYY';
 
-
-const CardViewItem = ({ registro, onRegistroLongPress }) => {
+const RegistroItem = ({ registro, onAtivaChange, onRegistroPress, onRegistroLongPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 10, borderRadius: 2, }}>
-            <TouchableOpacity
-                onLongPress={() => onRegistroLongPress(registro.estoq_nfpd_chave)}
-            >
-
-                <View
-                    style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
+        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
+            <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
+                <TouchableOpacity
+                    onPress={() => onRegistroPress(registro.man_ev_idf)}
+                    onLongPress={() => onRegistroLongPress(registro.man_ev_idf)}
                 >
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Data: {' '}
+
+                    <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Horário {': '}
+                            </Text>
+                            <Text>
+                                {registro.pas_serv_sentido === 'I' ? registro.hora1 : registro.hora2}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Serviço {': '}
+                            </Text>
+                            <Text>
+                                {registro.man_ev_servico}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Veículo {': '}
+                            </Text>
+                            <Text>
+                                {registro.man_ev_veiculo}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <Divider />
+
+                    <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
+                        <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                            {registro.pas_serv_sentido === 'I' ? (registro.sec1 + ' a ' + registro.sec2) : (registro.sec2 + ' a ' + registro.sec1)}
                         </Text>
-                        <Text>
-                            {moment(registro.estoq_nfpd_data).format('DD/MM/YYYY [às] HH:mm')}
+                    </View>
+
+                    <Divider />
+
+                    <View style={{ paddingLeft: 15, paddingVertical: 3, paddingBottom: 5 }}>
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 10 }}>
+                            Grupo: {registro.man_ev_grupo}   {registro.man_eg_descricao}
                         </Text>
-                    </Text>
-                </View>
+                    </View>
 
-                <Divider />
-
-                <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
-                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        Chave NFe
-                    </Text>
-                </View>
-
-                <View style={{ paddingLeft: 15, paddingVertical: 1 }}>
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 12, marginBottom: 5 }}>
-                        {registro.estoq_nfpd_chave}
-                    </Text>
-                </View>
-
-            </TouchableOpacity>
-
+                </TouchableOpacity>
+            </View>
         </Card>
     )
 }
 
-export default class PreDigitacaoNotasScreen extends Component {
+export default class CategoriasScreen extends Component {
 
-    termoBusca = '';
     state = {
         listaRegistros: [],
         refreshing: false,
+        carregarRegistro: false,
         carregando: false,
         carregarMais: false,
         pagina: 1,
+
+        // man_ev_data_ini: moment(new Date()).format("DD/MM/YYYY"),
+        man_ev_data_ini: moment(new Date()).format("YYYY-MM-DD"),
+        // man_ev_data_ini: new Date(),
+        man_ev_veiculo: '',
+        man_ev_servico: '',
+        man_ev_grupo: '',
+        grupoSelect: [],
+        temFiltro: false,
+        modalFiltrosVisible: false,
     };
 
     componentDidMount() {
-        this.setState({ refreshing: false });
+        this.setState({ refreshing: true });
         this.getListaRegistros();
+        this.buscaGrupo();
     }
 
-    onRefresh = () => {
+    onInputChange = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+    }
+
+    onInputChangeData = (id, value) => {
+        const state = {};
+
+        console.log('onInputChangeData: ', value);
+
+        state[id] = moment(value, DATE_FORMAT).format("YYYY-MM-DD");
+
+        console.log('onInputChangeData: ', state[id]);
+
+        this.setState(state);
         this.setState({
             pagina: 1,
             refreshing: true,
         }, this.getListaRegistros);
     }
 
-    getListaRegistros = () => {
-        const { pagina, listaRegistros } = this.state;
-        this.setState({ refreshing: true, });
 
-        axios.get('/preDigitacaoNotas', {
+
+    getListaRegistros = () => {
+        const { man_ev_data_ini, man_ev_grupo, man_ev_servico, man_ev_veiculo,
+            pagina, listaRegistros } = this.state;
+
+        const temFiltro = man_ev_grupo || man_ev_servico || man_ev_veiculo;
+
+        console.log('getListaRegistros: ', man_ev_data_ini);
+
+        axios.get('/escalaVeiculos', {
             params: {
                 page: pagina,
                 limite: 10,
+                data: man_ev_data_ini,
+                veiculo: man_ev_veiculo,
+                servico: man_ev_servico,
+                grupo: man_ev_grupo,
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -93,62 +152,49 @@ export default class PreDigitacaoNotasScreen extends Component {
                 listaRegistros: novosRegistros,
                 refreshing: false,
                 carregando: false,
-                carregarMais: novosRegistros.length < total
+                carregarMais: novosRegistros.length < total,
+                temFiltro
             })
         }).catch(ex => {
-            console.warn('Erro Busca:', ex);
+            console.warn(ex);
+            console.warn(ex.response);
             this.setState({
                 refreshing: false,
                 carregando: false,
+                temFiltro
             });
         })
     }
 
-    onAddPress = () => {
-        this.props.navigation.navigate('PreDigitacaoNotaScreen', {
-            estoq_nfpd_chave: '',
-            onRefresh: this.onRefresh
+    onRefresh = () => {
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+        }, this.getListaRegistros);
+    }
+
+    onRegistroPress = (man_ev_idf) => {
+        this.setState({ carregarRegistro: true });
+
+        axios.get('/escalaVeiculos/show/' + man_ev_idf, {
+            params: {
+                codigo: man_ev_idf,
+            }
+        }).then(response => {
+            this.setState({ carregarRegistro: false });
+            this.props.navigation.navigate('EscalaVeiculoScreen', {
+                registro: response.data,
+                onRefresh: this.onRefresh
+            });
+        }).catch(ex => {
+            this.setState({ carregarRegistro: false });
+            console.warn(ex);
+            console.warn(ex.response);
         });
     }
 
-
-
-    onRegistroLongPress = (estoq_nfpd_chave) => {
-        Alert.alert("Excluir registro", `Deseja excluir esta Chave?`, [
-            { text: "Cancelar" },
-            {
-                text: "Excluir",
-                onPress: () => this.onExcluirRegistro(estoq_nfpd_chave),
-                style: "destructive"
-            }
-        ])
-    }
-
-    onExcluirRegistro = (estoq_nfpd_chave) => {
-        this.setState({ refreshing: true });
-
-        axios.delete('/preDigitacaoNotas/delete/' + estoq_nfpd_chave)
-            .then(response => {
-
-                const listaRegistros = [...this.state.listaRegistros];
-                const index = listaRegistros.findIndex(registro => registro.estoq_nfpd_chave === estoq_nfpd_chave);
-                listaRegistros.splice(index, 1);
-                this.setState({
-                    listaRegistros,
-                    refreshing: false
-                });
-
-            }).catch(ex => {
-                console.warn(ex);
-                console.warn(ex.response);
-                this.setState({ refreshing: false });
-            })
-    }
-
-
     carregarMaisRegistros = () => {
         const { carregarMais, refreshing, carregando, pagina } = this.state;
-
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -156,6 +202,7 @@ export default class PreDigitacaoNotasScreen extends Component {
             }, this.getListaRegistros);
         }
     }
+
 
     renderListFooter = () => {
         const { carregando } = this.state;
@@ -171,44 +218,302 @@ export default class PreDigitacaoNotasScreen extends Component {
         return null;
     }
 
-    renderItem = ({ item }) => {
+    renderItem = ({ item, index }) => {
         return (
-            <CardViewItem
+            <RegistroItem
                 registro={item}
+                onAtivaChange={this.onAtivaChange}
+                onRegistroPress={this.onRegistroPress}
                 onRegistroLongPress={this.onRegistroLongPress}
             />
         )
     }
 
+    onRefreshPress = (visible) => {
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+        }, this.getListaRegistros);
+    }
+
+    onSearchPress = (visible) => {
+        this.setState({ modalFiltrosVisible: visible });
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+        }, this.getListaRegistros);
+    }
+
+    onClearSearchPress = () => {
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+            temFiltro: false,
+            man_ev_veiculo: '',
+            man_ev_servico: '',
+            man_ev_grupo: '',
+        }, this.getListaRegistros);
+    }
+
+    onAntPress = () => {
+        const { man_ev_data_ini } = this.state;
+        let data = moment(man_ev_data_ini).subtract(1, "d");
+
+        console.log('onAntPress: ', data);
+
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+            man_ev_data_ini: data,
+        }, this.getListaRegistros);
+    }
+
+    onProxPress = () => {
+        const { man_ev_data_ini } = this.state;
+        let data = moment(man_ev_data_ini).add(1, "d");
+
+        console.log('onProxPress: ', data);
+
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+            man_ev_data_ini: data,
+        }, this.getListaRegistros);
+    }
+
+
+    buscaGrupo = () => {
+        const { man_ev_grupo } = this.state;
+        this.setState({ grupoSelect: [], man_ev_grupo: '' });
+        axios.get('/escalaVeiculos/listaGrupos', {
+        }).then(response => {
+            const { data } = response;
+            const grupoSelect = data.map(regList => {
+                return {
+                    key: regList.man_eg_codigo,
+                    label: regList.man_eg_descricao
+                }
+            });
+            grupoSelect.unshift({ key: 0, label: "Selecione um Grupo" });
+            this.setState({
+                grupoSelect,
+            })
+        }).catch(error => {
+            console.error(error.response);
+            this.setState({
+                grupoSelect: [{ label: "Grupo não encontrdo", key: 0 }],
+            });
+        })
+
+    }
+
+
     render() {
-        const { listaRegistros, refreshing, carregando } = this.state;
+        const { listaRegistros, refreshing, carregarRegistro, temFiltro,
+            man_ev_data_ini, man_ev_veiculo, man_ev_servico, man_ev_grupo, grupoSelect } = this.state;
+
+        console.log('man_ev_data_ini: ', man_ev_data_ini);
+        console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
+
         return (
-            <View style={{ flex: 1, }}>
+            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+
+                <View style={{ marginBottom: 3 }}>
+                    <ScrollView style={{ height: 50, width: "100%", borderWidth: 1, borderColor: Colors.dividerDark }}>
+                        <View style={{ flex: 1, flexDirection: 'row', marginVertical: 2 }}>
+                            <View style={{ flex: 2, padding: 0 }}>
+                                <Button
+                                    title=""
+                                    onPress={() => { this.onAntPress() }}
+                                    backgroundColor={Colors.primaryLight}
+                                    icon={{
+                                        name: 'backward',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
+                            </View>
+                            <View style={{ flex: 5, padding: 0, paddingHorizontal: 20, borderWidth: 1, borderColor: Colors.dividerDark }}>
+                                <TextInput
+                                    type="date"
+                                    label=" "
+                                    id="man_ev_data_ini"
+                                    ref="man_ev_data_ini"
+                                    value={man_ev_data_ini}
+                                    // masker={maskDate}
+                                    // dateFormat={DATE_FORMAT}
+                                    onChange={this.onInputChangeData}
+                                    borderWidth={0}
+                                    fontSize={20}
+                                />
+                            </View>
+                            <View style={{ flex: 2, padding: 0 }}>
+                                <Button
+                                    title=""
+                                    onPress={() => { this.onProxPress() }}
+                                    backgroundColor={Colors.primaryLight}
+                                    icon={{
+                                        name: 'forward',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </ScrollView>
+                </View>
+
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 80 }}
-                    keyExtractor={registro => String(registro.estoq_nfpd_chave)}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    keyExtractor={registro => String(registro.man_ev_idf)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
                     onEndReached={this.carregarMaisRegistros}
                     ListFooterComponent={this.renderListFooter}
                 />
 
+
+
+
+                {/* ----------------------------- */}
+                {/* MODAL PARA FILTROS            */}
+                {/* ----------------------------- */}
+                <Modal
+                    transparent={false}
+                    visible={this.state.modalFiltrosVisible}
+                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
+                    animationType={"slide"}
+                >
+                    <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                        <TouchableOpacity
+                            onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
+                            style={{ padding: 16 }}
+                        >
+                            <Icon
+                                family="MaterialIcons"
+                                name="arrow-back"
+                                color={Colors.textOnPrimary}
+                            />
+                        </TouchableOpacity>
+
+                        <Text style={{
+                            color: Colors.textOnPrimary,
+                            marginTop: 15,
+                            marginBottom: 15,
+                            marginLeft: 16,
+                            textAlign: 'center',
+                            fontSize: 20,
+                            fontWeight: 'bold',
+                        }}>Filtrar Escala</Text>
+                    </View>
+
+                    <View style={{
+                        flex: 1,
+                        paddingVertical: 20,
+                        paddingHorizontal: 20,
+                        backgroundColor: Colors.background,
+                    }} >
+
+                        <ScrollView style={{ flex: 1, }}>
+
+                            <View style={{ marginTop: 4 }}>
+
+                                <TextInput
+                                    label="Veículo"
+                                    id="man_ev_veiculo"
+                                    ref="man_ev_veiculo"
+                                    value={man_ev_veiculo}
+                                    maxLength={20}
+                                    onChange={this.onInputChange}
+                                    keyboardType="numeric"
+                                />
+
+                                <TextInput
+                                    label="Serviço"
+                                    id="man_ev_servico"
+                                    ref="man_ev_servico"
+                                    value={man_ev_servico}
+                                    maxLength={20}
+                                    onChange={this.onInputChange}
+                                    keyboardType="numeric"
+                                />
+
+                                <TextInput
+                                    type="select"
+                                    label="Grupo"
+                                    id="man_ev_grupo"
+                                    ref="man_ev_grupo"
+                                    value={man_ev_grupo}
+                                    selectedValue=""
+                                    options={grupoSelect}
+                                    onChange={this.onInputChange}
+                                />
+
+
+                                <View style={{ marginTop: 15 }} />
+
+                                <Button
+                                    title="FILTRAR"
+                                    onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
+                                    buttonStyle={{ marginTop: 15 }}
+                                    backgroundColor={Colors.buttonPrimary}
+                                    icon={{
+                                        name: 'filter',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
+                            </View>
+                        </ScrollView>
+                    </View>
+                </Modal>
+
+
+
+
                 <FloatActionButton
                     iconFamily="MaterialIcons"
-                    iconName="add"
-                    iconColor={Colors.textOnAccent}
-                    onPress={this.onAddPress}
-                    backgroundColor={Colors.accent}
+                    iconName="cached"
+                    iconColor={Colors.textOnPrimary}
+                    onPress={this.onRefreshPress}
+                    backgroundColor={Colors.primary}
+                    marginBottom={90}
+                    marginRight={10}
                 />
 
-                {/* <ProgressDialog
-                    visible={carregando}
-                    title="App Nordeste"
+                <FloatActionButton
+                    iconFamily="MaterialIcons"
+                    iconName="search"
+                    iconColor={Colors.textOnPrimary}
+                    onPress={() => { this.onSearchPress(true) }}
+                    backgroundColor={Colors.primary}
+                    marginRight={10}
+                />
+
+                {temFiltro
+                    ? (
+                        <FloatActionButton
+                            iconFamily="MaterialIcons"
+                            iconName="clear"
+                            iconColor={Colors.textOnPrimary}
+                            onPress={this.onClearSearchPress}
+                            backgroundColor={Colors.primary}
+                            marginRight={60}
+                        />
+                    ) : null
+                }
+
+                <ProgressDialog
+                    visible={carregarRegistro}
+                    title="SIGA PRO"
                     message="Aguarde..."
-                /> */}
+                />
+
+
             </View>
+
         )
     }
 }
