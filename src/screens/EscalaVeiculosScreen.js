@@ -68,7 +68,6 @@ const RegistroItem = ({ registro, onAtivaChange, onRegistroPress, onRegistroLong
                             Grupo: {registro.man_ev_grupo}   {registro.man_eg_descricao}
                         </Text>
                     </View>
-
                 </TouchableOpacity>
             </View>
         </Card>
@@ -85,9 +84,8 @@ export default class CategoriasScreen extends Component {
         carregarMais: false,
         pagina: 1,
 
-        // man_ev_data_ini: moment(new Date()).format("DD/MM/YYYY"),
-        man_ev_data_ini: moment(new Date()).format("YYYY-MM-DD"),
-        // man_ev_data_ini: new Date(),
+        man_ev_data_ini: moment(new Date()).format(DATE_FORMAT),
+        // man_ev_data_ini: '',
         man_ev_veiculo: '',
         man_ev_servico: '',
         man_ev_grupo: '',
@@ -110,13 +108,7 @@ export default class CategoriasScreen extends Component {
 
     onInputChangeData = (id, value) => {
         const state = {};
-
-        console.log('onInputChangeData: ', value);
-
-        state[id] = moment(value, DATE_FORMAT).format("YYYY-MM-DD");
-
-        console.log('onInputChangeData: ', state[id]);
-
+        state[id] = value;
         this.setState(state);
         this.setState({
             pagina: 1,
@@ -132,13 +124,13 @@ export default class CategoriasScreen extends Component {
 
         const temFiltro = man_ev_grupo || man_ev_servico || man_ev_veiculo;
 
-        console.log('getListaRegistros: ', man_ev_data_ini);
+        // console.log('getListaRegistros: ', man_ev_data_ini);
 
         axios.get('/escalaVeiculos', {
             params: {
                 page: pagina,
                 limite: 10,
-                data: man_ev_data_ini,
+                data: moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD"),
                 veiculo: man_ev_veiculo,
                 servico: man_ev_servico,
                 grupo: man_ev_grupo,
@@ -257,27 +249,25 @@ export default class CategoriasScreen extends Component {
 
     onAntPress = () => {
         const { man_ev_data_ini } = this.state;
-        let data = moment(man_ev_data_ini).subtract(1, "d");
-
-        console.log('onAntPress: ', data);
-
+        const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
+        const dataNova = moment(data).subtract(1, 'days').format(DATE_FORMAT);
+        // console.log('onAntPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
-            man_ev_data_ini: data,
+            man_ev_data_ini: dataNova,
         }, this.getListaRegistros);
     }
 
     onProxPress = () => {
         const { man_ev_data_ini } = this.state;
-        let data = moment(man_ev_data_ini).add(1, "d");
-
-        console.log('onProxPress: ', data);
-
+        const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
+        const dataNova = moment(data).add(1, 'days').format(DATE_FORMAT);
+        // console.log('onProxPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
-            man_ev_data_ini: data,
+            man_ev_data_ini: dataNova,
         }, this.getListaRegistros);
     }
 
@@ -312,8 +302,8 @@ export default class CategoriasScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico, man_ev_grupo, grupoSelect } = this.state;
 
-        console.log('man_ev_data_ini: ', man_ev_data_ini);
-        console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
+        // console.log('man_ev_data_ini: ', man_ev_data_ini);
+        // console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -340,8 +330,8 @@ export default class CategoriasScreen extends Component {
                                     id="man_ev_data_ini"
                                     ref="man_ev_data_ini"
                                     value={man_ev_data_ini}
-                                    // masker={maskDate}
-                                    // dateFormat={DATE_FORMAT}
+                                    masker={maskDate}
+                                    dateFormat={DATE_FORMAT}
                                     onChange={this.onInputChangeData}
                                     borderWidth={0}
                                     fontSize={20}
