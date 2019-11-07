@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { View, ScrollView, RefreshControl, Card, Text, Divider } from 'react-native';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
 import { checkFormIsValid } from '../utils/Validator';
@@ -77,39 +77,18 @@ export default class EscalaVeiculoScreen extends Component {
                     )}
                 >
 
-                    <Card containerStyle={{ padding: 0 }}>
-                        {estoq_tcm_idf !== '0' ?
-                            <View
-                                style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
-                            >
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
-                                    {/* Emissão: {moment(estoq_tcm_data).format('DD/MM/YYYY [às] HH:mm')} */}
-                                </Text>
-
-                            </View>
-
-                            : null
-                        }
-
-                        <Divider />
-
+                    {/* <View containerStyle={{ padding: 0 }}>
                         <View
-                            style={{
-                                margin: 15,
-                            }}
+                            style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
                         >
-                            <TextInput
-                                label="Veículo"
-                                id="man_ev_veiculo"
-                                ref="man_ev_veiculo"
-                                value={man_ev_veiculo}
-                                maxLength={20}
-                                onChange={this.onInputChange}
-                                required={true}
-                                errorMessage="Informe o Veículo"
-                            />
+                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
+                                Emissão: {moment(estoq_tcm_data).format('DD/MM/YYYY [às] HH:mm')}
+                            </Text>
+
                         </View>
 
+                        <Divider />
+                        
                         <View
                             style={{ paddingHorizontal: 16, paddingVertical: 8 }}
                         >
@@ -120,35 +99,13 @@ export default class EscalaVeiculoScreen extends Component {
                                     Quantidade Medida: {' '}
                                 </Text>
                                 <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                    {/* {this.renderQtdeMedida(estoq_tcm_qtde_medida)} */}
-                                </Text>
-                            </View>
-
-                            <View
-                                style={{ flexDirection: 'row' }}
-                            >
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                    Quantidade Sistema: {' '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                    {/* {this.renderQtdeMedida(estoq_tcm_qtde_sistema)} */}
-                                </Text>
-                            </View>
-
-                            <View
-                                style={{ flexDirection: 'row' }}
-                            >
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                    Diferença do Estoque: {' '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                    {/* {this.renderQtdeMedida(qtde_diferenca)} */}
+                                    {this.renderQtdeMedida(estoq_tcm_qtde_medida)}
                                 </Text>
                             </View>
 
                         </View>
 
-                    </Card>
+                    </View> */}
 
                     <View
                         style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}

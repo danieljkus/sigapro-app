@@ -12,7 +12,14 @@ import TrocarFilialScreen from './TrocarFilialScreen';
 import EscalaVeiculoScreen from './EscalaVeiculoScreen';
 import EscalaVeiculosScreen from './EscalaVeiculosScreen';
 
+import MedicaoTanqueScreen from './MedicaoTanqueScreen';
+import MedicoesTanqueScreen from './MedicoesTanqueScreen';
+
+import PreDigitacaoNotaScreen from './PreDigitacaoNotaScreen';
+import PreDigitacaoNotasScreen from './PreDigitacaoNotasScreen';
 import BarCodeScreen from './BarCodeScreen';
+
+import FichaViagemScreen from './FichaViagemScreen';
 
 import Icon from '../components/Icon';
 import Drawer from '../components/Drawer';
@@ -104,6 +111,43 @@ const HomeStackNavigator = StackNavigator({
     },
 
     
+    MedicoesTanqueScreen: {
+        screen: MedicoesTanqueScreen,
+        navigationOptions: {
+            title: "Medições do Tanque",
+            ...defaultNavigationOptions,
+        }
+    },
+    MedicaoTanqueScreen: {
+        screen: MedicaoTanqueScreen,
+        navigationOptions: {
+            title: "Medir Tanque",
+            ...defaultNavigationOptions
+        }
+    },
+
+    FichaViagemScreen: {
+        screen: FichaViagemScreen,
+        navigationOptions: {
+            title: "Ficha de Viagem",
+            ...defaultNavigationOptions
+        }
+    },
+
+    PreDigitacaoNotasScreen: {
+        screen: PreDigitacaoNotasScreen,
+        navigationOptions: {
+            title: "NFEs Pré-Digitadas",
+            ...defaultNavigationOptions
+        }
+    },
+    PreDigitacaoNotaScreen: {
+        screen: PreDigitacaoNotaScreen,
+        navigationOptions: {
+            title: "Pré-Digitação de NFEs",
+            ...defaultNavigationOptions
+        }
+    },
     BarCodeScreen: {
         screen: BarCodeScreen,
         navigationOptions: {
@@ -112,6 +156,7 @@ const HomeStackNavigator = StackNavigator({
             ...defaultNavigationOptions
         }
     },
+
 
 }, {
         headerMode: 'float',

@@ -114,6 +114,23 @@ class Drawer extends PureComponent {
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
                             <DrawerItem
+                                text="Ficha de Viagem"
+                                onPress={() => navigation.navigate('FichaViagemScreen')}
+                            />
+
+                            <DrawerItem
+                                text="Medir Tanque"
+                                onPress={() => navigation.navigate('MedicoesTanqueScreen')}
+                            />
+
+                            <DrawerItem
+                                text="Pré-Digitar NFe"
+                                onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
+                            />
+
+                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+
+                            <DrawerItem
                                 text="Trocar Filial"
                                 onPress={() => navigation.navigate('TrocarFilialScreen')}
                             />
