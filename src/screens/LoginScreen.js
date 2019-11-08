@@ -21,6 +21,8 @@ export default class LoginScreen extends Component {
             loading: false,
             usuario: '',
             senha: '',
+            empresa: 0,
+            empresaSelect: [],
         };
     }
 
@@ -32,11 +34,12 @@ export default class LoginScreen extends Component {
 
     postLogin = () => {
         this.setState({ loading: true });
-        const { usuario, senha } = this.state;
+        const { usuario, senha, empresa } = this.state;
 
         axios.post("/usuarios/login", {
             usuario,
             senha,
+            empresa,
             tipoAcesso: 'SIGAPRO'
         }).then(async response => {
             await saveToken(response.data.token);
@@ -74,9 +77,42 @@ export default class LoginScreen extends Component {
         this.setState(state);
     }
 
-    render() {
-        const { usuario, senha, loading } = this.state;
+    buscaEmpresas = () => {
+        const { usuario } = this.state;
+        if (usuario) {
+            this.setState({ empresaSelect: [], carregandoEmpresa: true });
 
+            axios.get('/listaEmpresasLogin', {
+                params: {
+                    usuario: usuario,
+                    app: 'SIGAPRO',
+                }
+            }).then(response => {
+                const { data } = response;
+                const empresaSelect = data.map(regList => {
+                    return {
+                        key: regList.adm_emp_codigo,
+                        label: regList.adm_pes_nome
+                    }
+                });
+
+                this.setState({
+                    empresaSelect,
+                    empresa: empresaSelect.length > 0 ? empresaSelect[0].key : 0,
+                    carregandoEmpresa: false
+                })
+            }).catch(error => {
+                console.warn(error.response);
+                this.setState({
+                    carregandoEmpresa: false,
+                });
+            })
+        }
+    }
+
+
+    render() {
+        const { usuario, senha, empresa, empresaSelect, loading } = this.state;
         return (
             <View style={{ flex: 1, }}>
                 <StatusBar />
@@ -125,6 +161,7 @@ export default class LoginScreen extends Component {
                                 ref="usuario"
                                 value={usuario}
                                 onChange={this.onInputChange}
+                                onBlur={this.buscaEmpresas}
                                 validator={text => Boolean(text)} // verifica se o campo está vazio ou válido
                                 keyboardType="numeric"
                                 required={true}
@@ -157,6 +194,22 @@ export default class LoginScreen extends Component {
                                 }}
                             />
                         </View>
+
+                        {empresaSelect.length > 0 ? (
+                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                <TextInput
+                                    label="Empresa"
+                                    type="select"
+                                    id="empresa"
+                                    ref="empresa"
+                                    options={empresaSelect}
+                                    onChange={this.onInputChange}
+                                    required={true}
+                                    errorMessage="Selecione uma Empresa."
+                                    value={empresa}
+                                />
+                            </View>
+                        ) : null}
 
                         <Divider />
 

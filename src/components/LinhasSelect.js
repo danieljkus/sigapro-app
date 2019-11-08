@@ -247,13 +247,12 @@ class LinhasComp extends PureComponent {
                         title=""
                         loading={loading}
                         onPress={() => { this.onAbrirBuscaModal(true) }}
-                        color={Colors.textOnPrimary}
                         buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                         backgroundColor={Colors.transparent}
                         icon={{
                             name: 'search',
                             type: 'font-awesome',
-                            color: Colors.textOnPrimary
+                            color: Colors.textPrimaryDark
                         }}
                     />
                 </View>

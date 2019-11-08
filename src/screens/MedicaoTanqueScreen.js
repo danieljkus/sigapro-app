@@ -148,8 +148,6 @@ export default class MedicaoTanqueScreen extends Component {
         const { registro, empresa } = this.state;
         this.setState({ calculando: true });
 
-        console.log('onCalcularVolume: ', empresa);
-        console.log('onCalcularVolume: ', registro);
         axios
             .get('/medicaoTanqueCombustivel/calcularVolume', {
                 params: {
@@ -208,6 +206,8 @@ export default class MedicaoTanqueScreen extends Component {
         const { estoq_tcm_idf, estoq_tcm_data, estoq_tcm_alt_medida, estoq_tcm_qtde_medida,
             estoq_tcm_qtde_sistema, qtde_diferenca } = registro;
 
+        console.log('estoq_tcm_alt_medida: ', estoq_tcm_alt_medida);
+
         return (
             <ScrollView
                 style={{ flex: 1 }}
@@ -244,16 +244,28 @@ export default class MedicaoTanqueScreen extends Component {
                             label="Altura Medida (cm)"
                             id="estoq_tcm_alt_medida"
                             ref="estoq_tcm_alt_medida"
+                            masker={maskDigitarVlrMoeda}
                             value={String(estoq_tcm_alt_medida)}
                             onChange={this.onInputChange}
-                            maxLength={10}
-                            keyboardType="numeric" // numeric (inteiro) ou decimal-pad (float)
-                            masker={maskDigitarVlrMoeda}
+                            maxLength={9}
+                            keyboardType="decimal-pad"
+                            errorMessage="A Altura é obrigatória"
                             required={true}
-                            validator={value => !!value}
-                            errorMessage="A Altura é obrigatória."
-                            maxLength={8}
                         />
+
+                        {/* <TextInput
+                            label="Altura Medida (cm)"
+                            id="estoq_tcm_alt_medida"
+                            ref="estoq_tcm_alt_medida"
+                            value={String(estoq_tcm_alt_medida)}
+                            masker={maskDigitarVlrMoeda}
+                            onChange={this.onInputChange}
+                            maxLength={10}
+                            keyboardType="decimal-pad"
+                            required={true}
+                            // validator={value => !!value}
+                            errorMessage="A Altura é obrigatória."
+                        /> */}
                     </View>
 
                     <View

@@ -188,14 +188,8 @@ export default class MedicoesTanqueScreen extends Component {
                     iconName="add"
                     iconColor={Colors.textOnAccent}
                     onPress={this.onAddPress}
-                    backgroundColor={Colors.accent}
+                    backgroundColor={Colors.primary}
                 />
-
-                {/* <ProgressDialog
-                    visible={carregando}
-                    title="App Nordeste"
-                    message="Carregando Registros. Aguarde..."
-                /> */}
             </View>
         )
     }

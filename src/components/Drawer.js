@@ -6,7 +6,7 @@ import { NavigationActions } from 'react-navigation';
 
 import Icon from './Icon';
 import Colors from '../values/Colors';
-import { removeToken, getUsuario, getFilial, getPermissoes } from '../utils/LoginManager';
+import { removeToken, getUsuario, getFilial, getPermissoes, getEmpresa } from '../utils/LoginManager';
 
 const DrawerItem = ({ text, onPress }) => {
     return (
@@ -26,7 +26,9 @@ const DrawerItem = ({ text, onPress }) => {
 
 class Drawer extends PureComponent {
 
-    state = {};
+    state = {
+        permissoes: []
+    };
 
     componentWillMount() {
         this.refreshUsuario();
@@ -42,6 +44,9 @@ class Drawer extends PureComponent {
         })
         getPermissoes().then(permissoes => {
             this.setState({ permissoes });
+        })
+        getEmpresa().then(empresa => {
+            this.setState({ empresa });
         })
         getFilial().then(filial => {
             this.setState({ filial });
@@ -64,16 +69,25 @@ class Drawer extends PureComponent {
         navigation.dispatch(resetAction);
     }
 
+    temPermissao = (permissao) => {
+        if ((this.state.permissoes) && (this.state.permissoes.length > 0)) {
+            const iIndItem = this.state.permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
+            return iIndItem >= 0 ? true : false; 
+        }
+        return false; 
+    }
+
     render() {
         const { navigation } = this.props;
-        const { usuario, filial } = this.state;
+        const { usuario, filial, empresa } = this.state;
         if (!usuario) return null;
+
         return (
             <View style={{ flex: 1 }}>
 
                 <View
                     style={{
-                        height: 100,
+                        height: 120,
                         padding: 16,
                         backgroundColor: Colors.primaryLight,
                         justifyContent: 'flex-end',
@@ -99,41 +113,51 @@ class Drawer extends PureComponent {
                             color: Colors.textSecondaryLight
                         }}
                     >
-                        Filial: {filial}
+                        Filial: {filial}    {empresa ? 'Empresa: ' + String(empresa) : ''}
                     </Text>
                 </View>
 
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{ flex: 1 }}>
-                            <DrawerItem
-                                text="Escala dos Veículos"
-                                onPress={() => navigation.navigate('EscalaVeiculosScreen')}
-                            />
+                            {this.temPermissao('ESCALAVEICULOSSCREEN') ? (
+                                <DrawerItem
+                                    text="Escala dos Veículos"
+                                    onPress={() => navigation.navigate('EscalaVeiculosScreen')}
+                                />
+                            ) : null}
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            <DrawerItem
-                                text="Ficha de Viagem"
-                                onPress={() => navigation.navigate('FichaViagemScreen')}
-                            />
+                            {empresa && this.temPermissao('FICHAVIAGEMSCREEN') ? (
+                                <DrawerItem
+                                    text="Ficha de Viagem"
+                                    onPress={() => navigation.navigate('FichaViagemScreen')}
+                                />
+                            ) : null}
 
-                            <DrawerItem
-                                text="Medir Tanque"
-                                onPress={() => navigation.navigate('MedicoesTanqueScreen')}
-                            />
+                            {empresa && this.temPermissao('MEDICOESTANQUESCREEN') ? (
+                                <DrawerItem
+                                    text="Medir Tanque"
+                                    onPress={() => navigation.navigate('MedicoesTanqueScreen')}
+                                />
+                            ) : null}
 
-                            <DrawerItem
-                                text="Pré-Digitar NFe"
-                                onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
-                            />
+                            {empresa && this.temPermissao('PREDIGITACAONOTASSCREEN') ? (
+                                <DrawerItem
+                                    text="Pré-Digitar NFe"
+                                    onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
+                                />
+                            ) : null}
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            <DrawerItem
-                                text="Trocar Filial"
-                                onPress={() => navigation.navigate('TrocarFilialScreen')}
-                            />
+                            {this.temPermissao('TROCARFILIALSCREEN') ? (
+                                <DrawerItem
+                                    text="Trocar Filial"
+                                    onPress={() => navigation.navigate('TrocarFilialScreen')}
+                                />
+                            ) : null}
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 

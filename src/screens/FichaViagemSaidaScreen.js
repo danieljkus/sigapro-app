@@ -261,7 +261,7 @@ export default class FichaViagemSaidaScreen extends Component {
             man_fvd_disco,
         };
 
-        console.log(registro);
+        // console.log(registro);
 
         axios.post('/fichaViagem/saida', registro)
             .then(response => {
@@ -499,13 +499,6 @@ export default class FichaViagemSaidaScreen extends Component {
             refreshing,
         } = this.state;
 
-        // console.log('veiculo_select', this.state.veiculo_select);
-        // console.log('funcionario_select', this.state.funcionariosSelect);
-        // console.log('linha_select', this.state.linha_select);
-        // console.log('rota_select', this.state.rota_select);
-
-        // console.log('codFunc', codFunc + '....' + this.state.empFunc);
-
         return (
             <View style={{ flex: 1, }}>
                 <StatusBar />
@@ -555,13 +548,12 @@ export default class FichaViagemSaidaScreen extends Component {
                                     title=""
                                     loading={loading}
                                     onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                    color={Colors.textOnPrimary}
                                     buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                                     backgroundColor={Colors.transparent}
                                     icon={{
                                         name: 'search',
                                         type: 'font-awesome',
-                                        color: Colors.textOnPrimary
+                                        color: Colors.textPrimaryDark
                                     }}
                                 />
                             </View>

@@ -68,8 +68,6 @@ class VeiculosSelect extends PureComponent {
         request.then(response => {
             const { data } = response;
 
-            console.log('VEÍCULO: ' + data.msgErro);
-
             if (data.msgErro === 'OK') {
                 this.setState({
                     msgErro: '',

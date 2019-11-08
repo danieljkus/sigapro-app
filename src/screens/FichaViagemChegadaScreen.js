@@ -165,24 +165,14 @@ export default class FichaViagemChegadaScreen extends Component {
 
             let kmRota = veiculo_select.KmTotalRota + kmViagem;
 
-            // console.log('ODO INI: ', man_fv_odo_ini);
-            // console.log('ODO FIM: ', man_fv_odo_fim);
-            // console.log('KM VIAGEM: ', kmViagem);
-            // console.log('KM ROTA: ', kmRota);
-            // console.log('COMB: ', man_fv_qtde_comb);
-
             let mediaComb = (0).toFixed(3);
             if ((vlrStringParaFloat(man_fv_qtde_comb)) && (vlrStringParaFloat(man_fv_qtde_comb) > 0)) {
                 mediaComb = (parseFloat(kmRota) / (vlrStringParaFloat(man_fv_qtde_comb) + parseFloat(man_fv_qtde_comb_extra))).toFixed(3);
-                // console.log('QTDE COMB: ', parseFloat(man_fv_qtde_comb) + parseFloat(man_fv_qtde_comb_extra));
-                // console.log('COMB MEDIA: ', mediaComb);
             }
 
-            // console.log('ARLA: ', man_fv_qtde_arla);
             let mediaArla = 0;
             if ((vlrStringParaFloat(man_fv_qtde_arla)) && (vlrStringParaFloat(man_fv_qtde_arla) > 0)) {
                 mediaArla = (parseFloat(kmRota) / vlrStringParaFloat(man_fv_qtde_arla)).toFixed(3);
-                // console.log('ARLA MEDIA: ', mediaArla);
             }
 
             let kmFim = veiculo_select.kmAcum + kmViagem;
@@ -707,14 +697,6 @@ export default class FichaViagemChegadaScreen extends Component {
             man_rt_flag_eventual, refreshing, listaRegistrosFunc,
         } = this.state;
 
-        // console.log('veiculo_select', this.state.veiculo_select);
-        // console.log('funcionario_select', this.state.funcionariosSelect);
-        // console.log('linha_select', this.state.linha_select);
-        // console.log('rota_select', this.state.rota_select);
-
-        // console.log('codFunc', codFunc + '....' + this.state.empFunc);
-        // console.log('pas_serv_codigo', pas_serv_codigo);
-
         return (
             <View style={{ flex: 1, }}>
                 <StatusBar />
@@ -762,13 +744,12 @@ export default class FichaViagemChegadaScreen extends Component {
                                     title=""
                                     loading={loading}
                                     onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                    color={Colors.textOnPrimary}
                                     buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                                     backgroundColor={Colors.transparent}
                                     icon={{
                                         name: 'search',
                                         type: 'font-awesome',
-                                        color: Colors.textOnPrimary
+                                        color: Colors.textPrimaryDark
                                     }}
                                 />
                             </View>
