@@ -122,9 +122,9 @@ export default class CategoriasScreen extends Component {
         const { man_ev_data_ini, man_ev_grupo, man_ev_servico, man_ev_veiculo,
             pagina, listaRegistros } = this.state;
 
-        const temFiltro = man_ev_grupo || man_ev_servico || man_ev_veiculo;
+        const temFiltro = man_ev_grupo || man_ev_servico !== '' || man_ev_veiculo !== '';
 
-        // console.log('getListaRegistros: ', man_ev_data_ini);
+        // console.log('getListaRegistros: ', man_ev_veiculo);
 
         axios.get('/escalaVeiculos', {
             params: {
@@ -371,92 +371,88 @@ export default class CategoriasScreen extends Component {
                 {/* MODAL PARA FILTROS            */}
                 {/* ----------------------------- */}
                 <Modal
-                    transparent={false}
                     visible={this.state.modalFiltrosVisible}
                     onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
+                    transparent={true}
                 >
-                    <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
-                        <TouchableOpacity
-                            onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
-                            style={{ padding: 16 }}
-                        >
-                            <Icon
-                                family="MaterialIcons"
-                                name="arrow-back"
-                                color={Colors.textOnPrimary}
-                            />
-                        </TouchableOpacity>
-
-                        <Text style={{
-                            color: Colors.textOnPrimary,
-                            marginTop: 15,
-                            marginBottom: 15,
-                            marginLeft: 16,
-                            textAlign: 'center',
-                            fontSize: 20,
-                            fontWeight: 'bold',
-                        }}>Filtrar Escala</Text>
-                    </View>
-
                     <View style={{
                         flex: 1,
-                        paddingVertical: 20,
-                        paddingHorizontal: 20,
-                        backgroundColor: Colors.background,
-                    }} >
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            width: "90%",
+                            paddingTop: 100,
+                        }} >
+                            <View style={{
+                                paddingVertical: 15,
+                                paddingHorizontal: 15,
+                                backgroundColor: Colors.background,
+                                borderRadius: 5,
+                            }}>
 
-                        <ScrollView style={{ flex: 1, }}>
+                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                                    <Text style={{
+                                        color: Colors.textOnPrimary,
+                                        marginTop: 15,
+                                        marginBottom: 15,
+                                        marginLeft: 16,
+                                        textAlign: 'center',
+                                        fontSize: 20,
+                                        fontWeight: 'bold',
+                                    }}>Filtrar Escala</Text>
+                                </View>
 
-                            <View style={{ marginTop: 4 }}>
+                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
-                                <TextInput
-                                    label="Veículo"
-                                    id="man_ev_veiculo"
-                                    ref="man_ev_veiculo"
-                                    value={man_ev_veiculo}
-                                    maxLength={20}
-                                    onChange={this.onInputChange}
-                                    keyboardType="numeric"
-                                />
+                                    <TextInput
+                                        label="Veículo"
+                                        id="man_ev_veiculo"
+                                        ref="man_ev_veiculo"
+                                        value={man_ev_veiculo}
+                                        maxLength={20}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
 
-                                <TextInput
-                                    label="Serviço"
-                                    id="man_ev_servico"
-                                    ref="man_ev_servico"
-                                    value={man_ev_servico}
-                                    maxLength={20}
-                                    onChange={this.onInputChange}
-                                    keyboardType="numeric"
-                                />
+                                    <TextInput
+                                        label="Serviço"
+                                        id="man_ev_servico"
+                                        ref="man_ev_servico"
+                                        value={man_ev_servico}
+                                        maxLength={20}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
 
-                                <TextInput
-                                    type="select"
-                                    label="Grupo"
-                                    id="man_ev_grupo"
-                                    ref="man_ev_grupo"
-                                    value={man_ev_grupo}
-                                    selectedValue=""
-                                    options={grupoSelect}
-                                    onChange={this.onInputChange}
-                                />
+                                    <TextInput
+                                        type="select"
+                                        label="Grupo"
+                                        id="man_ev_grupo"
+                                        ref="man_ev_grupo"
+                                        value={man_ev_grupo}
+                                        selectedValue=""
+                                        options={grupoSelect}
+                                        onChange={this.onInputChange}
+                                    />
 
-
-                                <View style={{ marginTop: 15 }} />
-
-                                <Button
-                                    title="FILTRAR"
-                                    onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
-                                    buttonStyle={{ marginTop: 15 }}
-                                    backgroundColor={Colors.buttonPrimary}
-                                    icon={{
-                                        name: 'filter',
-                                        type: 'font-awesome',
-                                        color: Colors.textOnPrimary
-                                    }}
-                                />
+                                    <Button
+                                        title="FILTRAR"
+                                        onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
+                                        buttonStyle={{ marginTop: 15 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'filter',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
                             </View>
-                        </ScrollView>
+                        </View>
                     </View>
                 </Modal>
 
@@ -482,17 +478,18 @@ export default class CategoriasScreen extends Component {
                     marginRight={10}
                 />
 
-                {temFiltro
-                    ? (
-                        <FloatActionButton
-                            iconFamily="MaterialIcons"
-                            iconName="clear"
-                            iconColor={Colors.textOnPrimary}
-                            onPress={this.onClearSearchPress}
-                            backgroundColor={Colors.primary}
-                            marginRight={60}
-                        />
-                    ) : null
+                {
+                    temFiltro
+                        ? (
+                            <FloatActionButton
+                                iconFamily="MaterialIcons"
+                                iconName="clear"
+                                iconColor={Colors.textOnPrimary}
+                                onPress={this.onClearSearchPress}
+                                backgroundColor={Colors.primary}
+                                marginRight={60}
+                            />
+                        ) : null
                 }
 
                 <ProgressDialog
@@ -502,7 +499,7 @@ export default class CategoriasScreen extends Component {
                 />
 
 
-            </View>
+            </View >
 
         )
     }

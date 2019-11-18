@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, ScrollView, RefreshControl, Card, Text, Divider } from 'react-native';
+import { View, ScrollView, RefreshControl, Text } from 'react-native';
+import { Card, Divider } from 'react-native-elements';
+
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
 import { checkFormIsValid } from '../utils/Validator';
@@ -40,20 +42,20 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     onSalvarRegistro = () => {
-        this.setState({ salvado: true });
-        const registro = this.state;
+        // this.setState({ salvado: true });
+        // const registro = this.state;
 
-        axios.put('/escalaVeiculos/update/' + registro.grupo, registro)
-            .then(response => {
-                this.props.navigation.goBack(null);
-                if (this.props.navigation.state.params.onRefresh) {
-                    this.props.navigation.state.params.onRefresh();
-                }
-            }).catch(ex => {
-                this.setState({ salvado: false });
-                console.warn(ex);
-                console.warn(ex.response);
-            })
+        // axios.put('/escalaVeiculos/update/' + registro.man_ev_veiculo, registro)
+        //     .then(response => {
+        //         this.props.navigation.goBack(null);
+        //         if (this.props.navigation.state.params.onRefresh) {
+        //             this.props.navigation.state.params.onRefresh();
+        //         }
+        //     }).catch(ex => {
+        //         this.setState({ salvado: false });
+        //         console.warn(ex);
+        //         console.warn(ex.response);
+        //     })
     }
 
 
@@ -61,7 +63,9 @@ export default class EscalaVeiculoScreen extends Component {
 
 
     render() {
-        const { man_ev_veiculo, loading, salvado } = this.state;
+        const { man_ev_veiculo, man_ev_grupo, man_ev_seq_grupo, man_eg_descricao,
+            pas_serv_linha, man_ev_servico, pas_serv_sentido, sec1, sec2, hora1, hora2,
+            loading, salvado } = this.state;
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -77,51 +81,82 @@ export default class EscalaVeiculoScreen extends Component {
                     )}
                 >
 
-                    {/* <View containerStyle={{ padding: 0 }}>
-                        <View
-                            style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
-                        >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
-                                Emissão: {moment(estoq_tcm_data).format('DD/MM/YYYY [às] HH:mm')}
+                    <View
+                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginVertical: 20 }}
+                    >
+                        <View style={{ marginBottom: 30 }}>
+                            <Text style={{
+                                color: Colors.textSecondaryDark,
+                                fontWeight: 'bold',
+                                fontSize: 20,
+                                marginBottom: 15,
+                                borderBottomWidth: 2,
+                                borderColor: Colors.dividerDark,
+                            }}>
+                                Dados da Viagem
                             </Text>
 
-                        </View>
-
-                        <Divider />
-                        
-                        <View
-                            style={{ paddingHorizontal: 16, paddingVertical: 8 }}
-                        >
-                            <View
-                                style={{ flexDirection: 'row' }}
-                            >
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                    Quantidade Medida: {' '}
+                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Veículo {': '}
                                 </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                    {this.renderQtdeMedida(estoq_tcm_qtde_medida)}
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
+                                    {man_ev_veiculo}
+                                </Text>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    {'      '} Horário {': '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
+                                    {pas_serv_sentido === 'I' ? hora1 : hora2}
+                                </Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Serviço {': '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
+                                    {man_ev_servico}
+                                </Text>
+
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    {'      '} Linha {': '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
+                                    {pas_serv_linha}
+                                </Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Linha {': '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
+                                    {pas_serv_sentido === 'I' ? (sec1 + ' a ' + sec2) : (sec2 + ' a ' + sec1)}
+                                </Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Grupo {': '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
+                                    {man_eg_descricao}
                                 </Text>
                             </View>
 
                         </View>
 
-                    </View> */}
-
-                    <View
-                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
-                    >
-
                         <TextInput
-                            label="Veículo"
+                            label="Trocar Veículo"
                             id="man_ev_veiculo"
                             ref="man_ev_veiculo"
                             value={man_ev_veiculo}
-                            maxLength={20}
+                            maxLength={4}
                             onChange={this.onInputChange}
                             required={true}
                             errorMessage="Informe o Veículo"
                         />
-
 
                         <Button
                             title="SALVAR"
