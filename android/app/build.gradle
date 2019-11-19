@@ -119,7 +119,7 @@ android {
     }
     signingConfigs {
         config {
-            keyAlias 'SIGA_APP_MANUTENCAO'
+            keyAlias 'SIGAPRO'
             keyPassword 'vipdbinf'
             storeFile file('../keystores/certificado.jks')
             storePassword 'vipdbinf'

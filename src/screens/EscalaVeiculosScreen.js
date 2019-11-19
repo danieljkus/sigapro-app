@@ -310,7 +310,7 @@ export default class CategoriasScreen extends Component {
 
                 <View style={{ marginBottom: 3 }}>
                     <ScrollView style={{ height: 50, width: "100%", borderWidth: 1, borderColor: Colors.dividerDark }}>
-                        <View style={{ flex: 1, flexDirection: 'row', marginVertical: 2 }}>
+                        <View style={{ flex: 1, flexDirection: 'row', marginBottom: 2 }}>
                             <View style={{ flex: 2, padding: 0 }}>
                                 <Button
                                     title=""
