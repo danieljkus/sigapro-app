@@ -174,8 +174,15 @@ export default class CategoriasScreen extends Component {
             }
         }).then(response => {
             this.setState({ carregarRegistro: false });
+
+            console.log('registro: ', response.data);
+
             this.props.navigation.navigate('EscalaVeiculoScreen', {
-                registro: response.data,
+                registro: {
+                    registro: response.data.registro,
+                    qtdeComb: response.data.qtdeComb,
+                    listaHistorico: response.data.listaHistorico,
+                },
                 onRefresh: this.onRefresh
             });
         }).catch(ex => {

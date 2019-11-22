@@ -98,7 +98,7 @@ const HomeStackNavigator = StackNavigator({
     EscalaVeiculoScreen: {
         screen: EscalaVeiculoScreen,
         navigationOptions: {
-            title: "Trocar Veículo da Escala",
+            title: "Detalhes da Escala",
             ...defaultNavigationOptions,
         }
     },
