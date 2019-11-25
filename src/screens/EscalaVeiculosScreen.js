@@ -12,7 +12,10 @@ import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import { maskDate } from '../utils/Maskers';
+
 import moment from 'moment';
+import 'moment/locale/pt-br';
+moment.locale('pt-BR');
 
 const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
@@ -330,7 +333,15 @@ export default class CategoriasScreen extends Component {
                                     }}
                                 />
                             </View>
+
                             <View style={{ flex: 5, padding: 0, paddingHorizontal: 20, borderWidth: 1, borderColor: Colors.dividerDark }}>
+                                <Text style={{
+                                    position: 'absolute',
+                                    marginLeft: 20,
+                                    fontSize: 12,
+                                }}>
+                                    {moment(moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD")).format("dddd")}
+                                </Text>
                                 <TextInput
                                     type="date"
                                     label=" "
@@ -344,6 +355,7 @@ export default class CategoriasScreen extends Component {
                                     fontSize={20}
                                 />
                             </View>
+
                             <View style={{ flex: 2, padding: 0 }}>
                                 <Button
                                     title=""
