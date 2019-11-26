@@ -11,6 +11,7 @@ import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import { getPermissoes } from '../utils/LoginManager';
+import { maskValorMoeda } from '../utils/Maskers';
 import moment from 'moment';
 
 const RegistroItem = ({ registro }) => {
@@ -141,7 +142,7 @@ export default class EscalaVeiculoScreen extends Component {
             pas_serv_linha, man_ev_servico, pas_serv_sentido, sec1, sec2, hora1, hora2,
             loading } = this.state.registro;
 
-        // console.log('this.state', this.state);
+        console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -255,17 +256,18 @@ export default class EscalaVeiculoScreen extends Component {
                                 fontWeight: 'bold',
                                 fontSize: 20,
                                 marginBottom: 10,
+                                marginRight: 5,
                                 borderBottomWidth: 2,
                                 borderColor: Colors.dividerDark,
                             }}>
                                 Último Abastecimento
-                        </Text>
+                            </Text>
                             <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
                                 <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
                                     Data {': '}
                                 </Text>
                                 <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {this.state.qtdeComb}
+                                    {this.state.dataComb ? moment(this.state.dataComb).format("DD/MM/YYYY hh:mm") : ''}
                                 </Text>
                             </View>
 
@@ -274,8 +276,17 @@ export default class EscalaVeiculoScreen extends Component {
                                     Qtde {': '}
                                 </Text>
                                 <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {this.state.qtdeComb} Lt
-                            </Text>
+                                    {maskValorMoeda(parseFloat(this.state.qtdeComb))} Lt
+                                </Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5, paddingRight: 5 }}>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Filial {': '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
+                                    {this.state.filial} - { this.state.descFilial }
+                                </Text>
                             </View>
                         </View>
 
