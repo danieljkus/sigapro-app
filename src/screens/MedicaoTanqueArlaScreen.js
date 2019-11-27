@@ -16,17 +16,16 @@ import { getEmpresa } from '../utils/LoginManager';
 const { OS } = Platform;
 
 
-export default class MedicaoTanqueScreen extends Component {
+export default class MedicaoTanqueArlaScreen extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             registro: {
-                estoq_tcm_idf: '0',
-                estoq_tcm_alt_medida: '0,00',
-                estoq_tcm_qtde_medida: '0',
-                estoq_tcm_qtde_sistema: '0',
+                estoq_tam_idf: '0',
+                estoq_tam_qtde_medida: '0',
+                estoq_tam_qtde_sistema: '0',
                 qtde_diferenca: '0',
             },
             loading: true,
@@ -40,18 +39,18 @@ export default class MedicaoTanqueScreen extends Component {
             this.setState({ empresa });
         })
 
-        const { estoq_tcm_idf } = this.props.navigation.state.params;
-        if (estoq_tcm_idf) {
-            axios.get('/medicaoTanqueCombustivel/show/' + estoq_tcm_idf, {
+        const { estoq_tam_idf } = this.props.navigation.state.params;
+        if (estoq_tam_idf) {
+            axios.get('/medicaoTanqueArla/show/' + estoq_tam_idf, {
             }).then(response => {
                 this.setState({
                     registro: {
                         ...
                         response.data,
-                        estoq_tcm_qtde_medida: parseFloat(response.data.estoq_tcm_qtde_medida),
-                        estoq_tcm_qtde_sistema: parseFloat(response.data.estoq_tcm_qtde_sistema),
+                        estoq_tam_qtde_medida: parseFloat(response.data.estoq_tam_qtde_medida),
+                        estoq_tam_qtde_sistema: parseFloat(response.data.estoq_tam_qtde_sistema),
                         // qtde_diferenca: response.data.qtde_diferenca,
-                        qtde_diferenca: parseFloat(parseFloat(response.data.estoq_tcm_qtde_medida) - parseFloat(response.data.estoq_tcm_qtde_sistema)),
+                        qtde_diferenca: parseFloat(parseFloat(response.data.estoq_tam_qtde_medida) - parseFloat(response.data.estoq_tam_qtde_sistema)),
                     },
                     loading: false,
                 })
@@ -64,10 +63,9 @@ export default class MedicaoTanqueScreen extends Component {
         } else {
             this.setState({
                 registro: {
-                    estoq_tcm_idf: '0',
-                    estoq_tcm_alt_medida: '0,00',
-                    estoq_tcm_qtde_medida: '0',
-                    estoq_tcm_qtde_sistema: '0',
+                    estoq_tam_idf: '0',
+                    estoq_tam_qtde_medida: '0',
+                    estoq_tam_qtde_sistema: '0',
                     qtde_diferenca: '0',
                 },
                 loading: false,
@@ -87,8 +85,8 @@ export default class MedicaoTanqueScreen extends Component {
 
     onSubmitForm = (event) => {
         const { registro } = this.state;
-        if (registro.estoq_tcm_qtde_medida === '0') {
-            Alert.showAlert("Calcule o Volume para Salvar.")
+        if (registro.estoq_tam_qtde_medida === '0') {
+            Alert.showAlert("Informe a quantidade para Salvar.")
             return
         }
 
@@ -101,7 +99,7 @@ export default class MedicaoTanqueScreen extends Component {
                     onPress: this.onSalvar
                 })
         } else {
-            Alert.showAlert("Calcule o Volume para Salvar.")
+            Alert.showAlert("Informe a quantidade para Salvar.")
             return
         }
     }
@@ -111,7 +109,7 @@ export default class MedicaoTanqueScreen extends Component {
         const { registro } = this.state;
 
         return axios
-            .post('/medicaoTanqueCombustivel/store', registro)
+            .post('/medicaoTanqueArla/store', registro)
             .then(response => {
                 this.props.navigation.goBack(null);
                 this.props.navigation.state.params.onRefresh();
@@ -130,66 +128,64 @@ export default class MedicaoTanqueScreen extends Component {
     }
 
     onSubmitCalcular = (event) => {
-        const { registro } = this.state;
-        if (!vlrStringParaFloat(registro.estoq_tcm_alt_medida)) {
-            Alert.showAlert("Informe a Altura Medida no Tanque.")
-            return
-        }
+        // const { registro } = this.state;
+        // if (!vlrStringParaFloat(registro.estoq_tam_qtde_medida)) {
+        //     Alert.showAlert("Informe a Altura Medida no Tanque.")
+        //     return
+        // }
 
-        if (checkFormIsValid(this.refs)) {
-            this.onCalcularVolume();
-        } else {
-            Alert.showAlert("Informe a Altura Medida no Tanque.")
-            return
-        }
+        // if (checkFormIsValid(this.refs)) {
+        //     this.onCalcularVolume();
+        // } else {
+        //     Alert.showAlert("Informe a Altura Medida no Tanque.")
+        //     return
+        // }
     }
 
     onCalcularVolume = () => {
-        const { registro, empresa } = this.state;
-        this.setState({ calculando: true });
+        // const { registro, empresa } = this.state;
+        // this.setState({ calculando: true });
 
-        axios
-            .get('/medicaoTanqueCombustivel/calcularVolume', {
-                params: {
-                    empresa,
-                    estoq_tcm_alt_medida: vlrStringParaFloat(registro.estoq_tcm_alt_medida)
-                }
-            })
-            .then(response => {
-                const { data } = response;
+        // axios
+        //     .get('/medicaoTanqueArla/calcularVolume', {
+        //         params: {
+        //             empresa,
+        //             estoq_tam_qtde_medida: vlrStringParaFloat(registro.estoq_tam_qtde_medida)
+        //         }
+        //     })
+        //     .then(response => {
+        //         const { data } = response;
 
-                this.setState({
-                    calculando: false,
-                    registro: {
-                        ...registro,
-                        estoq_tcm_qtde_medida: data.estoq_tcm_qtde_medida,
-                        estoq_tcm_qtde_sistema: data.estoq_tcm_qtde_sistema,
-                        qtde_diferenca: data.qtde_diferenca,
-                        // qtde_diferenca: parseFloat(parseFloat(data.estoq_tcm_qtde_medida) - parseFloat(data.estoq_tcm_qtde_sistema)).toFixed(2),
-                    }
-                })
+        //         this.setState({
+        //             calculando: false,
+        //             registro: {
+        //                 ...registro,
+        //                 estoq_tam_qtde_medida: data.estoq_tam_qtde_medida,
+        //                 estoq_tam_qtde_sistema: data.estoq_tam_qtde_sistema,
+        //                 qtde_diferenca: data.qtde_diferenca,
+        //                 // qtde_diferenca: parseFloat(parseFloat(data.estoq_tam_qtde_medida) - parseFloat(data.estoq_tam_qtde_sistema)).toFixed(2),
+        //             }
+        //         })
 
-            }).catch(error => {
-                console.warn(error);
-                this.setState({
-                    calculando: false,
-                })
-            })
-
-
+        //     }).catch(error => {
+        //         console.warn(error);
+        //         this.setState({
+        //             calculando: false,
+        //         })
+        //     })
     }
 
 
 
-    renderQtdeMedida = (estoq_tcm_qtde_medida) => {
+    renderQtdeMedida = (estoq_tam_qtde_medida) => {
         return (
-            <Text> {maskValorMoeda(estoq_tcm_qtde_medida)} </Text>
+            <Text> {maskValorMoeda(estoq_tam_qtde_medida)} </Text>
         );
     };
 
-    renderQtdeSistema = (estoq_tcm_qtde_sistema) => {
+    renderQtdeSistema = (estoq_tam_qtde_sistema) => {
         return (
-            <Text> {maskValorMoeda(estoq_tcm_qtde_sistema)} </Text>
+            <Text> {maskValorMoeda(estoq_tam_qtde_sistema)} </Text>
         );
     };
 
@@ -203,10 +199,8 @@ export default class MedicaoTanqueScreen extends Component {
 
     render() {
         const { loading, registro, salvado, calculando } = this.state;
-        const { estoq_tcm_idf, estoq_tcm_data, estoq_tcm_alt_medida, estoq_tcm_qtde_medida,
-            estoq_tcm_qtde_sistema, qtde_diferenca } = registro;
-
-        console.log('estoq_tcm_alt_medida: ', estoq_tcm_alt_medida);
+        const { estoq_tam_idf, estoq_tam_data, estoq_tam_alt_medida, estoq_tam_qtde_medida,
+            estoq_tam_qtde_sistema, qtde_diferenca } = registro;
 
         return (
             <ScrollView
@@ -220,18 +214,16 @@ export default class MedicaoTanqueScreen extends Component {
             >
 
                 <Card containerStyle={{ padding: 0 }}>
-                    {estoq_tcm_idf !== '0' ?
+                    {estoq_tam_idf !== '0' ? (
                         <View
                             style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
                         >
                             <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
-                                Emissão: {moment(estoq_tcm_data).format('DD/MM/YYYY [às] HH:mm')}
+                                Emissão: {moment(estoq_tam_data).format('DD/MM/YYYY [às] HH:mm')}
                             </Text>
 
                         </View>
-
-                        : null
-                    }
+                    ) : null}
 
                     <Divider />
 
@@ -241,70 +233,59 @@ export default class MedicaoTanqueScreen extends Component {
                         }}
                     >
                         <TextInput
-                            label="Altura Medida (cm)"
-                            id="estoq_tcm_alt_medida"
-                            ref="estoq_tcm_alt_medida"
+                            label="Quantidade Medida (Lt)"
+                            id="estoq_tam_qtde_medida"
+                            ref="estoq_tam_qtde_medida"
                             masker={maskDigitarVlrMoeda}
-                            value={String(estoq_tcm_alt_medida)}
+                            value={String(estoq_tam_qtde_medida)}
                             onChange={this.onInputChange}
                             maxLength={9}
                             keyboardType="decimal-pad"
-                            errorMessage="A Altura é obrigatória"
+                            errorMessage="A quantidade é obrigatória"
                             required={true}
                         />
-
-                        {/* <TextInput
-                            label="Altura Medida (cm)"
-                            id="estoq_tcm_alt_medida"
-                            ref="estoq_tcm_alt_medida"
-                            value={String(estoq_tcm_alt_medida)}
-                            masker={maskDigitarVlrMoeda}
-                            onChange={this.onInputChange}
-                            maxLength={10}
-                            keyboardType="decimal-pad"
-                            required={true}
-                            // validator={value => !!value}
-                            errorMessage="A Altura é obrigatória."
-                        /> */}
                     </View>
 
-                    <View
-                        style={{ paddingHorizontal: 16, paddingVertical: 8 }}
-                    >
-                        <View
-                            style={{ flexDirection: 'row' }}
-                        >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                Quantidade Medida: {' '}
-                            </Text>
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                {this.renderQtdeMedida(estoq_tcm_qtde_medida)}
-                            </Text>
-                        </View>
+                    {estoq_tam_idf === 0 ? (
 
                         <View
-                            style={{ flexDirection: 'row' }}
+                            style={{ paddingHorizontal: 16, paddingVertical: 8 }}
                         >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                Quantidade Sistema: {' '}
-                            </Text>
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                {this.renderQtdeMedida(estoq_tcm_qtde_sistema)}
-                            </Text>
-                        </View>
+                            <View
+                                style={{ flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Quantidade Medida: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(estoq_tam_qtde_medida)}
+                                </Text>
+                            </View>
 
-                        <View
-                            style={{ flexDirection: 'row' }}
-                        >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                Diferença do Estoque: {' '}
-                            </Text>
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                {this.renderQtdeMedida(qtde_diferenca)}
-                            </Text>
-                        </View>
+                            <View
+                                style={{ flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Quantidade Sistema: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(estoq_tam_qtde_sistema)}
+                                </Text>
+                            </View>
 
-                    </View>
+                            <View
+                                style={{ flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Diferença do Estoque: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(qtde_diferenca)}
+                                </Text>
+                            </View>
+
+                        </View>
+                    ) : null}
 
                 </Card>
 
@@ -315,7 +296,7 @@ export default class MedicaoTanqueScreen extends Component {
                     style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}
                 >
 
-                    {estoq_tcm_idf === '0' ?
+                    {/* {estoq_tam_idf === '0' ?
                         <Button
                             title="Calcular Volume"
                             backgroundColor='#ccc'
@@ -330,9 +311,9 @@ export default class MedicaoTanqueScreen extends Component {
                             }}
                         />
                         : null
-                    }
+                    } */}
 
-                    {estoq_tcm_idf === '0' ?
+                    {estoq_tam_idf === '0' ?
                         <Button
                             title="Salvar"
                             backgroundColor='#4682B4'
@@ -340,7 +321,7 @@ export default class MedicaoTanqueScreen extends Component {
                             buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
                             onPress={this.onSubmitForm}
                             disabled={loading}
-                            visible={estoq_tcm_idf}
+                            visible={estoq_tam_idf}
                             icon={{
                                 name: 'check',
                                 type: 'font-awesome',
@@ -355,13 +336,13 @@ export default class MedicaoTanqueScreen extends Component {
 
                 <ProgressDialog
                     visible={salvado}
-                    title="App Nordeste"
+                    title="SIGA PRO"
                     message="Gravando. Aguarde..."
                 />
 
                 <ProgressDialog
                     visible={calculando}
-                    title="App Nordeste"
+                    title="SIGA PRO"
                     message="Calculando Volume. Aguarde..."
                 />
 

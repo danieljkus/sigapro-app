@@ -12,8 +12,11 @@ import TrocarFilialScreen from './TrocarFilialScreen';
 import EscalaVeiculoScreen from './EscalaVeiculoScreen';
 import EscalaVeiculosScreen from './EscalaVeiculosScreen';
 
-import MedicaoTanqueScreen from './MedicaoTanqueScreen';
-import MedicoesTanqueScreen from './MedicoesTanqueScreen';
+import MedicaoTanqueDieselScreen from './MedicaoTanqueDieselScreen';
+import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
+
+import MedicaoTanqueArlaScreen from './MedicaoTanqueArlaScreen';
+import MedicoesTanqueArlaScreen from './MedicoesTanqueArlaScreen';
 
 import PreDigitacaoNotaScreen from './PreDigitacaoNotaScreen';
 import PreDigitacaoNotasScreen from './PreDigitacaoNotasScreen';
@@ -111,17 +114,32 @@ const HomeStackNavigator = StackNavigator({
     },
 
     
-    MedicoesTanqueScreen: {
-        screen: MedicoesTanqueScreen,
+    MedicoesTanqueDieselScreen: {
+        screen: MedicoesTanqueDieselScreen,
         navigationOptions: {
-            title: "Medições do Tanque",
+            title: "Medições do Tanque Diesel",
             ...defaultNavigationOptions,
         }
     },
-    MedicaoTanqueScreen: {
-        screen: MedicaoTanqueScreen,
+    MedicaoTanqueDieselScreen: {
+        screen: MedicaoTanqueDieselScreen,
         navigationOptions: {
-            title: "Medir Tanque",
+            title: "Medir Tanque Diesel",
+            ...defaultNavigationOptions
+        }
+    },
+
+    MedicoesTanqueArlaScreen: {
+        screen: MedicoesTanqueArlaScreen,
+        navigationOptions: {
+            title: "Medições do Tanque Arla",
+            ...defaultNavigationOptions,
+        }
+    },
+    MedicaoTanqueArlaScreen: {
+        screen: MedicaoTanqueArlaScreen,
+        navigationOptions: {
+            title: "Medir Tanque Arla",
             ...defaultNavigationOptions
         }
     },

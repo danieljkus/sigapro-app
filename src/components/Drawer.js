@@ -136,10 +136,17 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            {empresa && this.temPermissao('MEDICOESTANQUESCREEN') ? (
+                            {empresa && this.temPermissao('MEDICOESTANQUESDIESELCREEN') ? (
                                 <DrawerItem
-                                    text="Medir Tanque"
-                                    onPress={() => navigation.navigate('MedicoesTanqueScreen')}
+                                    text="Medir Tanque Diesel"
+                                    onPress={() => navigation.navigate('MedicoesTanqueDieselScreen')}
+                                />
+                            ) : null}
+
+                            {empresa && this.temPermissao('MEDICOESTANQUEARLASCREEN') ? (
+                                <DrawerItem
+                                    text="Medir Tanque Arla"
+                                    onPress={() => navigation.navigate('MedicoesTanqueArlaScreen')}
                                 />
                             ) : null}
 

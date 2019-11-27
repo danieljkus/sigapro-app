@@ -67,7 +67,7 @@ const CardViewItem = ({ registro, onRegistroPress }) => {
     )
 }
 
-export default class MedicoesTanqueScreen extends Component {
+export default class MedicoesTanqueDieselScreen extends Component {
 
     termoBusca = '';
     state = {
@@ -120,14 +120,14 @@ export default class MedicoesTanqueScreen extends Component {
     }
 
     onRegistroPress = (estoq_tcm_idf) => {
-        this.props.navigation.navigate('MedicaoTanqueScreen', {
+        this.props.navigation.navigate('MedicaoTanqueDieselScreen', {
             estoq_tcm_idf,
             onRefresh: this.onRefresh
         });
     }
 
     onAddPress = () => {
-        this.props.navigation.navigate('MedicaoTanqueScreen', {
+        this.props.navigation.navigate('MedicaoTanqueDieselScreen', {
             estoq_tcm_idf: 0,
             onRefresh: this.onRefresh
         });
