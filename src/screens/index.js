@@ -24,6 +24,8 @@ import BarCodeScreen from './BarCodeScreen';
 
 import FichaViagemScreen from './FichaViagemScreen';
 
+import TrocarSenhaScreen from './TrocarSenhaScreen';
+
 import Icon from '../components/Icon';
 import Drawer from '../components/Drawer';
 import Colors from '../values/Colors';
@@ -148,6 +150,14 @@ const HomeStackNavigator = StackNavigator({
         screen: FichaViagemScreen,
         navigationOptions: {
             title: "Ficha de Viagem",
+            ...defaultNavigationOptions
+        }
+    },
+
+    TrocarSenhaScreen: {
+        screen: TrocarSenhaScreen,
+        navigationOptions: {
+            title: "Trocar Senha",
             ...defaultNavigationOptions
         }
     },

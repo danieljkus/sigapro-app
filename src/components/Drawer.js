@@ -72,9 +72,9 @@ class Drawer extends PureComponent {
     temPermissao = (permissao) => {
         if ((this.state.permissoes) && (this.state.permissoes.length > 0)) {
             const iIndItem = this.state.permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
-            return iIndItem >= 0 ? true : false; 
+            return iIndItem >= 0 ? true : false;
         }
-        return false; 
+        return false;
     }
 
     render() {
@@ -165,6 +165,11 @@ class Drawer extends PureComponent {
                                     onPress={() => navigation.navigate('TrocarFilialScreen')}
                                 />
                             ) : null}
+
+                            <DrawerItem
+                                text="Trocar Senha"
+                                onPress={() => navigation.navigate('TrocarSenhaScreen')}
+                            />
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
