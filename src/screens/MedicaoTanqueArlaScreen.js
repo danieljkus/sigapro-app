@@ -24,7 +24,7 @@ export default class MedicaoTanqueArlaScreen extends Component {
         this.state = {
             registro: {
                 estoq_tam_idf: '0',
-                estoq_tam_qtde_medida: '0',
+                estoq_tam_qtde_medida: '0,00',
                 estoq_tam_qtde_sistema: '0',
                 qtde_diferenca: '0',
             },
@@ -64,7 +64,7 @@ export default class MedicaoTanqueArlaScreen extends Component {
             this.setState({
                 registro: {
                     estoq_tam_idf: '0',
-                    estoq_tam_qtde_medida: '0',
+                    estoq_tam_qtde_medida: '0,00',
                     estoq_tam_qtde_sistema: '0',
                     qtde_diferenca: '0',
                 },
