@@ -108,6 +108,8 @@ export default class MedicaoTanqueArlaScreen extends Component {
         this.setState({ salvado: true });
         const { registro } = this.state;
 
+        registro.estoq_tam_qtde_medida = vlrStringParaFloat(registro.estoq_tam_qtde_medida);
+
         return axios
             .post('/medicaoTanqueArla/store', registro)
             .then(response => {

@@ -108,6 +108,7 @@ export default class EscalaVeiculoScreen extends Component {
             man_ev_veiculo: this.state.man_ev_veiculo_trocar
         })
             .then(response => {
+                console.log('onSalvarRegistro: ', response.data);
                 if (response.data === 'OK') {
                     this.props.navigation.goBack(null);
                     if (this.props.navigation.state.params.onRefresh) {
@@ -115,7 +116,7 @@ export default class EscalaVeiculoScreen extends Component {
                     }
                 } else {
                     this.setState({ salvando: false });
-                    Alert.showAlert(response);
+                    Alert.showAlert(response.data);
                 }
             }).catch(ex => {
                 this.setState({ salvando: false });
@@ -138,11 +139,11 @@ export default class EscalaVeiculoScreen extends Component {
 
 
     render() {
-        const { man_ev_veiculo, man_ev_veiculo_trocar, man_ev_grupo, man_ev_seq_grupo, man_eg_descricao,
+        const { man_ev_idf, man_ev_veiculo, man_ev_veiculo_trocar, man_eg_descricao,
             pas_serv_linha, man_ev_servico, pas_serv_sentido, sec1, sec2, hora1, hora2,
             loading } = this.state.registro;
 
-        console.log('this.state', this.state);
+        // console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -285,7 +286,7 @@ export default class EscalaVeiculoScreen extends Component {
                                     Filial {': '}
                                 </Text>
                                 <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {this.state.filial} - { this.state.descFilial }
+                                    {this.state.filial} - {this.state.descFilial}
                                 </Text>
                             </View>
                         </View>
@@ -315,6 +316,10 @@ export default class EscalaVeiculoScreen extends Component {
                             ListFooterComponent={this.renderListFooter}
                         />
                     </View>
+
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 }}>
+                        {man_ev_idf}
+                    </Text>
 
                     <ProgressDialog
                         visible={this.state.salvando}

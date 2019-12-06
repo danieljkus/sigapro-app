@@ -96,6 +96,7 @@ export default class TrocarSenhaScreen extends Component {
                                 maxLength={10}
                                 onChange={this.onInputChange}
                                 required={true}
+                                keyboardType="numeric"
                                 secureTextEntry={true}
                                 validator={validateSenha}
                                 errorMessage="A senha deve conter de 6 a 10 caracteres."
@@ -109,6 +110,7 @@ export default class TrocarSenhaScreen extends Component {
                                 maxLength={10}
                                 onChange={this.onInputChange}
                                 required={true}
+                                keyboardType="numeric"
                                 secureTextEntry={true}
                                 validator={validateSenha}
                                 errorMessage="A senha deve conter de 6 a 10 caracteres."
