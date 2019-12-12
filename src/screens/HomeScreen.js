@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { View, } from 'react-native';
-
+import { View, Image } from 'react-native';
 import { Text } from 'react-native-elements';
-
 import Colors from '../values/Colors';
 import StatusBar from '../components/StatusBar';
 import { getUsuario } from '../utils/LoginManager';
+import DeviceInfo from 'react-native-device-info';
 
 export default class HomeScreen extends Component {
 
@@ -26,13 +25,41 @@ export default class HomeScreen extends Component {
 
                 <StatusBar />
 
-                <Text
+                <View
+                    style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        paddingHorizontal: 20,
+                        paddingVertical: 20,
+                    }}
+                >
+                    <Image
+                        style={{
+                            width: '100%',
+                        }}
+                        resizeMode="contain"
+                        source={require('../drawables/logo_pequeno.png')}
+                    />
+
+                    <Text
+                        style={{
+                            color: Colors.textSecondaryDark,
+                            fontSize: 14,
+                            flex: 1,
+                        }}
+                    >
+                        Versão: {DeviceInfo.getVersion()}
+                    </Text>
+                </View>
+
+                {/* <Text
                     style={{
                         fontSize: 30,
                         textAlign: 'center'
                     }}>
                     Olá, bem vindo ao APP SIGA PRO.
-                </Text>
+                </Text> */}
 
             </View>
         )
