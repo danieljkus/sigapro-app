@@ -77,7 +77,7 @@ const RegistroItem = ({ registro, onAtivaChange, onRegistroPress, onRegistroLong
     )
 }
 
-export default class CategoriasScreen extends Component {
+export default class EscalaVeiculosScreen extends Component {
 
     state = {
         listaRegistros: [],

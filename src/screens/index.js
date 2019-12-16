@@ -11,6 +11,7 @@ import TrocarFilialScreen from './TrocarFilialScreen';
 
 import EscalaVeiculoScreen from './EscalaVeiculoScreen';
 import EscalaVeiculosScreen from './EscalaVeiculosScreen';
+import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
 import MedicaoTanqueDieselScreen from './MedicaoTanqueDieselScreen';
 import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
@@ -111,6 +112,13 @@ const HomeStackNavigator = StackNavigator({
         screen: EscalaVeiculosScreen,
         navigationOptions: {
             title: "Escala dos Veículos",
+            ...defaultNavigationOptions
+        }
+    },
+    EscalaVeiculoLogScreen: {
+        screen: EscalaVeiculoLogScreen,
+        navigationOptions: {
+            title: "Log das Alterações",
             ...defaultNavigationOptions
         }
     },

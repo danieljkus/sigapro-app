@@ -137,6 +137,9 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
 
+    onAbrirLog = () => {
+        this.props.navigation.navigate('EscalaVeiculoLogScreen');
+    }
 
     render() {
         const { man_ev_idf, man_ev_veiculo, man_ev_veiculo_trocar, man_eg_descricao,
@@ -314,6 +317,20 @@ export default class EscalaVeiculoScreen extends Component {
                             contentContainerStyle={{ paddingBottom: 50 }}
                             keyExtractor={registro => String(registro.man_ev_idf)}
                             ListFooterComponent={this.renderListFooter}
+                        />
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: "center" }} >
+                        <Button
+                            title="Log Histórico"
+                            onPress={this.onAbrirLog}
+                            color={Colors.textOnPrimary}
+                            buttonStyle={{ marginBottom: 20, marginTop: 20, width: 200, height: 30, marginRight: 10 }}
+                            icon={{
+                                name: 'file-text-o',
+                                type: 'font-awesome',
+                                color: Colors.textOnPrimary
+                            }}
                         />
                     </View>
 
