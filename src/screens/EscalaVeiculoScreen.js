@@ -320,7 +320,7 @@ export default class EscalaVeiculoScreen extends Component {
                         />
                     </View>
 
-                    <View style={{ flexDirection: 'row', justifyContent: "center" }} >
+                    {/* <View style={{ flexDirection: 'row', justifyContent: "center" }} >
                         <Button
                             title="Log Histórico"
                             onPress={this.onAbrirLog}
@@ -332,7 +332,7 @@ export default class EscalaVeiculoScreen extends Component {
                                 color: Colors.textOnPrimary
                             }}
                         />
-                    </View>
+                    </View> */}
 
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 }}>
                         {man_ev_idf}
