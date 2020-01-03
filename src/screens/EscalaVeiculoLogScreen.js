@@ -24,36 +24,31 @@ const RegistroItem = ({ registro, onAtivaChange, onRegistroPress, onRegistroLong
     return (
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <TouchableOpacity
-                    // onPress={() => onRegistroPress(registro.man_ev_idf)}
-                    // onLongPress={() => onRegistroLongPress(registro.man_ev_idf)}
-                >
 
-                    <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text>
-                                {moment(registro.adm_hist_data).format("DD/MM/YYYY")}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Usuário {': '}
-                            </Text>
-                            <Text>
-                                {registro.adm_hist_usuario}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <Divider />
-
-                    <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
-                        <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                            {registro.adm_hist_descricao}
+                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text>
+                            {moment(registro.man_evl_data).format("DD/MM/YYYY HH:mm")}
                         </Text>
                     </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Usuário {': '}
+                        </Text>
+                        <Text>
+                            {registro.man_evl_usuario}
+                        </Text>
+                    </View>
+                </View>
 
-                </TouchableOpacity>
+                <Divider />
+
+                <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
+                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                        {registro.man_evl_descricao}
+                    </Text>
+                </View>
+
             </View>
         </Card>
     )
@@ -61,14 +56,20 @@ const RegistroItem = ({ registro, onAtivaChange, onRegistroPress, onRegistroLong
 
 export default class EscalaVeiculoLogScreen extends Component {
 
-    state = {
-        listaRegistros: [],
-        refreshing: false,
-        carregarRegistro: false,
-        carregando: false,
-        carregarMais: false,
-        pagina: 1,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            listaRegistros: [],
+            refreshing: false,
+            carregarRegistro: false,
+            carregando: false,
+            carregarMais: false,
+            pagina: 1,
+
+            man_ev_idf: props.navigation.state.params.man_ev_idf,
+        };
+    }
+
 
     componentDidMount() {
         this.setState({ refreshing: true });
@@ -77,15 +78,13 @@ export default class EscalaVeiculoLogScreen extends Component {
 
 
     getListaRegistros = () => {
-        const { adm_hist_controle, pagina, listaRegistros } = this.state;
-
-        // console.log('getListaRegistros: ', man_ev_veiculo);
+        const { man_ev_idf, pagina, listaRegistros } = this.state;
 
         axios.get('/escalaVeiculos/log', {
             params: {
                 page: pagina,
                 limite: 10,
-                controle: adm_hist_controle,
+                controle: man_ev_idf,
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -144,9 +143,6 @@ export default class EscalaVeiculoLogScreen extends Component {
         return (
             <RegistroItem
                 registro={item}
-                // onAtivaChange={this.onAtivaChange}
-                // onRegistroPress={this.onRegistroPress}
-                // onRegistroLongPress={this.onRegistroLongPress}
             />
         )
     }
@@ -162,9 +158,6 @@ export default class EscalaVeiculoLogScreen extends Component {
     render() {
         const { listaRegistros, refreshing, carregarRegistro, } = this.state;
 
-        // console.log('man_ev_data_ini: ', man_ev_data_ini);
-        // console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
-
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
 
@@ -172,7 +165,7 @@ export default class EscalaVeiculoLogScreen extends Component {
                     data={listaRegistros}
                     renderItem={this.renderItem}
                     contentContainerStyle={{ paddingBottom: 100 }}
-                    keyExtractor={registro => String(registro.adm_hist_controle)}
+                    keyExtractor={registro => String(registro.man_evl_idf)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
                     onEndReached={this.carregarMaisRegistros}

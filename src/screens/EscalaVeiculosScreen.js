@@ -4,7 +4,7 @@ import {
     Platform, TouchableOpacity,
     Alert, ActivityIndicator, ScrollView
 } from 'react-native';
-import { Icon, Card, Divider } from 'react-native-elements';
+import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
 import FloatActionButton from '../components/FloatActionButton';
@@ -20,8 +20,9 @@ moment.locale('pt-BR');
 const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const RegistroItem = ({ registro, onAtivaChange, onRegistroPress, onRegistroLongPress }) => {
+const RegistroItem = ({ registro, somente_escala_filial, onRegistroPress, onRegistroLongPress }) => {
     return (
+
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
                 <TouchableOpacity
@@ -60,9 +61,16 @@ const RegistroItem = ({ registro, onAtivaChange, onRegistroPress, onRegistroLong
 
                     <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                         <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                            {registro.pas_serv_sentido === 'I' ? (registro.sec1 + ' a ' + registro.sec2) : (registro.sec2 + ' a ' + registro.sec1)}
+                            { registro.pas_sec_descricao_ini + ' a ' + registro.pas_sec_descricao_fim }
+                            {/* {registro.pas_serv_sentido === 'I' ? (registro.sec1 + ' a ' + registro.sec2) : (registro.sec2 + ' a ' + registro.sec1)} */}
                         </Text>
                     </View>
+
+                    {/* <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
+                        <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                            {registro.pas_serv_sentido + ' - ' + String(registro.mun1) + ' - ' + String(registro.mun2)}
+                        </Text>
+                    </View> */}
 
                     <Divider />
 
@@ -93,6 +101,7 @@ export default class EscalaVeiculosScreen extends Component {
         man_ev_servico: '',
         man_ev_grupo: '',
         grupoSelect: [],
+        somente_escala_filial: true,
         temFiltro: false,
         modalFiltrosVisible: false,
     };
@@ -123,11 +132,11 @@ export default class EscalaVeiculosScreen extends Component {
 
     getListaRegistros = () => {
         const { man_ev_data_ini, man_ev_grupo, man_ev_servico, man_ev_veiculo,
-            pagina, listaRegistros } = this.state;
+            somente_escala_filial, pagina, listaRegistros } = this.state;
 
         const temFiltro = man_ev_grupo || man_ev_servico !== '' || man_ev_veiculo !== '';
 
-        // console.log('getListaRegistros: ', man_ev_veiculo);
+        console.log('getListaRegistros: ', somente_escala_filial);
 
         axios.get('/escalaVeiculos', {
             params: {
@@ -137,6 +146,7 @@ export default class EscalaVeiculosScreen extends Component {
                 veiculo: man_ev_veiculo,
                 servico: man_ev_servico,
                 grupo: man_ev_grupo,
+                somente_escala_filial: somente_escala_filial ? 1 : 0,
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -171,31 +181,28 @@ export default class EscalaVeiculosScreen extends Component {
     onRegistroPress = (man_ev_idf) => {
         this.setState({ carregarRegistro: true });
 
-        axios.get('/escalaVeiculos/show/' + man_ev_idf, {
-            params: {
-                codigo: man_ev_idf,
-            }
-        }).then(response => {
-            this.setState({ carregarRegistro: false });
+        axios.get('/escalaVeiculos/show/' + man_ev_idf)
+            .then(response => {
+                this.setState({ carregarRegistro: false });
 
-            // console.log('registro: ', response.data);
+                // console.log('registro: ', response.data);
 
-            this.props.navigation.navigate('EscalaVeiculoScreen', {
-                registro: {
-                    registro: response.data.registro,
-                    qtdeComb: response.data.qtdeComb,
-                    dataComb: response.data.dataComb,
-                    filial: response.data.filial,
-                    descFilial: response.data.descFilial,
-                    listaHistorico: response.data.listaHistorico,
-                },
-                onRefresh: this.onRefresh
+                this.props.navigation.navigate('EscalaVeiculoScreen', {
+                    registro: {
+                        registro: response.data.registro,
+                        qtdeComb: response.data.qtdeComb,
+                        dataComb: response.data.dataComb,
+                        filial: response.data.filial,
+                        descFilial: response.data.descFilial,
+                        listaHistorico: response.data.listaHistorico,
+                    },
+                    onRefresh: this.onRefresh
+                });
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
             });
-        }).catch(ex => {
-            this.setState({ carregarRegistro: false });
-            console.warn(ex);
-            console.warn(ex.response);
-        });
     }
 
     carregarMaisRegistros = () => {
@@ -227,7 +234,7 @@ export default class EscalaVeiculosScreen extends Component {
         return (
             <RegistroItem
                 registro={item}
-                onAtivaChange={this.onAtivaChange}
+                somente_escala_filial={this.state.somente_escala_filial}
                 onRegistroPress={this.onRegistroPress}
                 onRegistroLongPress={this.onRegistroLongPress}
             />
@@ -312,7 +319,7 @@ export default class EscalaVeiculosScreen extends Component {
 
 
     render() {
-        const { listaRegistros, refreshing, carregarRegistro, temFiltro,
+        const { listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico, man_ev_grupo, grupoSelect } = this.state;
 
         // console.log('man_ev_data_ini: ', man_ev_data_ini);
@@ -459,6 +466,14 @@ export default class EscalaVeiculosScreen extends Component {
                                         selectedValue=""
                                         options={grupoSelect}
                                         onChange={this.onInputChange}
+                                    />
+
+                                    <CheckBox
+                                        title='Somente escala da sua filial'
+                                        key={somente_escala_filial}
+                                        checked={somente_escala_filial}
+                                        onPress={() => this.setState({ somente_escala_filial: !somente_escala_filial })}
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                                     />
 
                                     <Button
