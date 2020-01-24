@@ -20,15 +20,21 @@ moment.locale('pt-BR');
 const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const RegistroItem = ({ registro, somente_escala_filial, onRegistroPress, onRegistroLongPress }) => {
+const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
     return (
 
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
                 <TouchableOpacity
                     onPress={() => onRegistroPress(registro.man_ev_idf)}
-                    onLongPress={() => onRegistroLongPress(registro.man_ev_idf)}
                 >
+                    {man_ev_veiculo === '' ? null : (
+                        <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                {moment(registro.man_ev_data_ini).format("DD/MM/YYYY")}
+                            </Text>
+                        </View>
+                    )}
 
                     <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
                         <View style={{ flex: 3, flexDirection: 'row' }}>
@@ -61,16 +67,9 @@ const RegistroItem = ({ registro, somente_escala_filial, onRegistroPress, onRegi
 
                     <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                         <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                            { registro.pas_sec_descricao_ini + ' a ' + registro.pas_sec_descricao_fim }
-                            {/* {registro.pas_serv_sentido === 'I' ? (registro.sec1 + ' a ' + registro.sec2) : (registro.sec2 + ' a ' + registro.sec1)} */}
+                            {registro.pas_sec_descricao_ini + ' a ' + registro.pas_sec_descricao_fim}
                         </Text>
                     </View>
-
-                    {/* <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
-                        <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                            {registro.pas_serv_sentido + ' - ' + String(registro.mun1) + ' - ' + String(registro.mun2)}
-                        </Text>
-                    </View> */}
 
                     <Divider />
 
@@ -96,12 +95,11 @@ export default class EscalaVeiculosScreen extends Component {
         pagina: 1,
 
         man_ev_data_ini: moment(new Date()).format(DATE_FORMAT),
-        // man_ev_data_ini: '',
         man_ev_veiculo: '',
         man_ev_servico: '',
         man_ev_grupo: '',
         grupoSelect: [],
-        somente_escala_filial: true,
+        somente_escala_filial: false,
         temFiltro: false,
         modalFiltrosVisible: false,
     };
@@ -135,8 +133,6 @@ export default class EscalaVeiculosScreen extends Component {
             somente_escala_filial, pagina, listaRegistros } = this.state;
 
         const temFiltro = man_ev_grupo || man_ev_servico !== '' || man_ev_veiculo !== '';
-
-        console.log('getListaRegistros: ', somente_escala_filial);
 
         axios.get('/escalaVeiculos', {
             params: {
@@ -234,9 +230,8 @@ export default class EscalaVeiculosScreen extends Component {
         return (
             <RegistroItem
                 registro={item}
-                somente_escala_filial={this.state.somente_escala_filial}
                 onRegistroPress={this.onRegistroPress}
-                onRegistroLongPress={this.onRegistroLongPress}
+                man_ev_veiculo={this.state.man_ev_veiculo}
             />
         )
     }
@@ -254,6 +249,10 @@ export default class EscalaVeiculosScreen extends Component {
             pagina: 1,
             refreshing: true,
         }, this.getListaRegistros);
+    }
+
+    onClosePress = (visible) => {
+        this.setState({ modalFiltrosVisible: visible });
     }
 
     onClearSearchPress = () => {
@@ -322,65 +321,68 @@ export default class EscalaVeiculosScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico, man_ev_grupo, grupoSelect } = this.state;
 
+        // console.log('man_ev_veiculo: ', this.state.man_ev_veiculo);
         // console.log('man_ev_data_ini: ', man_ev_data_ini);
         // console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
 
-                <View style={{ marginBottom: 3 }}>
-                    <ScrollView style={{ height: 50, width: "100%", borderWidth: 1, borderColor: Colors.dividerDark }}>
-                        <View style={{ flex: 1, flexDirection: 'row', marginBottom: 2 }}>
-                            <View style={{ flex: 2, padding: 0 }}>
-                                <Button
-                                    title=""
-                                    onPress={() => { this.onAntPress() }}
-                                    backgroundColor={Colors.primaryLight}
-                                    icon={{
-                                        name: 'backward',
-                                        type: 'font-awesome',
-                                        color: Colors.textOnPrimary
-                                    }}
-                                />
-                            </View>
+                {this.state.man_ev_veiculo !== '' ? null : (
+                    <View style={{ marginBottom: 3 }}>
+                        <ScrollView style={{ height: 50, width: "100%", borderWidth: 1, borderColor: Colors.dividerDark }}>
+                            <View style={{ flex: 1, flexDirection: 'row', marginBottom: 2 }}>
+                                <View style={{ flex: 2, padding: 0 }}>
+                                    <Button
+                                        title=""
+                                        onPress={() => { this.onAntPress() }}
+                                        backgroundColor={Colors.primaryLight}
+                                        icon={{
+                                            name: 'backward',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
 
-                            <View style={{ flex: 5, padding: 0, paddingHorizontal: 20, borderWidth: 1, borderColor: Colors.dividerDark }}>
-                                <Text style={{
-                                    position: 'absolute',
-                                    marginLeft: 20,
-                                    fontSize: 12,
-                                }}>
-                                    {moment(moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD")).format("dddd")}
-                                </Text>
-                                <TextInput
-                                    type="date"
-                                    label=" "
-                                    id="man_ev_data_ini"
-                                    ref="man_ev_data_ini"
-                                    value={man_ev_data_ini}
-                                    masker={maskDate}
-                                    dateFormat={DATE_FORMAT}
-                                    onChange={this.onInputChangeData}
-                                    borderWidth={0}
-                                    fontSize={20}
-                                />
-                            </View>
+                                <View style={{ flex: 5, padding: 0, paddingHorizontal: 20, borderWidth: 1, borderColor: Colors.dividerDark }}>
+                                    <Text style={{
+                                        position: 'absolute',
+                                        marginLeft: 20,
+                                        fontSize: 12,
+                                    }}>
+                                        {moment(moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD")).format("dddd")}
+                                    </Text>
+                                    <TextInput
+                                        type="date"
+                                        label=" "
+                                        id="man_ev_data_ini"
+                                        ref="man_ev_data_ini"
+                                        value={man_ev_data_ini}
+                                        masker={maskDate}
+                                        dateFormat={DATE_FORMAT}
+                                        onChange={this.onInputChangeData}
+                                        borderWidth={0}
+                                        fontSize={20}
+                                    />
+                                </View>
 
-                            <View style={{ flex: 2, padding: 0 }}>
-                                <Button
-                                    title=""
-                                    onPress={() => { this.onProxPress() }}
-                                    backgroundColor={Colors.primaryLight}
-                                    icon={{
-                                        name: 'forward',
-                                        type: 'font-awesome',
-                                        color: Colors.textOnPrimary
-                                    }}
-                                />
+                                <View style={{ flex: 2, padding: 0 }}>
+                                    <Button
+                                        title=""
+                                        onPress={() => { this.onProxPress() }}
+                                        backgroundColor={Colors.primaryLight}
+                                        icon={{
+                                            name: 'forward',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
                             </View>
-                        </View>
-                    </ScrollView>
-                </View>
+                        </ScrollView>
+                    </View>
+                )}
 
                 <FlatList
                     data={listaRegistros}
@@ -479,10 +481,21 @@ export default class EscalaVeiculosScreen extends Component {
                                     <Button
                                         title="FILTRAR"
                                         onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop: 15 }}
+                                        buttonStyle={{ marginTop: 15, height: 35 }}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'filter',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                    <Button
+                                        title="FECHAR"
+                                        onPress={() => { this.onClosePress(!this.state.modalFiltrosVisible) }}
+                                        buttonStyle={{ marginTop: 10, height: 35 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'close',
                                             type: 'font-awesome',
                                             color: Colors.textOnPrimary
                                         }}
@@ -496,7 +509,7 @@ export default class EscalaVeiculosScreen extends Component {
 
 
 
-                <FloatActionButton
+                {/* <FloatActionButton
                     iconFamily="MaterialIcons"
                     iconName="cached"
                     iconColor={Colors.textOnPrimary}
@@ -504,7 +517,7 @@ export default class EscalaVeiculosScreen extends Component {
                     backgroundColor={Colors.primary}
                     marginBottom={90}
                     marginRight={10}
-                />
+                /> */}
 
                 <FloatActionButton
                     iconFamily="MaterialIcons"

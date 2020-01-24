@@ -13,6 +13,8 @@ import EscalaVeiculoScreen from './EscalaVeiculoScreen';
 import EscalaVeiculosScreen from './EscalaVeiculosScreen';
 import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
+import VeiculosScreen from './VeiculosScreen';
+
 import MedicaoTanqueDieselScreen from './MedicaoTanqueDieselScreen';
 import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
 
@@ -124,6 +126,14 @@ const HomeStackNavigator = StackNavigator({
     },
 
     
+    VeiculosScreen: {
+        screen: VeiculosScreen,
+        navigationOptions: {
+            title: "Lista dos Veículos",
+            ...defaultNavigationOptions
+        }
+    },
+
     MedicoesTanqueDieselScreen: {
         screen: MedicoesTanqueDieselScreen,
         navigationOptions: {

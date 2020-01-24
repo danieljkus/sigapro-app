@@ -127,6 +127,13 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            {this.temPermissao('VEICULOSSCREEN') ? (
+                                <DrawerItem
+                                    text="Veículos"
+                                    onPress={() => navigation.navigate('VeiculosScreen')}
+                                />
+                            ) : null}
+
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
                             {empresa && this.temPermissao('FICHAVIAGEMSCREEN') ? (
