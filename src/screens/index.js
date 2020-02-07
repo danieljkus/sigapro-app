@@ -14,6 +14,8 @@ import EscalaVeiculosScreen from './EscalaVeiculosScreen';
 import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
 import VeiculosScreen from './VeiculosScreen';
+import PneusVeiculosScreen from './PneusVeiculosScreen';
+import PneusEstoqueScreen from './PneusEstoqueScreen';
 
 import MedicaoTanqueDieselScreen from './MedicaoTanqueDieselScreen';
 import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
@@ -130,6 +132,22 @@ const HomeStackNavigator = StackNavigator({
         screen: VeiculosScreen,
         navigationOptions: {
             title: "Lista dos Veículos",
+            ...defaultNavigationOptions
+        }
+    },
+
+    PneusVeiculosScreen: {
+        screen: PneusVeiculosScreen,
+        navigationOptions: {
+            title: "Pneus nos Veículos",
+            ...defaultNavigationOptions
+        }
+    },
+
+    PneusEstoqueScreen: {
+        screen: PneusEstoqueScreen,
+        navigationOptions: {
+            title: "Pneus em Estoque",
             ...defaultNavigationOptions
         }
     },
