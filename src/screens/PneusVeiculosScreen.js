@@ -26,92 +26,86 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
 
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <TouchableOpacity
-                // onPress={() => onRegistroPress(registro.pneus_mov_pneu)}
-                >
-
-                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                Pneu{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                {registro.pneus_mov_pneu}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Posição{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                {registro.pneus_mov_posicao}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Eixo{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                {registro.pneus_mov_eixo}
-                            </Text>
-                        </View>
+                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                            Pneu{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.pneus_mov_pneu}
+                        </Text>
                     </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Marca{': '}
+                            Posição{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.pneus_mov_posicao}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Eixo{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.pneus_mov_eixo}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Marca{': '}
+                    </Text>
+                    <Text>
+                        {registro.pneus_mar_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Modelo{': '}
+                    </Text>
+                    <Text>
+                        {registro.pneus_mod_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Dimenssão{': '}
+                    </Text>
+                    <Text>
+                        {registro.pneus_dim_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                            Data{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                            {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Vida{': '}
+                        </Text>
+                        <Text style={{ fontSize: 12, marginTop: 2 }}>
+                            {registro.pneus_vd_vida === "0" ? 'NOVO' : registro.pneus_vd_vida + 'º VIDA'}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Km Vida{': '}
                         </Text>
                         <Text>
-                            {registro.pneus_mar_descricao}
+                            {registro.pneus_vd_km_vida}
                         </Text>
                     </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Modelo{': '}
-                        </Text>
-                        <Text>
-                            {registro.pneus_mod_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Dimenssão{': '}
-                        </Text>
-                        <Text>
-                            {registro.pneus_dim_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                Data{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                                {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Vida{': '}
-                            </Text>
-                            <Text style={{ fontSize: 12, marginTop: 2 }}>
-                                {registro.pneus_vd_vida === "0" ? 'NOVO' : registro.pneus_vd_vida + 'º VIDA'}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Km Vida{': '}
-                            </Text>
-                            <Text>
-                                {registro.pneus_vd_km_vida}
-                            </Text>
-                        </View>
-                    </View>
-
-                </TouchableOpacity>
+                </View>
             </View >
         </Card >
     )
@@ -130,7 +124,6 @@ export default class PneusVeiculosScreen extends Component {
 
         veiculo_select: null,
         codVeiculo: '',
-        buscaVeiculo: '',
     };
 
     componentDidMount() {
@@ -155,16 +148,22 @@ export default class PneusVeiculosScreen extends Component {
         }
     }
 
+    onErroChange = msgErro => {
+        this.setState({
+            listaRegistros: [],
+            msgErroVeiculo: msgErro,
+        })
+    }
 
 
     getListaRegistros = () => {
-        const { buscaVeiculo, pagina, listaRegistros } = this.state;
+        const { veiculo_select, pagina, listaRegistros } = this.state;
 
-        console.log('buscaVeiculo: ', buscaVeiculo);
+        console.log('veiculo_select: ', veiculo_select);
 
         axios.get('/pneus/listaVeiculo', {
             params: {
-                veiculo: '5000', //buscaVeiculo,
+                veiculo: veiculo_select.codVeic,
             }
         }).then(response => {
 
@@ -241,7 +240,7 @@ export default class PneusVeiculosScreen extends Component {
 
 
     render() {
-        const { listaRegistros, refreshing, carregarRegistro, 
+        const { listaRegistros, refreshing, carregarRegistro,
             veiculo_select, codVeiculo } = this.state;
 
         // console.log('codVeiculo: ', this.state.codVeiculo);
@@ -249,15 +248,17 @@ export default class PneusVeiculosScreen extends Component {
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
 
-                <VeiculosSelect
-                    label="Veículo"
-                    id="veiculo_select"
-                    value={veiculo_select}
-                    codVeiculo={codVeiculo}
-                    onChange={this.onInputChangeVeiculo}
-                    onErro={this.onErroChange}
-                    tipo="fichaSaida"
-                />
+                <View style={{ margin: 10, marginBottom: 0, padding: 0 }}>
+                    <VeiculosSelect
+                        label="Veículo"
+                        id="veiculo_select"
+                        value={veiculo_select}
+                        codVeiculo={codVeiculo}
+                        onChange={this.onInputChangeVeiculo}
+                        onErro={this.onErroChange}
+                        tipo=""
+                    />
+                </View>
 
                 <FlatList
                     data={listaRegistros}

@@ -12,6 +12,7 @@ import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import { maskDate } from '../utils/Maskers';
+import { getFilial } from '../utils/LoginManager';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -25,141 +26,82 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
 
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <TouchableOpacity
-                    // onPress={() => onRegistroPress(registro.adm_vei_idf)}
-                >
-
-                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                Veículo{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                {registro.adm_vei_idf}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Placa{': '}
-                            </Text>
-                            <Text style={{ fontSize: 12, marginTop: 2 }}>
-                                {registro.adm_vei_placa}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Lotação{': '}
-                            </Text>
-                            <Text>
-                                {registro.adm_vei_lotacao_sentado}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Local{': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_veiloc_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Espécie{': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_veiesp_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Tipo{': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_veitp_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 7 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Motor{': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_veimotor_descricao}
-                        </Text>
-                    </View>
-
-                    <Divider />
-
-                    <Text style={{ paddingLeft: 10, marginTop: 7, fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                        Última O.S Aberta na Matriz
-                    </Text>
-                    <View style={{ paddingLeft: 10, marginBottom: 7, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 3, flexDirection: 'row', paddingLeft: 10 }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Nº{': '}
-                            </Text>
-                            <Text>
-                                {registro.num_ult_os}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Data{': '}
-                            </Text>
-                            <Text style={{ fontSize: 12, marginTop: 2 }}>
-                                {moment(registro.data_ult_os).format("DD/MM/YYYY")}
-                            </Text>
-                        </View>
-                        {/* <View style={{ flex: 3, flexDirection: 'row', fontSize: 10 }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Dias {': '}
-                            </Text>
-                            <Text>
-                                {registro.data_ult_os}
-                            </Text>
-                        </View> */}
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Situação{': '}
-                            </Text>
-                            <Text>
-                                {registro.sit_ult_os === 'F' ? 'FIN' : 'ABE'}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <Divider />
-
-                    <View style={{ paddingHorizontal: 10, marginVertical: 7 }}>
+                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Localização Atual{': '}
+                            Pneu{': '}
                         </Text>
-                        <Text style={{ paddingLeft: 10 }}>
-                            {renderLocalizacao(registro.fil_fim, registro.desc_fil_fim, registro.sentido, registro.servico, registro.rota, registro.sec1, registro.sec2, registro.hora1, registro.hora2)}
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.pneus_mov_pneu}
                         </Text>
                     </View>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                            Filial{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.pneus_mov_filial}
+                        </Text>
+                    </View>
+                </View>
 
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Marca{': '}
+                    </Text>
+                    <Text>
+                        {registro.pneus_mar_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Modelo{': '}
+                    </Text>
+                    <Text>
+                        {registro.pneus_mod_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Dimenssão{': '}
+                    </Text>
+                    <Text>
+                        {registro.pneus_dim_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                            Data{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                            {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Vida{': '}
+                        </Text>
+                        <Text style={{ fontSize: 12, marginTop: 2 }}>
+                            {registro.pneus_mov_vida === "0" ? 'NOVO' : registro.pneus_mov_vida + 'º VIDA'}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Km Vida{': '}
+                        </Text>
+                        <Text>
+                            {registro.pneus_vd_km_vida}
+                        </Text>
+                    </View>
+                </View>
             </View >
         </Card >
     )
 }
-
-const renderLocalizacao = (fil_fim, desc_fil_fim, sentido, servico, rota, sec1, sec2, hora1, hora2) => {
-    if (fil_fim) {
-        return 'FILIAL: ' + fil_fim + ' - ' + desc_fil_fim;
-    } else {
-        if (servico) {
-            return 'VIAGEM ROTA: ' + rota + '   SERVIÇO: ' + servico + ' - ' + (sentido === 'I' ? (sec1 + ' a ' + sec2 + ' [' + hora1 + ']') : (sec2 + ' a ' + sec1 + ' [' + hora2 + ']'));
-        } else {
-            return rota ? 'VIAGEM ROTA: ' + rota : '';
-        }
-    }
-};
 
 
 export default class PneusEstoqueScreen extends Component {
@@ -172,26 +114,31 @@ export default class PneusEstoqueScreen extends Component {
         carregarMais: false,
         pagina: 1,
 
-        adm_vei_idf: '',
-        adm_veiloc_codigo: '',
-        adm_veiesp_codigo: '',
-        adm_veitp_codigo: '',
-        adm_veimotor_codigo: '',
-        localSelect: [],
-        especieSelect: [],
-        tipoSelect: [],
-        motorSelect: [],
+        pneus_mov_pneu: '',
+        pneus_mov_filial: '',
+        pneus_cp_marca: '',
+        pneus_cp_modelo: '',
+        pneus_cp_dimenssao: '',
+
+        filialSelect: [],
+        marcaSelect: [],
+        modeloSelect: [],
+        dimenssaoSelect: [],
+
         temFiltro: false,
         modalFiltrosVisible: false,
     };
 
     componentDidMount() {
-        this.setState({ refreshing: true });
-        this.getListaRegistros();
-        this.buscaLocal();
-        this.buscaEspecie();
-        this.buscaTipo();
-        this.buscaMotor();
+        getFilial().then(filial => {
+            this.setState({ refreshing: true });
+            this.setState({ pneus_mov_filial: filial });
+            this.getListaRegistros();
+            this.buscaFilial();
+            this.buscaMarca();
+            this.buscaModelo();
+            this.buscaDimenssoes();
+        })
     }
 
     onInputChange = (id, value) => {
@@ -200,39 +147,29 @@ export default class PneusEstoqueScreen extends Component {
         this.setState(state);
     }
 
-    onInputChangeData = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-        this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
-    }
-
 
 
     getListaRegistros = () => {
-        const { adm_vei_idf, adm_veiloc_codigo, adm_veiesp_codigo, adm_veitp_codigo, adm_veimotor_codigo,
+        const { pneus_mov_pneu, pneus_mov_filial, pneus_cp_marca, pneus_cp_modelo, pneus_cp_dimenssao,
             pagina, listaRegistros } = this.state;
 
-        const temFiltro = adm_vei_idf !== '' || adm_veiloc_codigo !== '' || adm_veiesp_codigo !== '' || adm_veitp_codigo !== '' || adm_veimotor_codigo !== '';
+        const temFiltro = pneus_mov_pneu !== '' || pneus_mov_filial !== '' || pneus_cp_marca !== '' || pneus_cp_modelo !== '' || pneus_cp_dimenssao !== '';
 
-        console.log('adm_vei_idf: ', adm_vei_idf);
-        console.log('adm_veiloc_codigo: ', adm_veiloc_codigo);
-        console.log('adm_veiesp_codigo: ', adm_veiesp_codigo);
-        console.log('adm_veitp_codigo: ', adm_veitp_codigo);
-        console.log('adm_veimotor_codigo: ', adm_veimotor_codigo);
+        console.log('pneus_mov_pneu: ', pneus_mov_pneu);
+        console.log('pneus_mov_filial: ', pneus_mov_filial);
+        console.log('pneus_cp_marca: ', pneus_cp_marca);
+        console.log('pneus_cp_modelo: ', pneus_cp_modelo);
+        console.log('pneus_cp_dimenssao: ', pneus_cp_dimenssao);
 
-        axios.get('/escalaVeiculos/listaVeiculos', {
+        axios.get('/pneus/listaEstoque', {
             params: {
                 page: pagina,
                 limite: 10,
-                veiculo: adm_vei_idf,
-                local: adm_veiloc_codigo,
-                especie: adm_veiesp_codigo,
-                tipo: adm_veitp_codigo,
-                motor: adm_veimotor_codigo,
+                pneu: pneus_mov_pneu,
+                filial: pneus_mov_filial,
+                marca: pneus_cp_marca,
+                modelo: pneus_cp_modelo,
+                dimenssao: pneus_cp_dimenssao,
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -322,106 +259,109 @@ export default class PneusEstoqueScreen extends Component {
             pagina: 1,
             refreshing: true,
             temFiltro: false,
-            adm_vei_idf: '',
-            adm_veiloc_codigo: '',
-            adm_veiesp_codigo: '',
-            adm_veitp_codigo: '',
-            adm_veimotor_codigo: '',
+            pneus_mov_pneu: '',
+            pneus_mov_filial: '',
+            pneus_cp_marca: '',
+            pneus_cp_modelo: '',
+            pneus_cp_dimenssao: '',
         }, this.getListaRegistros);
     }
 
 
-    buscaLocal = () => {
-        this.setState({ localSelect: [], adm_veiloc_codigo: '' });
-        axios.get('/listaLocalizacoes', {
+    buscaFilial = () => {
+        this.setState({ filialSelect: [] });
+        axios.get('/listaFiliais', {
+            params: {
+                tipo: 4,
+            }
         }).then(response => {
             const { data } = response;
-            const localSelect = data.map(regList => {
+            const filialSelect = data.map(regList => {
                 return {
-                    key: regList.adm_veiloc_codigo,
-                    label: regList.adm_veiloc_descricao
+                    key: regList.adm_fil_codigo,
+                    label: '[' + ("0000" + String(regList.adm_fil_codigo)).slice(-4) + '] ' + regList.adm_fil_descricao
                 }
             });
-            localSelect.unshift({ key: 0, label: "Selecione uma Localização" });
+            filialSelect.unshift({ key: 0, label: "Selecione uma Filial" });
             this.setState({
-                localSelect,
+                filialSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                localSelect: [{ label: "Localização não encontrdo", key: 0 }],
+                filialSelect: [{ label: "Filial não encontrda", key: 0 }],
             });
         })
 
     }
 
-    buscaEspecie = () => {
-        this.setState({ especieSelect: [], adm_veiesp_codigo: '' });
-        axios.get('/listaEspecies', {
+    buscaMarca = () => {
+        this.setState({ marcaSelect: [], pneus_cp_marca: '' });
+        axios.get('/pneus/listaMarcas', {
         }).then(response => {
             const { data } = response;
-            const especieSelect = data.map(regList => {
+            const marcaSelect = data.map(regList => {
                 return {
-                    key: regList.adm_veiesp_codigo,
-                    label: regList.adm_veiesp_descricao
+                    key: regList.pneus_mar_codigo,
+                    label: regList.pneus_mar_descricao
                 }
             });
-            especieSelect.unshift({ key: 0, label: "Selecione uma Espécie" });
+            marcaSelect.unshift({ key: 0, label: "Selecione uma Marca" });
             this.setState({
-                especieSelect,
+                marcaSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                especieSelect: [{ label: "Espécie não encontrda", key: 0 }],
+                marcaSelect: [{ label: "Marca não encontrda", key: 0 }],
             });
         })
 
     }
 
-    buscaTipo = () => {
-        this.setState({ tipoSelect: [], adm_veitp_codigo: '' });
-        axios.get('/listaTipos', {
+    buscaModelo = () => {
+        this.setState({ modeloSelect: [], pneus_cp_modelo: '' });
+        axios.get('/pneus/listaModelos', {
         }).then(response => {
             const { data } = response;
-            const tipoSelect = data.map(regList => {
+            const modeloSelect = data.map(regList => {
                 return {
-                    key: regList.adm_veitp_codigo,
-                    label: regList.adm_veitp_descricao
+                    key: regList.pneus_mod_codigo,
+                    label: regList.pneus_mod_descricao
                 }
             });
-            tipoSelect.unshift({ key: 0, label: "Selecione um Tipo" });
+            modeloSelect.unshift({ key: 0, label: "Selecione um Modelo" });
             this.setState({
-                tipoSelect,
+                modeloSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                tipoSelect: [{ label: "Tipo não encontrdo", key: 0 }],
+                modeloSelect: [{ label: "Modelo não encontrdo", key: 0 }],
             });
         })
 
     }
 
-    buscaMotor = () => {
-        this.setState({ motorSelect: [], adm_veimotor_codigo: '' });
-        axios.get('/listaMotores', {
+    buscaDimenssoes = () => {
+        this.setState({ dimenssaoSelect: [], pneus_cp_dimenssao: '' });
+        axios.get('/pneus/listaDimenssoes', {
         }).then(response => {
             const { data } = response;
-            const motorSelect = data.map(regList => {
+            const dimenssaoSelect = data.map(regList => {
                 return {
-                    key: regList.adm_veimotor_codigo,
-                    label: regList.adm_veimotor_descricao
+                    key: regList.pneus_dim_codigo,
+                    label: regList.pneus_dim_descricao
                 }
             });
-            motorSelect.unshift({ key: 0, label: "Selecione um Motor" });
+            dimenssaoSelect.unshift({ key: 0, label: "Selecione uma Dimenssão" });
             this.setState({
-                motorSelect,
+                dimenssaoSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                motorSelect: [{ label: "Motor não encontrdo", key: 0 }],
+                dimenssaoSelect: [{ label: "Dimenssão não encontrda", key: 0 }],
             });
         })
 
@@ -431,10 +371,10 @@ export default class PneusEstoqueScreen extends Component {
 
     render() {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro,
-            adm_vei_idf, adm_veiloc_codigo, adm_veiesp_codigo, adm_veitp_codigo, adm_veimotor_codigo,
-            localSelect, especieSelect, tipoSelect, motorSelect } = this.state;
+            pneus_mov_pneu, pneus_mov_filial, pneus_cp_marca, pneus_cp_modelo, pneus_cp_dimenssao,
+            filialSelect, marcaSelect, modeloSelect, dimenssaoSelect } = this.state;
 
-        console.log('adm_vei_idf: ', this.state.adm_vei_idf);
+        // console.log('adm_vei_idf: ', this.state.adm_vei_idf);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -444,7 +384,7 @@ export default class PneusEstoqueScreen extends Component {
                     data={listaRegistros}
                     renderItem={this.renderItem}
                     contentContainerStyle={{ paddingBottom: 100 }}
-                    keyExtractor={registro => String(registro.adm_vei_idf)}
+                    keyExtractor={registro => String(registro.pneus_mov_pneu)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
                     onEndReached={this.carregarMaisRegistros}
@@ -490,62 +430,61 @@ export default class PneusEstoqueScreen extends Component {
                                         textAlign: 'center',
                                         fontSize: 20,
                                         fontWeight: 'bold',
-                                    }}>Filtrar Veículos</Text>
+                                    }}>Filtrar Estoque</Text>
                                 </View>
 
                                 <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
                                     <TextInput
-                                        label="Veículo"
-                                        id="adm_vei_idf"
-                                        ref="adm_vei_idf"
-                                        value={adm_vei_idf}
+                                        label="Pneu"
+                                        id="pneus_mov_pneu"
+                                        ref="pneus_mov_pneu"
+                                        value={pneus_mov_pneu}
                                         maxLength={20}
                                         onChange={this.onInputChange}
-                                        keyboardType="numeric"
                                     />
 
                                     <TextInput
                                         type="select"
-                                        label="Localização"
-                                        id="adm_veiloc_codigo"
-                                        ref="adm_veiloc_codigo"
-                                        value={adm_veiloc_codigo}
+                                        label="Filial"
+                                        id="pneus_mov_filial"
+                                        ref="pneus_mov_filial"
+                                        value={pneus_mov_filial}
                                         selectedValue=""
-                                        options={localSelect}
+                                        options={filialSelect}
                                         onChange={this.onInputChange}
                                     />
 
                                     <TextInput
                                         type="select"
-                                        label="Espécie"
-                                        id="adm_veiesp_codigo"
-                                        ref="adm_veiesp_codigo"
-                                        value={adm_veiesp_codigo}
+                                        label="Marca"
+                                        id="pneus_cp_marca"
+                                        ref="pneus_cp_marca"
+                                        value={pneus_cp_marca}
                                         selectedValue=""
-                                        options={especieSelect}
+                                        options={marcaSelect}
                                         onChange={this.onInputChange}
                                     />
 
                                     <TextInput
                                         type="select"
-                                        label="Tipo"
-                                        id="adm_veitp_codigo"
-                                        ref="adm_veitp_codigo"
-                                        value={adm_veitp_codigo}
+                                        label="Modelo"
+                                        id="pneus_cp_modelo"
+                                        ref="pneus_cp_modelo"
+                                        value={pneus_cp_modelo}
                                         selectedValue=""
-                                        options={tipoSelect}
+                                        options={modeloSelect}
                                         onChange={this.onInputChange}
                                     />
 
                                     <TextInput
                                         type="select"
-                                        label="Motor"
-                                        id="adm_veimotor_codigo"
-                                        ref="adm_veimotor_codigo"
-                                        value={adm_veimotor_codigo}
+                                        label="Dimenssão"
+                                        id="pneus_cp_dimenssao"
+                                        ref="pneus_cp_dimenssao"
+                                        value={pneus_cp_dimenssao}
                                         selectedValue=""
-                                        options={motorSelect}
+                                        options={dimenssaoSelect}
                                         onChange={this.onInputChange}
                                     />
 
