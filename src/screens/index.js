@@ -29,6 +29,8 @@ import BarCodeScreen from './BarCodeScreen';
 
 import FichaViagemScreen from './FichaViagemScreen';
 
+import ViagensTurismoScreen from './ViagensTurismoScreen';
+
 import TrocarSenhaScreen from './TrocarSenhaScreen';
 
 import Icon from '../components/Icon';
@@ -186,6 +188,14 @@ const HomeStackNavigator = StackNavigator({
         screen: FichaViagemScreen,
         navigationOptions: {
             title: "Ficha de Viagem",
+            ...defaultNavigationOptions
+        }
+    },
+
+    ViagensTurismoScreen: {
+        screen: ViagensTurismoScreen,
+        navigationOptions: {
+            title: "Viagens Turismo",
             ...defaultNavigationOptions
         }
     },

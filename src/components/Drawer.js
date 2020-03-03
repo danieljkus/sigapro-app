@@ -129,6 +129,15 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
+                            {this.temPermissao('VIAGENSTURISMOSCREEN') ? (
+                                <DrawerItem
+                                    text="Viagens Turismo"
+                                    onPress={() => navigation.navigate('ViagensTurismoScreen')}
+                                />
+                            ) : null}
+
+                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+
                             {this.temPermissao('VEICULOSSCREEN') ? (
                                 <DrawerItem
                                     text="Veículos"
