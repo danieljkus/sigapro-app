@@ -26,86 +26,90 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
 
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Pneu{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pneus_mov_pneu}
-                        </Text>
+                <TouchableOpacity
+                    onPress={() => onRegistroPress(registro.pneus_mov_idf)}
+                >
+                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                Pneu{': '}
+                            </Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                {registro.pneus_mov_pneu}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Posição{': '}
+                            </Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                {registro.pneus_mov_posicao}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Eixo{': '}
+                            </Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                {registro.pneus_mov_eixo}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Posição{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pneus_mov_posicao}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Eixo{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pneus_mov_eixo}
-                        </Text>
-                    </View>
-                </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Marca{': '}
-                    </Text>
-                    <Text>
-                        {registro.pneus_mar_descricao}
-                    </Text>
-                </View>
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Modelo{': '}
-                    </Text>
-                    <Text>
-                        {registro.pneus_mod_descricao}
-                    </Text>
-                </View>
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Dimenssão{': '}
-                    </Text>
-                    <Text>
-                        {registro.pneus_dim_descricao}
-                    </Text>
-                </View>
-
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Data{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Vida{': '}
-                        </Text>
-                        <Text style={{ fontSize: 12, marginTop: 2 }}>
-                            {registro.pneus_vd_vida === "0" ? 'NOVO' : registro.pneus_vd_vida + 'º VIDA'}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Km Vida{': '}
+                            Marca{': '}
                         </Text>
                         <Text>
-                            {registro.pneus_vd_km_vida}
+                            {registro.pneus_mar_descricao}
                         </Text>
                     </View>
-                </View>
+
+                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Modelo{': '}
+                        </Text>
+                        <Text>
+                            {registro.pneus_mod_descricao}
+                        </Text>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Dimenssão{': '}
+                        </Text>
+                        <Text>
+                            {registro.pneus_dim_descricao}
+                        </Text>
+                    </View>
+
+                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                Data{': '}
+                            </Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                                {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Vida{': '}
+                            </Text>
+                            <Text style={{ fontSize: 12, marginTop: 2 }}>
+                                {registro.pneus_vd_vida === "0" ? 'NOVO' : registro.pneus_vd_vida + 'º VIDA'}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Km Vida{': '}
+                            </Text>
+                            <Text>
+                                {registro.pneus_vd_km_vida}
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
             </View >
         </Card >
     )
@@ -181,6 +185,34 @@ export default class PneusVeiculosScreen extends Component {
             });
         })
     }
+
+    onRegistroPress = (man_ev_idf) => {
+        this.setState({ carregarRegistro: true });
+
+        axios.get('/pneus/show/' + man_ev_idf)
+            .then(response => {
+                this.setState({ carregarRegistro: false });
+
+                // console.log('registro: ', response.data);
+
+                this.props.navigation.navigate('PneusTrocaScreen', {
+                    registro: {
+                        registro: response.data.registro,
+                        qtdeComb: response.data.qtdeComb,
+                        dataComb: response.data.dataComb,
+                        filial: response.data.filial,
+                        descFilial: response.data.descFilial,
+                        listaHistorico: response.data.listaHistorico,
+                    },
+                    onRefresh: this.onRefresh
+                });
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
+    }
+
 
     onRefresh = () => {
         this.setState({
