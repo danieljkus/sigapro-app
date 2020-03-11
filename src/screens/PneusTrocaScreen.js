@@ -22,7 +22,6 @@ export default class PneusTrocaScreen extends Component {
         this.state = {
             loading: false,
             salvando: false,
-
             ...props.navigation.state.params.registro,
         }
     }
