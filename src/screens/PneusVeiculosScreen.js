@@ -186,25 +186,27 @@ export default class PneusVeiculosScreen extends Component {
         })
     }
 
-    onRegistroPress = (man_ev_idf) => {
+    onRegistroPress = (pneus_mov_idf) => {
         this.setState({ carregarRegistro: true });
 
-        axios.get('/pneus/show/' + man_ev_idf)
+        axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                // console.log('registro: ', response.data);
+                console.log('registro: ', response.data);
+
+                response.data.registro.tipoTela = 'VEIC';
 
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
                         registro: response.data.registro,
-                        qtdeComb: response.data.qtdeComb,
-                        dataComb: response.data.dataComb,
-                        filial: response.data.filial,
-                        descFilial: response.data.descFilial,
-                        listaHistorico: response.data.listaHistorico,
+                        // qtdeComb: response.data.qtdeComb,
+                        // dataComb: response.data.dataComb,
+                        // filial: response.data.filial,
+                        // descFilial: response.data.descFilial,
+                        // listaHistorico: response.data.listaHistorico,
                     },
-                    onRefresh: this.onRefresh
+                    onRefresh: this.onRefresh,
                 });
             }).catch(ex => {
                 this.setState({ carregarRegistro: false });

@@ -207,6 +207,8 @@ export default class PneusEstoqueScreen extends Component {
 
                 console.log('registro: ', response.data);
 
+                response.data.registro.tipoTela = 'EST';
+
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
                         registro: response.data.registro,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl, Text, FlatList } from 'react-native';
-import { Card, Divider } from 'react-native-elements';
+import { Card, Divider, CheckBox } from 'react-native-elements';
 
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
@@ -22,6 +22,11 @@ export default class PneusTrocaScreen extends Component {
         this.state = {
             loading: false,
             salvando: false,
+
+            filialChecked: true,
+            recapadoraChecked: false,
+            sucataChecked: false,
+
             ...props.navigation.state.params.registro,
         }
     }
@@ -78,11 +83,20 @@ export default class PneusTrocaScreen extends Component {
         //     })
     }
 
+    mudaDestino = (destino) => {
+        this.setState({
+            filialChecked: destino === 'F' ? true : false,
+            recapadoraChecked: destino === 'R' ? true : false,
+            sucataChecked: destino === 'S' ? true : false,
+        });
+    }
+
 
 
     render() {
+        const { filialChecked, recapadoraChecked, sucataChecked, loading } = this.state;
         const { pneus_mov_idf, pneus_mov_pneu, pneus_mov_vida, pneus_dim_descricao,
-            loading } = this.state.registro;
+            tipoTela } = this.state.registro;
 
         // console.log('this.state', this.state);
 
@@ -99,9 +113,9 @@ export default class PneusTrocaScreen extends Component {
                         style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16 }}
                     >
 
-                        <View style={{ marginBottom: 30 }}>
+                        <View style={{ marginBottom: 10 }}>
                             <Text style={{
-                                color: Colors.textSecondaryDark,
+                                color: Colors.primaryLight,
                                 fontWeight: 'bold',
                                 fontSize: 20,
                                 // marginBottom: 5,
@@ -160,42 +174,203 @@ export default class PneusTrocaScreen extends Component {
                                     </Text>
                                 </View>
                             </View>
-
                         </View>
-
-                        {this.temPermissao('ESCALAVEICULOSTROCARVEICSCREEN') ? (
-                            <View style={{ marginBottom: 30 }}>
-                                <TextInput
-                                    label="Trocar Veículo"
-                                    id="pneus_mov_idf"
-                                    ref="pneus_mov_idf"
-                                    value={pneus_mov_idf}
-                                    maxLength={4}
-                                    onChange={this.onInputChange}
-                                    keyboardType="numeric"
-                                />
-
-                                <Button
-                                    title="Gravar"
-                                    loading={this.state.salvando}
-                                    onPress={this.onFormSubmit}
-                                    color={Colors.textOnPrimary}
-                                    buttonStyle={{ marginBottom: 30, marginTop: 10 }}
-                                    icon={{
-                                        name: 'check',
-                                        type: 'font-awesome',
-                                        color: Colors.textOnPrimary
-                                    }}
-                                />
-                            </View>
-                        ) : null}
                     </View>
 
+                    {this.temPermissao('PNEUSTROCASCREEN') ? (
+                        <View style={{ flex: 1, paddingHorizontal: 16 }}>
+                            <Text style={{
+                                color: Colors.primaryLight,
+                                fontWeight: 'bold',
+                                fontSize: 20,
+                                // marginBottom: 5,
+                                // marginTop: 20,
+                                borderBottomWidth: 2,
+                                borderColor: Colors.dividerDark,
+                            }}>
+                                Destino do Pneu
+                            </Text>
+
+                            <View style={{ flexDirection: 'row', marginBottom: 20, marginTop: 10 }}>
+                                <View style={{ width: "30%", margin: 0, padding: 0 }}>
+                                    <CheckBox
+                                        center
+                                        title='Filial'
+                                        checkedIcon='dot-circle-o'
+                                        uncheckedIcon='circle-o'
+                                        checked={filialChecked}
+                                        checkedColor={Colors.primaryLight}
+                                        // uncheckedColor='green'
+                                        onPress={() => this.setState({
+                                            filialChecked: true,
+                                            recapadoraChecked: false,
+                                            sucataChecked: false,
+                                        })}
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                </View>
+
+                                <View style={{ width: "40%", margin: 0, padding: 0 }}>
+                                    <CheckBox
+                                        center
+                                        title='Recapadora'
+                                        checkedIcon='dot-circle-o'
+                                        uncheckedIcon='circle-o'
+                                        checked={recapadoraChecked}
+                                        checkedColor={Colors.primaryLight}
+                                        onPress={() => this.setState({
+                                            filialChecked: false,
+                                            recapadoraChecked: true,
+                                            sucataChecked: false,
+                                        })}
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                </View>
+
+                                <View style={{ width: "30%", margin: 0, padding: 0 }}>
+                                    <CheckBox
+                                        center
+                                        title='Sucata'
+                                        checkedIcon='dot-circle-o'
+                                        uncheckedIcon='circle-o'
+                                        checked={sucataChecked}
+                                        checkedColor={Colors.primaryLight}
+                                        onPress={() => this.setState({
+                                            filialChecked: false,
+                                            recapadoraChecked: false,
+                                            sucataChecked: true,
+                                        })}
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                </View>
+                            </View>
+
+                            {filialChecked ? (
+                                <View>
+                                    <TextInput
+                                        label="Filial"
+                                        id="pneus_mov_idf"
+                                        ref="pneus_mov_idf"
+                                        value={pneus_mov_idf}
+                                        maxLength={4}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+                                    <TextInput
+                                        label="Motivo Saída"
+                                        id="pneus_mov_idf"
+                                        ref="pneus_mov_idf"
+                                        value={pneus_mov_idf}
+                                        maxLength={4}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+                                </View>
+                            ) : null}
+
+                            {recapadoraChecked ? (
+                                <View>
+                                    <TextInput
+                                        label="Recapadora"
+                                        id="pneus_mov_idf"
+                                        ref="pneus_mov_idf"
+                                        value={pneus_mov_idf}
+                                        maxLength={4}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+                                    <TextInput
+                                        label="NF Saída"
+                                        id="pneus_mov_idf"
+                                        ref="pneus_mov_idf"
+                                        value={pneus_mov_idf}
+                                        maxLength={4}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+                                    <TextInput
+                                        label="Motivo Saída"
+                                        id="pneus_mov_idf"
+                                        ref="pneus_mov_idf"
+                                        value={pneus_mov_idf}
+                                        maxLength={4}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+                                </View>
+                            ) : null}
+
+                            {sucataChecked ? (
+                                <View>
+                                    <TextInput
+                                        label="Sucata"
+                                        id="pneus_mov_idf"
+                                        ref="pneus_mov_idf"
+                                        value={pneus_mov_idf}
+                                        maxLength={4}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+                                    <TextInput
+                                        label="Motivo Saída"
+                                        id="pneus_mov_idf"
+                                        ref="pneus_mov_idf"
+                                        value={pneus_mov_idf}
+                                        maxLength={4}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+                                </View>
+                            ) : null}
+
+
+                            {tipoTela === 'VEIC' ? (
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{
+                                        color: Colors.primaryLight,
+                                        fontWeight: 'bold',
+                                        fontSize: 20,
+                                        marginBottom: 10,
+                                        marginTop: 10,
+                                        borderBottomWidth: 2,
+                                        borderColor: Colors.dividerDark,
+                                    }}>
+                                        Dados do Pneu à ser Colocado
+                                    </Text>
+
+                                    <TextInput
+                                        label="Pneu Colocado"
+                                        id="pneus_mov_idf"
+                                        ref="pneus_mov_idf"
+                                        value={pneus_mov_idf}
+                                        maxLength={4}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+
+                                </View>
+                            ) : null}
 
 
 
+                            <Button
+                                title="Gravar"
+                                loading={this.state.salvando}
+                                onPress={this.onFormSubmit}
+                                color={Colors.textOnPrimary}
+                                buttonStyle={{ marginBottom: 30, marginTop: 10 }}
+                                icon={{
+                                    name: 'check',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary
+                                }}
+                            />
 
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 }}>
+                        </View>
+                    ) : null}
+
+
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 6, marginTop: 30 }}>
                         {pneus_mov_idf}
                     </Text>
 
