@@ -26,7 +26,7 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
                 <TouchableOpacity
-                    onPress={() => onRegistroPress(registro.idf1 ? registro.idf1 : registro.idf2)}
+                    onPress={() => onRegistroPress(registro.man_ev_idf)}
                 >
                     {man_ev_veiculo === '' ? null : (
                         <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
@@ -42,7 +42,7 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
                                 Horário {': '}
                             </Text>
                             <Text>
-                                {registro.hora_fim ? registro.hora_ini : registro.hora_ini + ' / ' + registro.hora_fim}
+                                {registro.pas_serv_sentido === 'I' ? registro.hora1 : registro.hora2}
                             </Text>
                         </View>
                         <View style={{ flex: 3, flexDirection: 'row' }}>
@@ -50,7 +50,7 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
                                 Serviço {': '}
                             </Text>
                             <Text>
-                                {registro.pas_via_servico_extra ? registro.pas_via_servico_extra : registro.pas_via_servico}
+                                {registro.man_ev_servico}
                             </Text>
                         </View>
                         <View style={{ flex: 3, flexDirection: 'row' }}>
@@ -58,7 +58,7 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
                                 Veículo {': '}
                             </Text>
                             <Text>
-                                {registro.veic1 ? registro.veic1 : registro.veic2}
+                                {registro.man_ev_veiculo}
                             </Text>
                         </View>
                     </View>
@@ -67,10 +67,17 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
 
                     <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                         <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                            {registro.desc_sec_ini + ' a ' + registro.desc_sec_fim}
+                            {registro.pas_sec_descricao_ini + ' a ' + registro.pas_sec_descricao_fim}
                         </Text>
                     </View>
 
+                    <Divider />
+
+                    <View style={{ paddingLeft: 15, paddingVertical: 3, paddingBottom: 5 }}>
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 10 }}>
+                            Grupo: {registro.man_ev_grupo}   {registro.man_eg_descricao}
+                        </Text>
+                    </View>
                 </TouchableOpacity>
             </View>
         </Card>
@@ -90,8 +97,9 @@ export default class EscalaVeiculosScreen extends Component {
         man_ev_data_ini: moment(new Date()).format(DATE_FORMAT),
         man_ev_veiculo: '',
         man_ev_servico: '',
-        man_ev_od: '',
-        somente_escala_filial: true,
+        man_ev_grupo: '',
+        grupoSelect: [],
+        somente_escala_filial: false,
         temFiltro: false,
         modalFiltrosVisible: false,
     };
@@ -99,6 +107,7 @@ export default class EscalaVeiculosScreen extends Component {
     componentDidMount() {
         this.setState({ refreshing: true });
         this.getListaRegistros();
+        this.buscaGrupo();
     }
 
     onInputChange = (id, value) => {
@@ -120,12 +129,10 @@ export default class EscalaVeiculosScreen extends Component {
 
 
     getListaRegistros = () => {
-        const { man_ev_data_ini, man_ev_servico, man_ev_veiculo, man_ev_od,
+        const { man_ev_data_ini, man_ev_grupo, man_ev_servico, man_ev_veiculo,
             somente_escala_filial, pagina, listaRegistros } = this.state;
 
-        const temFiltro = man_ev_servico !== '' || man_ev_veiculo !== '' || man_ev_od !== '';
-
-        console.log('getListaRegistros');
+        const temFiltro = man_ev_grupo || man_ev_servico !== '' || man_ev_veiculo !== '';
 
         axios.get('/escalaVeiculos', {
             params: {
@@ -134,23 +141,19 @@ export default class EscalaVeiculosScreen extends Component {
                 data: moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD"),
                 veiculo: man_ev_veiculo,
                 servico: man_ev_servico,
-                cidade: man_ev_od,
+                grupo: man_ev_grupo,
                 somente_escala_filial: somente_escala_filial ? 1 : 0,
             }
         }).then(response => {
-
-            // const novosRegistros = pagina === 1
-            //     ? response.data.data
-            //     : listaRegistros.concat(response.data.data);
-            // const total = response.data.total;
-
-            // console.log('novosRegistros: ', novosRegistros);
-
+            const novosRegistros = pagina === 1
+                ? response.data.data
+                : listaRegistros.concat(response.data.data);
+            const total = response.data.total;
             this.setState({
-                listaRegistros: response.data,
+                listaRegistros: novosRegistros,
                 refreshing: false,
                 carregando: false,
-                // carregarMais: novosRegistros.length < total,
+                carregarMais: novosRegistros.length < total,
                 temFiltro
             })
         }).catch(ex => {
@@ -259,7 +262,7 @@ export default class EscalaVeiculosScreen extends Component {
             temFiltro: false,
             man_ev_veiculo: '',
             man_ev_servico: '',
-            somente_escala_filial: true,
+            man_ev_grupo: '',
         }, this.getListaRegistros);
     }
 
@@ -288,11 +291,36 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
 
+    buscaGrupo = () => {
+        const { man_ev_grupo } = this.state;
+        this.setState({ grupoSelect: [], man_ev_grupo: '' });
+        axios.get('/escalaVeiculos/listaGrupos', {
+        }).then(response => {
+            const { data } = response;
+            const grupoSelect = data.map(regList => {
+                return {
+                    key: regList.man_eg_codigo,
+                    label: regList.man_eg_descricao
+                }
+            });
+            grupoSelect.unshift({ key: 0, label: "Selecione um Grupo" });
+            this.setState({
+                grupoSelect,
+            })
+        }).catch(error => {
+            console.error(error.response);
+            this.setState({
+                grupoSelect: [{ label: "Grupo não encontrdo", key: 0 }],
+            });
+        })
+
+    }
+
+
     render() {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
-            man_ev_data_ini, man_ev_veiculo, man_ev_servico } = this.state;
+            man_ev_data_ini, man_ev_veiculo, man_ev_servico, man_ev_grupo, grupoSelect } = this.state;
 
-        // console.log('this.state: ', this.state);
         // console.log('man_ev_veiculo: ', this.state.man_ev_veiculo);
         // console.log('man_ev_data_ini: ', man_ev_data_ini);
         // console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
@@ -360,7 +388,7 @@ export default class EscalaVeiculosScreen extends Component {
                     data={listaRegistros}
                     renderItem={this.renderItem}
                     contentContainerStyle={{ paddingBottom: 100 }}
-                    keyExtractor={registro => String(registro.pas_via_servico) + '_' + String(registro.pas_via_servico_extra) + '_' + String(registro.veic1) + '_' + String(registro.veic2)}
+                    keyExtractor={registro => String(registro.man_ev_idf)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
                     onEndReached={this.carregarMaisRegistros}
@@ -421,16 +449,6 @@ export default class EscalaVeiculosScreen extends Component {
                                         keyboardType="numeric"
                                     />
 
-                                    {/* <TextInput
-                                        label="Origem/Destino"
-                                        id="man_ev_od"
-                                        ref="man_ev_od"
-                                        value={man_ev_od}
-                                        maxLength={30}
-                                        onChange={this.onInputChange}
-                                        keyboardType="numeric"
-                                    /> */}
-
                                     <TextInput
                                         label="Serviço"
                                         id="man_ev_servico"
@@ -439,6 +457,17 @@ export default class EscalaVeiculosScreen extends Component {
                                         maxLength={20}
                                         onChange={this.onInputChange}
                                         keyboardType="numeric"
+                                    />
+
+                                    <TextInput
+                                        type="select"
+                                        label="Grupo"
+                                        id="man_ev_grupo"
+                                        ref="man_ev_grupo"
+                                        value={man_ev_grupo}
+                                        selectedValue=""
+                                        options={grupoSelect}
+                                        onChange={this.onInputChange}
                                     />
 
                                     <CheckBox
