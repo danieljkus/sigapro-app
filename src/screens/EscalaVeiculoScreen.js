@@ -19,17 +19,17 @@ const RegistroItem = ({ registro }) => {
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
                 <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            {moment(registro.man_ev_data_ini).format("DD/MM/YYYY")}
-                        </Text>
-                    </View>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        {moment(registro.pas_via_data_viagem).format("DD/MM/YYYY")}
+                    </Text>
+                </View>
+                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
                     <View style={{ flex: 3, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Horário {': '}
                         </Text>
                         <Text>
-                            {registro.pas_serv_sentido === 'I' ? registro.hora1 : registro.hora2}
+                            {registro.hora_fim ? registro.hora_ini : registro.hora_ini + ' / ' + registro.hora_fim}
                         </Text>
                     </View>
                     <View style={{ flex: 3, flexDirection: 'row' }}>
@@ -37,7 +37,15 @@ const RegistroItem = ({ registro }) => {
                             Serviço {': '}
                         </Text>
                         <Text>
-                            {registro.man_ev_servico}
+                            {registro.pas_via_servico_extra ? registro.pas_via_servico_extra : registro.pas_via_servico}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Veículo {': '}
+                        </Text>
+                        <Text>
+                            {registro.veic1 ? registro.veic1 : registro.veic2}
                         </Text>
                     </View>
                 </View>
@@ -46,15 +54,7 @@ const RegistroItem = ({ registro }) => {
 
                 <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                     <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        {registro.pas_serv_sentido === 'I' ? (registro.sec1 + ' a ' + registro.sec2) : (registro.sec2 + ' a ' + registro.sec1)}
-                    </Text>
-                </View>
-
-                <Divider />
-
-                <View style={{ paddingLeft: 15, paddingVertical: 3, paddingBottom: 5 }}>
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 10 }}>
-                        Grupo: {registro.man_ev_grupo}   {registro.man_eg_descricao}
+                        {registro.desc_sec_ini + ' a ' + registro.desc_sec_fim}
                     </Text>
                 </View>
             </View>
@@ -67,9 +67,14 @@ export default class EscalaVeiculoScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false,
             salvando: false,
+            carregarRegistro: false,
             man_ev_veiculo_trocar: '',
+            qtdeComb: 0,
+            dataComb: '',
+            filial: 0,
+            descFilial: '',
+            listaHistorico: [],
             ...props.navigation.state.params.registro,
         }
     }
@@ -78,6 +83,43 @@ export default class EscalaVeiculoScreen extends Component {
         getPermissoes().then(permissoes => {
             this.setState({ permissoes });
         })
+
+        console.log('componentDidMount', this.state);
+
+        const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
+
+        this.setState({
+            man_ev_veiculo_trocar: veiculo,
+        });
+
+        if ((veiculo) && (veiculo !== '')) {
+            this.setState({ carregarRegistro: true });
+
+            axios.get('/escalaVeiculos/show', {
+                params: {
+                    veiculo,
+                    data: this.state.registro.pas_via_data_viagem,
+                }
+            }).then(response => {
+                this.setState({ carregarRegistro: false });
+
+                // console.log('registro: ', response.data);
+
+                this.setState({
+                    carregarRegistro: false,
+                    qtdeComb: response.data.qtdeComb,
+                    dataComb: response.data.dataComb,
+                    filial: response.data.filial,
+                    descFilial: response.data.descFilial,
+                    listaHistorico: response.data.listaHistorico,
+                });
+
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
+        }
     }
 
     onInputChange = (id, value) => {
@@ -95,7 +137,7 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     onFormSubmit = (event) => {
-        if (this.state.registro.man_ev_veiculo_trocar !== '') {
+        if (this.state.man_ev_veiculo_trocar !== '') {
             this.onSalvarRegistro();
         } else {
             Alert.showAlert('Preencha todos os campos obrigatórios');
@@ -104,8 +146,15 @@ export default class EscalaVeiculoScreen extends Component {
 
     onSalvarRegistro = () => {
         this.setState({ salvando: true });
-        axios.put('/escalaVeiculos/trocaCarro/' + this.state.registro.man_ev_idf, {
-            man_ev_veiculo: this.state.man_ev_veiculo_trocar
+
+        const idf = this.state.registro.idf2 ? this.state.registro.idf2 : (this.state.registro.idf1 ? this.state.registro.idf1 : 0);
+       
+        axios.put('/escalaVeiculos/trocaCarro', {
+            idf,
+            man_ev_veiculo: this.state.man_ev_veiculo_trocar,
+            man_ev_data_ini: this.state.registro.pas_via_data_viagem,
+            man_ev_servico: this.state.registro.pas_via_servico,
+            man_ev_servico_estra: this.state.registro.pas_via_servico_extra,
         })
             .then(response => {
                 console.log('onSalvarRegistro: ', response.data);
@@ -144,9 +193,10 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     render() {
-        const { man_ev_idf, man_ev_veiculo, man_ev_veiculo_trocar, man_eg_descricao,
-            pas_serv_linha, man_ev_servico, pas_serv_sentido, sec1, sec2, hora1, hora2,
-            loading } = this.state.registro;
+        const { pas_via_data_viagem, pas_via_servico, pas_serv_linha, pas_via_servico_extra,
+            idf1, idf2, veic1, veic2, desc_sec_ini, desc_sec_fim, hora_ini, hora_fim,
+        } = this.state.registro;
+        const { man_ev_veiculo_trocar, salvando, carregarRegistro } = this.state;
 
         // console.log('this.state', this.state);
 
@@ -176,7 +226,7 @@ export default class EscalaVeiculoScreen extends Component {
 
                                 <Button
                                     title="TROCAR VEÍCULO"
-                                    loading={this.state.salvando}
+                                    loading={salvando}
                                     onPress={this.onFormSubmit}
                                     color={Colors.textOnPrimary}
                                     buttonStyle={{ marginBottom: 30, marginTop: 10 }}
@@ -205,143 +255,147 @@ export default class EscalaVeiculoScreen extends Component {
                             </Text>
 
                             <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    Veículo {': '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {man_ev_veiculo}
-                                </Text>
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    {'      '} Horário {': '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {pas_serv_sentido === 'I' ? hora1 : hora2}
-                                </Text>
+                                <View style={{ flex: 2, flexDirection: 'row' }}>
+                                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                        Data{': '}
+                                    </Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                        {moment(pas_via_data_viagem).format("DD/MM/YYYY")}
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 2, flexDirection: 'row' }}>
+                                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                        Veículo{': '}
+                                    </Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                        {veic2 ? veic2 : veic1}
+                                    </Text>
+                                </View>
                             </View>
 
                             <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    Serviço {': '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {man_ev_servico}
-                                </Text>
-
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    {'      '} Linha {': '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {pas_serv_linha}
-                                </Text>
+                                <View style={{ flex: 2, flexDirection: 'row' }}>
+                                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                        Serviço{': '}
+                                    </Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                        {pas_via_servico + (pas_via_servico_extra ? ' / ' + pas_via_servico_extra : '')}
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 2, flexDirection: 'row' }}>
+                                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                        Horário{': '}
+                                    </Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                        {hora_ini + ' / ' + hora_fim}
+                                    </Text>
+                                </View>
                             </View>
 
                             <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                <Text style={{ fontSize: 15, fontWeight: 'bold', color: Colors.primaryDark }} >
                                     Linha {': '}
                                 </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {pas_serv_sentido === 'I' ? (sec1 + ' a ' + sec2) : (sec2 + ' a ' + sec1)}
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }}>
+                                    {desc_sec_ini + ' a ' + desc_sec_fim}
                                 </Text>
                             </View>
-
-                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    Grupo {': '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {man_eg_descricao}
-                                </Text>
-                            </View>
-
 
                         </View>
 
-                        <View style={{ marginBottom: 30 }}>
-                            <Text style={{
-                                color: Colors.textSecondaryDark,
-                                fontWeight: 'bold',
-                                fontSize: 20,
-                                marginBottom: 10,
-                                marginRight: 5,
-                                borderBottomWidth: 2,
-                                borderColor: Colors.dividerDark,
-                            }}>
-                                Último Abastecimento
+                        {this.state.filial ? (
+                            <View style={{ marginBottom: 30 }}>
+                                <Text style={{
+                                    color: Colors.textSecondaryDark,
+                                    fontWeight: 'bold',
+                                    fontSize: 20,
+                                    marginBottom: 10,
+                                    marginRight: 5,
+                                    borderBottomWidth: 2,
+                                    borderColor: Colors.dividerDark,
+                                }}>
+                                    Último Abastecimento
                             </Text>
-                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    Data {': '}
+                                <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                        Data {': '}
+                                    </Text>
+                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }}>
+                                        {this.state.dataComb ? moment(this.state.dataComb).format("DD/MM/YYYY hh:mm") : ''}
+                                    </Text>
+                                </View>
+
+                                <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                        Qtde {': '}
+                                    </Text>
+                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }}>
+                                        {this.state.qtdeComb ? maskValorMoeda(parseFloat(this.state.qtdeComb)) + ' Lt' : ''}
+                                    </Text>
+                                </View>
+
+                                <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5, paddingRight: 5 }}>
+                                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                        Filial {': '}
+                                    </Text>
+                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }}>
+                                        {this.state.filial ? this.state.filial + ' - ' + this.state.descFilial : ''}
+                                    </Text>
+                                </View>
+                            </View>
+                        ) : null}
+
+                    </View>
+
+
+
+                    {this.state.listaHistorico && this.state.listaHistorico.length > 0 ? (
+                        <View>
+                            <View style={{ marginBottom: 30 }}>
+                                <Text style={{
+                                    color: Colors.textSecondaryDark,
+                                    fontWeight: 'bold',
+                                    fontSize: 20,
+                                    marginBottom: 15,
+                                    paddingLeft: 16,
+                                    borderBottomWidth: 2,
+                                    borderColor: Colors.dividerDark,
+                                }}>
+                                    Histórico das Viagens
                                 </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {this.state.dataComb ? moment(this.state.dataComb).format("DD/MM/YYYY hh:mm") : ''}
-                                </Text>
+
+                                <FlatList
+                                    data={this.state.listaHistorico}
+                                    renderItem={this.renderItem}
+                                    contentContainerStyle={{ paddingBottom: 50 }}
+                                    keyExtractor={registro => String(registro.man_ev_idf)}
+                                    ListFooterComponent={this.renderListFooter}
+                                />
                             </View>
 
-                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    Qtde {': '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {maskValorMoeda(parseFloat(this.state.qtdeComb))} Lt
-                                </Text>
-                            </View>
-
-                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5, paddingRight: 5 }}>
-                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    Filial {': '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
-                                    {this.state.filial} - {this.state.descFilial}
-                                </Text>
+                            <View style={{ flexDirection: 'row', justifyContent: "center" }} >
+                                <Button
+                                    title="Log Histórico"
+                                    onPress={this.onAbrirLog}
+                                    color={Colors.textOnPrimary}
+                                    buttonStyle={{ marginBottom: 20, marginTop: 20, width: 200, height: 30, marginRight: 10 }}
+                                    icon={{
+                                        name: 'file-text-o',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
                             </View>
                         </View>
+                    ) : null}
 
-                    </View>
-
-
-
-                    <View style={{ marginBottom: 30 }}>
-                        <Text style={{
-                            color: Colors.textSecondaryDark,
-                            fontWeight: 'bold',
-                            fontSize: 20,
-                            marginBottom: 15,
-                            paddingLeft: 16,
-                            borderBottomWidth: 2,
-                            borderColor: Colors.dividerDark,
-                        }}>
-                            Histórico das Viagens
-                        </Text>
-
-                        <FlatList
-                            data={this.state.listaHistorico}
-                            renderItem={this.renderItem}
-                            contentContainerStyle={{ paddingBottom: 50 }}
-                            keyExtractor={registro => String(registro.man_ev_idf)}
-                            ListFooterComponent={this.renderListFooter}
-                        />
-                    </View>
-
-                    <View style={{ flexDirection: 'row', justifyContent: "center" }} >
-                        <Button
-                            title="Log Histórico"
-                            onPress={this.onAbrirLog}
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ marginBottom: 20, marginTop: 20, width: 200, height: 30, marginRight: 10 }}
-                            icon={{
-                                name: 'file-text-o',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-                    </View>
 
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 }}>
-                        {man_ev_idf}
+                        {idf2 ? idf2 : idf1}
                     </Text>
 
                     <ProgressDialog
-                        visible={this.state.salvando}
+                        visible={carregarRegistro}
                         title="SIGA PRO"
                         message="Gravando. Aguarde..."
                     />

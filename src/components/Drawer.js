@@ -145,6 +145,8 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+
                             {this.temPermissao('PNEUSVEICULOSSCREEN') ? (
                                 <DrawerItem
                                     text="Pneus nos Veículos"

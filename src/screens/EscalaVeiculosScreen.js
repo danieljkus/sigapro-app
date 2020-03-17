@@ -26,12 +26,12 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
                 <TouchableOpacity
-                    onPress={() => onRegistroPress(registro.idf1 ? registro.idf1 : registro.idf2)}
+                    onPress={() => onRegistroPress(registro)}
                 >
                     {man_ev_veiculo === '' ? null : (
                         <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
                             <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                {moment(registro.man_ev_data_ini).format("DD/MM/YYYY")}
+                                {moment(registro.pas_via_data_viagem).format("DD/MM/YYYY")}
                             </Text>
                         </View>
                     )}
@@ -139,18 +139,10 @@ export default class EscalaVeiculosScreen extends Component {
             }
         }).then(response => {
 
-            // const novosRegistros = pagina === 1
-            //     ? response.data.data
-            //     : listaRegistros.concat(response.data.data);
-            // const total = response.data.total;
-
-            // console.log('novosRegistros: ', novosRegistros);
-
             this.setState({
                 listaRegistros: response.data,
                 refreshing: false,
                 carregando: false,
-                // carregarMais: novosRegistros.length < total,
                 temFiltro
             })
         }).catch(ex => {
@@ -171,31 +163,39 @@ export default class EscalaVeiculosScreen extends Component {
         }, this.getListaRegistros);
     }
 
-    onRegistroPress = (man_ev_idf) => {
-        this.setState({ carregarRegistro: true });
+    onRegistroPress = (registro) => {
+        console.log('onRegistroPress: ', registro);
 
-        axios.get('/escalaVeiculos/show/' + man_ev_idf)
-            .then(response => {
-                this.setState({ carregarRegistro: false });
+        this.props.navigation.navigate('EscalaVeiculoScreen', {
+            registro: {
+                registro: registro,
+            },
+            onRefresh: this.onRefresh
+        });
 
-                // console.log('registro: ', response.data);
+        // this.setState({ carregarRegistro: true });
+        // axios.get('/escalaVeiculos/show/' + man_ev_idf)
+        //     .then(response => {
+        //         this.setState({ carregarRegistro: false });
 
-                this.props.navigation.navigate('EscalaVeiculoScreen', {
-                    registro: {
-                        registro: response.data.registro,
-                        qtdeComb: response.data.qtdeComb,
-                        dataComb: response.data.dataComb,
-                        filial: response.data.filial,
-                        descFilial: response.data.descFilial,
-                        listaHistorico: response.data.listaHistorico,
-                    },
-                    onRefresh: this.onRefresh
-                });
-            }).catch(ex => {
-                this.setState({ carregarRegistro: false });
-                console.warn(ex);
-                console.warn(ex.response);
-            });
+        //         // console.log('registro: ', response.data);
+
+        //         this.props.navigation.navigate('EscalaVeiculoScreen', {
+        //             registro: {
+        //                 registro: response.data.registro,
+        //                 qtdeComb: response.data.qtdeComb,
+        //                 dataComb: response.data.dataComb,
+        //                 filial: response.data.filial,
+        //                 descFilial: response.data.descFilial,
+        //                 listaHistorico: response.data.listaHistorico,
+        //             },
+        //             onRefresh: this.onRefresh
+        //         });
+        //     }).catch(ex => {
+        //         this.setState({ carregarRegistro: false });
+        //         console.warn(ex);
+        //         console.warn(ex.response);
+        //     });
     }
 
     carregarMaisRegistros = () => {
