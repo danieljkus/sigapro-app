@@ -389,7 +389,6 @@ export default class EscalaVeiculoScreen extends Component {
                         </View>
                     ) : null}
 
-
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 }}>
                         {idf2 ? idf2 : idf1}
                     </Text>
@@ -397,7 +396,7 @@ export default class EscalaVeiculoScreen extends Component {
                     <ProgressDialog
                         visible={carregarRegistro}
                         title="SIGA PRO"
-                        message="Gravando. Aguarde..."
+                        message="Carregando. Aguarde..."
                     />
                 </ScrollView>
             </View>
