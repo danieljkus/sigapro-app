@@ -199,32 +199,32 @@ export default class PneusEstoqueScreen extends Component {
     }
 
     onRegistroPress = (pneus_mov_idf) => {
-        // this.setState({ carregarRegistro: true });
+        this.setState({ carregarRegistro: true });
 
-        // axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
-        //     .then(response => {
-        //         this.setState({ carregarRegistro: false });
+        axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
+            .then(response => {
+                this.setState({ carregarRegistro: false });
 
-        //         console.log('registro: ', response.data);
+                console.log('registro: ', response.data);
 
-        //         response.data.registro.tipoTela = 'EST';
+                response.data.registro.tipoTela = 'EST';
 
-        //         this.props.navigation.navigate('PneusTrocaScreen', {
-        //             registro: {
-        //                 registro: response.data.registro,
-        //                 // qtdeComb: response.data.qtdeComb,
-        //                 // dataComb: response.data.dataComb,
-        //                 // filial: response.data.filial,
-        //                 // descFilial: response.data.descFilial,
-        //                 // listaHistorico: response.data.listaHistorico,
-        //             },
-        //             onRefresh: this.onRefresh,
-        //         });
-        //     }).catch(ex => {
-        //         this.setState({ carregarRegistro: false });
-        //         console.warn(ex);
-        //         console.warn(ex.response);
-        //     });
+                this.props.navigation.navigate('PneusTrocaScreen', {
+                    registro: {
+                        registro: response.data.registro,
+                        // qtdeComb: response.data.qtdeComb,
+                        // dataComb: response.data.dataComb,
+                        // filial: response.data.filial,
+                        // descFilial: response.data.descFilial,
+                        // listaHistorico: response.data.listaHistorico,
+                    },
+                    onRefresh: this.onRefresh,
+                });
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
     }
 
     onRefresh = () => {

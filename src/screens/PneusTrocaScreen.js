@@ -60,27 +60,27 @@ export default class PneusTrocaScreen extends Component {
     }
 
     onSalvarRegistro = () => {
-        // this.setState({ salvando: true });
-        // axios.put('/escalaVeiculos/trocaCarro/' + this.state.registro.man_ev_idf, {
-        //     man_ev_veiculo: this.state.man_ev_veiculo_trocar
-        // })
-        //     .then(response => {
-        //         console.log('onSalvarRegistro: ', response.data);
-        //         if (response.data === 'OK') {
-        //             this.props.navigation.goBack(null);
-        //             if (this.props.navigation.state.params.onRefresh) {
-        //                 this.props.navigation.state.params.onRefresh();
-        //             }
-        //         } else {
-        //             this.setState({ salvando: false });
-        //             Alert.showAlert(response.data);
-        //         }
-        //     }).catch(ex => {
-        //         this.setState({ salvando: false });
-        //         console.warn(ex);
-        //         console.warn(ex.response);
-        //         Alert.showAlert(ex);
-        //     })
+        this.setState({ salvando: true });
+        axios.put('/escalaVeiculos/trocaCarro/' + this.state.registro.man_ev_idf, {
+            man_ev_veiculo: this.state.man_ev_veiculo_trocar
+        })
+            .then(response => {
+                console.log('onSalvarRegistro: ', response.data);
+                if (response.data === 'OK') {
+                    this.props.navigation.goBack(null);
+                    if (this.props.navigation.state.params.onRefresh) {
+                        this.props.navigation.state.params.onRefresh();
+                    }
+                } else {
+                    this.setState({ salvando: false });
+                    Alert.showAlert(response.data);
+                }
+            }).catch(ex => {
+                this.setState({ salvando: false });
+                console.warn(ex);
+                console.warn(ex.response);
+                Alert.showAlert(ex);
+            })
     }
 
     mudaDestino = (destino) => {
@@ -98,7 +98,7 @@ export default class PneusTrocaScreen extends Component {
         const { pneus_mov_idf, pneus_mov_pneu, pneus_mov_vida, pneus_dim_descricao,
             tipoTela } = this.state.registro;
 
-        // console.log('this.state', this.state);
+        console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -118,8 +118,6 @@ export default class PneusTrocaScreen extends Component {
                                 color: Colors.primaryLight,
                                 fontWeight: 'bold',
                                 fontSize: 20,
-                                // marginBottom: 5,
-                                // marginTop: 20,
                                 borderBottomWidth: 2,
                                 borderColor: Colors.dividerDark,
                             }}>
@@ -183,8 +181,6 @@ export default class PneusTrocaScreen extends Component {
                                 color: Colors.primaryLight,
                                 fontWeight: 'bold',
                                 fontSize: 20,
-                                // marginBottom: 5,
-                                // marginTop: 20,
                                 borderBottomWidth: 2,
                                 borderColor: Colors.dividerDark,
                             }}>
