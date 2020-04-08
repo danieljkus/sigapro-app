@@ -124,7 +124,7 @@ const RegistroItem = ({ registro, onRegistroPress, onSulcagemPress }) => {
                     }}
                 >
                     <TouchableOpacity
-                        onPress={() => onSulcagemPress(registro.pneus_mov_idf)}
+                        onPress={() => onSulcagemPress(registro.pneus_mov_pneu, registro.pneus_vd_vida, registro.pneus_mov_posicao)}
                     >
                         <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
                             <Icon
@@ -250,10 +250,6 @@ export default class PneusVeiculosScreen extends Component {
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
                         registro: response.data.registro,
-                        // qtdeComb: response.data.qtdeComb,
-                        // dataComb: response.data.dataComb,
-                        // filial: response.data.filial,
-                        // descFilial: response.data.descFilial,
                         // listaHistorico: response.data.listaHistorico,
                     },
                     onRefresh: this.onRefresh,
@@ -265,33 +261,33 @@ export default class PneusVeiculosScreen extends Component {
             });
     }
 
-    onSulcagemPress = (pneus_mov_idf) => {
-        // if (!visible) {
-        //     this.setState({
-        //         modalTelefones: visible,
-        //         ven_idf_Enviar: ven_idf,
-        //         pes_fone1,
-        //         pes_fone2,
-        //         pes_fone3,
-        //     });
-        //     // if (ven_idf) {
-        //     //     this.onWhatsAppEnviar(ven_idf, '');
-        //     // }
-        // }
+    onSulcagemPress = (pneus_mov_pneu, pneus_vd_vida, pneus_mov_posicao) => {
+        this.setState({ carregarRegistro: true });
 
-        // // if (ven_dt_recebido) {
-        // if ((pes_fone1 !== '') || (pes_fone2 !== '') || (pes_fone3 !== '')) {
-        //     this.setState({
-        //         modalTelefones: visible,
-        //         ven_idf_Enviar: ven_idf,
-        //         pes_fone1,
-        //         pes_fone2,
-        //         pes_fone3,
-        //     });
-        // } else {
-        //     this.onWhatsAppEnviar(ven_idf, '');
-        // }
-        // // }
+        axios.get('/pneus/listaSulcagens', {
+            params: {
+                pneu: pneus_mov_pneu,
+            }
+        })
+            .then(response => {
+                this.setState({ carregarRegistro: false });
+
+                console.log('onSulcagemPress: ', response.data);
+
+                this.props.navigation.navigate('PneusSulcagemScreen', {
+                    listaHistorico: response.data,
+                    tipoTela: 'VEIC',
+                    pneus_sul_pneu: pneus_mov_pneu,
+                    pneus_sul_vida: pneus_vd_vida,
+                    pneus_sul_pos_veic: pneus_mov_posicao,
+                    pneus_sul_veiculo: this.state.veiculo_select.codVeic,
+                    onRefresh: this.onRefresh,
+                });
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
     }
 
     onCheckinPress = (pneus_mov_pneu) => {

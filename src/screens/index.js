@@ -14,9 +14,11 @@ import EscalaVeiculosScreen from './EscalaVeiculosScreen';
 import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
 import VeiculosScreen from './VeiculosScreen';
+
 import PneusTrocaScreen from './PneusTrocaScreen';
 import PneusVeiculosScreen from './PneusVeiculosScreen';
 import PneusEstoqueScreen from './PneusEstoqueScreen';
+import PneusSulcagemScreen from './PneusSulcagemScreen';
 
 import MedicaoTanqueDieselScreen from './MedicaoTanqueDieselScreen';
 import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
@@ -108,6 +110,8 @@ const HomeStackNavigator = StackNavigator({
     },
 
 
+
+
     EscalaVeiculoScreen: {
         screen: EscalaVeiculoScreen,
         navigationOptions: {
@@ -130,6 +134,8 @@ const HomeStackNavigator = StackNavigator({
         }
     },
 
+
+
     
     VeiculosScreen: {
         screen: VeiculosScreen,
@@ -138,6 +144,8 @@ const HomeStackNavigator = StackNavigator({
             ...defaultNavigationOptions
         }
     },
+
+
 
     PneusTrocaScreen: {
         screen: PneusTrocaScreen,
@@ -162,6 +170,16 @@ const HomeStackNavigator = StackNavigator({
             ...defaultNavigationOptions
         }
     },
+
+    PneusSulcagemScreen: {
+        screen: PneusSulcagemScreen,
+        navigationOptions: {
+            title: "Sulcagem",
+            ...defaultNavigationOptions
+        }
+    },
+
+
 
     MedicoesTanqueDieselScreen: {
         screen: MedicoesTanqueDieselScreen,
