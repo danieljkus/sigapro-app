@@ -15,6 +15,7 @@ import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
 import VeiculosScreen from './VeiculosScreen';
 
+import PneusLocalizarScreen from './PneusLocalizarScreen';
 import PneusTrocaScreen from './PneusTrocaScreen';
 import PneusVeiculosScreen from './PneusVeiculosScreen';
 import PneusEstoqueScreen from './PneusEstoqueScreen';
@@ -146,6 +147,14 @@ const HomeStackNavigator = StackNavigator({
     },
 
 
+
+    PneusLocalizarScreen: {
+        screen: PneusLocalizarScreen,
+        navigationOptions: {
+            title: "Localizar Pneu",
+            ...defaultNavigationOptions
+        }
+    },
 
     PneusTrocaScreen: {
         screen: PneusTrocaScreen,

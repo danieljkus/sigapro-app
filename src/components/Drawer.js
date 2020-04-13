@@ -147,6 +147,13 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
+                            {this.temPermissao('PNEUSLOCALIZARSCREEN') ? (
+                                <DrawerItem
+                                    text="Localizar Pneus"
+                                    onPress={() => navigation.navigate('PneusLocalizarScreen')}
+                                />
+                            ) : null}
+
                             {this.temPermissao('PNEUSVEICULOSSCREEN') ? (
                                 <DrawerItem
                                     text="Pneus nos Veículos"
