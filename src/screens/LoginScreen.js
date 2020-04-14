@@ -4,12 +4,13 @@ import { Text, Divider } from 'react-native-elements';
 import { NavigationActions } from 'react-navigation';
 import axios from 'axios';
 import Icon from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Colors from '../values/Colors';
 import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
-import { validateSenha, checkFormIsValid, validateSelect } from '../utils/Validator';
+import { validateSenha, checkFormIsValid, savePermissoes } from '../utils/Validator';
 import { saveToken } from '../utils/LoginManager';
 import DeviceInfo from 'react-native-device-info';
 
@@ -43,6 +44,7 @@ export default class LoginScreen extends Component {
             tipoAcesso: 'SIGAPRO'
         }).then(async response => {
             await saveToken(response.data.token);
+            AsyncStorage.setItem('SIGAPRO-permissoes', JSON.stringify(response.data.permissoes))
             this.goToHome()
         }).catch(error => {
             console.warn('Erro Login: ', error);

@@ -183,8 +183,6 @@ export default class PneusLocalizarScreen extends Component {
         this.setState({ carregarRegistro: true });
         const { buscaPneu } = this.state;
 
-        console.log('buscaRegistros: ', buscaPneu);
-
         axios.get('/pneus/showPneu/' + buscaPneu)
             .then(response => {
 
@@ -234,7 +232,7 @@ export default class PneusLocalizarScreen extends Component {
     render() {
         const { buscaPneu, registro, carregarRegistro } = this.state;
 
-        console.log('PneusLocalizarScreen.this.state: ', this.state);
+        // console.log('PneusLocalizarScreen.this.state: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

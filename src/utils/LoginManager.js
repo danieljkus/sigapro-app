@@ -1,7 +1,7 @@
 import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-community/async-storage';
 
-const PROF_COOKIE_NAME = 'x-access-token';
+const PROF_COOKIE_NAME = 'SIGAPRO';
 
 export const saveToken = async (token) => {
     await AsyncStorage.setItem(PROF_COOKIE_NAME, token);
@@ -19,6 +19,27 @@ export const isLoggedIn = async () => {
     const token = await getToken();
     return !!token;
 }
+
+
+
+export const getTemPermissao = (permissao) => {
+    return AsyncStorage.getItem(PROF_COOKIE_NAME + '-permissoes').then((v) => {
+        let permissoes = (v != '') ? JSON.parse(v) : [];
+        if ((permissoes) && (permissoes.length > 0)) {
+            const iIndItem = permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
+            return iIndItem >= 0 ? true : false;
+        } else {
+            return false;
+        }
+    });
+}
+
+export const removePermissoes = async () => {
+    await AsyncStorage.removeItem(PROF_COOKIE_NAME + '-permissoes');
+}
+
+
+
 
 export const getUsuario = async () => {
     const token = await getToken();
@@ -45,8 +66,4 @@ export const getGrupoPerm = async () => {
     return token ? jwtDecode(token).grupo : null;
 }
 
-export const getPermissoes = async () => {
-    const token = await getToken();
-    return token ? jwtDecode(token).permissoes : null;
-}
 

@@ -10,8 +10,8 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
-import { getPermissoes } from '../utils/LoginManager';
-import { maskValorMoeda } from '../utils/Maskers';
+import { getTemPermissao } from '../utils/LoginManager';
+import FiliaisSelect from '../components/FiliaisSelect';
 import moment from 'moment';
 
 
@@ -27,29 +27,90 @@ export default class PneusTrocaScreen extends Component {
             recapadoraChecked: false,
             sucataChecked: false,
 
+            filialSelect: null,
+            motivoMovSelect: [],
+            tipoSucSelect: [],
+
             ...props.navigation.state.params.registro,
         }
     }
 
     componentDidMount() {
-        getPermissoes().then(permissoes => {
-            this.setState({ permissoes });
-        })
+        this.buscaMotivoMov();
+        this.buscaTipoSuc();
     }
 
-    temPermissao = (permissao) => {
-        if ((this.state.permissoes) && (this.state.permissoes.length > 0)) {
-            const iIndItem = this.state.permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
-            return iIndItem >= 0 ? true : false;
-        }
-        return false;
+    buscaMotivoMov = () => {
+        this.setState({ motivoMovSelect: [], pneus_cp_marca: '' });
+        axios.get('/pneus/listaTipoMovimentacao', {
+        }).then(response => {
+            const { data } = response;
+            const motivoMovSelect = data.map(regList => {
+                return {
+                    key: regList.pneus_tm_codigo,
+                    label: regList.pneus_tm_descricao
+                }
+            });
+            motivoMovSelect.unshift({ key: 0, label: "Selecione um Motivo" });
+            this.setState({
+                motivoMovSelect,
+                registro: {
+                    ...this.state.registro,
+                    pneus_mov_tipo_mov: '',
+                }
+            })
+        }).catch(error => {
+            console.error(error.response);
+            this.setState({
+                motivoMovSelect: [{ label: "Motivo não encontrda", key: 0 }],
+            });
+        })
+
+    }
+
+    buscaTipoSuc = () => {
+        this.setState({ tipoSucSelect: [], pneus_cp_marca: '' });
+        axios.get('/pneus/listaTipoSucateamento', {
+        }).then(response => {
+            const { data } = response;
+            const tipoSucSelect = data.map(regList => {
+                return {
+                    key: regList.pneus_ts_codigo,
+                    label: regList.pneus_ts_descricao
+                }
+            });
+            tipoSucSelect.unshift({ key: 0, label: "Selecione um Tipo" });
+            this.setState({
+                tipoSucSelect,
+            })
+        }).catch(error => {
+            console.error(error.response);
+            this.setState({
+                tipoSucSelect: [{ label: "Tipo não encontrda", key: 0 }],
+            });
+        })
+
     }
 
     onInputChange = (id, value) => {
+        const { registro } = this.state;
+        registro[id] = value;
+        this.setState({ registro });
+    }
+
+    onInputChangeFilial = (id, value) => {
         const state = {};
         state[id] = value;
         this.setState(state);
+        if (value) {
+            const { registro } = this.state;
+            registro.pneus_mov_filial = value.adm_fil_codigo;
+            this.setState({
+                registro
+            });
+        }
     }
+
 
     onFormSubmit = (event) => {
         if (this.state.registro.man_ev_veiculo_trocar !== '') {
@@ -91,14 +152,34 @@ export default class PneusTrocaScreen extends Component {
         });
     }
 
+    renderLocalizacao = (registro) => {
+        if (registro.pneus_mov_posicao === 'EST') {
+            return (
+                <Text>{'FILIAL: ' + registro.pneus_mov_filial + ' - ' + registro.adm_fil_descricao}</Text>
+            )
+        } else if (registro.pneus_mov_posicao === 'REC') {
+            return (
+                <Text>{'REC: ' + registro.adm_pes_nome}</Text>
+            )
+        } else if (registro.pneus_mov_posicao === 'SUC') {
+            return (
+                <Text>SUCATEADO</Text>
+            )
+        } else {
+            return (
+                <Text>{'VEÍCULO: ' + registro.pneus_mov_veiculo + ' / POS: ' + registro.pneus_mov_posicao}</Text>
+            )
+        }
+    }
 
 
     render() {
-        const { filialChecked, recapadoraChecked, sucataChecked, loading } = this.state;
-        const { pneus_mov_idf, pneus_mov_pneu, pneus_mov_vida, pneus_dim_descricao,
-            tipoTela } = this.state.registro;
+        const { filialChecked, recapadoraChecked, sucataChecked,
+            filialSelect, motivoMovSelect, tipoSucSelect, registro, loading } = this.state;
+        const { pneus_mov_idf, pneus_mov_pneu, vida, sulco1, sulco2, sulco3, sulco4, pneus_dim_descricao,
+            pneus_mov_filial, pneus_mov_tipo_mov, pneus_mov_tipo_sucata, tipoTela } = this.state.registro;
 
-        console.log('this.state', this.state);
+        console.log('PneusTrocaScreen.this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -138,21 +219,21 @@ export default class PneusTrocaScreen extends Component {
                                         Vida{': '}
                                     </Text>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                        {String(pneus_mov_vida) === '0' ? 'Novo' : pneus_mov_vida + 'ª'}
+                                        {String(vida) === '0' ? 'Novo' : vida + 'ª'}
                                     </Text>
                                 </View>
                             </View>
-                            <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                            <View style={{ paddingLeft: 10, marginBottom: 3, fontSize: 13, flexDirection: 'row' }}>
                                 <View style={{ flex: 2, flexDirection: 'row' }}>
                                     <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
                                         Sulcagem{': '}
                                     </Text>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                        {/* {pneus_mov_vida} */}
+                                        {sulco1 + ',' + sulco2 + ',' + sulco3 + ',' + sulco4}
                                     </Text>
                                 </View>
                             </View>
-                            <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                            <View style={{ paddingLeft: 10, marginBottom: 3, fontSize: 13, flexDirection: 'row' }}>
                                 <View style={{ flex: 2, flexDirection: 'row' }}>
                                     <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
                                         Dimensão{': '}
@@ -162,20 +243,20 @@ export default class PneusTrocaScreen extends Component {
                                     </Text>
                                 </View>
                             </View>
-                            <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                                <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <View style={{ paddingLeft: 10, marginBottom: 3, fontSize: 13, flexDirection: 'row' }}>
+                                <View style={{ flex: 2 }}>
                                     <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                        Localização{': '}
+                                        Localização
                                     </Text>
                                     <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                        {/* {pneus_dim_descricao} */}
+                                        {this.renderLocalizacao(registro)}
                                     </Text>
                                 </View>
                             </View>
                         </View>
                     </View>
 
-                    {this.temPermissao('PNEUSTROCASCREEN') ? (
+                    {getTemPermissao('PNEUSTROCASCREEN') ? (
                         <View style={{ flex: 1, paddingHorizontal: 16 }}>
                             <Text style={{
                                 color: Colors.primaryLight,
@@ -206,7 +287,7 @@ export default class PneusTrocaScreen extends Component {
                                     />
                                 </View>
 
-                                <View style={{ width: "40%", margin: 0, padding: 0 }}>
+                                {/* <View style={{ width: "40%", margin: 0, padding: 0 }}>
                                     <CheckBox
                                         center
                                         title='Recapadora'
@@ -221,7 +302,7 @@ export default class PneusTrocaScreen extends Component {
                                         })}
                                         containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                                     />
-                                </View>
+                                </View> */}
 
                                 <View style={{ width: "30%", margin: 0, padding: 0 }}>
                                     <CheckBox
@@ -243,28 +324,29 @@ export default class PneusTrocaScreen extends Component {
 
                             {filialChecked ? (
                                 <View>
-                                    <TextInput
+                                    <FiliaisSelect
                                         label="Filial"
-                                        id="pneus_mov_idf"
-                                        ref="pneus_mov_idf"
-                                        value={pneus_mov_idf}
-                                        maxLength={4}
-                                        onChange={this.onInputChange}
-                                        keyboardType="numeric"
+                                        id="filialSelect"
+                                        codFilial={pneus_mov_filial}
+                                        onChange={this.onInputChangeFilial}
+                                        value={filialSelect}
                                     />
+
                                     <TextInput
+                                        type="select"
                                         label="Motivo Saída"
-                                        id="pneus_mov_idf"
-                                        ref="pneus_mov_idf"
-                                        value={pneus_mov_idf}
-                                        maxLength={4}
+                                        id="pneus_mov_tipo_mov"
+                                        ref="pneus_mov_tipo_mov"
+                                        value={pneus_mov_tipo_mov}
+                                        selectedValue=""
+                                        options={motivoMovSelect}
                                         onChange={this.onInputChange}
-                                        keyboardType="numeric"
                                     />
+
                                 </View>
                             ) : null}
 
-                            {recapadoraChecked ? (
+                            {/* {recapadoraChecked ? (
                                 <View>
                                     <TextInput
                                         label="Recapadora"
@@ -294,27 +376,19 @@ export default class PneusTrocaScreen extends Component {
                                         keyboardType="numeric"
                                     />
                                 </View>
-                            ) : null}
+                            ) : null} */}
 
                             {sucataChecked ? (
                                 <View>
                                     <TextInput
-                                        label="Sucata"
-                                        id="pneus_mov_idf"
-                                        ref="pneus_mov_idf"
-                                        value={pneus_mov_idf}
-                                        maxLength={4}
+                                        type="select"
+                                        label="Tipo Sucata"
+                                        id="pneus_mov_tipo_sucata"
+                                        ref="pneus_mov_tipo_sucata"
+                                        value={pneus_mov_tipo_sucata}
+                                        selectedValue=""
+                                        options={tipoSucSelect}
                                         onChange={this.onInputChange}
-                                        keyboardType="numeric"
-                                    />
-                                    <TextInput
-                                        label="Motivo Saída"
-                                        id="pneus_mov_idf"
-                                        ref="pneus_mov_idf"
-                                        value={pneus_mov_idf}
-                                        maxLength={4}
-                                        onChange={this.onInputChange}
-                                        keyboardType="numeric"
                                     />
                                 </View>
                             ) : null}

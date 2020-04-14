@@ -206,7 +206,7 @@ export default class MedicaoTanqueDieselScreen extends Component {
         const { estoq_tcm_idf, estoq_tcm_data, estoq_tcm_alt_medida, estoq_tcm_qtde_medida,
             estoq_tcm_qtde_sistema, qtde_diferenca } = registro;
 
-        console.log('estoq_tcm_alt_medida: ', estoq_tcm_alt_medida);
+        // console.log('estoq_tcm_alt_medida: ', estoq_tcm_alt_medida);
 
         return (
             <ScrollView

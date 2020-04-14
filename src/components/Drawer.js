@@ -6,7 +6,7 @@ import { NavigationActions } from 'react-navigation';
 
 import Icon from './Icon';
 import Colors from '../values/Colors';
-import { removeToken, getUsuario, getFilial, getPermissoes, getEmpresa } from '../utils/LoginManager';
+import { removeToken, removePermissoes, getTemPermissao, getUsuario, getFilial, getEmpresa } from '../utils/LoginManager';
 
 const DrawerItem = ({ text, onPress }) => {
     return (
@@ -42,9 +42,6 @@ class Drawer extends PureComponent {
         getUsuario().then(usuario => {
             this.setState({ usuario });
         })
-        getPermissoes().then(permissoes => {
-            this.setState({ permissoes });
-        })
         getEmpresa().then(empresa => {
             this.setState({ empresa });
         })
@@ -55,6 +52,7 @@ class Drawer extends PureComponent {
 
     onSair = async () => {
         await removeToken();
+        await removePermissoes();
         this.replaceScreen("LoginScreen");
     }
 
@@ -67,14 +65,6 @@ class Drawer extends PureComponent {
             ]
         })
         navigation.dispatch(resetAction);
-    }
-
-    temPermissao = (permissao) => {
-        if ((this.state.permissoes) && (this.state.permissoes.length > 0)) {
-            const iIndItem = this.state.permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
-            return iIndItem >= 0 ? true : false;
-        }
-        return false;
     }
 
     render() {
@@ -120,7 +110,7 @@ class Drawer extends PureComponent {
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{ flex: 1 }}>
-                            {this.temPermissao('ESCALAVEICULOSSCREEN') ? (
+                            {getTemPermissao('ESCALAVEICULOSSCREEN') ? (
                                 <DrawerItem
                                     text="Escala dos Veículos"
                                     onPress={() => navigation.navigate('EscalaVeiculosScreen')}
@@ -129,7 +119,7 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {this.temPermissao('VIAGENSTURISMOSCREEN') ? (
+                            {getTemPermissao('VIAGENSTURISMOSCREEN') ? (
                                 <DrawerItem
                                     text="Viagens Turismo"
                                     onPress={() => navigation.navigate('ViagensTurismoScreen')}
@@ -138,7 +128,7 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {this.temPermissao('VEICULOSSCREEN') ? (
+                            {getTemPermissao('VEICULOSSCREEN') ? (
                                 <DrawerItem
                                     text="Veículos"
                                     onPress={() => navigation.navigate('VeiculosScreen')}
@@ -147,21 +137,21 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {this.temPermissao('PNEUSLOCALIZARSCREEN') ? (
+                            {getTemPermissao('PNEUSLOCALIZARSCREEN') ? (
                                 <DrawerItem
                                     text="Localizar Pneus"
                                     onPress={() => navigation.navigate('PneusLocalizarScreen')}
                                 />
                             ) : null}
 
-                            {this.temPermissao('PNEUSVEICULOSSCREEN') ? (
+                            {getTemPermissao('PNEUSVEICULOSSCREEN') ? (
                                 <DrawerItem
                                     text="Pneus nos Veículos"
                                     onPress={() => navigation.navigate('PneusVeiculosScreen')}
                                 />
                             ) : null}
 
-                            {this.temPermissao('PNEUSVEICULOSSCREEN') ? (
+                            {getTemPermissao('PNEUSVEICULOSSCREEN') ? (
                                 <DrawerItem
                                     text="Pneus em Estoque"
                                     onPress={() => navigation.navigate('PneusEstoqueScreen')}
@@ -170,28 +160,28 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {empresa && this.temPermissao('FICHAVIAGEMSCREEN') ? (
+                            {empresa && getTemPermissao('FICHAVIAGEMSCREEN') ? (
                                 <DrawerItem
                                     text="Ficha de Viagem"
                                     onPress={() => navigation.navigate('FichaViagemScreen')}
                                 />
                             ) : null}
 
-                            {empresa && this.temPermissao('MEDICOESTANQUESDIESELCREEN') ? (
+                            {empresa && getTemPermissao('MEDICOESTANQUESDIESELCREEN') ? (
                                 <DrawerItem
                                     text="Medir Tanque Diesel"
                                     onPress={() => navigation.navigate('MedicoesTanqueDieselScreen')}
                                 />
                             ) : null}
 
-                            {empresa && this.temPermissao('MEDICOESTANQUEARLASCREEN') ? (
+                            {empresa && getTemPermissao('MEDICOESTANQUEARLASCREEN') ? (
                                 <DrawerItem
                                     text="Medir Tanque Arla"
                                     onPress={() => navigation.navigate('MedicoesTanqueArlaScreen')}
                                 />
                             ) : null}
 
-                            {empresa && this.temPermissao('PREDIGITACAONOTASSCREEN') ? (
+                            {empresa && getTemPermissao('PREDIGITACAONOTASSCREEN') ? (
                                 <DrawerItem
                                     text="Pré-Digitar NFe"
                                     onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
@@ -200,7 +190,7 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {this.temPermissao('TROCARFILIALSCREEN') ? (
+                            {getTemPermissao('TROCARFILIALSCREEN') ? (
                                 <DrawerItem
                                     text="Trocar Filial"
                                     onPress={() => navigation.navigate('TrocarFilialScreen')}

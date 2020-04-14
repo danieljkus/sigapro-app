@@ -13,8 +13,6 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
-import { getPermissoes } from '../utils/LoginManager';
-import { maskValorMoeda } from '../utils/Maskers';
 import moment from 'moment';
 
 const RegistroItem = ({ registro, onRegistroLongPress }) => {
@@ -129,23 +127,13 @@ export default class PneusSulcagemScreen extends Component {
     }
 
     componentDidMount() {
-        getPermissoes().then(permissoes => {
-            this.setState({ permissoes });
-        })
+
     }
 
     onInputChange = (id, value) => {
         const state = {};
         state[id] = value;
         this.setState(state);
-    }
-
-    temPermissao = (permissao) => {
-        if ((this.state.permissoes) && (this.state.permissoes.length > 0)) {
-            const iIndItem = this.state.permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
-            return iIndItem >= 0 ? true : false;
-        }
-        return false;
     }
 
     onSalvarRegistro = () => {
@@ -167,7 +155,6 @@ export default class PneusSulcagemScreen extends Component {
                 pneus_sul_obs: '',
             })
                 .then(response => {
-                    console.log('onSalvarRegistro: ', response.data);
                     this.props.navigation.goBack(null);
                     if (this.props.navigation.state.params.onRefresh) {
                         this.props.navigation.state.params.onRefresh();
@@ -199,9 +186,6 @@ export default class PneusSulcagemScreen extends Component {
 
     onExcluirRegistro = (pneus_sul_idf) => {
         this.setState({ carregarRegistro: true });
-
-        console.log('onExcluirRegistro: ', pneus_sul_idf);
-
         axios.delete('/pneus/deleteSulcagem/' + pneus_sul_idf)
             .then(response => {
 
@@ -237,7 +221,7 @@ export default class PneusSulcagemScreen extends Component {
             pneus_sul_sulco1, pneus_sul_sulco2, pneus_sul_sulco3, pneus_sul_sulco4,
             salvando, carregarRegistro } = this.state;
 
-        console.log('PneusSulcagemScreen.this.state', this.state);
+        // console.log('PneusSulcagemScreen.this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -312,7 +296,6 @@ export default class PneusSulcagemScreen extends Component {
 
 
 
-                        {/* {this.temPermissao('PNEUSSULCAGEMSCREEN') ? ( */}
                         <View>
 
                             <View style={{ flexDirection: 'row' }}>
@@ -411,7 +394,6 @@ export default class PneusSulcagemScreen extends Component {
                                 }}
                             />
                         </View>
-                        {/* ) : null} */}
 
 
 

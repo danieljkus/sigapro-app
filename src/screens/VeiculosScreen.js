@@ -218,12 +218,6 @@ export default class VeiculosScreen extends Component {
 
         const temFiltro = adm_vei_idf !== '' || adm_veiloc_codigo !== '' || adm_veiesp_codigo !== '' || adm_veitp_codigo !== '' || adm_veimotor_codigo !== '';
 
-        console.log('adm_vei_idf: ', adm_vei_idf);
-        console.log('adm_veiloc_codigo: ', adm_veiloc_codigo);
-        console.log('adm_veiesp_codigo: ', adm_veiesp_codigo);
-        console.log('adm_veitp_codigo: ', adm_veitp_codigo);
-        console.log('adm_veimotor_codigo: ', adm_veimotor_codigo);
-
         axios.get('/escalaVeiculos/listaVeiculos', {
             params: {
                 page: pagina,
@@ -434,7 +428,7 @@ export default class VeiculosScreen extends Component {
             adm_vei_idf, adm_veiloc_codigo, adm_veiesp_codigo, adm_veitp_codigo, adm_veimotor_codigo,
             localSelect, especieSelect, tipoSelect, motorSelect } = this.state;
 
-        console.log('adm_vei_idf: ', this.state.adm_vei_idf);
+        // console.log('adm_vei_idf: ', this.state.adm_vei_idf);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

@@ -13,6 +13,7 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import { maskDate } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
+import FiliaisSelect from '../components/FiliaisSelect';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -124,7 +125,7 @@ export default class PneusEstoqueScreen extends Component {
         pneus_cp_modelo: '',
         pneus_cp_dimenssao: '',
 
-        filialSelect: [],
+        filialSelect: null,
         marcaSelect: [],
         modeloSelect: [],
         dimenssaoSelect: [],
@@ -135,10 +136,32 @@ export default class PneusEstoqueScreen extends Component {
 
     componentDidMount() {
         getFilial().then(filial => {
-            this.setState({ refreshing: true });
-            this.setState({ pneus_mov_filial: filial });
-            this.getListaRegistros();
-            this.buscaFilial();
+            this.setState({
+                refreshing: true,
+                pneus_mov_filial: filial
+            });
+
+            if (filial) {
+                axios.get('/listaFiliais', {
+                    params: {
+                        codFilial: filial
+                    }
+                }).then(response => {
+                    const { data } = response;
+                    // console.log('FiliaisSelect.componentDidMount: ', data);
+                    this.setState({
+                        filialSelect: {
+                            adm_fil_codigo: filial,
+                            adm_fil_descricao: data[0].adm_fil_descricao
+                        },
+                    },
+                        this.getListaRegistros()
+                    );
+                });
+            } else {
+                this.getListaRegistros();
+            }
+
             this.buscaMarca();
             this.buscaModelo();
             this.buscaDimenssoes();
@@ -151,6 +174,18 @@ export default class PneusEstoqueScreen extends Component {
         this.setState(state);
     }
 
+    onInputChangeFilial = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        // console.log('onInputChangeFilial: ', state);
+
+        if (value) {
+            this.setState({
+                pneus_mov_filial: value.adm_fil_codigo
+            });
+        }
+    }
 
 
     getListaRegistros = () => {
@@ -158,12 +193,6 @@ export default class PneusEstoqueScreen extends Component {
             pagina, listaRegistros } = this.state;
 
         const temFiltro = pneus_mov_pneu !== '' || pneus_mov_filial !== '' || pneus_cp_marca !== '' || pneus_cp_modelo !== '' || pneus_cp_dimenssao !== '';
-
-        console.log('pneus_mov_pneu: ', pneus_mov_pneu);
-        console.log('pneus_mov_filial: ', pneus_mov_filial);
-        console.log('pneus_cp_marca: ', pneus_cp_marca);
-        console.log('pneus_cp_modelo: ', pneus_cp_modelo);
-        console.log('pneus_cp_dimenssao: ', pneus_cp_dimenssao);
 
         axios.get('/pneus/listaEstoque', {
             params: {
@@ -205,18 +234,13 @@ export default class PneusEstoqueScreen extends Component {
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('registro: ', response.data);
+                // console.log('registro: ', response.data);
 
                 response.data.registro.tipoTela = 'EST';
 
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
                         registro: response.data.registro,
-                        // qtdeComb: response.data.qtdeComb,
-                        // dataComb: response.data.dataComb,
-                        // filial: response.data.filial,
-                        // descFilial: response.data.descFilial,
-                        // listaHistorico: response.data.listaHistorico,
                     },
                     onRefresh: this.onRefresh,
                 });
@@ -292,6 +316,7 @@ export default class PneusEstoqueScreen extends Component {
             pagina: 1,
             refreshing: true,
             temFiltro: false,
+            filialSelect: null,
             pneus_mov_pneu: '',
             pneus_mov_filial: '',
             pneus_cp_marca: '',
@@ -301,32 +326,6 @@ export default class PneusEstoqueScreen extends Component {
     }
 
 
-    buscaFilial = () => {
-        this.setState({ filialSelect: [] });
-        axios.get('/listaFiliais', {
-            params: {
-                tipo: 4,
-            }
-        }).then(response => {
-            const { data } = response;
-            const filialSelect = data.map(regList => {
-                return {
-                    key: regList.adm_fil_codigo,
-                    label: '[' + ("0000" + String(regList.adm_fil_codigo)).slice(-4) + '] ' + regList.adm_fil_descricao
-                }
-            });
-            filialSelect.unshift({ key: 0, label: "Selecione uma Filial" });
-            this.setState({
-                filialSelect,
-            })
-        }).catch(error => {
-            console.error(error.response);
-            this.setState({
-                filialSelect: [{ label: "Filial não encontrda", key: 0 }],
-            });
-        })
-
-    }
 
     buscaMarca = () => {
         this.setState({ marcaSelect: [], pneus_cp_marca: '' });
@@ -407,7 +406,7 @@ export default class PneusEstoqueScreen extends Component {
             pneus_mov_pneu, pneus_mov_filial, pneus_cp_marca, pneus_cp_modelo, pneus_cp_dimenssao,
             filialSelect, marcaSelect, modeloSelect, dimenssaoSelect } = this.state;
 
-        // console.log('adm_vei_idf: ', this.state.adm_vei_idf);
+        // console.log('PneusEstoqueScreen.this.state: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -477,15 +476,12 @@ export default class PneusEstoqueScreen extends Component {
                                         onChange={this.onInputChange}
                                     />
 
-                                    <TextInput
-                                        type="select"
+                                    <FiliaisSelect
                                         label="Filial"
-                                        id="pneus_mov_filial"
-                                        ref="pneus_mov_filial"
-                                        value={pneus_mov_filial}
-                                        selectedValue=""
-                                        options={filialSelect}
-                                        onChange={this.onInputChange}
+                                        id="filialSelect"
+                                        codFilial={pneus_mov_filial}
+                                        onChange={this.onInputChangeFilial}
+                                        value={filialSelect}
                                     />
 
                                     <TextInput

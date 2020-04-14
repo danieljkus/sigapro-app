@@ -4,10 +4,10 @@ import {
     ScrollView, FlatList
 } from 'react-native';
 import axios from 'axios';
-import TextInput from '../components/TextInput';
-import Button from '../components/Button';
+import TextInput from './TextInput';
+import Button from './Button';
 import Colors from '../values/Colors';
-import Icon from '../components/Icon';
+import Icon from './Icon';
 import { Card, Divider, SearchBar } from 'react-native-elements';
 
 
@@ -15,11 +15,11 @@ const Registro = ({ registro, onRegistroPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <TouchableOpacity
-                onPress={() => onRegistroPress(registro.pas_lin_codigo)}
+                onPress={() => onRegistroPress(registro.adm_fil_codigo)}
             >
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
-                        #{registro.pas_lin_codigo}
+                        #{registro.adm_fil_codigo}
                     </Text>
                 </View>
 
@@ -27,7 +27,7 @@ const Registro = ({ registro, onRegistroPress }) => {
 
                 <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                     <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        {registro.pas_lin_descricao}
+                        {registro.adm_fil_descricao}
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -37,10 +37,10 @@ const Registro = ({ registro, onRegistroPress }) => {
 
 
 
-class LinhasSelect extends PureComponent {
+class FiliaisSelect extends PureComponent {
 
     state = {
-        codLinha: '',
+        codFilial: '',
         carregando: false,
 
         listaRegistros: [],
@@ -53,15 +53,32 @@ class LinhasSelect extends PureComponent {
     };
 
     componentDidUpdate(propsAnterior, stateAnterior) {
-        const { codLinha, onChange, id } = this.props;
-        if (codLinha !== propsAnterior.codLinha) {
+        const { codFilial, onChange, id } = this.props;
+
+        // console.log('componentDidUpdate.this.props: ', this.props);
+        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
+
+        if (codFilial !== propsAnterior.codFilial) {
             this.setState({
-                codLinha,
+                codFilial,
             })
             onChange(id, null);
-            if (codLinha) {
-                this.buscaRegistros(codLinha);
+            if (codFilial) {
+                this.buscaRegistros(codFilial);
             }
+        }
+    }
+
+    componentDidMount() {
+        // console.log('FiliaisSelect.componentDidMount.this.props: ', this.props);
+        if (this.props) {
+            this.setState({
+                pneus_mov_filial: this.props.adm_fil_codigo,
+                filialSelect: {
+                    adm_fil_codigo: this.props.adm_fil_codigo,
+                    adm_fil_descricao: this.props.adm_fil_descricao
+                },
+            });
         }
     }
 
@@ -70,6 +87,7 @@ class LinhasSelect extends PureComponent {
         state[id] = value;
         this.setState(state);
 
+        // console.log('FiliaisSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -80,12 +98,14 @@ class LinhasSelect extends PureComponent {
         this.setState({ carregando: true });
         const { id, onChange } = this.props;
 
-        axios.get('/listaLinhas', {
+        axios.get('/listaFiliais', {
             params: {
-                codLinha: value
+                codFilial: value
             }
         }).then(response => {
             const { data } = response;
+
+            // console.log('FiliaisSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -109,7 +129,7 @@ class LinhasSelect extends PureComponent {
 
 
     // ---------------------------------------------------------------------------
-    // MODAL PARA SELECIONAR ROTAS
+    // MODAL PARA SELECIONAR FILIAIS
     // ---------------------------------------------------------------------------
 
     onAbrirBuscaModal = (visible) => {
@@ -132,7 +152,7 @@ class LinhasSelect extends PureComponent {
         const { buscaNome, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
-        axios.get('/listaLinhasBusca', {
+        axios.get('/listaFiliaisBusca', {
             params: {
                 page: pagina,
                 limite: 10,
@@ -179,12 +199,12 @@ class LinhasSelect extends PureComponent {
         }, this.getListaRegistros);
     }
 
-    onRegistroPress = (pas_lin_codigo) => {
+    onRegistroPress = (adm_fil_codigo) => {
         this.setState({
-            codRota: pas_lin_codigo,
+            codFilial: adm_fil_codigo,
         });
         this.onAbrirBuscaModal(false);
-        this.buscaRegistros(pas_lin_codigo);
+        this.buscaRegistros(adm_fil_codigo);
     }
 
     carregarMaisRegistros = () => {
@@ -223,18 +243,23 @@ class LinhasSelect extends PureComponent {
 
     render() {
         const { label, enabled, value } = this.props;
-        const { codLinha, carregando, loading, refreshing, listaRegistros } = this.state;
+        const { codFilial, carregando, loading, refreshing, listaRegistros } = this.state;
 
-        const descricao = value ? value.pas_lin_descricao : '';
+        // console.log('FiliaisSelect.this.props', this.props)
+        // console.log('FiliaisSelect.this.state', this.state)
+
+        const filial = codFilial ? codFilial : (value ? value.adm_fil_codigo : '');
+        const descricao = value ? value.adm_fil_descricao : '';
+        this.setState({ codFilial: filial });
 
         return (
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ width: "25%" }}>
                     <TextInput
                         label={label}
-                        id="codLinha"
-                        ref="codLinha"
-                        value={codLinha}
+                        id="codFilial"
+                        ref="codFilial"
+                        value={codFilial}
                         maxLength={6}
                         keyboardType="numeric"
                         onChange={this.onInputChange}
@@ -279,7 +304,7 @@ class LinhasSelect extends PureComponent {
 
 
                 {/* -------------------------------- */}
-                {/* MODAL PARA BUSCA DA LINHA        */}
+                {/* MODAL PARA BUSCA DA FILIAL       */}
                 {/* -------------------------------- */}
                 <Modal
                     transparent={false}
@@ -305,7 +330,7 @@ class LinhasSelect extends PureComponent {
                             textAlign: 'center',
                             fontSize: 20,
                             fontWeight: 'bold',
-                        }}>Buscar Linha</Text>
+                        }}>Buscar Filial</Text>
                     </View>
 
                     <SearchBar
@@ -330,7 +355,7 @@ class LinhasSelect extends PureComponent {
                                     data={listaRegistros}
                                     renderItem={this.renderItem}
                                     contentContainerStyle={{ paddingBottom: 100 }}
-                                    keyExtractor={registro => registro.pas_lin_codigo}
+                                    keyExtractor={registro => registro.adm_fil_codigo}
                                     onRefresh={this.onRefresh}
                                     refreshing={refreshing}
                                     onEndReached={this.carregarMaisRegistros}
@@ -348,4 +373,4 @@ class LinhasSelect extends PureComponent {
     }
 }
 
-export default LinhasSelect;
+export default FiliaisSelect;

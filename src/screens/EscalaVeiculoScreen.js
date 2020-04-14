@@ -10,7 +10,7 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
-import { getPermissoes } from '../utils/LoginManager';
+import { getTemPermissao } from '../utils/LoginManager';
 import { maskValorMoeda } from '../utils/Maskers';
 import moment from 'moment';
 
@@ -80,12 +80,6 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     componentDidMount() {
-        getPermissoes().then(permissoes => {
-            this.setState({ permissoes });
-        })
-
-        console.log('componentDidMount', this.state);
-
         const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
 
         this.setState({
@@ -128,14 +122,6 @@ export default class EscalaVeiculoScreen extends Component {
         this.setState(state);
     }
 
-    temPermissao = (permissao) => {
-        if ((this.state.permissoes) && (this.state.permissoes.length > 0)) {
-            const iIndItem = this.state.permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
-            return iIndItem >= 0 ? true : false;
-        }
-        return false;
-    }
-
     onFormSubmit = (event) => {
         if (this.state.man_ev_veiculo_trocar !== '') {
             this.onSalvarRegistro();
@@ -157,7 +143,6 @@ export default class EscalaVeiculoScreen extends Component {
             man_ev_servico_estra: this.state.registro.pas_via_servico_extra,
         })
             .then(response => {
-                console.log('onSalvarRegistro: ', response.data);
                 if (response.data === 'OK') {
                     this.props.navigation.goBack(null);
                     if (this.props.navigation.state.params.onRefresh) {
@@ -212,7 +197,7 @@ export default class EscalaVeiculoScreen extends Component {
                     <View
                         style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginVertical: 20 }}
                     >
-                        {this.temPermissao('ESCALAVEICULOSTROCARVEICSCREEN') ? (
+                        {getTemPermissao('ESCALAVEICULOSTROCARVEICSCREEN') ? (
                             <View>
                                 <TextInput
                                     label="Trocar Veículo"

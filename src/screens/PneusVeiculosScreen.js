@@ -212,8 +212,6 @@ export default class PneusVeiculosScreen extends Component {
     getListaRegistros = () => {
         const { veiculo_select, pagina, listaRegistros } = this.state;
 
-        console.log('veiculo_select: ', veiculo_select);
-
         axios.get('/pneus/listaVeiculo', {
             params: {
                 veiculo: veiculo_select.codVeic,
@@ -242,11 +240,7 @@ export default class PneusVeiculosScreen extends Component {
         axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
-
-                console.log('registro: ', response.data);
-
                 response.data.registro.tipoTela = 'VEIC';
-
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
                         registro: response.data.registro,
@@ -271,9 +265,6 @@ export default class PneusVeiculosScreen extends Component {
         })
             .then(response => {
                 this.setState({ carregarRegistro: false });
-
-                console.log('onSulcagemPress: ', response.data);
-
                 this.props.navigation.navigate('PneusSulcagemScreen', {
                     listaHistorico: response.data,
                     tipoTela: 'VEIC',
@@ -305,19 +296,14 @@ export default class PneusVeiculosScreen extends Component {
 
                     const registro = {
                         pneus_os_veiculo: this.state.veiculo_select.codVeic,
-                        pneus_os_latitude: 12, //location.latitude,
-                        pneus_os_longitude: 34, //location.longitude,
+                        pneus_os_latitude: location.latitude,
+                        pneus_os_longitude: location.longitude,
                     };
-
-                    console.log('onCheckinPress2: ', registro);
 
                     this.state.pneus_os_data = moment().format('YYYY-MM-DD HH:mm');
 
                     axios.put('/pneus/gravarOS', registro)
                         .then(response => {
-
-                            console.log('onCheckinPress OK: ', response);
-
                             this.setState({
                                 carregarRegistro: false,
                                 pneus_os_data: moment().format('YYYY-MM-DD HH:mm'),
@@ -329,11 +315,7 @@ export default class PneusVeiculosScreen extends Component {
 
                         }).catch(ex => {
                             const { response } = ex;
-
-                            console.log('onCheckinPress ERRO: ', response);
-
                             this.setState({ carregarRegistro: false });
-
                             if (response) {
                                 // erro no servidor
                                 Alert.showAlert('Não foi possível concluir a solicitação.');

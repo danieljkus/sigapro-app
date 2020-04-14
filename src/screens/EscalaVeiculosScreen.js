@@ -125,8 +125,6 @@ export default class EscalaVeiculosScreen extends Component {
 
         const temFiltro = man_ev_servico !== '' || man_ev_veiculo !== '' || man_ev_od !== '';
 
-        console.log('getListaRegistros');
-
         axios.get('/escalaVeiculos', {
             params: {
                 page: pagina,
@@ -164,7 +162,7 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        console.log('onRegistroPress: ', registro);
+        // console.log('onRegistroPress: ', registro);
 
         this.props.navigation.navigate('EscalaVeiculoScreen', {
             registro: {
