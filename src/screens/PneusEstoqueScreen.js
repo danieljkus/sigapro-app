@@ -98,7 +98,7 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                                 Km Vida{': '}
                             </Text>
                             <Text>
-                                {registro.pneus_vd_km_vida}
+                                {registro.pneus_mov_km_ini}
                             </Text>
                         </View>
                     </View>
@@ -232,15 +232,14 @@ export default class PneusEstoqueScreen extends Component {
 
         axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
             .then(response => {
+
+                console.log('response.data: ', response.data);
+
                 this.setState({ carregarRegistro: false });
-
-                // console.log('registro: ', response.data);
-
-                response.data.registro.tipoTela = 'EST';
-
+                response.data.tipoTela = 'EST';
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
-                        registro: response.data.registro,
+                        registro: response.data,
                     },
                     onRefresh: this.onRefresh,
                 });
@@ -467,6 +466,14 @@ export default class PneusEstoqueScreen extends Component {
 
                                 <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
+                                    <FiliaisSelect
+                                        label="Filial"
+                                        id="filialSelect"
+                                        codFilial={pneus_mov_filial}
+                                        onChange={this.onInputChangeFilial}
+                                        value={filialSelect}
+                                    />
+
                                     <TextInput
                                         label="Pneu"
                                         id="pneus_mov_pneu"
@@ -474,14 +481,6 @@ export default class PneusEstoqueScreen extends Component {
                                         value={pneus_mov_pneu}
                                         maxLength={20}
                                         onChange={this.onInputChange}
-                                    />
-
-                                    <FiliaisSelect
-                                        label="Filial"
-                                        id="filialSelect"
-                                        codFilial={pneus_mov_filial}
-                                        onChange={this.onInputChangeFilial}
-                                        value={filialSelect}
                                     />
 
                                     <TextInput

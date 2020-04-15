@@ -15,6 +15,7 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import { maskDate } from '../utils/Maskers';
 import Alert from '../components/Alert';
+import { getFilial } from '../utils/LoginManager';
 
 import VeiculosSelect from '../components/VeiculosSelect';
 import moment from 'moment';
@@ -174,13 +175,19 @@ export default class PneusVeiculosScreen extends Component {
         veiculo_select: null,
         codVeiculo: '',
 
+        filialUsuario: '',
         pneus_os_data: '',
         pneus_os_longitude: '',
         pneus_os_longitude: '',
     };
 
     componentDidMount() {
-
+        getFilial().then(filial => {
+            console.log('componentDidMount.filial: ', filial);
+            this.setState({
+                filialUsuario: filial
+            });
+        })
     }
 
     onInputChange = (id, value) => {
@@ -234,17 +241,50 @@ export default class PneusVeiculosScreen extends Component {
         })
     }
 
+    onAddPress = () => {
+        this.props.navigation.navigate('PneusTrocaScreen', {
+            registro: {
+                registro: {
+                    pneus_mov_idf: 0,
+                    pneus_mov_pneu: '',
+                    pneus_mov_pneu_novo: '',
+                    pneus_mov_data: '',
+                    pneus_mov_filial: this.state.filialUsuario,
+                    pneus_mov_veiculo: this.state.veiculo_select.codVeic,
+                    pneus_mov_posicao: '',
+                    pneus_mov_eixo: '',
+                    pneus_mov_destino: "C",
+                    pneus_mov_tipo_mov: "29",
+                    pneus_mov_km_ini: "0",
+                    pneus_mov_km_fim: "0",
+                    pneus_mov_tipo_sucata: null,
+                    pneus_dim_descricao: "SEM DIMENSSAO",
+                    adm_fil_descricao: "CAMPO MOURAO (PR)  GARAGEM",
+                    adm_pes_nome: null,
+                    vida: '',
+                    sulco1: '',
+                    sulco2: '',
+                    sulco3: '',
+                    sulco4: '',
+                    tipoTela: 'ADDVEIC'
+                },
+            },
+            onRefresh: this.onRefresh
+        });
+    }
+
     onRegistroPress = (pneus_mov_idf) => {
         this.setState({ carregarRegistro: true });
 
         axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
-                response.data.registro.tipoTela = 'VEIC';
+                response.data.tipoTela = 'VEIC';
+                response.data.pneus_mov_pneu_novo = '';
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
-                        registro: response.data.registro,
-                        // listaHistorico: response.data.listaHistorico,
+                        registro: response.data,
+                        listaPneusVeic: listaRegistros,
                     },
                     onRefresh: this.onRefresh,
                 });
@@ -311,18 +351,12 @@ export default class PneusVeiculosScreen extends Component {
                                 pneus_os_longitude: location.longitude,
                             });
 
-                            // this.props.navigation.state.params.onRefresh();
+                            Alert.showAlert('Check-in atualizado');
 
                         }).catch(ex => {
                             const { response } = ex;
                             this.setState({ carregarRegistro: false });
-                            if (response) {
-                                // erro no servidor
-                                Alert.showAlert('Não foi possível concluir a solicitação.');
-                                // } else {
-                                //     // sem internet
-                                //     Alert.showAlert('Verifique sua conexão com a internet.');
-                            }
+                            Alert.showAlert('Não foi possível fazer o check-in.');
                         })
 
                 })
@@ -483,6 +517,15 @@ export default class PneusVeiculosScreen extends Component {
                     ListFooterComponent={this.renderListFooter}
                 />
 
+                {veiculo_select && veiculo_select.codVeic ? (
+                    <FloatActionButton
+                        iconFamily="MaterialIcons"
+                        iconName="add"
+                        iconColor={Colors.textOnAccent}
+                        onPress={this.onAddPress}
+                        backgroundColor={Colors.primary}
+                    />
+                ) : null}
 
                 <ProgressDialog
                     visible={carregarRegistro}
