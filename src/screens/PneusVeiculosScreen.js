@@ -183,7 +183,6 @@ export default class PneusVeiculosScreen extends Component {
 
     componentDidMount() {
         getFilial().then(filial => {
-            console.log('componentDidMount.filial: ', filial);
             this.setState({
                 filialUsuario: filial
             });
@@ -224,7 +223,6 @@ export default class PneusVeiculosScreen extends Component {
                 veiculo: veiculo_select.codVeic,
             }
         }).then(response => {
-
             this.setState({
                 listaRegistros: response.data.dados,
                 pneus_os_data: response.data.dataCheckIn,
@@ -244,6 +242,7 @@ export default class PneusVeiculosScreen extends Component {
     onAddPress = () => {
         this.props.navigation.navigate('PneusTrocaScreen', {
             registro: {
+                listaPneusVeic: this.state.listaRegistros,
                 registro: {
                     pneus_mov_idf: 0,
                     pneus_mov_pneu: '',
@@ -284,7 +283,7 @@ export default class PneusVeiculosScreen extends Component {
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
                         registro: response.data,
-                        listaPneusVeic: listaRegistros,
+                        listaPneusVeic: this.state.listaRegistros,
                     },
                     onRefresh: this.onRefresh,
                 });
@@ -331,9 +330,7 @@ export default class PneusVeiculosScreen extends Component {
                 timeout: 30000,
             })
                 .then(location => {
-
-                    console.log('onCheckinPress1: ', location);
-
+                    // console.log('onCheckinPress1: ', location);
                     const registro = {
                         pneus_os_veiculo: this.state.veiculo_select.codVeic,
                         pneus_os_latitude: location.latitude,
@@ -486,7 +483,7 @@ export default class PneusVeiculosScreen extends Component {
                                     Data Check-in{': '}
                                 </Text>
                                 <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                    {moment(pneus_os_data).format('DD/MM/YYYY [às] HH:mm')}
+                                    {pneus_os_data ? moment(pneus_os_data).format('DD/MM/YYYY [às] HH:mm') : ''}
                                 </Text>
                             </View>
 

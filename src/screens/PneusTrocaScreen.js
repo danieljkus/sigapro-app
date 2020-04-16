@@ -47,7 +47,11 @@ export default class PneusTrocaScreen extends Component {
     componentDidMount() {
         this.buscaMotivoMov();
         this.buscaTipoSuc();
+        // this.setState({
+        // listaPneusVeic: props.navigation.state.params.registro.listaPneusVeic
+        // },
         this.buscaPneusEstoque();
+        // );
     }
 
     buscaMotivoMov = () => {
@@ -103,17 +107,13 @@ export default class PneusTrocaScreen extends Component {
     }
 
     buscaPneusEstoque = () => {
-        this.setState({ pneusSelect: [] });
-        console.log('buscaPneusEstoque1: ', this.state.registro.pneus_mov_veiculo);
-
+        this.setState({ pneusSelect: [], salvando: true });
         axios.get('/pneus/listaPneusEstoque', {
             params: {
                 veiculo: this.state.registro.pneus_mov_veiculo,
             }
         }).then(response => {
             const { data } = response;
-            console.log('buscaPneusEstoque: ', data);
-
             const pneusSelect = data.pneus.map(regList => {
                 return {
                     key: regList.pneus_mov_pneu,
@@ -128,21 +128,23 @@ export default class PneusTrocaScreen extends Component {
                 }
             });
             pneusSelect.unshift({ key: '', label: "" });
-            console.log('pneusSelect: ', pneusSelect);
 
             const posicaoesSelect = data.posicoes.map(regListPos => {
+                const ind = this.state.listaPneusVeic ? this.state.listaPneusVeic.findIndex(registro => String(registro.pneus_mov_posicao) === String(regListPos.posicao)) : -1;
+                const pneu = ind >= 0 ? this.state.listaPneusVeic[ind].pneus_mov_pneu : '';
                 return {
                     key: regListPos.posicao,
                     label: regListPos.posicao,
                     eixo: regListPos.eixo,
+                    pneu: pneu,
                 }
             });
             posicaoesSelect.unshift({ key: '', label: "" });
-            console.log('posicaoesSelect: ', posicaoesSelect);
 
             this.setState({
                 pneusSelect,
                 posicaoesSelect,
+                salvando: false,
                 registro: {
                     ...this.state.registro,
                     pneus_mov_pneu_novo: '',
@@ -151,11 +153,11 @@ export default class PneusTrocaScreen extends Component {
                 }
             })
         }).catch(error => {
-            console.log('buscaPneusEstoque ERRO');
             console.error(error.response);
             this.setState({
                 pneusSelect: [],
                 posicaoesSelect: [],
+                salvando: false,
                 registro: {
                     ...this.state.registro,
                     pneus_mov_pneu_novo: '',
@@ -211,6 +213,7 @@ export default class PneusTrocaScreen extends Component {
             const { registro } = this.state;
             registro.pneus_mov_posicao = this.state.posicaoesSelect[ind].key;
             registro.pneus_mov_eixo = this.state.posicaoesSelect[ind].eixo;
+            registro.pneu_atual = this.state.posicaoesSelect[ind].pneu;
             this.setState({
                 registro
             });
@@ -220,7 +223,7 @@ export default class PneusTrocaScreen extends Component {
 
     onOKForm = (event) => {
         const { registro } = this.state;
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
 
         if (checkFormIsValid(this.refs)) {
 
@@ -282,7 +285,7 @@ export default class PneusTrocaScreen extends Component {
                 eixo: registro.pneus_mov_eixo,
                 tipoMov: 28,
                 kmIni: registro.pneus_mov_km_ini,
-                kmFim: 0,
+                kmFim: registro.pneus_mov_km_ini,
                 kmRodado: 0,
                 tipoSuc: null,
                 librasNova: 0,
@@ -360,16 +363,14 @@ export default class PneusTrocaScreen extends Component {
             }
         }
 
-        console.log('onSalvarRegistro: ', registroGravar);
-        return;
+        // console.log('onSalvarRegistro: ', registroGravar);
+        // return;
 
         if (registroGravar) {
             this.setState({ salvando: true });
             axios.put('/pneus/movimentacao/' + registro.pneus_mov_idf, registroGravar)
                 .then(response => {
                     this.setState({ salvando: false });
-
-                    console.log('onSalvarRegistro OK: ', response.data);
 
                     if (response.data.msgErro !== '') {
                         Alert.showAlert(response.data.msgErro);
@@ -417,16 +418,16 @@ export default class PneusTrocaScreen extends Component {
 
 
     render() {
-        const { filialChecked, recapadoraChecked, sucataChecked, pneu_atual,
+        const { filialChecked, recapadoraChecked, sucataChecked,
             filialSelect, motivoMovSelect, tipoSucSelect, pneusSelect, posicaoesSelect,
             pneus_sul_sulco1, pneus_sul_sulco2, pneus_sul_sulco3, pneus_sul_sulco4,
             registro, loading } = this.state;
         const { pneus_mov_idf, pneus_mov_pneu, vida, sulco1, sulco2, sulco3, sulco4, pneus_dim_descricao,
             pneus_mov_filial, pneus_mov_tipo_mov, pneus_mov_tipo_sucata, pneus_mov_km_ini, pneus_mov_km_fim,
-            pneus_mov_pneu_novo, pneus_mov_posicao, tipoTela } = this.state.registro;
+            pneus_mov_pneu_novo, pneus_mov_posicao, pneu_atual, tipoTela } = this.state.registro;
 
-        console.log('PneusTrocaScreen.this.state.registro', this.state.registro);
-        console.log('PneusTrocaScreen.this.state', this.state);
+        // console.log('PneusTrocaScreen.this.state.registro', this.state.registro);
+        // console.log('PneusTrocaScreen.this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -888,6 +889,7 @@ export default class PneusTrocaScreen extends Component {
                                 onPress={this.onOKForm}
                                 color={Colors.textOnPrimary}
                                 buttonStyle={{ marginBottom: 30, marginTop: 10 }}
+                                disabled={pneu_atual === '' ? false : true}
                                 icon={{
                                     name: 'check',
                                     type: 'font-awesome',
@@ -904,7 +906,7 @@ export default class PneusTrocaScreen extends Component {
                     <ProgressDialog
                         visible={this.state.salvando}
                         title="SIGA PRO"
-                        message="Gravando. Aguarde..."
+                        message="Aguarde..."
                     />
                 </ScrollView>
             </View >
