@@ -42,7 +42,7 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
                                 Horário {': '}
                             </Text>
                             <Text>
-                                {registro.hora_fim ? registro.hora_ini : registro.hora_ini + ' / ' + registro.hora_fim}
+                                {registro.pas_via_servico_extra ? registro.pas_ext_horario_extra : (registro.hora_fim ? registro.hora_ini : registro.hora_ini + ' / ' + registro.hora_fim)}
                             </Text>
                         </View>
                         <View style={{ flex: 3, flexDirection: 'row' }}>
@@ -67,7 +67,7 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
 
                     <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                         <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                            {registro.desc_sec_ini + ' a ' + registro.desc_sec_fim}
+                            {registro.pas_via_servico_extra ? (registro.desc_sec_ini_extra + ' a ' + registro.desc_sec_fim_extra) : (registro.desc_sec_ini + ' a ' + registro.desc_sec_fim)}
                         </Text>
                     </View>
 

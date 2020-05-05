@@ -244,7 +244,8 @@ export default class PneusLocalizarScreen extends Component {
                         ref="buscaPneu"
                         value={buscaPneu}
                         maxLength={10}
-                        keyboardType="numeric"
+                        // keyboardType="decimal-pad"
+                        // keyboardType="numeric"
                         onChange={this.onChange}
                     />
 

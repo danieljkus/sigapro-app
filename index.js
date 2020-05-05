@@ -8,8 +8,8 @@ import { getToken } from './src/utils/LoginManager';
 if (__DEV__) {
     // axios.defaults.baseURL = 'http://189.112.171.123/api/';
     // axios.defaults.baseURL = 'http://cargasweb.expnordeste.com.br/api/';
-    axios.defaults.baseURL = 'https://cargasweb.expnordeste.com.br/api/';
-    // axios.defaults.baseURL = 'http://10.0.1.9/siga-web3-back/public/api';
+    // axios.defaults.baseURL = 'https://cargasweb.expnordeste.com.br/api/';
+    axios.defaults.baseURL = 'http://10.0.1.9/siga-web3-back/public/api';
 } else {
     axios.defaults.baseURL = 'https://cargasweb.expnordeste.com.br/api/';
 }

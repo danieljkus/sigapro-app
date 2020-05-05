@@ -460,7 +460,7 @@ export default class PneusVeiculosScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro,
             veiculo_select, codVeiculo, pneus_os_data } = this.state;
 
-        console.log('PneusVeiculosScreen.this.state: ', this.state);
+        // console.log('PneusVeiculosScreen.this.state: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

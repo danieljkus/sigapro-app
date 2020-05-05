@@ -47,11 +47,7 @@ export default class PneusTrocaScreen extends Component {
     componentDidMount() {
         this.buscaMotivoMov();
         this.buscaTipoSuc();
-        // this.setState({
-        // listaPneusVeic: props.navigation.state.params.registro.listaPneusVeic
-        // },
         this.buscaPneusEstoque();
-        // );
     }
 
     buscaMotivoMov = () => {
@@ -147,9 +143,10 @@ export default class PneusTrocaScreen extends Component {
                 salvando: false,
                 registro: {
                     ...this.state.registro,
+                    pneus_mov_idf_novo: 0,
                     pneus_mov_pneu_novo: '',
-                    pneus_mov_posicao: '',
-                    pneus_mov_eixo: '',
+                    // pneus_mov_posicao: '',
+                    // pneus_mov_eixo: '',
                 }
             })
         }).catch(error => {
@@ -160,9 +157,10 @@ export default class PneusTrocaScreen extends Component {
                 salvando: false,
                 registro: {
                     ...this.state.registro,
+                    pneus_mov_idf_novo: 0,
                     pneus_mov_pneu_novo: '',
-                    pneus_mov_posicao: '',
-                    pneus_mov_eixo: '',
+                    // pneus_mov_posicao: '',
+                    // pneus_mov_eixo: '',
                 }
             });
         })
@@ -193,7 +191,7 @@ export default class PneusTrocaScreen extends Component {
         if (value) {
             const ind = value ? this.state.pneusSelect.findIndex(registro => String(registro.key) === String(value)) : -1;
             const { registro } = this.state;
-            registro.pneus_mov_idf = this.state.pneusSelect[ind].idf;
+            registro.pneus_mov_idf_novo = this.state.pneusSelect[ind].idf;
             registro.pneus_mov_pneu_novo = this.state.pneusSelect[ind].key;
             registro.vida = this.state.pneusSelect[ind].vida;
             registro.pneus_mov_km_ini = this.state.pneusSelect[ind].km;
@@ -223,17 +221,13 @@ export default class PneusTrocaScreen extends Component {
 
     onOKForm = (event) => {
         const { registro } = this.state;
-        // console.log('onSalvarRegistro: ', registro);
-
+        console.log('onOKForm: ', registro);
         if (checkFormIsValid(this.refs)) {
-
             if (registro.tipoTela === 'ADDVEIC') {
-
                 if (!registro.pneus_mov_pneu_novo) {
                     Alert.showAlert("Informe o Pneu");
                     return;
                 }
-
             } else {
                 if (this.state.filialChecked) {
                     if ((!this.state.filialSelect) || (!registro.pneus_mov_filial)) {
@@ -245,14 +239,11 @@ export default class PneusTrocaScreen extends Component {
                         return;
                     }
                 }
-
-
                 if ((this.state.sucataChecked) && (!registro.pneus_mov_tipo_sucata)) {
                     Alert.showAlert("Informe o Tipo de Sucateamento");
                     return;
                 }
             }
-
             Alert.showConfirm("Deseja gravar a movimentação?", {
                 text: "Cancelar"
             },
@@ -260,21 +251,20 @@ export default class PneusTrocaScreen extends Component {
                     text: "OK",
                     onPress: this.onSalvarRegistro
                 })
-
         } else {
-
             Alert.showAlert("Informe os campos obrigatórios.")
             return
-
         }
     }
 
     onSalvarRegistro = () => {
         const { registro } = this.state;
         let registroGravar = [];
+        let idf = registro.pneus_mov_idf;
 
         if (registro.tipoTela === 'ADDVEIC') {
-
+            idf = registro.pneus_mov_idf_novo;
+            
             registroGravar = {
                 pneu: registro.pneus_mov_pneu_novo,
                 vida: registro.vida,
@@ -304,7 +294,9 @@ export default class PneusTrocaScreen extends Component {
             }
 
         } else {
+
             if (this.state.filialChecked) {
+
                 registroGravar = {
                     pneu: registro.pneus_mov_pneu,
                     vida: registro.vida,
@@ -327,12 +319,15 @@ export default class PneusTrocaScreen extends Component {
                     sulco4: registro.tipoTela === 'VEIC' ? registro.sulco4 : this.state.pneus_sul_sulco4,
                     OBSSulc: "ESTOQUE",
 
-                    idfNovoPneu: 0,
-                    veicNovo: "",
-                    posicaoNovo: "",
-                    eixoNovo: ""
+                    idfNovoPneu: registro.pneus_mov_idf_novo ? registro.pneus_mov_idf_novo : 0,
+                    pneuNovo: registro.pneus_mov_pneu_novo ? registro.pneus_mov_pneu_novo : 0,
+                    veicNovo: registro.pneus_mov_veiculo ? registro.pneus_mov_veiculo : "",
+                    posicaoNovo: registro.pneus_mov_posicao ? registro.pneus_mov_posicao : "",
+                    eixoNovo: registro.pneus_mov_eixo ? registro.pneus_mov_eixo : ""
                 }
+
             } else if (this.state.sucataChecked) {
+
                 registroGravar = {
                     pneu: registro.pneus_mov_pneu,
                     vida: registro.vida,
@@ -355,20 +350,23 @@ export default class PneusTrocaScreen extends Component {
                     sulco4: registro.tipoTela === 'VEIC' ? registro.sulco4 : this.state.pneus_sul_sulco4,
                     OBSSulc: "SUCATA",
 
-                    idfNovoPneu: 0,
-                    veicNovo: "",
-                    posicaoNovo: "",
-                    eixoNovo: ""
+                    idfNovoPneu: registro.pneus_mov_idf_novo ? registro.pneus_mov_idf_novo : 0,
+                    pneuNovo: registro.pneus_mov_pneu_novo ? registro.pneus_mov_pneu_novo : 0,
+                    veicNovo: registro.pneus_mov_veiculo ? registro.pneus_mov_veiculo : "",
+                    posicaoNovo: registro.pneus_mov_posicao ? registro.pneus_mov_posicao : "",
+                    eixoNovo: registro.pneus_mov_eixo ? registro.pneus_mov_eixo : ""
                 }
+
             }
+
         }
 
-        // console.log('onSalvarRegistro: ', registroGravar);
+        console.log('onSalvarRegistro: ', registroGravar);
         // return;
 
         if (registroGravar) {
             this.setState({ salvando: true });
-            axios.put('/pneus/movimentacao/' + registro.pneus_mov_idf, registroGravar)
+            axios.put('/pneus/movimentacao/' + idf, registroGravar)
                 .then(response => {
                     this.setState({ salvando: false });
 
@@ -426,8 +424,8 @@ export default class PneusTrocaScreen extends Component {
             pneus_mov_filial, pneus_mov_tipo_mov, pneus_mov_tipo_sucata, pneus_mov_km_ini, pneus_mov_km_fim,
             pneus_mov_pneu_novo, pneus_mov_posicao, pneu_atual, tipoTela } = this.state.registro;
 
-        // console.log('PneusTrocaScreen.this.state.registro', this.state.registro);
-        // console.log('PneusTrocaScreen.this.state', this.state);
+        console.log('PneusTrocaScreen.this.state.registro', this.state.registro);
+        console.log('PneusTrocaScreen.this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
