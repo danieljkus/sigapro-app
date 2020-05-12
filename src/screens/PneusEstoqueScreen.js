@@ -232,9 +232,6 @@ export default class PneusEstoqueScreen extends Component {
 
         axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
             .then(response => {
-
-                console.log('response.data: ', response.data);
-
                 this.setState({ carregarRegistro: false });
                 response.data.tipoTela = 'EST';
                 this.props.navigation.navigate('PneusTrocaScreen', {

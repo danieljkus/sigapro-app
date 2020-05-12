@@ -221,7 +221,7 @@ export default class PneusTrocaScreen extends Component {
 
     onOKForm = (event) => {
         const { registro } = this.state;
-        console.log('onOKForm: ', registro);
+        // console.log('onOKForm: ', registro);
         if (checkFormIsValid(this.refs)) {
             if (registro.tipoTela === 'ADDVEIC') {
                 if (!registro.pneus_mov_pneu_novo) {
@@ -300,13 +300,13 @@ export default class PneusTrocaScreen extends Component {
                 registroGravar = {
                     pneu: registro.pneus_mov_pneu,
                     vida: registro.vida,
-                    data: registro.pneus_mov_data,
+                    data: moment().format("YYYY-MM-DD"),
                     filial: registro.pneus_mov_filial,
                     veiculo: null,
                     posicao: "EST",
                     eixo: "",
                     tipoMov: registro.pneus_mov_tipo_mov,
-                    kmIni: registro.pneus_mov_km_ini,
+                    kmIni: 0,
                     kmFim: registro.tipoTela === 'VEIC' ? registro.pneus_mov_km_fim : registro.pneus_mov_km_ini,
                     kmRodado: 0,
                     tipoSuc: null,
@@ -331,7 +331,7 @@ export default class PneusTrocaScreen extends Component {
                 registroGravar = {
                     pneu: registro.pneus_mov_pneu,
                     vida: registro.vida,
-                    data: registro.pneus_mov_data,
+                    data: moment().format("YYYY-MM-DD"),
                     filial: 0,
                     veiculo: null,
                     posicao: "SUC",
@@ -361,7 +361,7 @@ export default class PneusTrocaScreen extends Component {
 
         }
 
-        console.log('onSalvarRegistro: ', registroGravar);
+        // console.log('onSalvarRegistro: ', registroGravar);
         // return;
 
         if (registroGravar) {
@@ -424,8 +424,8 @@ export default class PneusTrocaScreen extends Component {
             pneus_mov_filial, pneus_mov_tipo_mov, pneus_mov_tipo_sucata, pneus_mov_km_ini, pneus_mov_km_fim,
             pneus_mov_pneu_novo, pneus_mov_posicao, pneu_atual, tipoTela } = this.state.registro;
 
-        console.log('PneusTrocaScreen.this.state.registro', this.state.registro);
-        console.log('PneusTrocaScreen.this.state', this.state);
+        // console.log('PneusTrocaScreen.this.state.registro', this.state.registro);
+        // console.log('PneusTrocaScreen.this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

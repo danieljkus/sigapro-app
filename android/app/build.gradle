@@ -105,8 +105,8 @@ android {
         applicationId "br.com.expnordeste.app.sigapro"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.5"
+        versionCode 6
+        versionName "1.6"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {

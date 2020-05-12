@@ -202,10 +202,10 @@ export default class PneusLocalizarScreen extends Component {
         state[id] = value;
         this.setState(state);
 
-        clearTimeout(this.buscaRegistrosId);
-        this.buscaRegistrosId = setTimeout(() => {
-            this.buscaRegistros(value);
-        }, 1000);
+        // clearTimeout(this.buscaRegistrosId);
+        // this.buscaRegistrosId = setTimeout(() => {
+        //     this.buscaRegistros(value);
+        // }, 1000);
     }
 
     renderLocalizacao = (registro) => {
@@ -248,7 +248,18 @@ export default class PneusLocalizarScreen extends Component {
                         // keyboardType="numeric"
                         onChange={this.onChange}
                     />
-
+                    <Button
+                        title="Buscar Pneu"
+                        loading={carregarRegistro}
+                        onPress={this.buscaRegistros}
+                        color={Colors.textOnPrimary}
+                        buttonStyle={{ marginBottom: 30, marginTop: 10 }}
+                        icon={{
+                            name: 'search',
+                            type: 'font-awesome',
+                            color: Colors.textOnPrimary
+                        }}
+                    />
                     {registro.pneus_mov_filial ? (
                         <View style={{ marginBottom: 30 }}>
                             <Text style={{
@@ -261,7 +272,7 @@ export default class PneusLocalizarScreen extends Component {
                                 borderColor: Colors.dividerDark,
                             }}>
                                 Dados do Pneu
-                    </Text>
+                            </Text>
 
                             <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
                                 <Text style={{ fontSize: 15, fontWeight: 'bold', color: Colors.primaryDark }} >
