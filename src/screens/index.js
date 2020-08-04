@@ -35,6 +35,8 @@ import FichaViagemScreen from './FichaViagemScreen';
 
 import ViagensTurismoScreen from './ViagensTurismoScreen';
 
+import SaldosFiliaisScreen from './SaldosFiliaisScreen';
+
 import TrocarSenhaScreen from './TrocarSenhaScreen';
 
 import Icon from '../components/Icon';
@@ -232,6 +234,14 @@ const HomeStackNavigator = StackNavigator({
         screen: ViagensTurismoScreen,
         navigationOptions: {
             title: "Viagens Turismo",
+            ...defaultNavigationOptions
+        }
+    },
+
+    SaldosFiliaisScreen: {
+        screen: SaldosFiliaisScreen,
+        navigationOptions: {
+            title: "Saldo das Filiais",
             ...defaultNavigationOptions
         }
     },

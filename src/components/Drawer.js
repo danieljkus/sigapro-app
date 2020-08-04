@@ -190,6 +190,15 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
+                            {getTemPermissao('SALDOSFILIAISSCREEN') ? (
+                                <DrawerItem
+                                    text="Saldo das Filiais"
+                                    onPress={() => navigation.navigate('SaldosFiliaisScreen')}
+                                />
+                            ) : null}
+
+                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+
                             {getTemPermissao('TROCARFILIALSCREEN') ? (
                                 <DrawerItem
                                     text="Trocar Filial"
