@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import {
     View, Text, FlatList, Modal, Platform, TouchableOpacity, ActivityIndicator
 } from 'react-native';
-import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
+import { Icon, Card, SearchBar } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
 import Colors from '../values/Colors';
+import { maskValorMoeda } from '../utils/Maskers';
 import Button from '../components/Button';
 import { maskDate } from '../utils/Maskers';
 import Alert from '../components/Alert';
@@ -15,8 +16,9 @@ import 'moment/locale/pt-br';
 moment.locale('pt-BR');
 
 const RegistroItem = ({ registro, onBloquearTudoPress, onLiberarTudoPress, onLiberarDinPress, onLiberarReqPress }) => {
-    return (
+    console.log('RegistroItem: ', registro);''
 
+    return (
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.pas_csf_situacao === 'B' ? '#b71c1c' : Colors.primary }}>
                 <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
@@ -51,7 +53,7 @@ const RegistroItem = ({ registro, onBloquearTudoPress, onLiberarTudoPress, onLib
                             Limite{': '}
                         </Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pas_csf_data_bloqueio}
+                            {maskValorMoeda(parseFloat(registro.pas_csf_valor_limite))}
                         </Text>
                     </View>
                     <View style={{ flex: 3, flexDirection: 'row' }}>
@@ -59,7 +61,7 @@ const RegistroItem = ({ registro, onBloquearTudoPress, onLiberarTudoPress, onLib
                             Bloqueio{': '}
                         </Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pas_csf_data_bloqueio}
+                            {registro.pas_csf_data_bloqueio ? moment(registro.pas_csf_data_bloqueio).format('DD/MM/YYYY') : ''}
                         </Text>
                     </View>
                 </View>
@@ -70,7 +72,7 @@ const RegistroItem = ({ registro, onBloquearTudoPress, onLiberarTudoPress, onLib
                             Dinheiro{': '}
                         </Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pas_csf_valor_bloqueio}
+                            {maskValorMoeda(parseFloat(registro.pas_csf_valor_bloqueio))}
                         </Text>
                     </View>
                     <View style={{ flex: 3, flexDirection: 'row' }}>
@@ -78,7 +80,7 @@ const RegistroItem = ({ registro, onBloquearTudoPress, onLiberarTudoPress, onLib
                             Requisição{': '}
                         </Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pas_csf_valor_bloqueio_req}
+                            {maskValorMoeda(parseFloat(registro.pas_csf_valor_bloqueio_req))}
                         </Text>
                     </View>
                 </View>
@@ -216,12 +218,13 @@ export default class SaldosFiliaisScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { pagina, listaRegistros } = this.state;
+        const { buscaNome, pagina, listaRegistros } = this.state;
 
         axios.get('/saldosFiliais', {
             params: {
                 page: pagina,
                 limite: 10,
+                filial: buscaNome,
             }
         })
             .then(response => {
@@ -248,108 +251,56 @@ export default class SaldosFiliaisScreen extends Component {
 
 
     onBloquearTudoPress = (pas_csf_filial) => {
-        // this.setState({ carregarRegistro: true });
-
-        // axios.get('/pneus/listaSulcagens', {
-        //     params: {
-        //         pneu: pneus_mov_pneu,
-        //     }
-        // })
-        //     .then(response => {
-        //         this.setState({ carregarRegistro: false });
-        //         this.props.navigation.navigate('PneusSulcagemScreen', {
-        //             listaHistorico: response.data,
-        //             tipoTela: 'VEIC',
-        //             pneus_sul_pneu: pneus_mov_pneu,
-        //             pneus_sul_vida: pneus_vd_vida,
-        //             pneus_sul_pos_veic: pneus_mov_posicao,
-        //             pneus_sul_veiculo: this.state.veiculo_select.codVeic,
-        //             onRefresh: this.onRefresh,
-        //         });
-        //     }).catch(ex => {
-        //         this.setState({ carregarRegistro: false });
-        //         console.warn(ex);
-        //         console.warn(ex.response);
-        //     });
+        this.setState({ carregarRegistro: true });
+        axios.put('/saldosFiliais/bloquearTudo/' + pas_csf_filial)
+            .then(response => {
+                this.setState({ carregarRegistro: false, refreshing: true });
+                this.getListaRegistros();
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
     }
 
     onLiberarTudoPress = (pas_csf_filial) => {
-        // this.setState({ carregarRegistro: true });
-
-        // axios.get('/pneus/listaSulcagens', {
-        //     params: {
-        //         pneu: pneus_mov_pneu,
-        //     }
-        // })
-        //     .then(response => {
-        //         this.setState({ carregarRegistro: false });
-        //         this.props.navigation.navigate('PneusSulcagemScreen', {
-        //             listaHistorico: response.data,
-        //             tipoTela: 'VEIC',
-        //             pneus_sul_pneu: pneus_mov_pneu,
-        //             pneus_sul_vida: pneus_vd_vida,
-        //             pneus_sul_pos_veic: pneus_mov_posicao,
-        //             pneus_sul_veiculo: this.state.veiculo_select.codVeic,
-        //             onRefresh: this.onRefresh,
-        //         });
-        //     }).catch(ex => {
-        //         this.setState({ carregarRegistro: false });
-        //         console.warn(ex);
-        //         console.warn(ex.response);
-        //     });
+        this.setState({ carregarRegistro: true });
+        axios.put('/saldosFiliais/liberarGeral/' + pas_csf_filial)
+            .then(response => {
+                this.setState({ carregarRegistro: false, refreshing: true });
+                this.getListaRegistros();
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
     }
 
 
     onLiberarDinPress = (pas_csf_filial) => {
-        // this.setState({ carregarRegistro: true });
-
-        // axios.get('/pneus/listaSulcagens', {
-        //     params: {
-        //         pneu: pneus_mov_pneu,
-        //     }
-        // })
-        //     .then(response => {
-        //         this.setState({ carregarRegistro: false });
-        //         this.props.navigation.navigate('PneusSulcagemScreen', {
-        //             listaHistorico: response.data,
-        //             tipoTela: 'VEIC',
-        //             pneus_sul_pneu: pneus_mov_pneu,
-        //             pneus_sul_vida: pneus_vd_vida,
-        //             pneus_sul_pos_veic: pneus_mov_posicao,
-        //             pneus_sul_veiculo: this.state.veiculo_select.codVeic,
-        //             onRefresh: this.onRefresh,
-        //         });
-        //     }).catch(ex => {
-        //         this.setState({ carregarRegistro: false });
-        //         console.warn(ex);
-        //         console.warn(ex.response);
-        //     });
+        this.setState({ carregarRegistro: true });
+        axios.put('/saldosFiliais/liberarDinheiro/' + pas_csf_filial)
+            .then(response => {
+                this.setState({ carregarRegistro: false, refreshing: true });
+                this.getListaRegistros();
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
     }
 
     onLiberarReqPress = (pas_csf_filial) => {
-        // this.setState({ carregarRegistro: true });
-
-        // axios.get('/pneus/listaSulcagens', {
-        //     params: {
-        //         pneu: pneus_mov_pneu,
-        //     }
-        // })
-        //     .then(response => {
-        //         this.setState({ carregarRegistro: false });
-        //         this.props.navigation.navigate('PneusSulcagemScreen', {
-        //             listaHistorico: response.data,
-        //             tipoTela: 'VEIC',
-        //             pneus_sul_pneu: pneus_mov_pneu,
-        //             pneus_sul_vida: pneus_vd_vida,
-        //             pneus_sul_pos_veic: pneus_mov_posicao,
-        //             pneus_sul_veiculo: this.state.veiculo_select.codVeic,
-        //             onRefresh: this.onRefresh,
-        //         });
-        //     }).catch(ex => {
-        //         this.setState({ carregarRegistro: false });
-        //         console.warn(ex);
-        //         console.warn(ex.response);
-        //     });
+        this.setState({ carregarRegistro: true });
+        axios.put('/saldosFiliais/liberarReq/' + pas_csf_filial)
+            .then(response => {
+                this.setState({ carregarRegistro: false, refreshing: true });
+                this.getListaRegistros();
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
     }
 
 
@@ -404,6 +355,18 @@ export default class SaldosFiliaisScreen extends Component {
         }, this.getListaRegistros);
     }
 
+    onBuscaNome = (text) => {
+        clearTimeout(this.buscaTimeout);
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+            buscaNome: text,
+        })
+        this.buscaTimeout = setTimeout(() => {
+            this.getListaRegistros();
+        }, 1000);
+    }
+
 
 
     render() {
@@ -413,6 +376,13 @@ export default class SaldosFiliaisScreen extends Component {
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
+                <SearchBar
+                    placeholder="Buscar Filial"
+                    lightTheme={true}
+                    onChangeText={this.onBuscaNome}
+                    inputStyle={{ backgroundColor: 'white' }}
+                    containerStyle={{ backgroundColor: Colors.primaryLight }}
+                />
 
                 <FlatList
                     data={listaRegistros}
