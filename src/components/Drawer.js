@@ -197,6 +197,13 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            {getTemPermissao('AUTORIZACAODESPESASSCREEN') ? (
+                                <DrawerItem
+                                    text="Autrização de Despesas"
+                                    onPress={() => navigation.navigate('AutorizacaoDespesasScreen')}
+                                />
+                            ) : null}
+
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
                             {getTemPermissao('TROCARFILIALSCREEN') ? (

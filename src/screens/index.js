@@ -36,6 +36,8 @@ import FichaViagemScreen from './FichaViagemScreen';
 import ViagensTurismoScreen from './ViagensTurismoScreen';
 
 import SaldosFiliaisScreen from './SaldosFiliaisScreen';
+import AutorizacaoDespesasScreen from './AutorizacaoDespesasScreen';
+import AutorizacaoDespesaScreen from './AutorizacaoDespesaScreen';
 
 import TrocarSenhaScreen from './TrocarSenhaScreen';
 
@@ -242,6 +244,22 @@ const HomeStackNavigator = StackNavigator({
         screen: SaldosFiliaisScreen,
         navigationOptions: {
             title: "Saldo das Filiais",
+            ...defaultNavigationOptions
+        }
+    },
+
+    AutorizacaoDespesasScreen: {
+        screen: AutorizacaoDespesasScreen,
+        navigationOptions: {
+            title: "Autorização de Despesas",
+            ...defaultNavigationOptions
+        }
+    },
+
+    AutorizacaoDespesaScreen: {
+        screen: AutorizacaoDespesaScreen,
+        navigationOptions: {
+            title: "Autorização de Despesa",
             ...defaultNavigationOptions
         }
     },
