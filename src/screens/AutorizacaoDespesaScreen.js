@@ -11,9 +11,25 @@ import axios from 'axios';
 import Alert from '../components/Alert';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import { maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat } from "../utils/Maskers";
-import { getEmpresa } from '../utils/LoginManager';
+import FiliaisSelect from '../components/FiliaisSelect';
+import CtaFinancSelect from '../components/CtaFinancSelect';
 
 const { OS } = Platform;
+
+export const OPCOES_COMBO_TIPO = [
+    {
+        key: 'E',
+        label: 'Exato'
+    },
+    {
+        key: 'M',
+        label: 'Máximo'
+    },
+    {
+        key: 'A',
+        label: 'Aberto'
+    },
+]
 
 
 export default class AutorizacaoDespesaScreen extends Component {
@@ -23,7 +39,10 @@ export default class AutorizacaoDespesaScreen extends Component {
         this.state = {
             loading: false,
             salvado: false,
-            registro: props.navigation.state.params.registro,
+
+            filialSelect: null,
+
+            ...props.navigation.state.params.registro,
         }
     }
 
@@ -33,9 +52,33 @@ export default class AutorizacaoDespesaScreen extends Component {
         this.setState(state);
     }
 
+    onInputChangeFilial = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        // console.log('onInputChangeFilial: ', state);
+        if (value) {
+            this.setState({
+                fin_ad_filial: value.adm_fil_codigo
+            });
+        }
+    }
+
+    onInputChangeCtaFinanc = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        // console.log('onInputChangeCtaFinanc: ', state);
+        if (value) {
+            this.setState({
+                fin_ad_conta_fin: value.adm_fil_codigo
+            });
+        }
+    }
+
     onFormSubmit = (event) => {
         if (checkFormIsValid(this.refs)) {
-            this.onSalvarRegistro();
+            this.onSalvar();
         } else {
             Alert.showAlert('Preencha todos os campos obrigatórios');
         }
@@ -46,6 +89,8 @@ export default class AutorizacaoDespesaScreen extends Component {
         this.setState({ salvado: true });
 
         const registro = this.state;
+
+        registro.fin_ad_valor = parseFloat(registro.fin_ad_valor);
 
         console.log('onSalvar: ', registro)
 
@@ -70,8 +115,9 @@ export default class AutorizacaoDespesaScreen extends Component {
 
 
     render() {
-        const { loading, salvado } = this.state;
-        const { fin_ad_documento } = this.state.registro;
+        const { loading, salvado, filialSelect, ctaFinancSelect } = this.state;
+        const { fin_ad_documento, fin_ad_descricao_aut, fin_ad_autorizado_por, fin_ad_repetir, fin_ad_filial,
+            fin_ad_conta_fin, fin_ad_emp_conta_fin, fin_ad_valor, fin_ad_tipo } = this.state;
 
         console.log('AutorizacaoDespesaScreen: ', this.state);
 
@@ -90,13 +136,93 @@ export default class AutorizacaoDespesaScreen extends Component {
                         style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
                     >
 
+                        {fin_ad_documento ? (
+                            <TextInput
+                                label="Documento"
+                                id="fin_ad_documento"
+                                ref="fin_ad_documento"
+                                value={fin_ad_documento}
+                                maxLength={30}
+                                onChange={this.onInputChange}
+                                enabled={false}
+                            />
+                        ) : null}
+
                         <TextInput
-                            label="Documento"
-                            id="fin_ad_documento"
-                            ref="fin_ad_documento"
-                            value={fin_ad_documento}
-                            maxLength={30}
+                            label="Descrição"
+                            id="fin_ad_descricao_aut"
+                            ref="fin_ad_descricao_aut"
+                            value={fin_ad_descricao_aut}
                             onChange={this.onInputChange}
+                            multiline={true}
+                            maxLength={100}
+                            style={{
+                                height: 70
+                            }}
+                        />
+
+                        <TextInput
+                            label="Autorizado Por"
+                            id="fin_ad_autorizado_por"
+                            ref="fin_ad_autorizado_por"
+                            value={fin_ad_autorizado_por}
+                            maxLength={100}
+                            onChange={this.onInputChange}
+                        />
+
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: "47%", marginRight: 20 }}>
+                                <TextInput
+                                    label="Repetições"
+                                    id="fin_ad_repetir"
+                                    ref="fin_ad_repetir"
+                                    value={fin_ad_repetir}
+                                    onChange={this.onInputChange}
+                                    keyboardType="numeric"
+                                    enabled={fin_ad_documento ? false : true}
+                                />
+                            </View>
+
+                            <View style={{ width: "47%" }}>
+                                <TextInput
+                                    label="Valor"
+                                    id="fin_ad_valor"
+                                    ref="fin_ad_valor"
+                                    value={String(fin_ad_valor)}
+                                    onChange={this.onInputChange}
+                                    maxLength={10}
+                                    keyboardType="numeric"
+                                    masker={maskDigitarVlrMoeda}
+                                    required={true}
+                                    errorMessage="O Valor é Obrigatório"
+                                />
+                            </View>
+                        </View>
+
+                        <TextInput
+                            type="select"
+                            label="Tipo Valor"
+                            id="fin_ad_tipo"
+                            ref="fin_ad_tipo"
+                            value={fin_ad_tipo}
+                            options={OPCOES_COMBO_TIPO}
+                            onChange={this.onInputChange}
+                        />
+
+                        <FiliaisSelect
+                            label="Filial"
+                            id="filialSelect"
+                            codFilial={fin_ad_filial}
+                            onChange={this.onInputChangeFilial}
+                            value={filialSelect}
+                        />
+
+                        <CtaFinancSelect
+                            label="Cta Financ"
+                            id="ctaFinancSelect"
+                            codFilial={fin_ad_conta_fin}
+                            onChange={this.onInputChangeCtaFinanc}
+                            value={ctaFinancSelect}
                         />
 
 

@@ -9,6 +9,7 @@ import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 import Alert from '../components/Alert';
+import { ProgressDialog } from 'react-native-simple-dialogs';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -147,16 +148,20 @@ export default class AutorizacaoDespesasScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { buscaNome, pagina, listaRegistros } = this.state;
+        const { buscaDescricao, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
+
+        console.log('getListaRegistros: ', buscaDescricao);
 
         axios.get('/autorzacaoDespesas', {
             params: {
                 page: pagina,
                 limite: 10,
-                doc: buscaNome,
+                doc: buscaDescricao,
             }
         }).then(response => {
+            console.log('getListaRegistros: ', response.data);
+
             const novosRegistros = pagina === 1
                 ? response.data.data
                 : listaRegistros.concat(response.data.data);
@@ -180,19 +185,15 @@ export default class AutorizacaoDespesasScreen extends Component {
         this.props.navigation.navigate('AutorizacaoDespesaScreen', {
             registro: {
                 fin_ad_documento: '',
-                fin_ad_seq: '',
-                fin_ad_data_autorizacao: '',
                 fin_ad_descricao_aut: '',
-                fin_ad_nome_criacao: '',
-                fin_ad_valor: '',
+                fin_ad_autorizado_por: '',
+                fin_ad_repetir: '0',
+                fin_ad_valor: '0,00',
                 fin_ad_tipo: 'E',
-                fin_ad_max_mes_utilizacao: '',
-                fin_ad_max_ano_utilizacao: '',
                 fin_ad_conta_fin: '',
                 fin_ad_emp_conta_fin: '',
                 fin_ad_filial: '',
-                fin_ad_situacao: 'P',
-                fin_ad_autorizado_por: ''
+                filialSelect: '',
             },
             onRefresh: this.onRefresh
         });
@@ -204,6 +205,14 @@ export default class AutorizacaoDespesasScreen extends Component {
             .then(response => {
                 this.setState({ carregarRegistro: false });
                 const { data } = response;
+
+                data.filialSelect = {
+                    adm_fil_codigo: data.fin_ad_filial,
+                    adm_fil_descricao: data.adm_fil_descricao
+                }
+
+                data.fin_ad_valor = maskValorMoeda(parseFloat(data.fin_ad_valor));
+
                 this.props.navigation.navigate('AutorizacaoDespesaScreen', {
                     registro: data,
                     onRefresh: this.onRefresh
@@ -218,7 +227,7 @@ export default class AutorizacaoDespesasScreen extends Component {
         this.setState({ carregarRegistro: true });
         axios.delete('/autorzacaoDespesas/delete/' + fin_ad_documento)
             .then(response => {
-                // this.setState({ carregando: true });
+                this.setState({ carregarRegistro: false });
                 this.onRefresh;
             }).catch(ex => {
                 console.warn(ex);
@@ -271,15 +280,17 @@ export default class AutorizacaoDespesasScreen extends Component {
         )
     }
 
-    onBuscaNome = (text) => {
+    onBuscaDescricaoChange = (text) => {
         clearTimeout(this.buscaTimeout);
+        this.termoBusca = text;
         this.setState({
             pagina: 1,
-            refreshing: true,
-            buscaNome: text,
+            buscaDescricao: text,
         })
         this.buscaTimeout = setTimeout(() => {
-            this.getListaRegistros();
+            this.setState({
+                listaRegistros: [],
+            }, this.getListaRegistros())
         }, 1000);
     }
 
@@ -287,7 +298,7 @@ export default class AutorizacaoDespesasScreen extends Component {
 
 
     render() {
-        const { listaRegistros, refreshing, carregando } = this.state;
+        const { listaRegistros, refreshing, carregarRegistro } = this.state;
 
         console.log('AutorizacaoDespesasScreen: ', this.state);
 
@@ -297,7 +308,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                 <SearchBar
                     placeholder="Buscar Documento"
                     lightTheme={true}
-                    onChangeText={this.onBuscaNome}
+                    onChangeText={this.onBuscaDescricaoChange}
                     inputStyle={{ backgroundColor: 'white' }}
                     containerStyle={{ backgroundColor: Colors.primaryLight }}
                 />
@@ -307,7 +318,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                     data={listaRegistros}
                     renderItem={this.renderItem}
                     contentContainerStyle={{ paddingBottom: 80 }}
-                    keyExtractor={registro => String(registro.fin_ad_documento)}
+                    keyExtractor={registro => String(registro.fin_ad_documento) + '_' + String(registro.fin_ad_seq)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
                     onEndReached={this.carregarMaisRegistros}
@@ -321,6 +332,14 @@ export default class AutorizacaoDespesasScreen extends Component {
                     onPress={this.onAddPress}
                     backgroundColor={Colors.primary}
                 />
+
+                <ProgressDialog
+                    visible={carregarRegistro}
+                    title="SIGA PRO"
+                    message="Aguarde..."
+                />
+
+
             </View>
         )
     }
