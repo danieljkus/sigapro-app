@@ -4,12 +4,13 @@ const { OS } = Platform;
 
 import moment from 'moment';
 import axios from 'axios';
-import { Card, Divider, SearchBar } from 'react-native-elements';
+import { Card, Divider, SearchBar, CheckBox } from 'react-native-elements';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 import Alert from '../components/Alert';
 import { ProgressDialog } from 'react-native-simple-dialogs';
+import { getUsuario } from '../utils/LoginManager';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -128,6 +129,9 @@ export default class AutorizacaoDespesasScreen extends Component {
 
     termoBusca = '';
     state = {
+        buscaDescricao: '',
+        buscaSituacao: 'P',
+
         listaRegistros: [],
         refreshing: false,
         carregando: false,
@@ -136,7 +140,9 @@ export default class AutorizacaoDespesasScreen extends Component {
     };
 
     componentDidMount() {
-        this.setState({ refreshing: false });
+        getUsuario().then(usuario => {
+            this.setState({ usuario });
+        })
         this.getListaRegistros();
     }
 
@@ -148,16 +154,15 @@ export default class AutorizacaoDespesasScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { buscaDescricao, pagina, listaRegistros } = this.state;
+        const { buscaDescricao, buscaSituacao, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
-
-        console.log('getListaRegistros: ', buscaDescricao);
 
         axios.get('/autorzacaoDespesas', {
             params: {
                 page: pagina,
                 limite: 10,
                 doc: buscaDescricao,
+                sit: buscaSituacao,
             }
         }).then(response => {
             console.log('getListaRegistros: ', response.data);
@@ -186,13 +191,14 @@ export default class AutorizacaoDespesasScreen extends Component {
             registro: {
                 fin_ad_documento: '',
                 fin_ad_descricao_aut: '',
-                fin_ad_autorizado_por: '',
+                fin_ad_autorizado_por: this.state.usuario.adm_pes_nome,
                 fin_ad_repetir: '0',
                 fin_ad_valor: '0,00',
                 fin_ad_tipo: 'E',
                 fin_ad_conta_fin: '',
                 fin_ad_emp_conta_fin: '',
                 fin_ad_filial: '',
+                fin_ad_situacao: 'P',
                 filialSelect: '',
             },
             onRefresh: this.onRefresh
@@ -211,6 +217,11 @@ export default class AutorizacaoDespesasScreen extends Component {
                     adm_fil_descricao: data.adm_fil_descricao
                 }
 
+                data.ctaFinancSelect = {
+                    fin_cf_codigo: data.fin_ad_conta_fin,
+                    fin_cf_descricao: data.fin_cf_descricao
+                }
+
                 data.fin_ad_valor = maskValorMoeda(parseFloat(data.fin_ad_valor));
 
                 this.props.navigation.navigate('AutorizacaoDespesaScreen', {
@@ -227,8 +238,11 @@ export default class AutorizacaoDespesasScreen extends Component {
         this.setState({ carregarRegistro: true });
         axios.delete('/autorzacaoDespesas/delete/' + fin_ad_documento)
             .then(response => {
-                this.setState({ carregarRegistro: false });
-                this.onRefresh;
+                this.setState({
+                    carregarRegistro: false,
+                    pagina: 1,
+                    carregando: true
+                }, this.getListaRegistros);
             }).catch(ex => {
                 console.warn(ex);
                 this.setState({ carregarRegistro: false });
@@ -298,7 +312,7 @@ export default class AutorizacaoDespesasScreen extends Component {
 
 
     render() {
-        const { listaRegistros, refreshing, carregarRegistro } = this.state;
+        const { listaRegistros, refreshing, carregarRegistro, buscaSituacao } = this.state;
 
         console.log('AutorizacaoDespesasScreen: ', this.state);
 
@@ -313,6 +327,19 @@ export default class AutorizacaoDespesasScreen extends Component {
                     containerStyle={{ backgroundColor: Colors.primaryLight }}
                 />
 
+                <View style={{ alignItems: "flex-end", marginTop: -45, paddingBottom: 10, marginBottom: 20 }}>
+                    <CheckBox
+                        title='Pendentes'
+                        key={buscaSituacao}
+                        checked={buscaSituacao === 'P' ? true : false}
+                        onPress={() => this.setState({
+                            buscaSituacao: buscaSituacao === 'P' ? '' : 'P',
+                            refreshing: true,
+                            pagina: 1,
+                        }, this.getListaRegistros)}
+                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                    />
+                </View>
 
                 <FlatList
                     data={listaRegistros}

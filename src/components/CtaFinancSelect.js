@@ -15,11 +15,11 @@ const Registro = ({ registro, onRegistroPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <TouchableOpacity
-                onPress={() => onRegistroPress(registro.adm_fil_codigo)}
+                onPress={() => onRegistroPress(registro.fin_cf_codigo)}
             >
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
-                        #{registro.adm_fil_codigo}
+                        #{registro.fin_cf_codigo}
                     </Text>
                 </View>
 
@@ -27,7 +27,7 @@ const Registro = ({ registro, onRegistroPress }) => {
 
                 <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                     <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        {registro.adm_fil_descricao}
+                        {registro.fin_cf_descricao}
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -40,7 +40,7 @@ const Registro = ({ registro, onRegistroPress }) => {
 class CtaFinancSelect extends PureComponent {
 
     state = {
-        codFilial: '',
+        codCta: '',
         carregando: false,
 
         listaRegistros: [],
@@ -53,30 +53,29 @@ class CtaFinancSelect extends PureComponent {
     };
 
     componentDidUpdate(propsAnterior, stateAnterior) {
-        const { codFilial, onChange, id } = this.props;
+        const { codCta, onChange, id } = this.props;
 
         // console.log('componentDidUpdate.this.props: ', this.props);
         // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
 
-        if (codFilial !== propsAnterior.codFilial) {
+        if (codCta !== propsAnterior.codCta) {
             this.setState({
-                codFilial,
+                codCta,
             })
             onChange(id, null);
-            if (codFilial) {
-                this.buscaRegistros(codFilial);
+            if (codCta) {
+                this.buscaRegistros(codCta);
             }
         }
     }
 
     componentDidMount() {
-        // console.log('FiliaisSelect.componentDidMount.this.props: ', this.props);
+        // console.log('CtaFinancSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
-                pneus_mov_filial: this.props.adm_fil_codigo,
-                filialSelect: {
-                    adm_fil_codigo: this.props.adm_fil_codigo,
-                    adm_fil_descricao: this.props.adm_fil_descricao
+                ctaFinancSelect: {
+                    fin_cf_codigo: this.props.fin_cf_codigo,
+                    fin_cf_descricao: this.props.fin_cf_descricao
                 },
             });
         }
@@ -87,7 +86,7 @@ class CtaFinancSelect extends PureComponent {
         state[id] = value;
         this.setState(state);
 
-        // console.log('FiliaisSelect.onInputChange: ', state);
+        // console.log('CtaFinancSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -98,14 +97,14 @@ class CtaFinancSelect extends PureComponent {
         this.setState({ carregando: true });
         const { id, onChange } = this.props;
 
-        axios.get('/listaFiliais', {
+        axios.get('/listaCtaFinanc', {
             params: {
-                codFilial: value
+                codCta: value
             }
         }).then(response => {
             const { data } = response;
 
-            // console.log('FiliaisSelect.buscaRegistros: ', data);
+            // console.log('CtaFinancSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -129,7 +128,7 @@ class CtaFinancSelect extends PureComponent {
 
 
     // ---------------------------------------------------------------------------
-    // MODAL PARA SELECIONAR FILIAIS
+    // MODAL PARA SELECIONAR CTA FINANC
     // ---------------------------------------------------------------------------
 
     onAbrirBuscaModal = (visible) => {
@@ -152,7 +151,7 @@ class CtaFinancSelect extends PureComponent {
         const { buscaNome, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
-        axios.get('/listaFiliaisBusca', {
+        axios.get('/listaCtaFinancBusca', {
             params: {
                 page: pagina,
                 limite: 10,
@@ -199,12 +198,12 @@ class CtaFinancSelect extends PureComponent {
         }, this.getListaRegistros);
     }
 
-    onRegistroPress = (adm_fil_codigo) => {
+    onRegistroPress = (fin_cf_codigo) => {
         this.setState({
-            codFilial: adm_fil_codigo,
+            codCta: fin_cf_codigo,
         });
         this.onAbrirBuscaModal(false);
-        this.buscaRegistros(adm_fil_codigo);
+        this.buscaRegistros(fin_cf_codigo);
     }
 
     carregarMaisRegistros = () => {
@@ -243,23 +242,23 @@ class CtaFinancSelect extends PureComponent {
 
     render() {
         const { label, enabled, value } = this.props;
-        const { codFilial, carregando, loading, refreshing, listaRegistros } = this.state;
+        const { codCta, carregando, loading, refreshing, listaRegistros } = this.state;
 
-        // console.log('FiliaisSelect.this.props', this.props)
-        // console.log('FiliaisSelect.this.state', this.state)
+        // console.log('CtaFinancSelect.this.props', this.props)
+        // console.log('CtaFinancSelect.this.state', this.state)
 
-        const filial = codFilial ? codFilial : (value ? value.adm_fil_codigo : '');
-        const descricao = value ? value.adm_fil_descricao : '';
-        this.setState({ codFilial: filial });
+        const codConta = codCta ? codCta : (value ? value.fin_cf_codigo : '');
+        const descricao = value ? value.fin_cf_descricao : '';
+        this.setState({ codCta: codConta });
 
         return (
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ width: "25%" }}>
                     <TextInput
                         label={label}
-                        id="codFilial"
-                        ref="codFilial"
-                        value={codFilial}
+                        id="codCta"
+                        ref="codCta"
+                        value={codCta}
                         maxLength={6}
                         keyboardType="numeric"
                         onChange={this.onInputChange}
@@ -304,7 +303,7 @@ class CtaFinancSelect extends PureComponent {
 
 
                 {/* -------------------------------- */}
-                {/* MODAL PARA BUSCA DA FILIAL       */}
+                {/* MODAL PARA BUSCA DA codConta       */}
                 {/* -------------------------------- */}
                 <Modal
                     transparent={false}
@@ -330,7 +329,7 @@ class CtaFinancSelect extends PureComponent {
                             textAlign: 'center',
                             fontSize: 20,
                             fontWeight: 'bold',
-                        }}>Buscar Filial</Text>
+                        }}>Buscar codConta</Text>
                     </View>
 
                     <SearchBar
@@ -355,7 +354,7 @@ class CtaFinancSelect extends PureComponent {
                                     data={listaRegistros}
                                     renderItem={this.renderItem}
                                     contentContainerStyle={{ paddingBottom: 100 }}
-                                    keyExtractor={registro => registro.adm_fil_codigo}
+                                    keyExtractor={registro => registro.fin_cf_codigo}
                                     onRefresh={this.onRefresh}
                                     refreshing={refreshing}
                                     onEndReached={this.carregarMaisRegistros}

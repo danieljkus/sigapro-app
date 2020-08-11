@@ -199,7 +199,7 @@ class Drawer extends PureComponent {
 
                             {getTemPermissao('AUTORIZACAODESPESASSCREEN') ? (
                                 <DrawerItem
-                                    text="Autrização de Despesas"
+                                    text="Autorização de Despesas"
                                     onPress={() => navigation.navigate('AutorizacaoDespesasScreen')}
                                 />
                             ) : null}

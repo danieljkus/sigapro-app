@@ -71,7 +71,7 @@ export default class AutorizacaoDespesaScreen extends Component {
         // console.log('onInputChangeCtaFinanc: ', state);
         if (value) {
             this.setState({
-                fin_ad_conta_fin: value.adm_fil_codigo
+                fin_ad_conta_fin: value.fin_cf_codigo
             });
         }
     }
@@ -90,7 +90,7 @@ export default class AutorizacaoDespesaScreen extends Component {
 
         const registro = this.state;
 
-        registro.fin_ad_valor = parseFloat(registro.fin_ad_valor);
+        registro.fin_ad_valor = parseFloat(vlrStringParaFloat(registro.fin_ad_valor));
 
         console.log('onSalvar: ', registro)
 
@@ -117,7 +117,7 @@ export default class AutorizacaoDespesaScreen extends Component {
     render() {
         const { loading, salvado, filialSelect, ctaFinancSelect } = this.state;
         const { fin_ad_documento, fin_ad_descricao_aut, fin_ad_autorizado_por, fin_ad_repetir, fin_ad_filial,
-            fin_ad_conta_fin, fin_ad_emp_conta_fin, fin_ad_valor, fin_ad_tipo } = this.state;
+            fin_ad_conta_fin, fin_ad_emp_conta_fin, fin_ad_valor, fin_ad_tipo, fin_ad_situacao, fin_ad_idf_lanc } = this.state;
 
         console.log('AutorizacaoDespesaScreen: ', this.state);
 
@@ -225,19 +225,20 @@ export default class AutorizacaoDespesaScreen extends Component {
                             value={ctaFinancSelect}
                         />
 
-
-                        <Button
-                            title="SALVAR"
-                            loading={loading}
-                            onPress={this.onFormSubmit}
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ marginBottom: 20, marginTop: 20 }}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
+                        {fin_ad_situacao === 'P' && !fin_ad_idf_lanc ? (
+                            <Button
+                                title="SALVAR"
+                                loading={loading}
+                                onPress={this.onFormSubmit}
+                                color={Colors.textOnPrimary}
+                                buttonStyle={{ marginBottom: 20, marginTop: 20 }}
+                                icon={{
+                                    name: 'check',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary
+                                }}
+                            />
+                        ) : null}
 
                     </View>
 
