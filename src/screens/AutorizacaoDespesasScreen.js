@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Linking } from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
 import axios from 'axios';
-import { Card, Divider, SearchBar, CheckBox } from 'react-native-elements';
+import { Card, Divider, SearchBar, CheckBox, Icon } from 'react-native-elements';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
@@ -15,15 +15,13 @@ import { getUsuario } from '../utils/LoginManager';
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
 
-const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
+const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onWhatsAppPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 10, borderRadius: 2, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.fin_ad_documento)}
                 onLongPress={() => onRegistroLongPress(registro.fin_ad_documento)}
             >
-
-
                 <View
                     style={{
                         paddingHorizontal: 16,
@@ -118,9 +116,36 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                         </Text>
                     </Text>
                 </View>
-
             </TouchableOpacity>
-
+            <View
+                style={{
+                    flex: 1,
+                    margin: 0,
+                    marginTop: 5,
+                    height: 40,
+                    borderTopWidth: 1,
+                    borderColor: Colors.dividerDark,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                }}
+            >
+                <TouchableOpacity
+                    onPress={() => onWhatsAppPress(registro)}
+                >
+                    <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                        <Icon
+                            name='whatsapp'
+                            type='font-awesome'
+                            color={Colors.primaryLight}
+                            size={17}
+                        />
+                        <Text style={{ color: Colors.primaryLight, fontSize: 13, marginLeft: 5 }} >
+                            WhatsApp
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         </Card>
     )
 }
@@ -165,7 +190,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                 sit: buscaSituacao,
             }
         }).then(response => {
-            console.log('getListaRegistros: ', response.data);
+            // console.log('getListaRegistros: ', response.data);
 
             const novosRegistros = pagina === 1
                 ? response.data.data
@@ -200,6 +225,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                 fin_ad_filial: '',
                 fin_ad_situacao: 'P',
                 filialSelect: '',
+                modalZap: false,
             },
             onRefresh: this.onRefresh
         });
@@ -290,6 +316,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                 registro={item}
                 onRegistroPress={this.onRegistroPress}
                 onRegistroLongPress={this.onRegistroLongPress}
+                onWhatsAppPress={this.onWhatsAppPress}
             />
         )
     }
@@ -310,11 +337,21 @@ export default class AutorizacaoDespesasScreen extends Component {
 
 
 
+    onWhatsAppPress = (registro) => {
+        Linking.openURL(
+            'https://api.whatsapp.com/send?' +
+            // 'phone=' + telefone +
+            '&text=' + '>> Expresso Nordeste\n>> Autorização de Despesas\n>> Código: ' + registro.fin_ad_documento + '\n>> ' + registro.fin_ad_descricao_aut
+        );
+    }
+
+
+
 
     render() {
         const { listaRegistros, refreshing, carregarRegistro, buscaSituacao } = this.state;
 
-        console.log('AutorizacaoDespesasScreen: ', this.state);
+        // console.log('AutorizacaoDespesasScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, }}>
@@ -327,7 +364,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                     containerStyle={{ backgroundColor: Colors.primaryLight }}
                 />
 
-                <View style={{ alignItems: "flex-end", marginTop: -45, paddingBottom: 10, marginBottom: 20 }}>
+                <View style={{ alignItems: "flex-end", marginTop: -40, paddingBottom: 10, marginBottom: 20 }}>
                     <CheckBox
                         title='Pendentes'
                         key={buscaSituacao}
@@ -337,6 +374,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                             refreshing: true,
                             pagina: 1,
                         }, this.getListaRegistros)}
+                        checkedColor={Colors.primaryLight}
                         containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                     />
                 </View>
@@ -365,6 +403,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                     title="SIGA PRO"
                     message="Aguarde..."
                 />
+
 
 
             </View>

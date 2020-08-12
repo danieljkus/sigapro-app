@@ -16,8 +16,6 @@ import 'moment/locale/pt-br';
 moment.locale('pt-BR');
 
 const RegistroItem = ({ registro, onBloquearTudoPress, onLiberarTudoPress, onLiberarDinPress, onLiberarReqPress }) => {
-    console.log('RegistroItem: ', registro);''
-
     return (
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.pas_csf_situacao === 'B' ? '#b71c1c' : Colors.primary }}>
@@ -372,7 +370,7 @@ export default class SaldosFiliaisScreen extends Component {
     render() {
         const { listaRegistros, refreshing, carregarRegistro } = this.state;
 
-        console.log('SaldosFiliaisScreen.this.state: ', this.state);
+        // console.log('SaldosFiliaisScreen.this.state: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

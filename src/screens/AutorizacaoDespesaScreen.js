@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, RefreshControl, Platform, Dimensions } from 'react-native';
+import { View, Text, ScrollView, RefreshControl, Platform, Modal, TouchableOpacity, Linking } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 import { checkFormIsValid } from '../utils/Validator';
 
@@ -39,6 +39,7 @@ export default class AutorizacaoDespesaScreen extends Component {
         this.state = {
             loading: false,
             salvado: false,
+            modalZap: false,
 
             filialSelect: null,
 
@@ -56,7 +57,6 @@ export default class AutorizacaoDespesaScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeFilial: ', state);
         if (value) {
             this.setState({
                 fin_ad_filial: value.adm_fil_codigo
@@ -68,7 +68,6 @@ export default class AutorizacaoDespesaScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeCtaFinanc: ', state);
         if (value) {
             this.setState({
                 fin_ad_conta_fin: value.fin_cf_codigo
@@ -92,7 +91,7 @@ export default class AutorizacaoDespesaScreen extends Component {
 
         registro.fin_ad_valor = parseFloat(vlrStringParaFloat(registro.fin_ad_valor));
 
-        console.log('onSalvar: ', registro)
+        // console.log('onSalvar: ', registro)
 
         let axiosMethod;
         if (registro.fin_ad_documento) {
@@ -101,10 +100,25 @@ export default class AutorizacaoDespesaScreen extends Component {
             axiosMethod = axios.post('/autorzacaoDespesas/store', registro);
         }
         axiosMethod.then(response => {
-            this.props.navigation.goBack(null);
-            if (this.props.navigation.state.params.onRefresh) {
-                this.props.navigation.state.params.onRefresh();
+
+            // console.log('onSalvar response: ', response.data)
+
+            if (registro.fin_ad_documento) {
+                this.props.navigation.goBack(null);
+                if (this.props.navigation.state.params.onRefresh) {
+                    this.props.navigation.state.params.onRefresh();
+                }
+            } else {
+                if (response) {
+                    this.state.fin_ad_documento = response.data;
+                    this.setState({ 
+                        salvado: false, 
+                        modalZap: true,
+                        fin_ad_situacao: ''
+                    });
+                }
             }
+
         }).catch(ex => {
             this.setState({ salvado: false });
             console.warn(ex);
@@ -112,14 +126,25 @@ export default class AutorizacaoDespesaScreen extends Component {
     }
 
 
+    onModalWhatsApp = (visible, fin_ad_documento) => {
+        this.setState({ modalZap: visible });
+
+        if (fin_ad_documento) {
+            Linking.openURL(
+                'https://api.whatsapp.com/send?' +
+                // 'phone=' + telefone +
+                '&text=' + '>> Expresso Nordeste\n>> Autorização de Despesas\n>> Código: ' + fin_ad_documento + '\n>> ' + this.state.fin_ad_descricao_aut
+            );
+        }
+    }
 
 
     render() {
-        const { loading, salvado, filialSelect, ctaFinancSelect } = this.state;
-        const { fin_ad_documento, fin_ad_descricao_aut, fin_ad_autorizado_por, fin_ad_repetir, fin_ad_filial,
-            fin_ad_conta_fin, fin_ad_emp_conta_fin, fin_ad_valor, fin_ad_tipo, fin_ad_situacao, fin_ad_idf_lanc } = this.state;
+        const { loading, salvado, filialSelect, ctaFinancSelect,
+            fin_ad_documento, fin_ad_descricao_aut, fin_ad_autorizado_por, fin_ad_repetir, fin_ad_filial,
+            fin_ad_conta_fin, fin_ad_valor, fin_ad_tipo, fin_ad_situacao, fin_ad_idf_lanc } = this.state;
 
-        console.log('AutorizacaoDespesaScreen: ', this.state);
+        // console.log('AutorizacaoDespesaScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -247,6 +272,82 @@ export default class AutorizacaoDespesaScreen extends Component {
                         title="P7 Força de Vendas"
                         message="Gravando. Aguarde..."
                     />
+
+
+
+                    {/* ----------------------------- */}
+                    {/* MODAL PARA DOCUMENTO ZAP      */}
+                    {/* ----------------------------- */}
+                    <Modal
+                        visible={this.state.modalZap}
+                        onRequestClose={() => { console.log("Modal ZAP FECHOU.") }}
+                        animationType={"slide"}
+                        transparent={true}
+                    >
+                        <View style={{
+                            flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                        }}>
+                            <View style={{
+                                flex: 1,
+                                width: "70%",
+                                paddingTop: 150,
+                            }} >
+                                <View style={{
+                                    paddingVertical: 15,
+                                    paddingHorizontal: 15,
+                                    backgroundColor: Colors.background,
+                                    borderRadius: 5,
+                                }}>
+                                    <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                                        <Text style={{
+                                            color: Colors.textOnPrimary,
+                                            marginTop: 10,
+                                            marginBottom: 10,
+                                            marginLeft: 15,
+                                            textAlign: 'center',
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
+                                        }}>Documento Gerado</Text>
+                                    </View>
+
+                                    <View style={{ paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row' }}>
+                                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, flex: 1, marginTop: 5, }}>
+                                            {fin_ad_documento}
+                                        </Text>
+                                    </View>
+
+                                    <Button
+                                        title="WhatsApp"
+                                        onPress={() => { this.onModalWhatsApp(false, fin_ad_documento) }}
+                                        buttonStyle={{ marginTop: 20, height: 32 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'whatsapp',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+
+                                    <Button
+                                        title="Cancelar"
+                                        onPress={() => { this.onModalWhatsApp(false, '') }}
+                                        buttonStyle={{ marginTop: 20, height: 32 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'close',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+
+
                 </ScrollView>
             </View>
         )
