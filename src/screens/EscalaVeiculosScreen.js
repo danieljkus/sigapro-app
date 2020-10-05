@@ -71,6 +71,21 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
                         </Text>
                     </View>
 
+                    {registro.motorista ? (
+                        <View>
+                            <Divider />
+                            <View style={{ paddingLeft: 10, paddingVertical: 4, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Motorista {': '}
+                                </Text>
+                                <Text>
+                                    {registro.motorista}
+                                </Text>
+                            </View>
+                        </View>
+                    ) : null}
+
+
                 </TouchableOpacity>
             </View>
         </Card>
@@ -290,7 +305,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico } = this.state;
 
-        // console.log('this.state: ', this.state);
+        console.log('this.state: ', this.state);
         // console.log('man_ev_veiculo: ', this.state.man_ev_veiculo);
         // console.log('man_ev_data_ini: ', man_ev_data_ini);
         // console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));

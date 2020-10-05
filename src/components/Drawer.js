@@ -117,7 +117,12 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+                            {empresa && getTemPermissao('FICHAVIAGEMSCREEN') ? (
+                                <DrawerItem
+                                    text="Ficha de Viagem"
+                                    onPress={() => navigation.navigate('FichaViagemScreen')}
+                                />
+                            ) : null}
 
                             {getTemPermissao('VIAGENSTURISMOSCREEN') ? (
                                 <DrawerItem
@@ -126,12 +131,49 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
-
                             {getTemPermissao('VEICULOSSCREEN') ? (
                                 <DrawerItem
                                     text="Veículos"
                                     onPress={() => navigation.navigate('VeiculosScreen')}
+                                />
+                            ) : null}
+
+                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+
+                            {/* {empresa && getTemPermissao('SAIDASESTOQUECREEN') ? (
+                                <DrawerItem
+                                    text="Saídas de Itens do Estoque"
+                                    onPress={() => navigation.navigate('SaidasEstoqueScreen')}
+                                />
+                            ) : null} */}
+
+                            {empresa && getTemPermissao('SAIDASDIESELCREEN') ? (
+                                <DrawerItem
+                                    text="Saídas de Diesel/Arla"
+                                    onPress={() => navigation.navigate('SaidasDieselScreen')}
+                                />
+                            ) : null}
+
+                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+
+                            {empresa && getTemPermissao('MEDICOESTANQUESDIESELCREEN') ? (
+                                <DrawerItem
+                                    text="Medir Tanque Diesel"
+                                    onPress={() => navigation.navigate('MedicoesTanqueDieselScreen')}
+                                />
+                            ) : null}
+
+                            {empresa && getTemPermissao('MEDICOESTANQUEARLASCREEN') ? (
+                                <DrawerItem
+                                    text="Medir Tanque Arla"
+                                    onPress={() => navigation.navigate('MedicoesTanqueArlaScreen')}
+                                />
+                            ) : null}
+
+                            {empresa && getTemPermissao('PREDIGITACAONOTASSCREEN') ? (
+                                <DrawerItem
+                                    text="Pré-Digitar NFe"
+                                    onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
                                 />
                             ) : null}
 
@@ -155,36 +197,6 @@ class Drawer extends PureComponent {
                                 <DrawerItem
                                     text="Pneus em Estoque"
                                     onPress={() => navigation.navigate('PneusEstoqueScreen')}
-                                />
-                            ) : null}
-
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
-
-                            {empresa && getTemPermissao('FICHAVIAGEMSCREEN') ? (
-                                <DrawerItem
-                                    text="Ficha de Viagem"
-                                    onPress={() => navigation.navigate('FichaViagemScreen')}
-                                />
-                            ) : null}
-
-                            {empresa && getTemPermissao('MEDICOESTANQUESDIESELCREEN') ? (
-                                <DrawerItem
-                                    text="Medir Tanque Diesel"
-                                    onPress={() => navigation.navigate('MedicoesTanqueDieselScreen')}
-                                />
-                            ) : null}
-
-                            {empresa && getTemPermissao('MEDICOESTANQUEARLASCREEN') ? (
-                                <DrawerItem
-                                    text="Medir Tanque Arla"
-                                    onPress={() => navigation.navigate('MedicoesTanqueArlaScreen')}
-                                />
-                            ) : null}
-
-                            {empresa && getTemPermissao('PREDIGITACAONOTASSCREEN') ? (
-                                <DrawerItem
-                                    text="Pré-Digitar NFe"
-                                    onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
                                 />
                             ) : null}
 

@@ -24,6 +24,11 @@ import PneusSulcagemScreen from './PneusSulcagemScreen';
 import MedicaoTanqueDieselScreen from './MedicaoTanqueDieselScreen';
 import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
 
+// import SaidasEstoqueScreen from './SaidasEstoqueScreen';
+// import SaidaEstoqueScreen from './SaidaEstoqueScreen';
+import SaidasDieselScreen from './SaidasDieselScreen';
+import SaidaDIeselScreen from './SaidaDIeselScreen';
+
 import MedicaoTanqueArlaScreen from './MedicaoTanqueArlaScreen';
 import MedicoesTanqueArlaScreen from './MedicoesTanqueArlaScreen';
 
@@ -192,6 +197,37 @@ const HomeStackNavigator = StackNavigator({
         }
     },
 
+
+
+    // SaidasEstoqueScreen: {
+    //     screen: SaidasEstoqueScreen,
+    //     navigationOptions: {
+    //         title: "Saída de Itens do Estoque",
+    //         ...defaultNavigationOptions,
+    //     }
+    // },
+    // SaidaEstoqueScreen: {
+    //     screen: SaidaEstoqueScreen,
+    //     navigationOptions: {
+    //         title: "Saída de Itens do Estoque",
+    //         ...defaultNavigationOptions,
+    //     }
+    // },
+
+    SaidasDieselScreen: {
+        screen: SaidasDieselScreen,
+        navigationOptions: {
+            title: "Saídas de Diesel/Arla",
+            ...defaultNavigationOptions,
+        }
+    },
+    SaidaDIeselScreen: {
+        screen: SaidaDIeselScreen,
+        navigationOptions: {
+            title: "Saídas de Diesel/Arla",
+            ...defaultNavigationOptions,
+        }
+    },
 
 
     MedicoesTanqueDieselScreen: {

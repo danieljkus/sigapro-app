@@ -128,6 +128,17 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                     </Text>
                 </View>
 
+                {registro.veiculo ? (
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Carro{': '}
+                        </Text>
+                        <Text>
+                            {registro.veiculo}
+                        </Text>
+                    </View>
+                ) : null}
+
                 <View style={{ fontSize: 13, flexDirection: 'row' }}>
                     <View style={{ flex: 2, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
