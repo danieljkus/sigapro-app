@@ -151,19 +151,39 @@ export default class MedicoesTanqueArlaScreen extends Component {
 
         this.props.navigation.navigate('SaidaDIeselScreen', {
             estoq_me_idf: 0,
+            estoq_me_data: moment(new Date()).format('DD/MM/YYYY'),
+            estoq_me_numero: '0',
+            estoq_me_obs: 'BAIXA SIGAPRO',
+
+            estoq_mei_seq: 0,
+            estoq_mei_item: 0,
+            estoq_mei_qtde_mov: 0,
+            estoq_mei_vlr_unit: 0,
+            estoq_mei_total_mov: 0,
+            estoq_mei_obs: '',
+
+            estoq_me_tipo_saida: 'D',
+            checkedDiesel: true,
+            checkedArla: false,
+
+            veiculo_select: null,
+            codVeiculo: '',
+
+            listaItens: [],
+
             onRefresh: this.onRefresh
         });
     }
 
     onRegistroLongPress = (estoq_me_idf) => {
-        Alert.alert("Excluir registro", `Deseja excluir este Registro?`, [
-            { text: "Cancelar" },
-            {
-                text: "Excluir",
-                onPress: () => this.onExcluirRegistro(estoq_me_idf),
-                style: "destructive"
-            }
-        ])
+        // Alert.alert("Excluir registro", `Deseja excluir este Registro?`, [
+        //     { text: "Cancelar" },
+        //     {
+        //         text: "Excluir",
+        //         onPress: () => this.onExcluirRegistro(estoq_me_idf),
+        //         style: "destructive"
+        //     }
+        // ])
     }
 
     onExcluirRegistro = (estoq_me_idf) => {

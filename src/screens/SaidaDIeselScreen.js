@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, RefreshControl, Platform, Dimensions } from 'react-native';
-import { Card, Divider } from 'react-native-elements';
-import { checkFormIsValid } from '../utils/Validator';
+import { Card, Divider, CheckBox } from 'react-native-elements';
 
 import TextInput from '../components/TextInput';
 import moment from 'moment';
@@ -10,11 +9,12 @@ import Colors from '../values/Colors';
 import axios from 'axios';
 import Alert from '../components/Alert';
 import { ProgressDialog } from 'react-native-simple-dialogs';
-import { maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat } from "../utils/Maskers";
+import { maskDate, maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat } from "../utils/Maskers";
 import { getEmpresa } from '../utils/LoginManager';
+import VeiculosSelect from '../components/VeiculosSelect';
 
 const { OS } = Platform;
-
+const DATE_FORMAT = 'DD/MM/YYYY';
 
 export default class SaidaDIeselScreen extends Component {
 
@@ -22,13 +22,28 @@ export default class SaidaDIeselScreen extends Component {
         super(props);
 
         this.state = {
-            registro: {
-                estoq_tam_idf: '0',
-                estoq_tam_qtde_medida: '0,00',
-                estoq_tam_qtde_sistema: '0',
-                qtde_diferenca: '0',
-            },
-            loading: true,
+            estoq_me_idf: 0,
+            estoq_me_data: moment(new Date()).format(DATE_FORMAT),
+            estoq_me_numero: '0',
+            estoq_me_obs: 'BAIXA SIGAPRO',
+
+            estoq_mei_seq: 0,
+            estoq_mei_item: 0,
+            estoq_mei_qtde_mov: 0,
+            estoq_mei_vlr_unit: 0,
+            estoq_mei_total_mov: 0,
+            estoq_mei_obs: '',
+
+            estoq_me_tipo_saida: 'D',
+            checkedDiesel: true,
+            checkedArla: false,
+
+            veiculo_select: null,
+            codVeiculo: '',
+
+            listaItens: [],
+
+            loading: false,
             salvado: false,
             calculando: false,
         }
@@ -38,171 +53,103 @@ export default class SaidaDIeselScreen extends Component {
         getEmpresa().then(empresa => {
             this.setState({ empresa });
         })
-
-        const { estoq_tam_idf } = this.props.navigation.state.params;
-        if (estoq_tam_idf) {
-            axios.get('/medicaoTanqueArla/show/' + estoq_tam_idf, {
-            }).then(response => {
-                this.setState({
-                    registro: {
-                        ...
-                        response.data,
-                        estoq_tam_qtde_medida: parseFloat(response.data.estoq_tam_qtde_medida),
-                        estoq_tam_qtde_sistema: parseFloat(response.data.estoq_tam_qtde_sistema),
-                        // qtde_diferenca: response.data.qtde_diferenca,
-                        qtde_diferenca: parseFloat(parseFloat(response.data.estoq_tam_qtde_medida) - parseFloat(response.data.estoq_tam_qtde_sistema)),
-                    },
-                    loading: false,
-                })
-            }).catch(ex => {
-                console.warn('Erro Localizar: ', ex);
-                this.setState({
-                    loading: false,
-                })
-            });
-        } else {
-            this.setState({
-                registro: {
-                    estoq_tam_idf: '0',
-                    estoq_tam_qtde_medida: '0,00',
-                    estoq_tam_qtde_sistema: '0',
-                    qtde_diferenca: '0',
-                },
-                loading: false,
-            })
-        }
     }
 
     onInputChange = (id, value) => {
-        const { registro } = this.state;
-        this.setState({
-            registro: {
-                ...registro,
-                [id]: value
-            }
-        });
+        const state = {};
+        state[id] = value;
+        this.setState(state);
     }
 
     onSubmitForm = (event) => {
-        const { registro } = this.state;
-        if (registro.estoq_tam_qtde_medida === '0') {
-            Alert.showAlert("Informe a quantidade para Salvar.")
-            return
+        if ((!this.state.listaItens) || (this.state.listaItens.length === 0)) {
+            Alert.showAlert('Inclua algum Item na Lista.');
+            return;
         }
 
-        if (checkFormIsValid(this.refs)) {
-            Alert.showConfirm("Deseja salvar os dados da medição?", {
-                text: "Cancelar"
-            },
-                {
-                    text: "OK",
-                    onPress: this.onSalvar
-                })
-        } else {
-            Alert.showAlert("Informe a quantidade para Salvar.")
-            return
-        }
-    }
+        // if (!ven_pessoa) {
+        //     Alert.showAlert('Informe o Cliente.');
+        //     return;
+        // }
 
-    onSalvar = () => {
-        this.setState({ salvado: true });
-        const { registro } = this.state;
-
-        registro.estoq_tam_qtde_medida = vlrStringParaFloat(registro.estoq_tam_qtde_medida);
-
-        return axios
-            .post('/medicaoTanqueArla/store', registro)
-            .then(response => {
-                this.props.navigation.goBack(null);
-                this.props.navigation.state.params.onRefresh();
-            }).catch(ex => {
-                const { response } = ex;
-                this.setState({ salvado: false });
-
-                if (ex.response) {
-                    // erro no servidor
-                    Alert.showAlert('Não foi possível concluir a solicitação.');
-                } else {
-                    // sem internet
-                    Alert.showAlert('Verifique sua conexão com a internet.');
-                }
+        Alert.showConfirm("Deseja salvar essa Saída?", {
+            text: "Cancelar"
+        },
+            {
+                text: "OK",
+                onPress: this.onSalvar
             })
     }
 
-    onSubmitCalcular = (event) => {
+    onSalvar = () => {
         // const { registro } = this.state;
-        // if (!vlrStringParaFloat(registro.estoq_tam_qtde_medida)) {
-        //     Alert.showAlert("Informe a Altura Medida no Tanque.")
-        //     return
-        // }
 
-        // if (checkFormIsValid(this.refs)) {
-        //     this.onCalcularVolume();
-        // } else {
-        //     Alert.showAlert("Informe a Altura Medida no Tanque.")
-        //     return
-        // }
-    }
+        // this.setState({ salvado: true });
+        // registro.estoq_tam_qtde_medida = vlrStringParaFloat(registro.estoq_tam_qtde_medida);
 
-    onCalcularVolume = () => {
-        // const { registro, empresa } = this.state;
-        // this.setState({ calculando: true });
+        // return axios
+        //     .post('/medicaoTanqueArla/store', registro)
+        //     .then(response => {
+        //         this.props.navigation.goBack(null);
+        //         this.props.navigation.state.params.onRefresh();
+        //     }).catch(ex => {
+        //         const { response } = ex;
+        //         this.setState({ salvado: false });
 
-        // axios
-        //     .get('/medicaoTanqueArla/calcularVolume', {
-        //         params: {
-        //             empresa,
-        //             estoq_tam_qtde_medida: vlrStringParaFloat(registro.estoq_tam_qtde_medida)
+        //         if (ex.response) {
+        //             // erro no servidor
+        //             Alert.showAlert('Não foi possível concluir a solicitação.');
+        //         } else {
+        //             // sem internet
+        //             Alert.showAlert('Verifique sua conexão com a internet.');
         //         }
         //     })
-        //     .then(response => {
-        //         const { data } = response;
-
-        //         this.setState({
-        //             calculando: false,
-        //             registro: {
-        //                 ...registro,
-        //                 estoq_tam_qtde_medida: data.estoq_tam_qtde_medida,
-        //                 estoq_tam_qtde_sistema: data.estoq_tam_qtde_sistema,
-        //                 qtde_diferenca: data.qtde_diferenca,
-        //                 // qtde_diferenca: parseFloat(parseFloat(data.estoq_tam_qtde_medida) - parseFloat(data.estoq_tam_qtde_sistema)).toFixed(2),
-        //             }
-        //         })
-
-        //     }).catch(error => {
-        //         console.warn(error);
-        //         this.setState({
-        //             calculando: false,
-        //         })
-        //     })
     }
 
 
 
-    renderQtdeMedida = (estoq_tam_qtde_medida) => {
-        return (
-            <Text> {maskValorMoeda(estoq_tam_qtde_medida)} </Text>
-        );
-    };
+    onMudaTipoSaida = (tipo) => {
+        console.log('onMudaTipoSaida: ', tipo);
+        if (tipo === 'D') {
+            this.setState({
+                estoq_me_tipo_saida: 'D',
+                checkedDiesel: true,
+                checkedArla: false,
+            });
+        } else if (tipo === 'A') {
+            this.setState({
+                estoq_me_tipo_saida: 'A',
+                checkedDiesel: false,
+                checkedArla: true,
+            });
+        }
+    }
 
-    renderQtdeSistema = (estoq_tam_qtde_sistema) => {
-        return (
-            <Text> {maskValorMoeda(estoq_tam_qtde_sistema)} </Text>
-        );
-    };
+    onInputChangeVeiculo = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        if (value) {
+            this.setState({
+                codVeiculo: value.codVeic,
+            });
+        }
+    }
 
-    renderQtdeDiferenca = (qtde_diferenca) => {
-        return (
-            <Text style={{ color: 'red', fontSize: 40 }} > {maskValorMoeda(qtde_diferenca)} </Text>
-        );
-    };
+    onErroChange = msgErro => {
+        this.setState({
+            listaRegistros: [],
+            msgErroVeiculo: msgErro,
+        })
+    }
 
 
 
     render() {
-        const { loading, registro, salvado, calculando } = this.state;
-        const { estoq_tam_idf, estoq_tam_data, estoq_tam_alt_medida, estoq_tam_qtde_medida,
-            estoq_tam_qtde_sistema, qtde_diferenca } = registro;
+        const { loading, salvado, calculando,
+            estoq_me_idf, estoq_me_data, estoq_me_numero, estoq_me_obs,
+            estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_vlr_unit, estoq_mei_total_mov, estoq_mei_obs,
+            checkedDiesel, checkedArla, veiculo_select, codVeiculo } = this.state;
 
         return (
             <ScrollView
@@ -214,126 +161,182 @@ export default class SaidaDIeselScreen extends Component {
                     />
                 )}
             >
-
-                <Card containerStyle={{ padding: 0 }}>
-                    {estoq_tam_idf !== '0' ? (
-                        <View
-                            style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
-                        >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
-                                Emissão: {moment(estoq_tam_data).format('DD/MM/YYYY [às] HH:mm')}
-                            </Text>
-
-                        </View>
+                <View
+                    style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
+                >
+                    {estoq_me_idf ? (
+                        <TextInput
+                            label="Número da IDF"
+                            id="estoq_me_idf"
+                            ref="estoq_me_idf"
+                            value={String(estoq_me_idf)}
+                            onChange={this.onInputChange}
+                            maxLength={6}
+                            keyboardType="numeric"
+                            enabled={false}
+                        />
                     ) : null}
 
-                    <Divider />
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ width: "47%", marginRight: 20 }}>
+                            <TextInput
+                                label="Controle"
+                                id="estoq_me_numero"
+                                ref="estoq_me_numero"
+                                value={String(estoq_me_numero)}
+                                onChange={this.onInputChange}
+                                maxLength={6}
+                                keyboardType="numeric"
+                            // enabled={false}
+                            />
+                        </View>
 
-                    <View
-                        style={{
-                            margin: 15,
-                        }}
-                    >
-                        <TextInput
-                            label="Quantidade Medida (Lt)"
-                            id="estoq_tam_qtde_medida"
-                            ref="estoq_tam_qtde_medida"
-                            masker={maskDigitarVlrMoeda}
-                            value={String(estoq_tam_qtde_medida)}
-                            onChange={this.onInputChange}
-                            maxLength={9}
-                            keyboardType="decimal-pad"
-                            errorMessage="A quantidade é obrigatória"
-                            required={true}
+                        <View style={{ width: "47%" }}>
+                            <TextInput
+                                type="date"
+                                label="Data"
+                                id="estoq_me_data"
+                                ref="estoq_me_data"
+                                value={estoq_me_data}
+                                masker={maskDate}
+                                dateFormat={DATE_FORMAT}
+                                onChange={this.onInputChange}
+                                validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                required={true}
+                                errorMessage="Formato correto DD/MM/AAAA"
+                            // editable={false}
+                            />
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row' }}>
+                        <CheckBox
+                            center
+                            title='Diesel'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={checkedDiesel}
+                            onPress={() => { this.onMudaTipoSaida('D') }}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                        />
+                        <CheckBox
+                            center
+                            title='Arla'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={checkedArla}
+                            onPress={() => { this.onMudaTipoSaida('A') }}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                         />
                     </View>
 
-                    {estoq_tam_idf === 0 ? (
 
-                        <View
-                            style={{ paddingHorizontal: 16, paddingVertical: 8 }}
-                        >
-                            <View
-                                style={{ flexDirection: 'row' }}
-                            >
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                    Quantidade Medida: {' '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                    {this.renderQtdeMedida(estoq_tam_qtde_medida)}
-                                </Text>
-                            </View>
 
-                            <View
-                                style={{ flexDirection: 'row' }}
-                            >
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                    Quantidade Sistema: {' '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                    {this.renderQtdeMedida(estoq_tam_qtde_sistema)}
-                                </Text>
-                            </View>
+                    <TextInput
+                        label="Observação da Saída"
+                        id="estoq_me_obs"
+                        ref="estoq_me_obs"
+                        value={estoq_me_obs}
+                        maxLength={100}
+                        onChange={this.onInputChange}
+                        multiline={true}
+                    />
 
-                            <View
-                                style={{ flexDirection: 'row' }}
-                            >
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                    Diferença do Estoque: {' '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                    {this.renderQtdeMedida(qtde_diferenca)}
-                                </Text>
-                            </View>
+                    <Divider />
+                    <Divider />
+                    <Divider />
 
+                    <View style={{ margin: 20 }} />
+
+                    <VeiculosSelect
+                        label="Veículo"
+                        id="veiculo_select"
+                        value={veiculo_select}
+                        codVeiculo={codVeiculo}
+                        onChange={this.onInputChangeVeiculo}
+                        onErro={this.onErroChange}
+                        tipo=""
+                    />
+
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ width: "47%", marginRight: 20 }}>
+                            <TextInput
+                                label="Quantidade"
+                                id="estoq_mei_qtde_mov"
+                                ref="estoq_mei_qtde_mov"
+                                value={String(estoq_mei_qtde_mov)}
+                                maxLength={10}
+                                keyboardType="numeric"
+                                masker={maskDigitarVlrMoeda}
+                                onChange={this.onInputChangeQtdeArla}
+                            />
                         </View>
-                    ) : null}
 
-                </Card>
+                        <View style={{ width: "47%" }}>
+                            <TextInput
+                                label="Qtde Estoque"
+                                id="estoq_mei_qtde_mov"
+                                ref="estoq_mei_qtde_mov"
+                                value={estoq_mei_qtde_mov}
+                                onChange={this.onInputChange}
+                                enabled={false}
+                            />
+                        </View>
+                    </View>
 
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ width: "47%", marginRight: 20 }}>
+                            <TextInput
+                                label="Custo Médio"
+                                id="estoq_mei_vlr_unit"
+                                ref="estoq_mei_vlr_unit"
+                                value={estoq_mei_vlr_unit}
+                                onChange={this.onInputChange}
+                                enabled={false}
+                            />
+                        </View>
 
+                        <View style={{ width: "47%" }}>
+                            <TextInput
+                                label="Total"
+                                id="estoq_mei_total_mov"
+                                ref="estoq_mei_total_mov"
+                                value={estoq_mei_total_mov}
+                                onChange={this.onInputChange}
+                                enabled={false}
+                            />
+                        </View>
+                    </View>
 
+                    <TextInput
+                        label="Observação"
+                        id="estoq_mei_obs"
+                        ref="estoq_mei_obs"
+                        value={estoq_mei_obs}
+                        maxLength={100}
+                        onChange={this.onInputChange}
+                        multiline={true}
+                    />
+
+                </View>
 
                 <View
                     style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}
                 >
-
-                    {/* {estoq_tam_idf === '0' ?
-                        <Button
-                            title="Calcular Volume"
-                            backgroundColor='#ccc'
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 20, marginTop: 15 }}
-                            onPress={this.onSubmitCalcular}
-                            disabled={loading}
-                            icon={{
-                                name: 'calculator',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-                        : null
-                    } */}
-
-                    {estoq_tam_idf === '0' ?
-                        <Button
-                            title="Salvar"
-                            backgroundColor='#4682B4'
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                            onPress={this.onSubmitForm}
-                            disabled={loading}
-                            visible={estoq_tam_idf}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-                        : null
-                    }
-
-
+                    <Button
+                        title="Salvar"
+                        backgroundColor='#4682B4'
+                        color={Colors.textOnPrimary}
+                        buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+                        onPress={this.onSubmitForm}
+                        disabled={loading}
+                        // visible={estoq_tam_idf}
+                        icon={{
+                            name: 'check',
+                            type: 'font-awesome',
+                            color: Colors.textOnPrimary
+                        }}
+                    />
                 </View>
 
                 <ProgressDialog
