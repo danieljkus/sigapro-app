@@ -26,8 +26,10 @@ import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
 
 // import SaidasEstoqueScreen from './SaidasEstoqueScreen';
 // import SaidaEstoqueScreen from './SaidaEstoqueScreen';
+
 import SaidasDieselScreen from './SaidasDieselScreen';
-import SaidaDIeselScreen from './SaidaDIeselScreen';
+import SaidaDieselScreen from './SaidaDieselScreen';
+import SaidaDieselItensScreen from './SaidaDieselItensScreen';
 
 import MedicaoTanqueArlaScreen from './MedicaoTanqueArlaScreen';
 import MedicoesTanqueArlaScreen from './MedicoesTanqueArlaScreen';
@@ -221,10 +223,17 @@ const HomeStackNavigator = StackNavigator({
             ...defaultNavigationOptions,
         }
     },
-    SaidaDIeselScreen: {
-        screen: SaidaDIeselScreen,
+    SaidaDieselScreen: {
+        screen: SaidaDieselScreen,
         navigationOptions: {
-            title: "Saídas de Diesel/Arla",
+            title: "Saída de Diesel/Arla",
+            ...defaultNavigationOptions,
+        }
+    },
+    SaidaDieselItensScreen: {
+        screen: SaidaDieselItensScreen,
+        navigationOptions: {
+            title: "Diesel/Arla",
             ...defaultNavigationOptions,
         }
     },

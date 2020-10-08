@@ -5,6 +5,7 @@ const { OS } = Platform;
 import moment from 'moment';
 import axios from 'axios';
 import { Card, Divider } from 'react-native-elements';
+import { ProgressDialog } from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
@@ -135,7 +136,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
 
                 console.log('onRegistroPress: ', response.data);
 
-                this.props.navigation.navigate('SaidaDIeselScreen', {
+                this.props.navigation.navigate('SaidaDieselScreen', {
                     registro: response.data.registro,
                     onRefresh: this.onRefresh
                 });
@@ -149,28 +150,28 @@ export default class MedicoesTanqueArlaScreen extends Component {
     onAddPress = () => {
         console.log('onAddPress');
 
-        this.props.navigation.navigate('SaidaDIeselScreen', {
-            estoq_me_idf: 0,
-            estoq_me_data: moment(new Date()).format('DD/MM/YYYY'),
-            estoq_me_numero: '0',
-            estoq_me_obs: 'BAIXA SIGAPRO',
+        this.props.navigation.navigate('SaidaDieselScreen', {
+            registro: {
+                estoq_me_idf: 0,
+                estoq_me_data: moment(new Date()).format('DD/MM/YYYY'),
+                estoq_me_numero: '0',
+                estoq_me_obs: 'BAIXA SIGAPRO',
 
-            estoq_mei_seq: 0,
-            estoq_mei_item: 0,
-            estoq_mei_qtde_mov: 0,
-            estoq_mei_vlr_unit: 0,
-            estoq_mei_total_mov: 0,
-            estoq_mei_obs: '',
+                estoq_mei_seq: 0,
+                estoq_mei_item: 0,
+                estoq_mei_qtde_mov: 0,
+                estoq_mei_vlr_unit: 0,
+                estoq_mei_total_mov: 0,
+                estoq_mei_obs: '',
 
-            estoq_me_tipo_saida: 'D',
-            checkedDiesel: true,
-            checkedArla: false,
+                estoq_me_tipo_saida: 'D',
+                checkedDiesel: true,
+                checkedArla: false,
 
-            veiculo_select: null,
-            codVeiculo: '',
-
-            listaItens: [],
-
+                veiculo_select: null,
+                codVeiculo: '',
+            },
+            // listaItens: [],
             onRefresh: this.onRefresh
         });
     }
@@ -243,7 +244,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
     }
 
     render() {
-        const { listaRegistros, refreshing, carregando } = this.state;
+        const { listaRegistros, refreshing, carregarRegistro } = this.state;
         return (
             <View style={{ flex: 1, }}>
                 <FlatList
@@ -264,6 +265,13 @@ export default class MedicoesTanqueArlaScreen extends Component {
                     onPress={this.onAddPress}
                     backgroundColor={Colors.primary}
                 />
+
+                <ProgressDialog
+                    visible={carregarRegistro}
+                    title="SIGA PRO"
+                    message="Aguarde..."
+                />
+
             </View>
         )
     }

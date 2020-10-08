@@ -1,58 +1,71 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, RefreshControl, Platform, Dimensions } from 'react-native';
-import { Card, Divider, CheckBox } from 'react-native-elements';
-
+import { View, Text, ScrollView } from 'react-native';
+import { CheckBox } from 'react-native-elements';
+import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
+import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
-import moment from 'moment';
 import Button from '../components/Button';
 import Colors from '../values/Colors';
-import axios from 'axios';
-import Alert from '../components/Alert';
 import { ProgressDialog } from 'react-native-simple-dialogs';
-import { maskDate, maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat } from "../utils/Maskers";
-import { getEmpresa } from '../utils/LoginManager';
-import VeiculosSelect from '../components/VeiculosSelect';
+import Alert from '../components/Alert';
+import moment from 'moment';
+import { maskDate, maskValorMoeda } from '../utils/Maskers';
+import { getUsuario } from '../utils/LoginManager';
 
-const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-export default class SaidaDIeselScreen extends Component {
+export default class SaidaDieselScreen extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
+            loading: false,
+            salvado: false,
+
             estoq_me_idf: 0,
             estoq_me_data: moment(new Date()).format(DATE_FORMAT),
             estoq_me_numero: '0',
-            estoq_me_obs: 'BAIXA SIGAPRO',
+            estoq_me_obs: '',
+            estoq_me_qtde: 0,
 
             estoq_mei_seq: 0,
             estoq_mei_item: 0,
             estoq_mei_qtde_mov: 0,
+            estoq_mei_qtde_atual: 0,
             estoq_mei_vlr_unit: 0,
             estoq_mei_total_mov: 0,
             estoq_mei_obs: '',
 
             estoq_me_tipo_saida: 'D',
-            checkedDiesel: true,
-            checkedArla: false,
+            checkedDiesel: props.navigation.state.params.registro.checkedDiesel ? props.navigation.state.params.registro.checkedDiesel : false,
+            checkedArla: props.navigation.state.params.registro.checkedArla ? props.navigation.state.params.registro.checkedArla : false,
 
             veiculo_select: null,
             codVeiculo: '',
 
-            listaItens: [],
+            listaItens: props.navigation.state.params.registro.listaItens ? props.navigation.state.params.registro.listaItens : [],
 
-            loading: false,
-            salvado: false,
-            calculando: false,
+            ...props.navigation.state.params.registro.dados,
+
+            listaRegistrosProdutos: [],
+            listaRegistrosProdutosAsync: [],
+            listaRegistrosProdutosHistorico: [],
+            refreshing: false,
+            carregarRegistro: false,
+            carregando: false,
+            carregarMais: false,
+            pagina: 1,
+
         }
     }
 
+    async componentWillUnmount() {
+
+    }
+
     componentDidMount() {
-        getEmpresa().then(empresa => {
-            this.setState({ empresa });
-        })
+        this.calculoTotalPedido();
     }
 
     onInputChange = (id, value) => {
@@ -60,53 +73,6 @@ export default class SaidaDIeselScreen extends Component {
         state[id] = value;
         this.setState(state);
     }
-
-    onSubmitForm = (event) => {
-        if ((!this.state.listaItens) || (this.state.listaItens.length === 0)) {
-            Alert.showAlert('Inclua algum Item na Lista.');
-            return;
-        }
-
-        // if (!ven_pessoa) {
-        //     Alert.showAlert('Informe o Cliente.');
-        //     return;
-        // }
-
-        Alert.showConfirm("Deseja salvar essa Saída?", {
-            text: "Cancelar"
-        },
-            {
-                text: "OK",
-                onPress: this.onSalvar
-            })
-    }
-
-    onSalvar = () => {
-        // const { registro } = this.state;
-
-        // this.setState({ salvado: true });
-        // registro.estoq_tam_qtde_medida = vlrStringParaFloat(registro.estoq_tam_qtde_medida);
-
-        // return axios
-        //     .post('/medicaoTanqueArla/store', registro)
-        //     .then(response => {
-        //         this.props.navigation.goBack(null);
-        //         this.props.navigation.state.params.onRefresh();
-        //     }).catch(ex => {
-        //         const { response } = ex;
-        //         this.setState({ salvado: false });
-
-        //         if (ex.response) {
-        //             // erro no servidor
-        //             Alert.showAlert('Não foi possível concluir a solicitação.');
-        //         } else {
-        //             // sem internet
-        //             Alert.showAlert('Verifique sua conexão com a internet.');
-        //         }
-        //     })
-    }
-
-
 
     onMudaTipoSaida = (tipo) => {
         console.log('onMudaTipoSaida: ', tipo);
@@ -123,235 +89,321 @@ export default class SaidaDIeselScreen extends Component {
                 checkedArla: true,
             });
         }
-    }
 
-    onInputChangeVeiculo = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-        if (value) {
+        this.setState({ carregarRegistro: true });
+        axios.get('/saidasEstoque/buscaEstoque', {
+            params: {
+                codItem: tipo === 'D' ? 19 : 166048,
+            }
+        }).then(response => {
+            console.log('onRegistroPress: ', response.data);
+
             this.setState({
-                codVeiculo: value.codVeic,
+                carregarRegistro: false,
+                estoq_mei_item: tipo === 'D' ? 19 : 166048,
+                estoq_mei_qtde_atual: response.data.qtde,
+                estoq_mei_vlr_unit: response.data.custo,
+                listaItens: [],
             });
-        }
+        }).catch(ex => {
+            this.setState({ carregarRegistro: false });
+            console.warn(ex);
+            console.warn(ex.response);
+        });
+
     }
 
-    onErroChange = msgErro => {
-        this.setState({
-            listaRegistros: [],
-            msgErroVeiculo: msgErro,
-        })
+
+    onFormSubmit = (event) => {
+        if ((!this.state.listaItens) || (listaItens.length === 0)) {
+            Alert.showAlert('Inclua algum Item na Saída.');
+            return;
+        }
+
+        // if (!ven_pessoa) {
+        //     Alert.showAlert('Informe o Cliente.');
+        //     return;
+        // }
+
+        // if (!ven_cond_pagto) {
+        //     Alert.showAlert('Informe a Condição de Pagamento.');
+        //     return;
+        // }
+
+        this.onSalvarRegistro();
     }
+
+    onSalvarRegistro = () => {
+        const { listaItens, estoq_me_idf, estoq_me_data, estoq_me_numero, estoq_me_obs } = this.state;
+
+        this.setState({ salvado: true });
+        const registro = {
+            estoq_me_idf,
+            estoq_me_data: moment(estoq_me_data, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
+            estoq_me_numero: estoq_me_numero ? estoq_me_numero : '0',
+            estoq_me_obs,
+
+            listaItens,
+        };
+
+        console.log('onSalvarRegistro: ', registro);
+        return;
+
+        let axiosMethod;
+        if (estoq_me_idf) {
+            axiosMethod = axios.put('/saidasEstoque/update/' + estoq_me_idf, registro);
+        } else {
+            axiosMethod = axios.post('/saidasEstoque/store', registro);
+        }
+        axiosMethod.then(response => {
+            myEmitter.emit('atualizarDashboard');
+            this.props.navigation.goBack(null);
+            if (this.props.navigation.state.params.onRefresh) {
+                this.props.navigation.state.params.onRefresh();
+            }
+        }).catch(ex => {
+            this.setState({ salvado: false });
+            console.warn(ex);
+        })
+
+    }
+
+    calculoTotalPedido = () => {
+        const { listaItens } = this.state;
+        let qtdeItens = 0;
+        for (var x in listaItens) { qtdeItens = qtdeItens + (listaItens[x].estoq_mei_qtde_mov); };
+        qtdeItens = parseFloat(qtdeItens.toFixed(2));
+        this.setState({ estoq_me_qtde: qtdeItens });
+    }
+
+
+
+
+
+
+    // ---------------------------------------------------------------------------
+    // MODAL PARA PRODUTOS DA SAIDA
+    // ---------------------------------------------------------------------------
+
+    onAbrirProdutosVendaModal = () => {
+        this.props.navigation.navigate('SaidaDieselItensScreen', {
+            estoq_me_idf: this.state.estoq_me_idf,
+            listaItens: this.state.listaItens,
+            estoq_mei_item: this.state.estoq_mei_item,
+            estoq_mei_qtde_atual: this.state.estoq_mei_qtde_atual,
+            estoq_mei_vlr_unit: this.state.estoq_mei_vlr_unit,
+            // onCarregaProdutos: this.onCarregaProdutos
+        });
+    }
+
+    onCarregaProdutos = () => {
+        // retornaListaAsyncStorage('P7Vendas-ProdutosVenda').then(listaProdutos => {
+        //     this.setState({ listaProdutos });
+        //     this.calculoTotalPedido();
+        //     AsyncStorage.setItem('P7Vendas-ProdutosVenda', '');
+        // });
+    }
+
+
+
+
+
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
 
 
 
     render() {
-        const { loading, salvado, calculando,
-            estoq_me_idf, estoq_me_data, estoq_me_numero, estoq_me_obs,
+        const { estoq_me_idf, estoq_me_data, estoq_me_numero, estoq_me_obs,
             estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_vlr_unit, estoq_mei_total_mov, estoq_mei_obs,
-            checkedDiesel, checkedArla, veiculo_select, codVeiculo } = this.state;
+            checkedDiesel, checkedArla, veiculo_select, codVeiculo, listaItens, estoq_me_qtde,
+            carregarRegistro, loading, salvado } = this.state;
+
+
+        console.log('SaidaDieselScreen - STATE: ', this.state);
 
         return (
-            <ScrollView
-                style={{ flex: 1 }}
-                keyboardShouldPersistTaps="always"
-                refreshControl={(
-                    <RefreshControl
-                        refreshing={loading}
-                    />
-                )}
-            >
-                <View
-                    style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
+            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+                <StatusBar />
+
+                <ScrollView
+                    style={{ flex: 1, }}
+                    keyboardShouldPersistTaps="always"
                 >
-                    {estoq_me_idf ? (
+                    <View
+                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
+                    >
+
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: "47%", marginRight: 20 }}>
+                                <TextInput
+                                    label="Número da IDF"
+                                    id="estoq_me_idf"
+                                    ref="estoq_me_idf"
+                                    value={String(estoq_me_idf)}
+                                    onChange={this.onInputChange}
+                                    maxLength={6}
+                                    keyboardType="numeric"
+                                    enabled={false}
+                                />
+                            </View>
+                            <View style={{ width: "47%" }}>
+                                <TextInput
+                                    label="Número da IDF"
+                                    id="estoq_me_idf"
+                                    ref="estoq_me_idf"
+                                    value={String(estoq_me_idf)}
+                                    onChange={this.onInputChange}
+                                    maxLength={6}
+                                    keyboardType="numeric"
+                                    enabled={false}
+                                />
+                            </View>
+                        </View>
+
+
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: "47%", marginRight: 20 }}>
+                                <TextInput
+                                    type="date"
+                                    label="Data"
+                                    id="estoq_me_data"
+                                    ref="estoq_me_data"
+                                    value={estoq_me_data}
+                                    masker={maskDate}
+                                    dateFormat={DATE_FORMAT}
+                                    onChange={this.onInputChange}
+                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                    required={true}
+                                    errorMessage="Formato correto DD/MM/AAAA"
+                                // editable={false}
+                                />
+                            </View>
+                            <View style={{ width: "47%" }}>
+                                <TextInput
+                                    label="Qtde Itens"
+                                    id="estoq_me_qtde"
+                                    ref="estoq_me_qtde"
+                                    value={maskValorMoeda(estoq_me_qtde)}
+                                    onChange={this.onInputChange}
+                                    enabled={false}
+                                />
+                            </View>
+                        </View>
+
                         <TextInput
-                            label="Número da IDF"
-                            id="estoq_me_idf"
-                            ref="estoq_me_idf"
-                            value={String(estoq_me_idf)}
+                            label="Observação da Saída"
+                            id="estoq_me_obs"
+                            ref="estoq_me_obs"
+                            value={estoq_me_obs}
+                            maxLength={100}
                             onChange={this.onInputChange}
-                            maxLength={6}
-                            keyboardType="numeric"
-                            enabled={false}
+                            multiline={true}
                         />
-                    ) : null}
 
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={{ width: "47%", marginRight: 20 }}>
-                            <TextInput
-                                label="Controle"
-                                id="estoq_me_numero"
-                                ref="estoq_me_numero"
-                                value={String(estoq_me_numero)}
-                                onChange={this.onInputChange}
-                                maxLength={6}
-                                keyboardType="numeric"
-                            // enabled={false}
+                        <View style={{ flexDirection: 'row' }}>
+                            <CheckBox
+                                center
+                                title='Diesel'
+                                checkedIcon='dot-circle-o'
+                                uncheckedIcon='circle-o'
+                                checked={checkedDiesel}
+                                onPress={() => { this.onMudaTipoSaida('D') }}
+                                containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                            />
+                            <CheckBox
+                                center
+                                title='Arla'
+                                checkedIcon='dot-circle-o'
+                                uncheckedIcon='circle-o'
+                                checked={checkedArla}
+                                onPress={() => { this.onMudaTipoSaida('A') }}
+                                containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                             />
                         </View>
 
-                        <View style={{ width: "47%" }}>
+                        {/* <View style={{ marginBottom: 20, marginTop: 20 }} >
                             <TextInput
-                                type="date"
-                                label="Data"
-                                id="estoq_me_data"
-                                ref="estoq_me_data"
-                                value={estoq_me_data}
-                                masker={maskDate}
-                                dateFormat={DATE_FORMAT}
+                                label="Observação da Saída"
+                                id="estoq_me_obs"
+                                ref="estoq_me_obs"
+                                value={estoq_me_obs}
+                                maxLength={100}
                                 onChange={this.onInputChange}
-                                validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
-                                required={true}
-                                errorMessage="Formato correto DD/MM/AAAA"
-                            // editable={false}
+                                multiline={true}
                             />
+                        </View> */}
+
+                        {/* <Divider />
+                        <Divider />
+                        <Divider /> */}
+
+
+                        <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 20, marginTop: 30 }} >
+                            <View style={{ flex: 2, marginRight: 2 }}>
+                                <Button
+                                    title="ITENS DA SAÍDA"
+                                    loading={loading}
+                                    onPress={() => { this.onAbrirProdutosVendaModal() }}
+                                    buttonStyle={{ height: 45 }}
+                                    backgroundColor={Colors.buttonSecondary}
+                                    textStyle={{
+                                        fontWeight: 'bold',
+                                        fontSize: 15
+                                    }}
+                                    icon={{
+                                        name: 'barcode',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
+                            </View>
+                            <View style={{ flex: 2, marginLeft: 2 }}>
+                                {this.state.vendaEnviada && this.state.parSinc
+                                    ? <Text style={{ textAlign: 'center', color: '#d50000', marginTop: 5 }}> Pedido Enviado </Text>
+                                    : (
+                                        <Button
+                                            title="SALVAR SAÍDA"
+                                            loading={loading}
+                                            onPress={this.onFormSubmit}
+                                            buttonStyle={{ height: 45 }}
+                                            backgroundColor={Colors.buttonPrimary}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'check',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    )}
+                            </View>
                         </View>
+
+                        <Text style={{ fontSize: 5 }}>{estoq_me_idf}</Text>
+
                     </View>
 
-                    <View style={{ flexDirection: 'row' }}>
-                        <CheckBox
-                            center
-                            title='Diesel'
-                            checkedIcon='dot-circle-o'
-                            uncheckedIcon='circle-o'
-                            checked={checkedDiesel}
-                            onPress={() => { this.onMudaTipoSaida('D') }}
-                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
-                        />
-                        <CheckBox
-                            center
-                            title='Arla'
-                            checkedIcon='dot-circle-o'
-                            uncheckedIcon='circle-o'
-                            checked={checkedArla}
-                            onPress={() => { this.onMudaTipoSaida('A') }}
-                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
-                        />
-                    </View>
-
-
-
-                    <TextInput
-                        label="Observação da Saída"
-                        id="estoq_me_obs"
-                        ref="estoq_me_obs"
-                        value={estoq_me_obs}
-                        maxLength={100}
-                        onChange={this.onInputChange}
-                        multiline={true}
+                    <ProgressDialog
+                        visible={salvado}
+                        title="SIGA PRO"
+                        message="Gravando. Aguarde..."
                     />
 
-                    <Divider />
-                    <Divider />
-                    <Divider />
-
-                    <View style={{ margin: 20 }} />
-
-                    <VeiculosSelect
-                        label="Veículo"
-                        id="veiculo_select"
-                        value={veiculo_select}
-                        codVeiculo={codVeiculo}
-                        onChange={this.onInputChangeVeiculo}
-                        onErro={this.onErroChange}
-                        tipo=""
+                    <ProgressDialog
+                        visible={carregarRegistro}
+                        title="SIGA PRO"
+                        message="Aguarde..."
                     />
 
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={{ width: "47%", marginRight: 20 }}>
-                            <TextInput
-                                label="Quantidade"
-                                id="estoq_mei_qtde_mov"
-                                ref="estoq_mei_qtde_mov"
-                                value={String(estoq_mei_qtde_mov)}
-                                maxLength={10}
-                                keyboardType="numeric"
-                                masker={maskDigitarVlrMoeda}
-                                onChange={this.onInputChangeQtdeArla}
-                            />
-                        </View>
-
-                        <View style={{ width: "47%" }}>
-                            <TextInput
-                                label="Qtde Estoque"
-                                id="estoq_mei_qtde_mov"
-                                ref="estoq_mei_qtde_mov"
-                                value={estoq_mei_qtde_mov}
-                                onChange={this.onInputChange}
-                                enabled={false}
-                            />
-                        </View>
-                    </View>
-
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={{ width: "47%", marginRight: 20 }}>
-                            <TextInput
-                                label="Custo Médio"
-                                id="estoq_mei_vlr_unit"
-                                ref="estoq_mei_vlr_unit"
-                                value={estoq_mei_vlr_unit}
-                                onChange={this.onInputChange}
-                                enabled={false}
-                            />
-                        </View>
-
-                        <View style={{ width: "47%" }}>
-                            <TextInput
-                                label="Total"
-                                id="estoq_mei_total_mov"
-                                ref="estoq_mei_total_mov"
-                                value={estoq_mei_total_mov}
-                                onChange={this.onInputChange}
-                                enabled={false}
-                            />
-                        </View>
-                    </View>
-
-                    <TextInput
-                        label="Observação"
-                        id="estoq_mei_obs"
-                        ref="estoq_mei_obs"
-                        value={estoq_mei_obs}
-                        maxLength={100}
-                        onChange={this.onInputChange}
-                        multiline={true}
-                    />
-
-                </View>
-
-                <View
-                    style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}
-                >
-                    <Button
-                        title="Salvar"
-                        backgroundColor='#4682B4'
-                        color={Colors.textOnPrimary}
-                        buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                        onPress={this.onSubmitForm}
-                        disabled={loading}
-                        // visible={estoq_tam_idf}
-                        icon={{
-                            name: 'check',
-                            type: 'font-awesome',
-                            color: Colors.textOnPrimary
-                        }}
-                    />
-                </View>
-
-                <ProgressDialog
-                    visible={salvado}
-                    title="SIGA PRO"
-                    message="Gravando. Aguarde..."
-                />
-
-                <ProgressDialog
-                    visible={calculando}
-                    title="SIGA PRO"
-                    message="Calculando Volume. Aguarde..."
-                />
-
-            </ScrollView >
+                </ScrollView>
+            </View >
         )
     }
 }
