@@ -11,7 +11,7 @@ import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import moment from 'moment';
 import { maskDate, maskValorMoeda } from '../utils/Maskers';
-import { getUsuario } from '../utils/LoginManager';
+import { getFilial } from '../utils/LoginManager';
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
@@ -65,7 +65,11 @@ export default class SaidaDieselScreen extends Component {
     }
 
     componentDidMount() {
+        getFilial().then(filial => { this.setState({ filial }); })
         this.calculoTotalPedido();
+        if (!this.state.estoq_me_idf) {
+            this.onMudaTipoSaida('D');
+        }
     }
 
     onInputChange = (id, value) => {
@@ -115,21 +119,10 @@ export default class SaidaDieselScreen extends Component {
 
 
     onFormSubmit = (event) => {
-        if ((!this.state.listaItens) || (listaItens.length === 0)) {
+        if ((!this.state.listaItens) || (this.state.listaItens.length === 0)) {
             Alert.showAlert('Inclua algum Item na Saída.');
             return;
         }
-
-        // if (!ven_pessoa) {
-        //     Alert.showAlert('Informe o Cliente.');
-        //     return;
-        // }
-
-        // if (!ven_cond_pagto) {
-        //     Alert.showAlert('Informe a Condição de Pagamento.');
-        //     return;
-        // }
-
         this.onSalvarRegistro();
     }
 
@@ -147,7 +140,7 @@ export default class SaidaDieselScreen extends Component {
         };
 
         console.log('onSalvarRegistro: ', registro);
-        return;
+        // return;
 
         let axiosMethod;
         if (estoq_me_idf) {
@@ -156,7 +149,7 @@ export default class SaidaDieselScreen extends Component {
             axiosMethod = axios.post('/saidasEstoque/store', registro);
         }
         axiosMethod.then(response => {
-            myEmitter.emit('atualizarDashboard');
+            // myEmitter.emit('atualizarDashboard');
             this.props.navigation.goBack(null);
             if (this.props.navigation.state.params.onRefresh) {
                 this.props.navigation.state.params.onRefresh();
@@ -189,19 +182,20 @@ export default class SaidaDieselScreen extends Component {
         this.props.navigation.navigate('SaidaDieselItensScreen', {
             estoq_me_idf: this.state.estoq_me_idf,
             listaItens: this.state.listaItens,
+            filial: this.state.filial,
             estoq_mei_item: this.state.estoq_mei_item,
             estoq_mei_qtde_atual: this.state.estoq_mei_qtde_atual,
+            estoq_mei_qtde_mov: 1,
             estoq_mei_vlr_unit: this.state.estoq_mei_vlr_unit,
-            // onCarregaProdutos: this.onCarregaProdutos
+            estoq_mei_total_mov: this.state.estoq_mei_vlr_unit,
+            onCarregaProdutos: this.onCarregaProdutos
         });
     }
 
-    onCarregaProdutos = () => {
-        // retornaListaAsyncStorage('P7Vendas-ProdutosVenda').then(listaProdutos => {
-        //     this.setState({ listaProdutos });
-        //     this.calculoTotalPedido();
-        //     AsyncStorage.setItem('P7Vendas-ProdutosVenda', '');
-        // });
+    onCarregaProdutos = (listaItens) => {
+        console.log('onCarregaProdutos: ', listaItens);
+        this.setState({ listaItens });
+        this.calculoTotalPedido();
     }
 
 
@@ -219,8 +213,7 @@ export default class SaidaDieselScreen extends Component {
 
     render() {
         const { estoq_me_idf, estoq_me_data, estoq_me_numero, estoq_me_obs,
-            estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_vlr_unit, estoq_mei_total_mov, estoq_mei_obs,
-            checkedDiesel, checkedArla, veiculo_select, codVeiculo, listaItens, estoq_me_qtde,
+            checkedDiesel, checkedArla, estoq_me_qtde,
             carregarRegistro, loading, salvado } = this.state;
 
 
@@ -241,14 +234,13 @@ export default class SaidaDieselScreen extends Component {
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
-                                    label="Número da IDF"
-                                    id="estoq_me_idf"
-                                    ref="estoq_me_idf"
-                                    value={String(estoq_me_idf)}
+                                    label="Controle"
+                                    id="estoq_me_numero"
+                                    ref="estoq_me_numero"
+                                    value={String(estoq_me_numero)}
                                     onChange={this.onInputChange}
                                     maxLength={6}
                                     keyboardType="numeric"
-                                    enabled={false}
                                 />
                             </View>
                             <View style={{ width: "47%" }}>

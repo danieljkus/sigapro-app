@@ -25,47 +25,28 @@ const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
             // opacity: 0.9
         }}>
             <TouchableOpacity
-                onPress={() => onRegistroPress(estoq_mei_seq, estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_vlr_unit, estoq_mei_total_mov, tipo_destino, cod_destino, estoq_mei_obs)}
+                onPress={() => onRegistroPress(registro.estoq_mei_seq, registro.estoq_mei_item, registro.estoq_mei_qtde_mov, registro.estoq_mei_vlr_unit, registro.estoq_mei_total_mov, registro.tipo_destino, registro.cod_destino, registro.descr_destino, registro.estoq_mei_obs)}
                 onLongPress={() => onRegistroLongPress(registro.estoq_mei_seq)}
             >
 
-                <View style={{ paddingLeft: 20, paddingRight: 5, paddingVertical: 4 }}>
-                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 17 }}>
-                        {registro.cod_destino}
-                    </Text>
-                </View>
-
-                <Divider />
-
-                {/* <View style={{ paddingLeft: 16, paddingVertical: 0, flexDirection: 'row' }}>
-                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                        <Text style={{ color: Colors.textSecondaryDark, fontWeight: 'bold', fontSize: 15, marginTop: 5, }}>
-                            Qtde:
-                    </Text>
-                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, marginTop: 5, marginLeft: 5 }}>
-                            {registro.vi_qtde}
+                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Veículo {': '}
+                        </Text>
+                        <Text>
+                            {registro.cod_destino}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Qtde {': '}
+                        </Text>
+                        <Text>
+                            {maskValorMoeda(registro.estoq_mei_qtde_mov)}
                         </Text>
                     </View>
                 </View>
-
-                <View style={{ paddingLeft: 16, paddingVertical: 0, flexDirection: 'row' }}>
-                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                        <Text style={{ color: Colors.textSecondaryDark, fontWeight: 'bold', fontSize: 15, marginTop: 3, }}>
-                            Preço:
-                    </Text>
-                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, marginTop: 3, marginLeft: 5 }}>
-                            {maskValorMoeda(registro.vi_vlr_unit)}
-                        </Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', flex: 1.2 }}>
-                        <Text style={{ color: Colors.textSecondaryDark, fontWeight: 'bold', fontSize: 15, marginTop: 3, }}>
-                            Preço c/ Desc:
-                    </Text>
-                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, marginTop: 3, marginLeft: 5 }}>
-                            {maskValorMoeda(registro.vi_vlr_total / registro.vi_qtde)}
-                        </Text>
-                    </View>
-                </View> */}
 
             </TouchableOpacity>
         </Card>
@@ -85,23 +66,23 @@ export default class SaidaDieselItensScreen extends Component {
             salvado: false,
             refreshing: false,
 
+            estoq_me_idf: props.navigation.state.params.estoq_me_idf,
             estoq_mei_seq: 0,
-            estoq_mei_item: '',
+            estoq_mei_item: props.navigation.state.params.estoq_mei_item,
             estoq_mei_qtde_mov: '1,00',
-            estoq_mei_qtde_atual: '0,00',
-            estoq_mei_vlr_unit: '0,00',
-            estoq_mei_total_mov: '0,00',
+            estoq_mei_qtde_atual: maskValorMoeda(props.navigation.state.params.estoq_mei_qtde_atual),
+            estoq_mei_vlr_unit: maskValorMoeda(props.navigation.state.params.estoq_mei_vlr_unit),
+            estoq_mei_total_mov: maskValorMoeda(props.navigation.state.params.estoq_mei_total_mov),
+            tipo_origem: 'FIL',
+            cod_origem: props.navigation.state.params.filial,
             tipo_destino: 'VEIC',
             cod_destino: '',
-            estoq_mei_obs: '',
+            descr_destino: '',
+            estoq_mei_obs: 'BAIXA SIGAPRO',
 
             veiculo_select: null,
             codVeiculo: '',
 
-            estoq_me_idf: props.navigation.state.params.estoq_me_idf,
-            estoq_mei_item: props.navigation.state.params.estoq_mei_item,
-            estoq_mei_qtde_atual: props.navigation.state.params.estoq_mei_qtde_atual,
-            estoq_mei_vlr_unit: props.navigation.state.params.estoq_mei_vlr_unit,
             listaItens: props.navigation.state.params.listaItens ? props.navigation.state.params.listaItens : [],
 
             ...props.navigation.state.params.registro,
@@ -113,7 +94,9 @@ export default class SaidaDieselItensScreen extends Component {
     }
 
     componentWillUnmount() {
-
+        if (this.props.navigation.state.params.onCarregaProdutos) {
+            this.props.navigation.state.params.onCarregaProdutos(this.state.listaItens);
+        }
     }
 
     onFecharTela = () => {
@@ -133,6 +116,7 @@ export default class SaidaDieselItensScreen extends Component {
         if (value) {
             this.setState({
                 codVeiculo: value.codVeic,
+                descr_destino: value.adm_vei_placa + ' - ' + value.adm_veimarca_descricao_chassi,
             });
         }
     }
@@ -149,16 +133,26 @@ export default class SaidaDieselItensScreen extends Component {
     }
 
 
-    onRegistroPress = (estoq_mei_seq, estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_vlr_unit, estoq_mei_total_mov, tipo_destino, cod_destino, estoq_mei_obs) => {
+    onRegistroPress = (estoq_mei_seq, estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_vlr_unit, estoq_mei_total_mov, tipo_destino, cod_destino, descr_destino, estoq_mei_obs) => {
         // console.log('-------------onRegistroPress---------------');
         this.setState({
             estoq_mei_seq,
-            estoq_mei_item,
             estoq_mei_qtde_mov: maskValorMoeda(estoq_mei_qtde_mov),
-            estoq_mei_vlr_unit: maskValorMoeda(estoq_mei_vlr_unit),
             estoq_mei_total_mov: maskValorMoeda(estoq_mei_total_mov),
-            tipo_destino,
             cod_destino,
+            descr_destino,
+            veiculo_select: {
+                msgErro: 'OK',
+                idfRota: 0,
+                codRota: 0,
+                man_rt_flag_eventual: '',
+                sitRota: '',
+                codVeic: cod_destino,
+                adm_vei_placa: descr_destino,
+                adm_veimarca_descricao_chassi: '',
+                kmOdo: 0,
+                kmAcum: 0
+            },
             estoq_mei_obs,
         });
 
@@ -189,12 +183,10 @@ export default class SaidaDieselItensScreen extends Component {
 
         this.setState({
             estoq_mei_seq: 0,
-            estoq_mei_item: '',
             estoq_mei_qtde_mov: '1,00',
-            estoq_mei_vlr_unit: '0,00',
-            estoq_mei_total_mov: '0,00',
-            tipo_destino: 'VEIC',
+            estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_vlr_unit),
             cod_destino: '',
+            descr_destino: '',
             estoq_mei_obs: '',
 
             listaItens,
@@ -208,233 +200,86 @@ export default class SaidaDieselItensScreen extends Component {
 
 
     onFormIncluirProduto = (event) => {
-        // console.log('------------------------------------------------');
-        // console.log('-------------onFormIncluirProduto---------------');
-        if (!cod_destino) {
+        console.log('-------------onFormIncluirProduto---------------');
+        if (!this.state.veiculo_select) {
             Alert.showAlert('Informe o Veículo');
             return;
         }
-        if (!estoq_mei_qtde_mov) {
+        if (this.state.stoq_mei_qtde_mov <= 0) {
             Alert.showAlert('Informe a Quantidade');
             return;
         }
-        if (!vlrStringParaFloat(estoq_mei_total_mov)) {
-            Alert.showAlert('Informe o Valor do Produto');
+        if (this.state.estoq_mei_qtde_atual <= 0) {
+            Alert.showAlert('Estoque Insuficiente');
             return;
         }
 
-        // this.onGravar();
+
+        console.log('onFormIncluirProduto: ', this.state);
+        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual));
+        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_mov));
+        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_me_qtde));
+        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde));
+
+        if ((vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde)) < 0) {
+            Alert.showAlert('Estoque Insuficiente');
+            return;
+        }
+        // if (vlrStringParaFloat(this.state.estoq_mei_total_mov) <= 0) {
+        //     Alert.showAlert('Informe o Valor do Produto');
+        //     return;
+        // }
+
+        this.onGravar();
     }
 
-    // onGravar = () => {
-    //     // console.log('------------------------------------------------');
-    //     // console.log('-----------------onGravar-----------------------');
+    onGravar = () => {
+        console.log('-----------------onGravar-----------------------');
 
-    //     let { usuario, listaItens, ven_idf, vi_item, prod_codigo, prod_descricao, vi_qtde,
-    //         vi_vlr_unit, vi_tabela, prod_preco_tab1, prod_preco_tab2, prod_qtde_atual,
-    //         vi_perc_desc, vi_vlr_acres, vi_vlr_desc, vi_vlr_total, senhaEstoque, checkedDesconto } = this.state;
+        const { listaItens } = this.state;
 
-    //     if (usuario.ue_bloq_venda_sem_est) {
-    //         if (parseFloat(vi_qtde) > parseFloat(prod_qtde_atual)) {
-    //             if (senhaEstoque !== '') {
-    //                 const data = new Date();
-    //                 const hora = data.getHours();
-    //                 const min = data.getMinutes();
-    //                 const codigo = parseInt(parseInt(prod_codigo) + parseInt(hora) + parseInt(min));
+        const iIndItem = listaItens.findIndex(registro => registro.estoq_mei_seq === this.state.estoq_mei_seq);
+        if (iIndItem >= 0) {
 
-    //                 if (codigo != parseInt(senhaEstoque)) {
-    //                     if (codigo - 1 != parseInt(senhaEstoque)) {
-    //                         if (codigo - 2 != parseInt(senhaEstoque)) {
-    //                             if (codigo - 3 != parseInt(senhaEstoque)) {
-    //                                 if (codigo - 4 != parseInt(senhaEstoque)) {
-    //                                     if (codigo - 5 != parseInt(senhaEstoque)) {
-    //                                         Alert.showAlert('Código de liberação do estoque incorreto. Entre em contato com seu Supervisor');
-    //                                         return;
-    //                                     }
-    //                                 }
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
+            listaItens[iIndItem].estoq_mei_qtde_mov = vlrStringParaFloat(this.state.estoq_mei_qtde_mov);
+            listaItens[iIndItem].estoq_mei_vlr_unit = vlrStringParaFloat(this.state.estoq_mei_vlr_unit);
+            listaItens[iIndItem].estoq_mei_total_mov = vlrStringParaFloat(this.state.estoq_mei_total_mov);
+            listaItens[iIndItem].cod_destino = this.state.codVeiculo;
+            listaItens[iIndItem].descr_destino = this.state.descr_destino;
 
+        } else {
 
+            listaItens.push({
+                estoq_mei_seq: listaItens.length + 1,
+                estoq_mei_item: this.state.estoq_mei_item,
+                estoq_mei_qtde_mov: vlrStringParaFloat(this.state.estoq_mei_qtde_mov),
+                estoq_mei_vlr_unit: vlrStringParaFloat(this.state.estoq_mei_vlr_unit),
+                estoq_mei_total_mov: vlrStringParaFloat(this.state.estoq_mei_total_mov),
+                tipo_origem: this.state.tipo_origem,
+                cod_origem: this.state.cod_origem,
+                tipo_destino: this.state.tipo_destino,
+                cod_destino: this.state.codVeiculo,
+                descr_destino: this.state.descr_destino,
+                estoq_mei_obs: this.state.estoq_mei_obs,
+            })
 
+        }
 
-    //     // console.log('------------------------------------------------');
-    //     // console.log('ue_flag_tabela_preco_minimo: ', usuario.ue_flag_tabela_preco_minimo);
-    //     // console.log('ue_flag_desconto_tab1: ', usuario.ue_flag_desconto_tab1);
-    //     // console.log('ue_perc_desconto_tab1: ', usuario.ue_perc_desconto_tab1);
-    //     // console.log('ue_flag_desconto_tab2: ', usuario.ue_flag_desconto_tab2);
-    //     // console.log('ue_perc_desconto_tab2: ', usuario.ue_perc_desconto_tab2);
-    //     // console.log('vi_qtde: ', vlrStringParaFloat(vi_qtde));
-    //     // console.log('vi_vlr_unit: ', vlrStringParaFloat(vi_vlr_unit));
-    //     // console.log('vi_tabela: ', vi_tabela);
-    //     // console.log('prod_preco_tab1: ', prod_preco_tab1);
-    //     // console.log('prod_preco_tab2: ', prod_preco_tab2);
-    //     // console.log('vi_perc_desc: ', vlrStringParaFloat(vi_perc_desc));
-    //     // console.log('vi_vlr_desc: ', vlrStringParaFloat(vi_vlr_desc));
-    //     // console.log('vi_vlr_acres: ', vlrStringParaFloat(vi_vlr_acres));
-    //     // console.log('vi_vlr_total: ', vlrStringParaFloat(vi_vlr_total));
+        this.setState({
+            listaItens,
+            estoq_mei_seq: 0,
+            estoq_mei_qtde_mov: '1,00',
+            estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_vlr_unit),
+            cod_destino: '',
+            descr_destino: '',
+            estoq_mei_obs: '',
 
-
-    //     const vlrTotal = vlrStringParaFloat(vi_vlr_total);
-    //     const qtde = vlrStringParaFloat(vi_qtde);
-    //     const vlrUnitAux = parseFloat((vlrTotal / qtde).toFixed(2));
-    //     let vlrUnitComDesc = 0;
-    //     // console.log('vlrUnitAux: ', vlrUnitAux);
-
-
-    //     if (usuario.ue_flag_tabela_preco_minimo) {
-
-    //         // console.log('ue_flag_tabela_preco_minimo: ', usuario.ue_flag_tabela_preco_minimo);
-    //         if (checkedDesconto) {
-    //             vlrUnitComDesc = parseFloat((prod_preco_tab1 - (prod_preco_tab1 * (vlrStringParaFloat(vi_perc_desc) / 100))).toFixed(2));
-    //         } else {
-    //             vlrUnitComDesc = vlrStringParaFloat(vi_vlr_unit);
-    //         }
-
-    //         // console.log('vlrUnitComDesc: ', vlrUnitComDesc);
-
-    //         if (vlrUnitComDesc < prod_preco_tab2) {
-    //             Alert.showAlert('Valor de venda menor que o permittido');
-    //             return;
-    //         }
-
-    //     } else {
-
-    //         if (vlrStringParaFloat(vi_perc_desc) > 0) {
-    //             if (vi_tabela === 1) {
-    //                 // console.log('TABELA 1');
-    //                 if (usuario.ue_flag_desconto_tab1) {
-    //                     // console.log('TABELA 1');
-    //                     if (vlrStringParaFloat(vi_perc_desc) > parseFloat(usuario.ue_perc_desconto_tab1)) {
-    //                         Alert.showAlert('Percentual do Desconto acima do permitido para Tabela 1');
-    //                         return;
-    //                     }
-    //                 }
-    //             } else if (vi_tabela === 2) {
-    //                 // console.log('TABELA 2');
-    //                 if (usuario.ue_flag_desconto_tab2) {
-    //                     // console.log('TABELA 2');
-    //                     if (vlrStringParaFloat(vi_perc_desc) > parseFloat(usuario.ue_perc_desconto_tab2)) {
-    //                         Alert.showAlert('Percentual do Desconto acima do permitido para Tabela 2');
-    //                         return;
-    //                     }
-    //                 }
-    //             }
-
-
-    //             if (vi_tabela === 1) {
-    //                 if (usuario.ue_flag_desconto_tab1) {
-    //                     const vlrVendaComDesc = parseFloat((prod_preco_tab1 - (prod_preco_tab1 * (usuario.ue_perc_desconto_tab1 / 100))).toFixed(2));
-    //                     // console.log('vlrVendaComDesc1: ', vlrVendaComDesc);
-    //                     if (vlrUnitAux < vlrVendaComDesc) {
-    //                         Alert.showAlert('Percentual Desconto acima do permitido para Tabela 1');
-    //                         return;
-    //                     }
-    //                 }
-    //             } else if (vi_tabela === 2) {
-    //                 if (usuario.ue_flag_desconto_tab2) {
-    //                     const vlrVendaComDesc = parseFloat((prod_preco_tab2 - (prod_preco_tab2 * (usuario.ue_perc_desconto_tab2 / 100))).toFixed(2));
-    //                     // console.log('vlrVendaComDesc2: ', vlrVendaComDesc);
-    //                     if (vlrStringParaFloat(vlrUnitAux) < vlrStringParaFloat(vlrVendaComDesc)) {
-    //                         Alert.showAlert('Percentual Desconto acima do permitido para Tabela 2');
-    //                         return;
-    //                     }
-    //                 }
-    //             }
-
-    //         }
-    //     }
-
-
-
-    //     if (!checkedDesconto) {
-    //         // console.log('checkedDesconto');
-    //         if (vi_tabela === 1) {
-    //             // console.log('checkedDesconto 1');
-    //             if (vlrStringParaFloat(vi_vlr_unit) < prod_preco_tab1) {
-    //                 // console.log('checkedDesconto 11');
-    //                 vi_vlr_unit = maskValorMoeda(prod_preco_tab1);
-    //             }
-    //         } else if (vi_tabela === 2) {
-    //             // console.log('checkedDesconto 2');
-    //             if (vlrStringParaFloat(vi_vlr_unit) < prod_preco_tab2) {
-    //                 // console.log('checkedDesconto 22');
-    //                 vi_vlr_unit = maskValorMoeda(prod_preco_tab2);
-    //             }
-    //         }
-    //     }
-
-    //     // console.log('vi_vlr_unit: ', vi_vlr_unit);
-
-
-
-    //     // console.log('------------------------------------------------');
-    //     // console.log('vi_qtde: ', vi_qtde);
-    //     // console.log('vi_vlr_unit: ', vi_vlr_unit);
-    //     // console.log('vi_tabela: ', vi_tabela);
-    //     // console.log('prod_preco_tab1: ', prod_preco_tab1);
-    //     // console.log('prod_preco_tab2: ', prod_preco_tab2);
-    //     // console.log('vi_perc_desc: ', vi_perc_desc);
-    //     // console.log('vi_vlr_desc: ', vi_vlr_desc);
-    //     // console.log('vi_vlr_acres: ', vi_vlr_acres);
-    //     // console.log('vi_vlr_total: ', vi_vlr_total);
-
-
-    //     const iIndItem = listaItens.findIndex(registro => registro.vi_item === vi_item);
-    //     if (iIndItem >= 0) {
-    //         listaItens[iIndItem].vi_qtde = vlrStringParaFloat(vi_qtde);
-    //         listaItens[iIndItem].vi_vlr_unit = vlrStringParaFloat(vi_vlr_unit);
-    //         listaItens[iIndItem].vi_perc_desc = vlrStringParaFloat(vi_perc_desc === '' ? '0' : vi_perc_desc);
-    //         listaItens[iIndItem].vi_vlr_desc = vlrStringParaFloat(vi_vlr_desc === '' ? '0' : vi_vlr_desc);
-    //         listaItens[iIndItem].vi_vlr_acres = vlrStringParaFloat(vi_vlr_acres === '' ? '0' : vi_vlr_acres);
-    //         listaItens[iIndItem].vi_vlr_total = vlrStringParaFloat(vi_vlr_total);
-    //         listaItens[iIndItem].vi_tabela = vi_tabela;
-    //     } else {
-    //         listaItens.push({
-    //             ven_idf,
-    //             vi_item,
-    //             vi_seq: 0,
-    //             prod_codigo,
-    //             prod_descricao,
-    //             vi_qtde: vlrStringParaFloat(vi_qtde),
-    //             vi_vlr_unit: vlrStringParaFloat(vi_vlr_unit),
-    //             vi_tabela,
-    //             prod_preco_tab1: prod_preco_tab1,
-    //             prod_preco_tab2: prod_preco_tab2,
-    //             prod_qtde_atual: prod_qtde_atual,
-    //             vi_perc_desc: vlrStringParaFloat(vi_perc_desc === '' ? '0' : vi_perc_desc),
-    //             vi_vlr_desc: vlrStringParaFloat(vi_vlr_desc === '' ? '0' : vi_vlr_desc),
-    //             vi_vlr_acres: vlrStringParaFloat(vi_vlr_acres === '' ? '0' : vi_vlr_acres),
-    //             vi_vlr_total: vlrStringParaFloat(vi_vlr_total),
-    //         })
-
-    //     }
-
-    //     this.setState({
-    //         listaItens,
-    //         vi_item: '',
-    //         prod_codigo: '',
-    //         prod_descricao: '',
-    //         vi_qtde: '1',
-    //         vi_vlr_unit: '0,00',
-    //         vi_tabela: 1,
-    //         prod_preco_tab1: 0,
-    //         prod_preco_tab2: 0,
-    //         prod_qtde_atual: 0,
-    //         vi_perc_desc: '0,00',
-    //         vi_vlr_desc: '0',
-    //         vi_vlr_acres: '0',
-    //         vi_vlr_total: '0,00',
-
-    //     },
-    //         this.calculoTotalPedido()
-    //     );
-    // }
+            veiculo_select: null,
+            codVeiculo: '',
+        },
+            this.calculoTotalPedido()
+        );
+    }
 
 
 
@@ -503,25 +348,15 @@ export default class SaidaDieselItensScreen extends Component {
 
 
     calculoItem = (estoq_mei_qtde_mov, estoq_mei_vlr_unit) => {
-        // console.log('------------------------------------------------');
         // console.log('----------------calculoItem---------------------');
-
-        const vlrUnit = vlrStringParaFloat(estoq_mei_vlr_unit);
+        const vlrUnit = estoq_mei_vlr_unit;
         const qtde = vlrStringParaFloat(String(estoq_mei_qtde_mov).replace('.', ''));
-
-        console.log('estoq_mei_qtde_mov: ', qtde);
-        console.log('estoq_mei_vlr_unit: ', vlrUnit);
-
-        let vlrTotal = 0;
-
-        vlrTotal = parseFloat(parseFloat(vlrUnit) * parseFloat(qtde));
-
-        console.log('vlrTotal: ', vlrTotal);
-
+        // console.log('estoq_mei_qtde_mov: ', qtde);
+        // console.log('estoq_mei_vlr_unit: ', vlrUnit);
+        let vlrTotal = parseFloat(parseFloat(vlrUnit) * parseFloat(qtde));
+        // console.log('vlrTotal: ', vlrTotal);
         vlrTotal = parseFloat(vlrTotal.toFixed(2));
-
-        console.log('vlrTotal-: ', vlrTotal);
-
+        // console.log('vlrTotal-: ', vlrTotal);
         this.setState({
             estoq_mei_total_mov: maskValorMoeda(vlrTotal),
         });
@@ -533,10 +368,8 @@ export default class SaidaDieselItensScreen extends Component {
 
 
     render() {
-        const { estoq_mei_seq, estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_qtde_atual, estoq_mei_vlr_unit, estoq_mei_total_mov,
-            tipo_origem, cod_origem, tipo_destino, cod_destino, estoq_mei_obs,
-            listaItens, veiculo_select, codVeiculo,
-            refreshing, loading, salvado } = this.state;
+        const { estoq_mei_qtde_mov, estoq_mei_qtde_atual, estoq_mei_vlr_unit, estoq_mei_total_mov,
+            listaItens, veiculo_select, codVeiculo, refreshing, loading, salvado } = this.state;
 
         console.log('SaidaDieselItensScreen STATE: ', this.state);
 
@@ -551,7 +384,6 @@ export default class SaidaDieselItensScreen extends Component {
                     <View style={{ flex: 1, flexDirection: "column", alignItems: 'stretch' }}>
 
                         <View style={{ flex: 1, backgroundColor: Colors.background }}>
-
 
                             <View style={{ paddingHorizontal: 10, marginTop: 20 }}>
 

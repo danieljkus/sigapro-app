@@ -137,7 +137,11 @@ export default class MedicoesTanqueArlaScreen extends Component {
                 console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('SaidaDieselScreen', {
-                    registro: response.data.registro,
+                    registro: {
+                        ...response.data.registro,
+                        checkedDiesel: true,
+                        checkedArla: false,
+                    },
                     onRefresh: this.onRefresh
                 });
             }).catch(ex => {
@@ -171,40 +175,37 @@ export default class MedicoesTanqueArlaScreen extends Component {
                 veiculo_select: null,
                 codVeiculo: '',
             },
-            // listaItens: [],
             onRefresh: this.onRefresh
         });
     }
 
     onRegistroLongPress = (estoq_me_idf) => {
-        // Alert.alert("Excluir registro", `Deseja excluir este Registro?`, [
-        //     { text: "Cancelar" },
-        //     {
-        //         text: "Excluir",
-        //         onPress: () => this.onExcluirRegistro(estoq_me_idf),
-        //         style: "destructive"
-        //     }
-        // ])
+        Alert.alert("Excluir registro", `Deseja excluir este Registro?`, [
+            { text: "Cancelar" },
+            {
+                text: "Excluir",
+                onPress: () => this.onExcluirRegistro(estoq_me_idf),
+                style: "destructive"
+            }
+        ])
     }
 
     onExcluirRegistro = (estoq_me_idf) => {
-        console.log('onExcluirRegistro: ', estoq_me_idf);
-
-        // this.setState({ refreshing: true });
-        // axios.delete('/saidasEstoque/delete/' + estoq_me_idf)
-        //     .then(response => {
-        //         const listaRegistros = [...this.state.listaRegistros];
-        //         const index = listaRegistros.findIndex(registro => registro.estoq_me_idf === estoq_me_idf);
-        //         listaRegistros.splice(index, 1);
-        //         this.setState({
-        //             listaRegistros,
-        //             refreshing: false
-        //         });
-        //     }).catch(ex => {
-        //         console.warn(ex);
-        //         console.warn(ex.response);
-        //         this.setState({ refreshing: false });
-        //     })
+        this.setState({ refreshing: true });
+        axios.delete('/saidasEstoque/delete/' + estoq_me_idf)
+            .then(response => {
+                const listaRegistros = [...this.state.listaRegistros];
+                const index = listaRegistros.findIndex(registro => registro.estoq_me_idf === estoq_me_idf);
+                listaRegistros.splice(index, 1);
+                this.setState({
+                    listaRegistros,
+                    refreshing: false
+                });
+            }).catch(ex => {
+                console.warn(ex);
+                console.warn(ex.response);
+                this.setState({ refreshing: false });
+            })
     }
 
 
