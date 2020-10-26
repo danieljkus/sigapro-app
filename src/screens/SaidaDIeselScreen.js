@@ -23,34 +23,37 @@ export default class SaidaDieselScreen extends Component {
             loading: false,
             salvado: false,
 
-            estoq_me_idf: 0,
-            estoq_me_data: moment(new Date()).format(DATE_FORMAT),
-            estoq_me_numero: '0',
-            estoq_me_obs: '',
-            estoq_me_qtde: 0,
+            estoq_me_idf: props.navigation.state.params.registro.estoq_me_idf ? props.navigation.state.params.registro.estoq_me_idf : 0,
+            estoq_me_data: props.navigation.state.params.registro.estoq_me_data ? moment(props.navigation.state.params.registro.estoq_me_data).format(DATE_FORMAT) : moment(new Date()).format(DATE_FORMAT),
+            estoq_me_numero: props.navigation.state.params.registro.estoq_me_numero ? props.navigation.state.params.registro.estoq_me_numero : '0',
+            estoq_me_obs: props.navigation.state.params.registro.estoq_me_obs ? props.navigation.state.params.registro.estoq_me_obs : '',
+            estoq_me_qtde: props.navigation.state.params.registro.estoq_me_qtde ? props.navigation.state.params.registro.estoq_me_qtde : 0,
+
+            // estoq_me_data: moment(new Date()).format(DATE_FORMAT),
+            // estoq_me_numero: '0',
+            // estoq_me_obs: '',
+            // estoq_me_qtde: 0,
 
             estoq_mei_seq: 0,
             estoq_mei_item: 0,
             estoq_mei_qtde_mov: 0,
             estoq_mei_qtde_atual: 0,
-            estoq_mei_vlr_unit: 0,
+            estoq_mei_valor_unit: 0,
             estoq_mei_total_mov: 0,
             estoq_mei_obs: '',
 
-            estoq_me_tipo_saida: 'D',
+            // estoq_me_tipo_saida: 'D',
+            estoq_me_tipo_saida: props.navigation.state.params.registro.estoq_me_tipo_saida === '19' || props.navigation.state.params.registro.estoq_me_tipo_saida === '24' ? props.navigation.state.params.registro.estoq_me_tipo_saida : 'D',
             checkedDiesel: props.navigation.state.params.registro.checkedDiesel ? props.navigation.state.params.registro.checkedDiesel : false,
             checkedArla: props.navigation.state.params.registro.checkedArla ? props.navigation.state.params.registro.checkedArla : false,
+
+            listaItens: props.navigation.state.params.registro.listaItens ? props.navigation.state.params.registro.listaItens : [],
 
             veiculo_select: null,
             codVeiculo: '',
 
-            listaItens: props.navigation.state.params.registro.listaItens ? props.navigation.state.params.registro.listaItens : [],
+            // ...props.navigation.state.params.registro,
 
-            ...props.navigation.state.params.registro.dados,
-
-            listaRegistrosProdutos: [],
-            listaRegistrosProdutosAsync: [],
-            listaRegistrosProdutosHistorico: [],
             refreshing: false,
             carregarRegistro: false,
             carregando: false,
@@ -58,6 +61,8 @@ export default class SaidaDieselScreen extends Component {
             pagina: 1,
 
         }
+
+        console.log('SaidaDieselScreen - PROPS: ', props.navigation.state.params.registro);
     }
 
     async componentWillUnmount() {
@@ -67,9 +72,9 @@ export default class SaidaDieselScreen extends Component {
     componentDidMount() {
         getFilial().then(filial => { this.setState({ filial }); })
         this.calculoTotalPedido();
-        if (!this.state.estoq_me_idf) {
-            this.onMudaTipoSaida('D');
-        }
+        // if (!this.state.estoq_me_idf) {
+        this.onMudaTipoSaida(this.state.estoq_me_tipo_saida);
+        // }
     }
 
     onInputChange = (id, value) => {
@@ -80,18 +85,23 @@ export default class SaidaDieselScreen extends Component {
 
     onMudaTipoSaida = (tipo) => {
         console.log('onMudaTipoSaida: ', tipo);
-        if (tipo === 'D') {
-            this.setState({
-                estoq_me_tipo_saida: 'D',
-                checkedDiesel: true,
-                checkedArla: false,
-            });
-        } else if (tipo === 'A') {
-            this.setState({
-                estoq_me_tipo_saida: 'A',
-                checkedDiesel: false,
-                checkedArla: true,
-            });
+
+        if (!this.state.estoq_me_idf) {
+            if (tipo === 'D') {
+                this.setState({
+                    estoq_me_tipo_saida: 'D',
+                    checkedDiesel: true,
+                    checkedArla: false,
+                    listaItens: [],
+                });
+            } else if (tipo === 'A') {
+                this.setState({
+                    estoq_me_tipo_saida: 'A',
+                    checkedDiesel: false,
+                    checkedArla: true,
+                    listaItens: [],
+                });
+            }
         }
 
         this.setState({ carregarRegistro: true });
@@ -104,10 +114,9 @@ export default class SaidaDieselScreen extends Component {
 
             this.setState({
                 carregarRegistro: false,
-                estoq_mei_item: tipo === 'D' ? 19 : 166048,
+                estoq_mei_item: response.data.codItem,
                 estoq_mei_qtde_atual: response.data.qtde,
-                estoq_mei_vlr_unit: response.data.custo,
-                listaItens: [],
+                estoq_mei_valor_unit: response.data.custo,
             });
         }).catch(ex => {
             this.setState({ carregarRegistro: false });
@@ -164,7 +173,7 @@ export default class SaidaDieselScreen extends Component {
     calculoTotalPedido = () => {
         const { listaItens } = this.state;
         let qtdeItens = 0;
-        for (var x in listaItens) { qtdeItens = qtdeItens + (listaItens[x].estoq_mei_qtde_mov); };
+        for (var x in listaItens) { qtdeItens = qtdeItens + (parseFloat(listaItens[x].estoq_mei_qtde_mov)); };
         qtdeItens = parseFloat(qtdeItens.toFixed(2));
         this.setState({ estoq_me_qtde: qtdeItens });
     }
@@ -186,8 +195,8 @@ export default class SaidaDieselScreen extends Component {
             estoq_mei_item: this.state.estoq_mei_item,
             estoq_mei_qtde_atual: this.state.estoq_mei_qtde_atual,
             estoq_mei_qtde_mov: 1,
-            estoq_mei_vlr_unit: this.state.estoq_mei_vlr_unit,
-            estoq_mei_total_mov: this.state.estoq_mei_vlr_unit,
+            estoq_mei_valor_unit: this.state.estoq_mei_valor_unit,
+            estoq_mei_total_mov: this.state.estoq_mei_valor_unit,
             onCarregaProdutos: this.onCarregaProdutos
         });
     }
@@ -272,7 +281,7 @@ export default class SaidaDieselScreen extends Component {
                                     validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
                                     required={true}
                                     errorMessage="Formato correto DD/MM/AAAA"
-                                // editable={false}
+                                    editable={estoq_me_idf ? false : true}
                                 />
                             </View>
                             <View style={{ width: "47%" }}>
@@ -306,6 +315,7 @@ export default class SaidaDieselScreen extends Component {
                                 checked={checkedDiesel}
                                 onPress={() => { this.onMudaTipoSaida('D') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                disabled={estoq_me_idf ? true : false}
                             />
                             <CheckBox
                                 center
@@ -315,6 +325,7 @@ export default class SaidaDieselScreen extends Component {
                                 checked={checkedArla}
                                 onPress={() => { this.onMudaTipoSaida('A') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                disabled={estoq_me_idf ? true : false}
                             />
                         </View>
 
@@ -378,7 +389,7 @@ export default class SaidaDieselScreen extends Component {
                             </View>
                         </View>
 
-                        <Text style={{ fontSize: 5 }}>{estoq_me_idf}</Text>
+                        {/* <Text style={{ fontSize: 5 }}>{estoq_me_idf}</Text> */}
 
                     </View>
 

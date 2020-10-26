@@ -138,7 +138,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
 
                 this.props.navigation.navigate('SaidaDieselScreen', {
                     registro: {
-                        ...response.data.registro,
+                        ...response.data,
                         checkedDiesel: true,
                         checkedArla: false,
                     },
@@ -157,14 +157,14 @@ export default class MedicoesTanqueArlaScreen extends Component {
         this.props.navigation.navigate('SaidaDieselScreen', {
             registro: {
                 estoq_me_idf: 0,
-                estoq_me_data: moment(new Date()).format('DD/MM/YYYY'),
+                estoq_me_data: '', //moment(new Date()).format('DD/MM/YYYY'),
                 estoq_me_numero: '0',
                 estoq_me_obs: 'BAIXA SIGAPRO',
 
                 estoq_mei_seq: 0,
                 estoq_mei_item: 0,
                 estoq_mei_qtde_mov: 0,
-                estoq_mei_vlr_unit: 0,
+                estoq_mei_valor_unit: 0,
                 estoq_mei_total_mov: 0,
                 estoq_mei_obs: '',
 

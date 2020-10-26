@@ -25,7 +25,7 @@ const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
             // opacity: 0.9
         }}>
             <TouchableOpacity
-                onPress={() => onRegistroPress(registro.estoq_mei_seq, registro.estoq_mei_item, registro.estoq_mei_qtde_mov, registro.estoq_mei_vlr_unit, registro.estoq_mei_total_mov, registro.tipo_destino, registro.cod_destino, registro.descr_destino, registro.estoq_mei_obs)}
+                onPress={() => onRegistroPress(registro.estoq_mei_seq, registro.estoq_mei_item, registro.estoq_mei_qtde_mov, registro.estoq_mei_valor_unit, registro.estoq_mei_total_mov, registro.tipo_destino, registro.cod_destino, registro.descr_destino, registro.estoq_mei_obs)}
                 onLongPress={() => onRegistroLongPress(registro.estoq_mei_seq)}
             >
 
@@ -43,7 +43,7 @@ const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                             Qtde {': '}
                         </Text>
                         <Text>
-                            {maskValorMoeda(registro.estoq_mei_qtde_mov)}
+                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
                         </Text>
                     </View>
                 </View>
@@ -71,7 +71,7 @@ export default class SaidaDieselItensScreen extends Component {
             estoq_mei_item: props.navigation.state.params.estoq_mei_item,
             estoq_mei_qtde_mov: '1,00',
             estoq_mei_qtde_atual: maskValorMoeda(props.navigation.state.params.estoq_mei_qtde_atual),
-            estoq_mei_vlr_unit: maskValorMoeda(props.navigation.state.params.estoq_mei_vlr_unit),
+            estoq_mei_valor_unit: maskValorMoeda(props.navigation.state.params.estoq_mei_valor_unit),
             estoq_mei_total_mov: maskValorMoeda(props.navigation.state.params.estoq_mei_total_mov),
             tipo_origem: 'FIL',
             cod_origem: props.navigation.state.params.filial,
@@ -133,7 +133,7 @@ export default class SaidaDieselItensScreen extends Component {
     }
 
 
-    onRegistroPress = (estoq_mei_seq, estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_vlr_unit, estoq_mei_total_mov, tipo_destino, cod_destino, descr_destino, estoq_mei_obs) => {
+    onRegistroPress = (estoq_mei_seq, estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_valor_unit, estoq_mei_total_mov, tipo_destino, cod_destino, descr_destino, estoq_mei_obs) => {
         // console.log('-------------onRegistroPress---------------');
         this.setState({
             estoq_mei_seq,
@@ -184,7 +184,7 @@ export default class SaidaDieselItensScreen extends Component {
         this.setState({
             estoq_mei_seq: 0,
             estoq_mei_qtde_mov: '1,00',
-            estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_vlr_unit),
+            estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_valor_unit),
             cod_destino: '',
             descr_destino: '',
             estoq_mei_obs: '',
@@ -242,7 +242,7 @@ export default class SaidaDieselItensScreen extends Component {
         if (iIndItem >= 0) {
 
             listaItens[iIndItem].estoq_mei_qtde_mov = vlrStringParaFloat(this.state.estoq_mei_qtde_mov);
-            listaItens[iIndItem].estoq_mei_vlr_unit = vlrStringParaFloat(this.state.estoq_mei_vlr_unit);
+            listaItens[iIndItem].estoq_mei_valor_unit = vlrStringParaFloat(this.state.estoq_mei_valor_unit);
             listaItens[iIndItem].estoq_mei_total_mov = vlrStringParaFloat(this.state.estoq_mei_total_mov);
             listaItens[iIndItem].cod_destino = this.state.codVeiculo;
             listaItens[iIndItem].descr_destino = this.state.descr_destino;
@@ -253,7 +253,7 @@ export default class SaidaDieselItensScreen extends Component {
                 estoq_mei_seq: listaItens.length + 1,
                 estoq_mei_item: this.state.estoq_mei_item,
                 estoq_mei_qtde_mov: vlrStringParaFloat(this.state.estoq_mei_qtde_mov),
-                estoq_mei_vlr_unit: vlrStringParaFloat(this.state.estoq_mei_vlr_unit),
+                estoq_mei_valor_unit: vlrStringParaFloat(this.state.estoq_mei_valor_unit),
                 estoq_mei_total_mov: vlrStringParaFloat(this.state.estoq_mei_total_mov),
                 tipo_origem: this.state.tipo_origem,
                 cod_origem: this.state.cod_origem,
@@ -269,7 +269,7 @@ export default class SaidaDieselItensScreen extends Component {
             listaItens,
             estoq_mei_seq: 0,
             estoq_mei_qtde_mov: '1,00',
-            estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_vlr_unit),
+            estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_valor_unit),
             cod_destino: '',
             descr_destino: '',
             estoq_mei_obs: '',
@@ -290,7 +290,7 @@ export default class SaidaDieselItensScreen extends Component {
         let vlrTotal = 0;
 
         for (var x in listaItens) {
-            qtdeItens = qtdeItens + (listaItens[x].estoq_mei_qtde_mov);
+            qtdeItens = qtdeItens + (parseFloat(listaItens[x].estoq_mei_qtde_mov));
             vlrTotal = vlrTotal + parseFloat(listaItens[x].estoq_mei_total_mov);
         };
 
@@ -323,36 +323,36 @@ export default class SaidaDieselItensScreen extends Component {
         state[id] = value;
         this.setState(state);
 
-        const { estoq_mei_qtde_mov, estoq_mei_vlr_unit } = this.state;
-        this.calculoItem(value, estoq_mei_vlr_unit);
+        const { estoq_mei_qtde_mov, estoq_mei_valor_unit } = this.state;
+        this.calculoItem(value, estoq_mei_valor_unit);
     }
 
 
     onSomarQtde = () => {
         // console.log('-------------onSomarQtde---------------');
-        let { estoq_mei_qtde_mov, estoq_mei_vlr_unit } = this.state;
+        let { estoq_mei_qtde_mov, estoq_mei_valor_unit } = this.state;
         estoq_mei_qtde_mov = maskValorMoeda(parseFloat(estoq_mei_qtde_mov) + 1);
         this.setState({ estoq_mei_qtde_mov });
-        this.calculoItem(estoq_mei_qtde_mov, estoq_mei_vlr_unit);
+        this.calculoItem(estoq_mei_qtde_mov, estoq_mei_valor_unit);
     }
 
     onDiminuirQtde = () => {
         // console.log('-------------onDiminuirQtde---------------');
-        let { estoq_mei_qtde_mov, estoq_mei_vlr_unit } = this.state;
+        let { estoq_mei_qtde_mov, estoq_mei_valor_unit } = this.state;
         if (vlrStringParaFloat(estoq_mei_qtde_mov) > 1) {
             estoq_mei_qtde_mov = maskValorMoeda(vlrStringParaFloat(estoq_mei_qtde_mov) - 1);
         }
         this.setState({ estoq_mei_qtde_mov });
-        this.calculoItem(estoq_mei_qtde_mov, estoq_mei_vlr_unit);
+        this.calculoItem(estoq_mei_qtde_mov, estoq_mei_valor_unit);
     }
 
 
-    calculoItem = (estoq_mei_qtde_mov, estoq_mei_vlr_unit) => {
+    calculoItem = (estoq_mei_qtde_mov, estoq_mei_valor_unit) => {
         // console.log('----------------calculoItem---------------------');
-        const vlrUnit = estoq_mei_vlr_unit;
+        const vlrUnit = estoq_mei_valor_unit;
         const qtde = vlrStringParaFloat(String(estoq_mei_qtde_mov).replace('.', ''));
         // console.log('estoq_mei_qtde_mov: ', qtde);
-        // console.log('estoq_mei_vlr_unit: ', vlrUnit);
+        // console.log('estoq_mei_valor_unit: ', vlrUnit);
         let vlrTotal = parseFloat(parseFloat(vlrUnit) * parseFloat(qtde));
         // console.log('vlrTotal: ', vlrTotal);
         vlrTotal = parseFloat(vlrTotal.toFixed(2));
@@ -368,7 +368,7 @@ export default class SaidaDieselItensScreen extends Component {
 
 
     render() {
-        const { estoq_mei_qtde_mov, estoq_mei_qtde_atual, estoq_mei_vlr_unit, estoq_mei_total_mov,
+        const { estoq_mei_qtde_mov, estoq_mei_qtde_atual, estoq_mei_valor_unit, estoq_mei_total_mov,
             listaItens, veiculo_select, codVeiculo, refreshing, loading, salvado } = this.state;
 
         console.log('SaidaDieselItensScreen STATE: ', this.state);
@@ -450,9 +450,9 @@ export default class SaidaDieselItensScreen extends Component {
                                     <View style={{ width: "47%", marginRight: 20 }}>
                                         <TextInput
                                             label="Custo Médio"
-                                            id="estoq_mei_vlr_unit"
-                                            ref="estoq_mei_vlr_unit"
-                                            value={String(estoq_mei_vlr_unit)}
+                                            id="estoq_mei_valor_unit"
+                                            ref="estoq_mei_valor_unit"
+                                            value={String(estoq_mei_valor_unit)}
                                             onChange={this.onInputChange}
                                             enabled={false}
                                         />
