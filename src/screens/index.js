@@ -24,8 +24,9 @@ import PneusSulcagemScreen from './PneusSulcagemScreen';
 import MedicaoTanqueDieselScreen from './MedicaoTanqueDieselScreen';
 import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
 
-// import SaidasEstoqueScreen from './SaidasEstoqueScreen';
-// import SaidaEstoqueScreen from './SaidaEstoqueScreen';
+import SaidasEstoqueScreen from './SaidasEstoqueScreen';
+import SaidaEstoqueScreen from './SaidaEstoqueScreen';
+import SaidaEstoqueItensScreen from './SaidaEstoqueItensScreen';
 
 import SaidasDieselScreen from './SaidasDieselScreen';
 import SaidaDieselScreen from './SaidaDieselScreen';
@@ -215,6 +216,29 @@ const HomeStackNavigator = StackNavigator({
     //         ...defaultNavigationOptions,
     //     }
     // },
+
+    SaidasEstoqueScreen: {
+        screen: SaidasEstoqueScreen,
+        navigationOptions: {
+            title: "Saídas de Itens do Estoque",
+            ...defaultNavigationOptions,
+        }
+    },
+    SaidaEstoqueScreen: {
+        screen: SaidaEstoqueScreen,
+        navigationOptions: {
+            title: "Saída de Itens do Estoque",
+            ...defaultNavigationOptions,
+        }
+    },
+    SaidaEstoqueItensScreen: {
+        screen: SaidaEstoqueItensScreen,
+        navigationOptions: {
+            title: "Itens da Baixa",
+            ...defaultNavigationOptions,
+        }
+    },
+
 
     SaidasDieselScreen: {
         screen: SaidasDieselScreen,

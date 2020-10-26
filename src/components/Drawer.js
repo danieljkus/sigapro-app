@@ -140,12 +140,12 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {/* {empresa && getTemPermissao('SAIDASESTOQUECREEN') ? (
+                            {empresa && getTemPermissao('SAIDASESTOQUECREEN') ? (
                                 <DrawerItem
                                     text="Saídas de Itens do Estoque"
                                     onPress={() => navigation.navigate('SaidasEstoqueScreen')}
                                 />
-                            ) : null} */}
+                            ) : null}
 
                             {empresa && getTemPermissao('SAIDASDIESELCREEN') ? (
                                 <DrawerItem
