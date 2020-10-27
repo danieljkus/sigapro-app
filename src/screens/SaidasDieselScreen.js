@@ -15,7 +15,7 @@ const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }]
 
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 10, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.estoq_me_idf)}
                 onLongPress={() => onRegistroLongPress(registro.estoq_me_idf)}
@@ -46,7 +46,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                             IDF {': '}
                         </Text>
                         <Text>
-                            {registro.estoq_me_idf}
+                            {registro.estoq_me_idf} / {(registro.estoq_mei_item === '19' || registro.estoq_mei_item === 24) ? 'D' : 'A'}
                         </Text>
                     </View>
                     <View style={{ flex: 2, flexDirection: 'row' }}>
@@ -59,14 +59,32 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                     </View>
                 </View>
 
+                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 0, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Qtde {': '}
+                        </Text>
+                        <Text>
+                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            OBS {': '}
+                        </Text>
+                        <Text>
+                            {registro.estoq_me_obs}
+                        </Text>
+                    </View>
+                </View>
 
-                {registro.estoq_me_obs ? (
+                {/* {registro.estoq_me_obs ? (
                     <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5 }}>
                         <Text>
                             {registro.estoq_me_obs}
                         </Text>
                     </View>
-                ) : null}
+                ) : null} */}
             </TouchableOpacity>
 
         </Card>
@@ -103,6 +121,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
         axios.get('/saidasEstoque', {
             params: {
                 tipoDig: 2,
+                tipoTela: 'COMB',
                 page: pagina,
                 limite: 10,
             }
@@ -127,14 +146,14 @@ export default class MedicoesTanqueArlaScreen extends Component {
     }
 
     onRegistroPress = (estoq_me_idf) => {
-        console.log('onRegistroPress: ', estoq_me_idf);
+        // console.log('onRegistroPress: ', estoq_me_idf);
 
         this.setState({ carregarRegistro: true });
         axios.get('/saidasEstoque/show/' + estoq_me_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onRegistroPress: ', response.data);
+                // console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('SaidaDieselScreen', {
                     registro: {
@@ -152,7 +171,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
     }
 
     onAddPress = () => {
-        console.log('onAddPress');
+        // console.log('onAddPress');
 
         this.props.navigation.navigate('SaidaDieselScreen', {
             registro: {

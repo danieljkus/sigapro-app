@@ -10,7 +10,7 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
-import { getTemPermissao } from '../utils/LoginManager';
+import { getTemPermissao, getPermissoes } from '../utils/LoginManager';
 import { maskValorMoeda } from '../utils/Maskers';
 import moment from 'moment';
 
@@ -81,6 +81,9 @@ export default class EscalaVeiculoScreen extends Component {
 
     componentDidMount() {
         const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
+        getPermissoes().then(permissoes => {
+            this.setState({ permissoes });
+        })
 
         this.setState({
             man_ev_veiculo_trocar: veiculo,
@@ -181,7 +184,7 @@ export default class EscalaVeiculoScreen extends Component {
         const { pas_via_data_viagem, pas_via_servico, pas_serv_linha, pas_via_servico_extra,
             idf1, idf2, veic1, veic2, desc_sec_ini, desc_sec_fim, hora_ini, hora_fim,
         } = this.state.registro;
-        const { man_ev_veiculo_trocar, salvando, carregarRegistro } = this.state;
+        const { man_ev_veiculo_trocar, salvando, carregarRegistro, permissoes } = this.state;
 
         // console.log('this.state', this.state);
 
@@ -197,7 +200,7 @@ export default class EscalaVeiculoScreen extends Component {
                     <View
                         style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginVertical: 20 }}
                     >
-                        {getTemPermissao('ESCALAVEICULOSTROCARVEICSCREEN') ? (
+                        {getTemPermissao('ESCALAVEICULOSTROCARVEICSCREEN', permissoes) ? (
                             <View>
                                 <TextInput
                                     label="Trocar Veículo"

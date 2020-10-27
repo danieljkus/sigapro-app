@@ -42,8 +42,7 @@ export default class SaidaDieselScreen extends Component {
             estoq_mei_total_mov: 0,
             estoq_mei_obs: '',
 
-            // estoq_me_tipo_saida: 'D',
-            estoq_me_tipo_saida: props.navigation.state.params.registro.estoq_me_tipo_saida === '19' || props.navigation.state.params.registro.estoq_me_tipo_saida === '24' ? props.navigation.state.params.registro.estoq_me_tipo_saida : 'D',
+            estoq_me_tipo_saida: !props.navigation.state.params.registro.estoq_me_idf ? 'D' : (this.props.navigation.state.params.registro.listaItens[0].estoq_mei_item === '19' || this.props.navigation.state.params.registro.listaItens[0].estoq_mei_item === '24') ? 'D' : 'A',
             checkedDiesel: props.navigation.state.params.registro.checkedDiesel ? props.navigation.state.params.registro.checkedDiesel : false,
             checkedArla: props.navigation.state.params.registro.checkedArla ? props.navigation.state.params.registro.checkedArla : false,
 
@@ -62,7 +61,7 @@ export default class SaidaDieselScreen extends Component {
 
         }
 
-        console.log('SaidaDieselScreen - PROPS: ', props.navigation.state.params.registro);
+        // console.log('SaidaDieselScreen - PROPS: ', props.navigation.state.params.registro);
     }
 
     async componentWillUnmount() {
@@ -73,6 +72,7 @@ export default class SaidaDieselScreen extends Component {
         getFilial().then(filial => { this.setState({ filial }); })
         this.calculoTotalPedido();
         // if (!this.state.estoq_me_idf) {
+        // console.log('SaidaDieselScreen - componentDidMount: ', this.props.navigation.state.params.registro.listaItens[0].estoq_mei_item);
         this.onMudaTipoSaida(this.state.estoq_me_tipo_saida);
         // }
     }
@@ -84,24 +84,26 @@ export default class SaidaDieselScreen extends Component {
     }
 
     onMudaTipoSaida = (tipo) => {
-        console.log('onMudaTipoSaida: ', tipo);
+        // console.log('onMudaTipoSaida: ', tipo);
+
+        if (tipo === 'D') {
+            this.setState({
+                estoq_me_tipo_saida: 'D',
+                checkedDiesel: true,
+                checkedArla: false,
+            });
+        } else if (tipo === 'A') {
+            this.setState({
+                estoq_me_tipo_saida: 'A',
+                checkedDiesel: false,
+                checkedArla: true,
+            });
+        }
 
         if (!this.state.estoq_me_idf) {
-            if (tipo === 'D') {
-                this.setState({
-                    estoq_me_tipo_saida: 'D',
-                    checkedDiesel: true,
-                    checkedArla: false,
-                    listaItens: [],
-                });
-            } else if (tipo === 'A') {
-                this.setState({
-                    estoq_me_tipo_saida: 'A',
-                    checkedDiesel: false,
-                    checkedArla: true,
-                    listaItens: [],
-                });
-            }
+            this.setState({
+                listaItens: [],
+            });
         }
 
         this.setState({ carregarRegistro: true });
@@ -110,7 +112,7 @@ export default class SaidaDieselScreen extends Component {
                 codItem: tipo === 'D' ? 19 : 166048,
             }
         }).then(response => {
-            console.log('onRegistroPress: ', response.data);
+            // console.log('onRegistroPress: ', response.data);
 
             this.setState({
                 carregarRegistro: false,
@@ -148,7 +150,7 @@ export default class SaidaDieselScreen extends Component {
             listaItens,
         };
 
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
         // return;
 
         let axiosMethod;
@@ -202,7 +204,7 @@ export default class SaidaDieselScreen extends Component {
     }
 
     onCarregaProdutos = (listaItens) => {
-        console.log('onCarregaProdutos: ', listaItens);
+        // console.log('onCarregaProdutos: ', listaItens);
         this.setState({ listaItens });
         this.calculoTotalPedido();
     }
@@ -226,7 +228,7 @@ export default class SaidaDieselScreen extends Component {
             carregarRegistro, loading, salvado } = this.state;
 
 
-        console.log('SaidaDieselScreen - STATE: ', this.state);
+        // console.log('SaidaDieselScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

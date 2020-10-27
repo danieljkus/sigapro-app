@@ -202,32 +202,17 @@ const HomeStackNavigator = StackNavigator({
 
 
 
-    // SaidasEstoqueScreen: {
-    //     screen: SaidasEstoqueScreen,
-    //     navigationOptions: {
-    //         title: "Saída de Itens do Estoque",
-    //         ...defaultNavigationOptions,
-    //     }
-    // },
-    // SaidaEstoqueScreen: {
-    //     screen: SaidaEstoqueScreen,
-    //     navigationOptions: {
-    //         title: "Saída de Itens do Estoque",
-    //         ...defaultNavigationOptions,
-    //     }
-    // },
-
     SaidasEstoqueScreen: {
         screen: SaidasEstoqueScreen,
         navigationOptions: {
-            title: "Saídas de Itens do Estoque",
+            title: "Baixas do Estoque",
             ...defaultNavigationOptions,
         }
     },
     SaidaEstoqueScreen: {
         screen: SaidaEstoqueScreen,
         navigationOptions: {
-            title: "Saída de Itens do Estoque",
+            title: "Baixa do Estoque",
             ...defaultNavigationOptions,
         }
     },
@@ -243,14 +228,14 @@ const HomeStackNavigator = StackNavigator({
     SaidasDieselScreen: {
         screen: SaidasDieselScreen,
         navigationOptions: {
-            title: "Saídas de Diesel/Arla",
+            title: "Baixas de Diesel/Arla",
             ...defaultNavigationOptions,
         }
     },
     SaidaDieselScreen: {
         screen: SaidaDieselScreen,
         navigationOptions: {
-            title: "Saída de Diesel/Arla",
+            title: "Baixa de Diesel/Arla",
             ...defaultNavigationOptions,
         }
     },

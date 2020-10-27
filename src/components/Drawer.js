@@ -6,7 +6,7 @@ import { NavigationActions } from 'react-navigation';
 
 import Icon from './Icon';
 import Colors from '../values/Colors';
-import { removeToken, removePermissoes, getTemPermissao, getUsuario, getFilial, getEmpresa } from '../utils/LoginManager';
+import { removeToken, removePermissoes, getTemPermissao, getUsuario, getFilial, getPermissoes, getEmpresa } from '../utils/LoginManager';
 
 const DrawerItem = ({ text, onPress }) => {
     return (
@@ -45,6 +45,9 @@ class Drawer extends PureComponent {
         getEmpresa().then(empresa => {
             this.setState({ empresa });
         })
+        getPermissoes().then(permissoes => {
+            this.setState({ permissoes });
+        })
         getFilial().then(filial => {
             this.setState({ filial });
         })
@@ -69,8 +72,12 @@ class Drawer extends PureComponent {
 
     render() {
         const { navigation } = this.props;
-        const { usuario, filial, empresa } = this.state;
-        if (!usuario) return null;
+        const { usuario, filial, empresa, permissoes } = this.state;
+        if ((!usuario) || (!permissoes)) return null;
+
+        // console.log('Drawer.state: ', this.state);
+        // console.log('Drawer.permissoes: ', permissoes);
+        // console.log('Drawer.getTemPermissao: ', getTemPermissao('VIAGENSTURISMOSCREEN', permissoes));
 
         return (
             <View style={{ flex: 1 }}>
@@ -110,28 +117,29 @@ class Drawer extends PureComponent {
                 <View style={{ flex: 1 }}>
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{ flex: 1 }}>
-                            {getTemPermissao('ESCALAVEICULOSSCREEN') ? (
+
+                            {getTemPermissao('ESCALAVEICULOSSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Escala dos Veículos"
                                     onPress={() => navigation.navigate('EscalaVeiculosScreen')}
                                 />
                             ) : null}
 
-                            {empresa && getTemPermissao('FICHAVIAGEMSCREEN') ? (
+                            {empresa && getTemPermissao('FICHAVIAGEMSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Ficha de Viagem"
                                     onPress={() => navigation.navigate('FichaViagemScreen')}
                                 />
                             ) : null}
 
-                            {getTemPermissao('VIAGENSTURISMOSCREEN') ? (
+                            {getTemPermissao('VIAGENSTURISMOSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Viagens Turismo"
                                     onPress={() => navigation.navigate('ViagensTurismoScreen')}
                                 />
                             ) : null}
 
-                            {getTemPermissao('VEICULOSSCREEN') ? (
+                            {getTemPermissao('VEICULOSSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Veículos"
                                     onPress={() => navigation.navigate('VeiculosScreen')}
@@ -140,37 +148,37 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {empresa && getTemPermissao('SAIDASESTOQUECREEN') ? (
+                            {empresa && getTemPermissao('SAIDASESTOQUECREEN', permissoes) ? (
                                 <DrawerItem
-                                    text="Saídas de Itens do Estoque"
+                                    text="Baixa do Estoque"
                                     onPress={() => navigation.navigate('SaidasEstoqueScreen')}
                                 />
                             ) : null}
 
-                            {empresa && getTemPermissao('SAIDASDIESELCREEN') ? (
+                            {empresa && getTemPermissao('SAIDASDIESELCREEN', permissoes) ? (
                                 <DrawerItem
-                                    text="Saídas de Diesel/Arla"
+                                    text="Baixa de Diesel/Arla"
                                     onPress={() => navigation.navigate('SaidasDieselScreen')}
                                 />
                             ) : null}
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {empresa && getTemPermissao('MEDICOESTANQUESDIESELCREEN') ? (
+                            {empresa && getTemPermissao('MEDICOESTANQUESDIESELCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Medir Tanque Diesel"
                                     onPress={() => navigation.navigate('MedicoesTanqueDieselScreen')}
                                 />
                             ) : null}
 
-                            {empresa && getTemPermissao('MEDICOESTANQUEARLASCREEN') ? (
+                            {empresa && getTemPermissao('MEDICOESTANQUEARLASCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Medir Tanque Arla"
                                     onPress={() => navigation.navigate('MedicoesTanqueArlaScreen')}
                                 />
                             ) : null}
 
-                            {empresa && getTemPermissao('PREDIGITACAONOTASSCREEN') ? (
+                            {empresa && getTemPermissao('PREDIGITACAONOTASSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Pré-Digitar NFe"
                                     onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
@@ -179,21 +187,21 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {getTemPermissao('PNEUSLOCALIZARSCREEN') ? (
+                            {getTemPermissao('PNEUSLOCALIZARSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Localizar Pneus"
                                     onPress={() => navigation.navigate('PneusLocalizarScreen')}
                                 />
                             ) : null}
 
-                            {getTemPermissao('PNEUSVEICULOSSCREEN') ? (
+                            {getTemPermissao('PNEUSVEICULOSSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Pneus nos Veículos"
                                     onPress={() => navigation.navigate('PneusVeiculosScreen')}
                                 />
                             ) : null}
 
-                            {getTemPermissao('PNEUSVEICULOSSCREEN') ? (
+                            {getTemPermissao('PNEUSVEICULOSSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Pneus em Estoque"
                                     onPress={() => navigation.navigate('PneusEstoqueScreen')}
@@ -202,14 +210,14 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {getTemPermissao('SALDOSFILIAISSCREEN') ? (
+                            {getTemPermissao('SALDOSFILIAISSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Saldo das Filiais"
                                     onPress={() => navigation.navigate('SaldosFiliaisScreen')}
                                 />
                             ) : null}
 
-                            {getTemPermissao('AUTORIZACAODESPESASSCREEN') ? (
+                            {getTemPermissao('AUTORIZACAODESPESASSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Autorização de Despesas"
                                     onPress={() => navigation.navigate('AutorizacaoDespesasScreen')}
@@ -218,7 +226,7 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {getTemPermissao('TROCARFILIALSCREEN') ? (
+                            {getTemPermissao('TROCARFILIALSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Trocar Filial"
                                     onPress={() => navigation.navigate('TrocarFilialScreen')}

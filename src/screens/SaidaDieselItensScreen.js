@@ -200,7 +200,7 @@ export default class SaidaDieselItensScreen extends Component {
 
 
     onFormIncluirProduto = (event) => {
-        console.log('-------------onFormIncluirProduto---------------');
+        // console.log('-------------onFormIncluirProduto---------------');
         if (!this.state.veiculo_select) {
             Alert.showAlert('Informe o Veículo');
             return;
@@ -215,11 +215,11 @@ export default class SaidaDieselItensScreen extends Component {
         }
 
 
-        console.log('onFormIncluirProduto: ', this.state);
-        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual));
-        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_mov));
-        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_me_qtde));
-        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde));
+        // console.log('onFormIncluirProduto: ', this.state);
+        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual));
+        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_mov));
+        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_me_qtde));
+        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde));
 
         if ((vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde)) < 0) {
             Alert.showAlert('Estoque Insuficiente');
@@ -234,7 +234,7 @@ export default class SaidaDieselItensScreen extends Component {
     }
 
     onGravar = () => {
-        console.log('-----------------onGravar-----------------------');
+        // console.log('-----------------onGravar-----------------------');
 
         const { listaItens } = this.state;
 
@@ -371,7 +371,7 @@ export default class SaidaDieselItensScreen extends Component {
         const { estoq_mei_qtde_mov, estoq_mei_qtde_atual, estoq_mei_valor_unit, estoq_mei_total_mov,
             listaItens, veiculo_select, codVeiculo, refreshing, loading, salvado } = this.state;
 
-        console.log('SaidaDieselItensScreen STATE: ', this.state);
+        // console.log('SaidaDieselItensScreen STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background, paddingBottom: 8, paddingTop: 5 }}>

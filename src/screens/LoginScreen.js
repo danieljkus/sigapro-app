@@ -43,6 +43,9 @@ export default class LoginScreen extends Component {
             empresa,
             tipoAcesso: 'SIGAPRO'
         }).then(async response => {
+
+            // console.log('postLogin: ', response.data);
+
             await saveToken(response.data.token);
             AsyncStorage.setItem('SIGAPRO-permissoes', JSON.stringify(response.data.permissoes))
             this.goToHome()

@@ -10,7 +10,7 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
-import { getTemPermissao } from '../utils/LoginManager';
+import { getTemPermissao, getPermissoes } from '../utils/LoginManager';
 import FiliaisSelect from '../components/FiliaisSelect';
 import moment from 'moment';
 
@@ -45,6 +45,9 @@ export default class PneusTrocaScreen extends Component {
     }
 
     componentDidMount() {
+        getPermissoes().then(permissoes => {
+            this.setState({ permissoes });
+        })
         this.buscaMotivoMov();
         this.buscaTipoSuc();
         this.buscaPneusEstoque();
@@ -415,7 +418,7 @@ export default class PneusTrocaScreen extends Component {
         const { filialChecked, recapadoraChecked, sucataChecked,
             filialSelect, motivoMovSelect, tipoSucSelect, pneusSelect, posicaoesSelect,
             pneus_sul_sulco1, pneus_sul_sulco2, pneus_sul_sulco3, pneus_sul_sulco4,
-            registro, loading } = this.state;
+            registro, loading, permissoes } = this.state;
         const { pneus_mov_idf, pneus_mov_pneu, vida, sulco1, sulco2, sulco3, sulco4, pneus_dim_descricao,
             pneus_mov_filial, pneus_mov_tipo_mov, pneus_mov_tipo_sucata, pneus_mov_km_ini, pneus_mov_km_fim,
             pneus_mov_pneu_novo, pneus_mov_posicao, pneu_atual, tipoTela } = this.state.registro;
@@ -500,7 +503,7 @@ export default class PneusTrocaScreen extends Component {
                         </View>
                     )}
 
-                    {getTemPermissao('PNEUSTROCASCREEN') && tipoTela !== 'ADDVEIC' ? (
+                    {getTemPermissao('PNEUSTROCASCREEN', permissoes) && tipoTela !== 'ADDVEIC' ? (
                         <View style={{ flex: 1, paddingHorizontal: 16 }}>
                             <Text style={{
                                 color: Colors.primaryLight,
