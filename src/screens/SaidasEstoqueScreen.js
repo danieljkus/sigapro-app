@@ -136,11 +136,12 @@ export default class SaidasEstoqueScreen extends Component {
 
                 console.log('onRegistroPress: ', response.data);
 
-                this.props.navigation.navigate('SaidaDieselScreen', {
+                this.props.navigation.navigate('SaidaEstoqueScreen', {
                     registro: {
                         ...response.data,
-                        checkedDiesel: true,
-                        checkedArla: false,
+                        checkedVeiculo: true,
+                        checkedFilial: false,
+                        checkedOS: false,
                     },
                     onRefresh: this.onRefresh
                 });
@@ -154,7 +155,7 @@ export default class SaidasEstoqueScreen extends Component {
     onAddPress = () => {
         console.log('onAddPress');
 
-        this.props.navigation.navigate('SaidaDieselScreen', {
+        this.props.navigation.navigate('SaidaEstoqueScreen', {
             registro: {
                 estoq_me_idf: 0,
                 estoq_me_data: '', //moment(new Date()).format('DD/MM/YYYY'),
@@ -168,9 +169,9 @@ export default class SaidasEstoqueScreen extends Component {
                 estoq_mei_total_mov: 0,
                 estoq_mei_obs: '',
 
-                estoq_me_tipo_saida: 'D',
-                checkedDiesel: true,
-                checkedArla: false,
+                checkedVeiculo: true,
+                checkedFilial: false,
+                checkedOS: false,
 
                 veiculo_select: null,
                 codVeiculo: '',

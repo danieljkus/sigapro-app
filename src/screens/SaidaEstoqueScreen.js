@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
-import { CheckBox } from 'react-native-elements';
-import AsyncStorage from '@react-native-community/async-storage';
+import { CheckBox, Divider } from 'react-native-elements';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
@@ -12,6 +11,9 @@ import Alert from '../components/Alert';
 import moment from 'moment';
 import { maskDate, maskValorMoeda } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
+import VeiculosSelect from '../components/VeiculosSelect';
+import FiliaisSelect from '../components/FiliaisSelect';
+import CentroCustoSelect from '../components/CentroCustoSelect';
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
@@ -29,11 +31,6 @@ export default class SaidaEstoqueScreen extends Component {
             estoq_me_obs: props.navigation.state.params.registro.estoq_me_obs ? props.navigation.state.params.registro.estoq_me_obs : '',
             estoq_me_qtde: props.navigation.state.params.registro.estoq_me_qtde ? props.navigation.state.params.registro.estoq_me_qtde : 0,
 
-            // estoq_me_data: moment(new Date()).format(DATE_FORMAT),
-            // estoq_me_numero: '0',
-            // estoq_me_obs: '',
-            // estoq_me_qtde: 0,
-
             estoq_mei_seq: 0,
             estoq_mei_item: 0,
             estoq_mei_qtde_mov: 0,
@@ -42,17 +39,21 @@ export default class SaidaEstoqueScreen extends Component {
             estoq_mei_total_mov: 0,
             estoq_mei_obs: '',
 
-            // estoq_me_tipo_saida: 'D',
-            estoq_me_tipo_saida: props.navigation.state.params.registro.estoq_me_tipo_saida === '19' || props.navigation.state.params.registro.estoq_me_tipo_saida === '24' ? props.navigation.state.params.registro.estoq_me_tipo_saida : 'D',
-            checkedDiesel: props.navigation.state.params.registro.checkedDiesel ? props.navigation.state.params.registro.checkedDiesel : false,
-            checkedArla: props.navigation.state.params.registro.checkedArla ? props.navigation.state.params.registro.checkedArla : false,
+            tipo_destino: 'V',
+            checkedVeiculo: true,
+            checkedFilial: false,
+            checkedOS: false,
 
             listaItens: props.navigation.state.params.registro.listaItens ? props.navigation.state.params.registro.listaItens : [],
 
             veiculo_select: null,
             codVeiculo: '',
 
-            // ...props.navigation.state.params.registro,
+            filial_select: null,
+            codFilial: '',
+
+            cc_select: null,
+            codCC: '',
 
             refreshing: false,
             carregarRegistro: false,
@@ -61,8 +62,6 @@ export default class SaidaEstoqueScreen extends Component {
             pagina: 1,
 
         }
-
-        console.log('SaidaDieselScreen - PROPS: ', props.navigation.state.params.registro);
     }
 
     async componentWillUnmount() {
@@ -72,9 +71,7 @@ export default class SaidaEstoqueScreen extends Component {
     componentDidMount() {
         getFilial().then(filial => { this.setState({ filial }); })
         this.calculoTotalPedido();
-        // if (!this.state.estoq_me_idf) {
-        this.onMudaTipoSaida(this.state.estoq_me_tipo_saida);
-        // }
+        this.onMudaTipoDestino(this.state.tipo_destino);
     }
 
     onInputChange = (id, value) => {
@@ -83,51 +80,87 @@ export default class SaidaEstoqueScreen extends Component {
         this.setState(state);
     }
 
-    onMudaTipoSaida = (tipo) => {
-        console.log('onMudaTipoSaida: ', tipo);
+    onInputChangeVeiculo = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        if (value) {
+            this.setState({
+                codVeiculo: value.codVeic,
+                descr_destino: value.adm_vei_placa + ' - ' + value.adm_veimarca_descricao_chassi,
+            });
+        }
+    }
+
+    onInputChangeFilial = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        if (value) {
+            this.setState({
+                codFilial: value.adm_fil_codigo,
+                descr_destino: value.adm_fil_descricao,
+            });
+        }
+    }
+
+    onInputChangeCC = (id, value) => {
+        console.log('onInputChangeCC: ', value);
+
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        if (value) {
+            this.setState({
+                codCC: value.contab_cc_codigo,
+                descr_cc: value.contab_cc_descricao,
+            });
+        }
+    }
+
+    onErroChange = msgErro => {
+        this.setState({
+            listaRegistros: [],
+            msgErroVeiculo: msgErro,
+        })
+    }
+
+
+    onMudaTipoDestino = (tipo) => {
+        console.log('onMudaTipoDestino: ', tipo);
 
         if (!this.state.estoq_me_idf) {
-            if (tipo === 'D') {
+            if (tipo === 'V') {
                 this.setState({
-                    estoq_me_tipo_saida: 'D',
-                    checkedDiesel: true,
-                    checkedArla: false,
-                    listaItens: [],
+                    tipo_destino: 'V',
+                    checkedVeiculo: true,
+                    checkedFilial: false,
+                    checkedOS: false,
                 });
-            } else if (tipo === 'A') {
+            } else if (tipo === 'S') {
                 this.setState({
-                    estoq_me_tipo_saida: 'A',
-                    checkedDiesel: false,
-                    checkedArla: true,
-                    listaItens: [],
+                    tipo_destino: 'S',
+                    checkedVeiculo: false,
+                    checkedFilial: true,
+                    checkedOS: false,
+                });
+            } else if (tipo === 'O') {
+                this.setState({
+                    tipo_destino: 'O',
+                    checkedVeiculo: false,
+                    checkedFilial: false,
+                    checkedOS: true,
                 });
             }
         }
-
-        this.setState({ carregarRegistro: true });
-        axios.get('/saidasEstoque/buscaEstoque', {
-            params: {
-                codItem: tipo === 'D' ? 19 : 166048,
-            }
-        }).then(response => {
-            console.log('onRegistroPress: ', response.data);
-
-            this.setState({
-                carregarRegistro: false,
-                estoq_mei_item: response.data.codItem,
-                estoq_mei_qtde_atual: response.data.qtde,
-                estoq_mei_valor_unit: response.data.custo,
-            });
-        }).catch(ex => {
-            this.setState({ carregarRegistro: false });
-            console.warn(ex);
-            console.warn(ex.response);
-        });
-
     }
 
 
     onFormSubmit = (event) => {
+        if (!this.state.veiculo_select) {
+            Alert.showAlert('Informe o Veículo');
+            return;
+        }
         if ((!this.state.listaItens) || (this.state.listaItens.length === 0)) {
             Alert.showAlert('Inclua algum Item na Saída.');
             return;
@@ -158,7 +191,6 @@ export default class SaidaEstoqueScreen extends Component {
             axiosMethod = axios.post('/saidasEstoque/store', registro);
         }
         axiosMethod.then(response => {
-            // myEmitter.emit('atualizarDashboard');
             this.props.navigation.goBack(null);
             if (this.props.navigation.state.params.onRefresh) {
                 this.props.navigation.state.params.onRefresh();
@@ -187,16 +219,49 @@ export default class SaidaEstoqueScreen extends Component {
     // MODAL PARA PRODUTOS DA SAIDA
     // ---------------------------------------------------------------------------
 
-    onAbrirProdutosVendaModal = () => {
-        this.props.navigation.navigate('SaidaDieselItensScreen', {
+    onAbrirItensModal = () => {
+        if ((this.state.checkedVeiculo) && ((!this.state.veiculo_select) || (!this.state.veiculo_select.codVeic))) {
+            Alert.showAlert('Informe o Veículo');
+            return;
+        }
+        if ((this.state.checkedFilial) && ((!this.state.filial_select) || (!this.state.filial_select.adm_fil_codigo) || (!this.state.cc_select) || (!this.state.cc_select.contab_cc_codigo))) {
+            Alert.showAlert('Informe o Setor');
+            return;
+        }
+        if ((this.state.checkedOS) && ((!this.state.os_select) || (!this.state.os_select.idf))) {
+            Alert.showAlert('Informe a Ordem de Serviço');
+            return;
+        }
+
+        let tipoDest = '';
+        let codDest = '';
+        let codCCDest = '';
+
+        if (this.state.checkedVeiculo) {
+            tipoDest = 'VEIC';
+            codDest = this.state.veiculo_select.codVeic;
+        }
+        if (this.state.checkedFilial) {
+            tipoDest = 'FIL';
+            codDest = this.state.filial_select.adm_fil_codigo;
+            codCCDest = this.state.cc_select.contab_cc_codigo;
+        }
+
+        this.props.navigation.navigate('SaidaEstoqueItensScreen', {
             estoq_me_idf: this.state.estoq_me_idf,
             listaItens: this.state.listaItens,
             filial: this.state.filial,
+            codItem: '',
             estoq_mei_item: this.state.estoq_mei_item,
             estoq_mei_qtde_atual: this.state.estoq_mei_qtde_atual,
             estoq_mei_qtde_mov: 1,
             estoq_mei_valor_unit: this.state.estoq_mei_valor_unit,
             estoq_mei_total_mov: this.state.estoq_mei_valor_unit,
+            tipo_origem: 'FIL',
+            cod_origem: this.state.filial,
+            tipo_destino: tipoDest,
+            cod_destino: codDest,
+            cod_ccdestino: codCCDest,
             onCarregaProdutos: this.onCarregaProdutos
         });
     }
@@ -221,12 +286,13 @@ export default class SaidaEstoqueScreen extends Component {
 
 
     render() {
-        const { estoq_me_idf, estoq_me_data, estoq_me_numero, estoq_me_obs,
-            checkedDiesel, checkedArla, estoq_me_qtde,
+        const { estoq_me_idf, estoq_me_data, estoq_me_numero, estoq_me_obs, estoq_me_qtde,
+            veiculo_select, codVeiculo, filial_select, codFilial, cc_select, codCC,
+            tipo_destino, checkedVeiculo, checkedFilial, checkedOS,
             carregarRegistro, loading, salvado } = this.state;
 
 
-        console.log('SaidaDieselScreen - STATE: ', this.state);
+        console.log('SaidaEstoqueScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -306,44 +372,82 @@ export default class SaidaEstoqueScreen extends Component {
                             multiline={true}
                         />
 
-                        <View style={{ flexDirection: 'row' }}>
+                        <Divider />
+                        <Divider />
+
+                        <Text style={{ margin: 15, fontSize: 18 }}>
+                            DESTINO
+                        </Text>
+
+                        <View style={{ flexDirection: 'row', marginTop: 0, marginBottom: 15 }}>
                             <CheckBox
                                 center
-                                title='Diesel'
+                                title='Veículo'
                                 checkedIcon='dot-circle-o'
                                 uncheckedIcon='circle-o'
-                                checked={checkedDiesel}
-                                onPress={() => { this.onMudaTipoSaida('D') }}
+                                checked={checkedVeiculo}
+                                onPress={() => { this.onMudaTipoDestino('V') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                                 disabled={estoq_me_idf ? true : false}
                             />
                             <CheckBox
                                 center
-                                title='Arla'
+                                title='Setor'
                                 checkedIcon='dot-circle-o'
                                 uncheckedIcon='circle-o'
-                                checked={checkedArla}
-                                onPress={() => { this.onMudaTipoSaida('A') }}
+                                checked={checkedFilial}
+                                onPress={() => { this.onMudaTipoDestino('S') }}
+                                containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                disabled={estoq_me_idf ? true : false}
+                            />
+                            <CheckBox
+                                center
+                                title='O.S'
+                                checkedIcon='dot-circle-o'
+                                uncheckedIcon='circle-o'
+                                checked={checkedOS}
+                                onPress={() => { this.onMudaTipoDestino('O') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                                 disabled={estoq_me_idf ? true : false}
                             />
                         </View>
 
-                        {/* <View style={{ marginBottom: 20, marginTop: 20 }} >
-                            <TextInput
-                                label="Observação da Saída"
-                                id="estoq_me_obs"
-                                ref="estoq_me_obs"
-                                value={estoq_me_obs}
-                                maxLength={100}
-                                onChange={this.onInputChange}
-                                multiline={true}
-                            />
-                        </View> */}
-
-                        {/* <Divider />
                         <Divider />
-                        <Divider /> */}
+                        <Divider />
+
+                        {tipo_destino === 'V' ? (
+                            <View style={{}}>
+                                <VeiculosSelect
+                                    label="Veículo"
+                                    id="veiculo_select"
+                                    value={veiculo_select}
+                                    codVeiculo={codVeiculo}
+                                    onChange={this.onInputChangeVeiculo}
+                                    onErro={this.onErroChange}
+                                    tipo=""
+                                />
+                            </View>
+                        ) : null}
+
+                        {tipo_destino === 'S' ? (
+                            <View style={{}}>
+                                <FiliaisSelect
+                                    label="Filial"
+                                    id="filial_select"
+                                    codFilial={codFilial}
+                                    onChange={this.onInputChangeFilial}
+                                    value={filial_select}
+                                />
+                                <CentroCustoSelect
+                                    label="Centro Custo"
+                                    id="cc_select"
+                                    codCC={codCC}
+                                    onChange={this.onInputChangeCC}
+                                    value={cc_select}
+                                />
+                            </View>
+                        ) : null}
+
 
 
                         <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 20, marginTop: 30 }} >
@@ -351,7 +455,7 @@ export default class SaidaEstoqueScreen extends Component {
                                 <Button
                                     title="ITENS DA SAÍDA"
                                     loading={loading}
-                                    onPress={() => { this.onAbrirProdutosVendaModal() }}
+                                    onPress={() => { this.onAbrirItensModal() }}
                                     buttonStyle={{ height: 45 }}
                                     backgroundColor={Colors.buttonSecondary}
                                     textStyle={{
