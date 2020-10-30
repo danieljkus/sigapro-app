@@ -39,7 +39,7 @@ export default class SaidaEstoqueScreen extends Component {
             estoq_mei_total_mov: 0,
             estoq_mei_obs: '',
 
-            tipo_destino: 'V',
+            tipo_destino: props.navigation.state.params.registro.tipo_destino,
             checkedVeiculo: true,
             checkedFilial: false,
             checkedOS: false,
@@ -49,11 +49,13 @@ export default class SaidaEstoqueScreen extends Component {
             veiculo_select: null,
             codVeiculo: '',
 
-            filial_select: null,
+            filial_select: null, 
             codFilial: '',
 
             cc_select: null,
             codCC: '',
+
+            idfOS: '',
 
             refreshing: false,
             carregarRegistro: false,
@@ -105,8 +107,6 @@ export default class SaidaEstoqueScreen extends Component {
     }
 
     onInputChangeCC = (id, value) => {
-        console.log('onInputChangeCC: ', value);
-
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -133,6 +133,9 @@ export default class SaidaEstoqueScreen extends Component {
             if (tipo === 'V') {
                 this.setState({
                     tipo_destino: 'V',
+                    codVeiculo: '',
+                    codFilial: '',
+                    codCC: '',
                     checkedVeiculo: true,
                     checkedFilial: false,
                     checkedOS: false,
@@ -140,6 +143,9 @@ export default class SaidaEstoqueScreen extends Component {
             } else if (tipo === 'S') {
                 this.setState({
                     tipo_destino: 'S',
+                    codVeiculo: '',
+                    codFilial: '',
+                    codCC: '',
                     checkedVeiculo: false,
                     checkedFilial: true,
                     checkedOS: false,
@@ -147,6 +153,41 @@ export default class SaidaEstoqueScreen extends Component {
             } else if (tipo === 'O') {
                 this.setState({
                     tipo_destino: 'O',
+                    codVeiculo: '',
+                    codFilial: '',
+                    codCC: '',
+                    checkedVeiculo: false,
+                    checkedFilial: false,
+                    checkedOS: true,
+                });
+            }
+        } else {
+            if (tipo === 'V') {
+                this.setState({
+                    tipo_destino: 'V',
+                    codVeiculo: this.props.navigation.state.params.registro.codVeiculo ? this.props.navigation.state.params.registro.codVeiculo : '',
+                    codFilial: '',
+                    codCC: '',
+                    checkedVeiculo: true,
+                    checkedFilial: false,
+                    checkedOS: false,
+                });
+            } else if (tipo === 'S') {
+                this.setState({
+                    tipo_destino: 'S',
+                    codVeiculo: '',
+                    codFilial: this.props.navigation.state.params.registro.codFilial ? this.props.navigation.state.params.registro.codFilial : '',
+                    codCC: this.props.navigation.state.params.registro.codCC ? this.props.navigation.state.params.registro.codCC : '',
+                    checkedVeiculo: false,
+                    checkedFilial: true,
+                    checkedOS: false,
+                });
+            } else if (tipo === 'O') {
+                this.setState({
+                    tipo_destino: 'O',
+                    codVeiculo: '',
+                    codFilial: '',
+                    codCC: '',
                     checkedVeiculo: false,
                     checkedFilial: false,
                     checkedOS: true,
@@ -157,10 +198,19 @@ export default class SaidaEstoqueScreen extends Component {
 
 
     onFormSubmit = (event) => {
-        if (!this.state.veiculo_select) {
+        if ((this.state.checkedVeiculo) && ((!this.state.veiculo_select) || (!this.state.veiculo_select.codVeic))) {
             Alert.showAlert('Informe o Veículo');
             return;
         }
+        if ((this.state.checkedFilial) && ((!this.state.filial_select) || (!this.state.filial_select.adm_fil_codigo) || (!this.state.cc_select) || (!this.state.cc_select.contab_cc_codigo))) {
+            Alert.showAlert('Informe o Setor');
+            return;
+        }
+        if ((this.state.checkedOS) && ((!this.state.os_select) || (!this.state.os_select.idf))) {
+            Alert.showAlert('Informe a Ordem de Serviço');
+            return;
+        }
+
         if ((!this.state.listaItens) || (this.state.listaItens.length === 0)) {
             Alert.showAlert('Inclua algum Item na Saída.');
             return;
@@ -242,7 +292,7 @@ export default class SaidaEstoqueScreen extends Component {
             codDest = this.state.veiculo_select.codVeic;
         }
         if (this.state.checkedFilial) {
-            tipoDest = 'FIL';
+            tipoDest = 'CC';
             codDest = this.state.filial_select.adm_fil_codigo;
             codCCDest = this.state.cc_select.contab_cc_codigo;
         }

@@ -26,18 +26,12 @@ const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                 onLongPress={() => onRegistroLongPress(registro.estoq_mei_seq)}
             >
 
-                <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 8 }}>
+                <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 8, paddingRight: 10 }}>
                     <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                         Item{': '}
                     </Text>
                     <Text>
-                        {registro.estoq_mei_item}
-                    </Text>
-                </View>
-
-                <View style={{ flexDirection: 'row', paddingLeft: 10 }}>
-                    <Text>
-                        {registro.descrItem}
+                        {registro.estoq_mei_item} - {registro.estoq_ie_descricao}
                     </Text>
                 </View>
 
@@ -137,7 +131,7 @@ export default class SaidaEstoqueItensScreen extends Component {
         if (value) {
             this.setState({
                 codItem: value.estoq_ie_codigo,
-                descrItem: value.estoq_ie_descricao,
+                estoq_ie_descricao: value.estoq_ie_descricao,
                 qtdeEstoque: value.estoq_ef_estoque_atual,
                 custo: value.estoq_ef_custo_medio,
                 estoq_mei_qtde_atual: maskValorMoeda(parseFloat(value.estoq_ef_estoque_atual)),
@@ -160,18 +154,6 @@ export default class SaidaEstoqueItensScreen extends Component {
             estoq_mei_total_mov: maskValorMoeda(estoq_mei_total_mov),
             cod_destino,
             descr_destino,
-            // veiculo_select: {
-            //     msgErro: 'OK',
-            //     idfRota: 0,
-            //     codRota: 0,
-            //     man_rt_flag_eventual: '',
-            //     sitRota: '',
-            //     codVeic: cod_destino,
-            //     adm_vei_placa: descr_destino,
-            //     adm_veimarca_descricao_chassi: '',
-            //     kmOdo: 0,
-            //     kmAcum: 0
-            // },
             estoq_mei_obs,
         });
 
@@ -220,6 +202,10 @@ export default class SaidaEstoqueItensScreen extends Component {
 
     onFormIncluirProduto = (event) => {
         console.log('-------------onFormIncluirProduto---------------');
+        if ((!this.state.item_select) || (!this.state.item_select.estoq_ie_codigo)) {
+            Alert.showAlert('Informe o Item');
+            return;
+        }
         if (this.state.stoq_mei_qtde_mov <= 0) {
             Alert.showAlert('Informe a Quantidade');
             return;
@@ -240,10 +226,10 @@ export default class SaidaEstoqueItensScreen extends Component {
             Alert.showAlert('Estoque Insuficiente');
             return;
         }
-        // if (vlrStringParaFloat(this.state.estoq_mei_total_mov) <= 0) {
-        //     Alert.showAlert('Informe o Valor do Produto');
-        //     return;
-        // }
+        if (vlrStringParaFloat(this.state.estoq_mei_total_mov) <= 0) {
+            Alert.showAlert('Informe o Valor do Produto');
+            return;
+        }
 
         this.onGravar();
     }
@@ -265,14 +251,14 @@ export default class SaidaEstoqueItensScreen extends Component {
             listaItens.push({
                 estoq_mei_seq: listaItens.length + 1,
                 estoq_mei_item: this.state.item_select.estoq_ie_codigo,
-                descrItem: this.state.item_select.estoq_ie_descricao,
+                estoq_ie_descricao: this.state.item_select.estoq_ie_descricao,
                 estoq_mei_qtde_mov: vlrStringParaFloat(this.state.estoq_mei_qtde_mov),
                 estoq_mei_valor_unit: vlrStringParaFloat(this.state.estoq_mei_valor_unit),
                 estoq_mei_total_mov: vlrStringParaFloat(this.state.estoq_mei_total_mov),
                 tipo_origem: this.state.tipo_origem,
                 cod_origem: this.state.cod_origem,
                 tipo_destino: this.state.tipo_destino,
-                cod_destino: this.state.codVeiculo,
+                cod_destino: this.state.cod_destino,
                 cod_ccdestino: this.state.cod_ccdestino,
                 descr_destino: this.state.descr_destino,
                 estoq_mei_obs: this.state.estoq_mei_obs,
@@ -282,6 +268,8 @@ export default class SaidaEstoqueItensScreen extends Component {
 
         this.setState({
             listaItens,
+            item_select: null,
+            codItem: '',
             estoq_mei_seq: 0,
             estoq_mei_qtde_mov: '1,00',
             estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_valor_unit),
@@ -360,8 +348,8 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     calculoItem = (estoq_mei_qtde_mov, estoq_mei_valor_unit) => {
-        // console.log('----------------calculoItem---------------------');
-        const vlrUnit = estoq_mei_valor_unit;
+        console.log('----------------calculoItem---------------------');
+        const vlrUnit = vlrStringParaFloat(String(estoq_mei_valor_unit).replace('.', ''));
         const qtde = vlrStringParaFloat(String(estoq_mei_qtde_mov).replace('.', ''));
         // console.log('estoq_mei_qtde_mov: ', qtde);
         // console.log('estoq_mei_valor_unit: ', vlrUnit);

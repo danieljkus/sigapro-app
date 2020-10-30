@@ -136,12 +136,36 @@ export default class SaidasEstoqueScreen extends Component {
 
                 console.log('onRegistroPress: ', response.data);
 
+                let tipo_destino = '';
+                let codVeiculo = '';
+                let codFilial = '';
+                let codCC = '';
+                let idfOS = '';
+
+                if ((response.data.listaItens[0].estoq_mei_veic_dest !== '') && (response.data.listaItens[0].estoq_mei_veic_dest !== null)) {
+                    tipo_destino = 'V';
+                    codVeiculo = response.data.listaItens[0].estoq_mei_veic_dest;
+                } else if ((response.data.listaItens[0].estoq_mei_cc_dest !== '') && (response.data.listaItens[0].estoq_mei_cc_dest !== null)) {
+                    tipo_destino = 'S';
+                    codFilial = response.data.listaItens[0].estoq_mei_fil_dest;
+                    codCC = response.data.listaItens[0].estoq_mei_cc_dest;
+                } else if ((response.data.listaItens[0].estoq_mei_ordem_servico !== '') && (response.data.listaItens[0].estoq_mei_ordem_servico !== null)) {
+                    tipo_destino = 'O';
+                    idfOS = response.data.listaItens[0].estoq_mei_ordem_servico;
+                }
+
                 this.props.navigation.navigate('SaidaEstoqueScreen', {
                     registro: {
                         ...response.data,
-                        checkedVeiculo: true,
-                        checkedFilial: false,
-                        checkedOS: false,
+                        checkedVeiculo: response.data.listaItens[0].estoq_mei_veic_dest ? true : false,
+                        checkedFilial: response.data.listaItens[0].estoq_mei_cc_dest ? true : false,
+                        checkedOS: response.data.listaItens[0].estoq_mei_ordem_servico ? true : false,
+
+                        tipo_destino,
+                        codVeiculo,
+                        codFilial,
+                        codCC,
+                        idfOS,
                     },
                     onRefresh: this.onRefresh
                 });
@@ -173,8 +197,19 @@ export default class SaidasEstoqueScreen extends Component {
                 checkedFilial: false,
                 checkedOS: false,
 
-                veiculo_select: null,
+                tipo_destino: 'V',
+                descr_destino: '',
+
+                veiculo_select: [],
                 codVeiculo: '',
+
+                filial_select: [],
+                codFilial: '',
+
+                cc_select: [],
+                codCC: '',
+
+                idfOS: '',
             },
             onRefresh: this.onRefresh
         });
