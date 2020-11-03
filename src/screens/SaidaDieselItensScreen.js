@@ -77,6 +77,7 @@ export default class SaidaDieselItensScreen extends Component {
             cod_origem: props.navigation.state.params.filial,
             tipo_destino: 'VEIC',
             cod_destino: '',
+            cod_ccdestino: '',
             descr_destino: '',
             estoq_mei_obs: 'BAIXA SIGAPRO',
 
@@ -186,6 +187,7 @@ export default class SaidaDieselItensScreen extends Component {
             estoq_mei_qtde_mov: '1,00',
             estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_valor_unit),
             cod_destino: '',
+            cod_ccdestino: '',
             descr_destino: '',
             estoq_mei_obs: '',
 
@@ -259,6 +261,7 @@ export default class SaidaDieselItensScreen extends Component {
                 cod_origem: this.state.cod_origem,
                 tipo_destino: this.state.tipo_destino,
                 cod_destino: this.state.codVeiculo,
+                cod_ccdestino: '',
                 descr_destino: this.state.descr_destino,
                 estoq_mei_obs: this.state.estoq_mei_obs,
             })
@@ -271,6 +274,7 @@ export default class SaidaDieselItensScreen extends Component {
             estoq_mei_qtde_mov: '1,00',
             estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_valor_unit),
             cod_destino: '',
+            cod_ccdestino: '',
             descr_destino: '',
             estoq_mei_obs: '',
 

@@ -222,13 +222,47 @@ export default class SaidaEstoqueScreen extends Component {
         const { listaItens, estoq_me_idf, estoq_me_data, estoq_me_numero, estoq_me_obs } = this.state;
 
         this.setState({ salvado: true });
+
+        let tipo_destino = '';
+        let cod_destino = '';
+        let cod_ccdestino = '';
+
+        if (this.state.checkedVeiculo) {
+            tipo_destino = 'VEIC';
+            cod_destino = this.state.veiculo_select.codVeic;
+        }
+        if (this.state.checkedFilial) {
+            tipo_destino = 'CC';
+            cod_destino = this.state.filial_select.adm_fil_codigo;
+            cod_ccdestino = this.state.cc_select.contab_cc_codigo;
+        }
+
+        let lista = listaItens.map(regList => {
+            return {
+                estoq_mei_seq: regList.estoq_mei_seq,
+                estoq_mei_item: regList.estoq_mei_item,
+                estoq_ie_descricao: regList.estoq_ie_descricao,
+                estoq_mei_qtde_mov: regList.estoq_mei_qtde_mov,
+                estoq_mei_valor_unit: regList.estoq_mei_valor_unit,
+                estoq_mei_total_mov: regList.estoq_mei_total_mov,
+                tipo_origem: 'FIL',
+                cod_origem: this.state.filial,
+                tipo_destino,
+                cod_destino,
+                cod_ccdestino,
+                estoq_mei_ordem_servico: regList.estoq_mei_ordem_servico,
+                estoq_mei_ficha_viagem: regList.estoq_mei_ficha_viagem,
+                estoq_mei_obs: regList.estoq_mei_obs,
+            }
+        });
+
         const registro = {
             estoq_me_idf,
             estoq_me_data: moment(estoq_me_data, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
             estoq_me_numero: estoq_me_numero ? estoq_me_numero : '0',
             estoq_me_obs,
 
-            listaItens,
+            listaItens: lista,
         };
 
         console.log('onSalvarRegistro: ', registro);
@@ -429,7 +463,7 @@ export default class SaidaEstoqueScreen extends Component {
                             DESTINO
                         </Text>
 
-                        <View style={{ flexDirection: 'row', marginTop: 0, marginBottom: 15 }}>
+                        <View style={{ flexDirection: 'row', marginTop: 0, marginBottom: 25 }}>
                             <CheckBox
                                 center
                                 title='Veículo'
@@ -438,7 +472,7 @@ export default class SaidaEstoqueScreen extends Component {
                                 checked={checkedVeiculo}
                                 onPress={() => { this.onMudaTipoDestino('V') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
-                                disabled={estoq_me_idf ? true : false}
+                                // disabled={estoq_me_idf ? true : false}
                             />
                             <CheckBox
                                 center
@@ -448,7 +482,7 @@ export default class SaidaEstoqueScreen extends Component {
                                 checked={checkedFilial}
                                 onPress={() => { this.onMudaTipoDestino('S') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
-                                disabled={estoq_me_idf ? true : false}
+                                // disabled={estoq_me_idf ? true : false}
                             />
                             <CheckBox
                                 center
@@ -458,12 +492,12 @@ export default class SaidaEstoqueScreen extends Component {
                                 checked={checkedOS}
                                 onPress={() => { this.onMudaTipoDestino('O') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
-                                disabled={estoq_me_idf ? true : false}
+                                // disabled={estoq_me_idf ? true : false}
                             />
                         </View>
 
-                        <Divider />
-                        <Divider />
+                        {/* <Divider />
+                        <Divider /> */}
 
                         {tipo_destino === 'V' ? (
                             <View style={{}}>

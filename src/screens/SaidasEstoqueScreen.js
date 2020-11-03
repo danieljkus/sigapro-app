@@ -141,17 +141,23 @@ export default class SaidasEstoqueScreen extends Component {
                 let codFilial = '';
                 let codCC = '';
                 let idfOS = '';
+                let cod_destino = '';
+                let cod_ccdestino = '';
 
                 if ((response.data.listaItens[0].estoq_mei_veic_dest !== '') && (response.data.listaItens[0].estoq_mei_veic_dest !== null)) {
                     tipo_destino = 'V';
                     codVeiculo = response.data.listaItens[0].estoq_mei_veic_dest;
+                    cod_destino = response.data.listaItens[0].estoq_mei_veic_dest;
                 } else if ((response.data.listaItens[0].estoq_mei_cc_dest !== '') && (response.data.listaItens[0].estoq_mei_cc_dest !== null)) {
                     tipo_destino = 'S';
                     codFilial = response.data.listaItens[0].estoq_mei_fil_dest;
+                    cod_destino = response.data.listaItens[0].estoq_mei_fil_dest;
                     codCC = response.data.listaItens[0].estoq_mei_cc_dest;
+                    cod_ccdestino = response.data.listaItens[0].estoq_mei_cc_dest;
                 } else if ((response.data.listaItens[0].estoq_mei_ordem_servico !== '') && (response.data.listaItens[0].estoq_mei_ordem_servico !== null)) {
                     tipo_destino = 'O';
                     idfOS = response.data.listaItens[0].estoq_mei_ordem_servico;
+                    cod_destino = response.data.listaItens[0].estoq_mei_ordem_servico;
                 }
 
                 this.props.navigation.navigate('SaidaEstoqueScreen', {
