@@ -98,7 +98,7 @@ class VeiculosSelect extends PureComponent {
 
 
     render() {
-        const { label, value } = this.props;
+        const { label, value, enabled } = this.props;
         const { codVeiculo, msgErro, carregando } = this.state;
 
         let descricao;
@@ -119,6 +119,7 @@ class VeiculosSelect extends PureComponent {
                         maxLength={6}
                         keyboardType="numeric"
                         onChange={this.onChange}
+                        enabled={enabled}
                     />
                 </View>
 

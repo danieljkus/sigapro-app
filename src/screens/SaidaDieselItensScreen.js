@@ -80,6 +80,8 @@ export default class SaidaDieselItensScreen extends Component {
             cod_ccdestino: '',
             descr_destino: '',
             estoq_mei_obs: 'BAIXA SIGAPRO',
+            estoq_mei_ordem_servico: '',
+            estoq_mei_ficha_viagem: '',
 
             veiculo_select: null,
             codVeiculo: '',
@@ -264,6 +266,9 @@ export default class SaidaDieselItensScreen extends Component {
                 cod_ccdestino: '',
                 descr_destino: this.state.descr_destino,
                 estoq_mei_obs: this.state.estoq_mei_obs,
+                estoq_mei_ordem_servico: '',
+                man_osm_controle: '',
+                estoq_mei_ficha_viagem: '',
             })
 
         }

@@ -140,24 +140,26 @@ export default class SaidasEstoqueScreen extends Component {
                 let codVeiculo = '';
                 let codFilial = '';
                 let codCC = '';
-                let idfOS = '';
+                let controleOS = '';
+                let estoq_mei_ordem_servico = '';
                 let cod_destino = '';
                 let cod_ccdestino = '';
 
-                if ((response.data.listaItens[0].estoq_mei_veic_dest !== '') && (response.data.listaItens[0].estoq_mei_veic_dest !== null)) {
-                    tipo_destino = 'V';
+                if ((response.data.listaItens[0].estoq_mei_ordem_servico !== '') && (response.data.listaItens[0].estoq_mei_ordem_servico !== null)) {
+                    tipo_destino = 'OS';
+                    cod_destino = response.data.listaItens[0].estoq_mei_ordem_servico;
+                    estoq_mei_ordem_servico = response.data.listaItens[0].estoq_mei_ordem_servico;
+                    controleOS = response.data.listaItens[0].man_osm_controle;
+                } else if ((response.data.listaItens[0].estoq_mei_veic_dest !== '') && (response.data.listaItens[0].estoq_mei_veic_dest !== null)) {
+                    tipo_destino = 'VEIC';
                     codVeiculo = response.data.listaItens[0].estoq_mei_veic_dest;
                     cod_destino = response.data.listaItens[0].estoq_mei_veic_dest;
                 } else if ((response.data.listaItens[0].estoq_mei_cc_dest !== '') && (response.data.listaItens[0].estoq_mei_cc_dest !== null)) {
-                    tipo_destino = 'S';
+                    tipo_destino = 'CC';
                     codFilial = response.data.listaItens[0].estoq_mei_fil_dest;
                     cod_destino = response.data.listaItens[0].estoq_mei_fil_dest;
                     codCC = response.data.listaItens[0].estoq_mei_cc_dest;
                     cod_ccdestino = response.data.listaItens[0].estoq_mei_cc_dest;
-                } else if ((response.data.listaItens[0].estoq_mei_ordem_servico !== '') && (response.data.listaItens[0].estoq_mei_ordem_servico !== null)) {
-                    tipo_destino = 'O';
-                    idfOS = response.data.listaItens[0].estoq_mei_ordem_servico;
-                    cod_destino = response.data.listaItens[0].estoq_mei_ordem_servico;
                 }
 
                 this.props.navigation.navigate('SaidaEstoqueScreen', {
@@ -171,7 +173,9 @@ export default class SaidasEstoqueScreen extends Component {
                         codVeiculo,
                         codFilial,
                         codCC,
-                        idfOS,
+                        codOS: '',
+                        estoq_mei_ordem_servico,
+                        controleOS,
                     },
                     onRefresh: this.onRefresh
                 });
@@ -203,7 +207,7 @@ export default class SaidasEstoqueScreen extends Component {
                 checkedFilial: false,
                 checkedOS: false,
 
-                tipo_destino: 'V',
+                tipo_destino: 'VEIC',
                 descr_destino: '',
 
                 veiculo_select: [],
@@ -215,7 +219,8 @@ export default class SaidasEstoqueScreen extends Component {
                 cc_select: [],
                 codCC: '',
 
-                idfOS: '',
+                codOS: '',
+                estoq_mei_ordem_servico: '',
             },
             onRefresh: this.onRefresh
         });
