@@ -35,7 +35,7 @@ const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                             Veículo {': '}
                         </Text>
                         <Text>
-                            {registro.cod_destino}
+                            {registro.cod_destino ? registro.cod_destino : registro.estoq_mei_veic_dest ? registro.estoq_mei_veic_dest : ''}
                         </Text>
                     </View>
                     <View style={{ flex: 2, flexDirection: 'row' }}>

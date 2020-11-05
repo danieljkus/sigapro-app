@@ -539,6 +539,7 @@ export default class SaidaEstoqueScreen extends Component {
                                 checked={checkedVeiculo}
                                 onPress={() => { this.onMudaTipoDestino('VEIC') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                disabled={estoq_me_idf ? true : false}
                             />
                             <CheckBox
                                 center
@@ -548,6 +549,7 @@ export default class SaidaEstoqueScreen extends Component {
                                 checked={checkedFilial}
                                 onPress={() => { this.onMudaTipoDestino('CC') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                disabled={estoq_me_idf ? true : false}
                             />
                             <CheckBox
                                 center
@@ -557,6 +559,7 @@ export default class SaidaEstoqueScreen extends Component {
                                 checked={checkedOS}
                                 onPress={() => { this.onMudaTipoDestino('OS') }}
                                 containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                disabled={estoq_me_idf ? true : false}
                             />
                         </View>
 
@@ -685,26 +688,24 @@ export default class SaidaEstoqueScreen extends Component {
                                 />
                             </View>
                             <View style={{ flex: 2, marginLeft: 2 }}>
-                                {this.state.vendaEnviada && this.state.parSinc
-                                    ? <Text style={{ textAlign: 'center', color: '#d50000', marginTop: 5 }}> Pedido Enviado </Text>
-                                    : (
-                                        <Button
-                                            title="SALVAR SAÍDA"
-                                            loading={loading}
-                                            onPress={this.onFormSubmit}
-                                            buttonStyle={{ height: 45 }}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            textStyle={{
-                                                fontWeight: 'bold',
-                                                fontSize: 15
-                                            }}
-                                            icon={{
-                                                name: 'check',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    )}
+                                {this.state.estoq_me_idf ? null : (
+                                    <Button
+                                        title="SALVAR SAÍDA"
+                                        loading={loading}
+                                        onPress={this.onFormSubmit}
+                                        buttonStyle={{ height: 45 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        textStyle={{
+                                            fontWeight: 'bold',
+                                            fontSize: 15
+                                        }}
+                                        icon={{
+                                            name: 'check',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                )}
                             </View>
                         </View>
 

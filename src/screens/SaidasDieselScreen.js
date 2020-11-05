@@ -9,6 +9,7 @@ import { ProgressDialog } from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
+import { getFilial } from '../utils/LoginManager';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -18,7 +19,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.estoq_me_idf)}
-                onLongPress={() => onRegistroLongPress(registro.estoq_me_idf)}
+                // onLongPress={() => onRegistroLongPress(registro.estoq_me_idf)}
             >
 
                 <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
@@ -103,6 +104,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
     };
 
     componentDidMount() {
+        getFilial().then(filial => { this.setState({ filial }); })
         this.setState({ refreshing: false });
         this.getListaRegistros();
     }
@@ -153,13 +155,20 @@ export default class MedicoesTanqueArlaScreen extends Component {
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                // console.log('onRegistroPress: ', response.data);
+                console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('SaidaDieselScreen', {
                     registro: {
                         ...response.data,
                         checkedDiesel: true,
                         checkedArla: false,
+
+                        tipo_origem: 'FIL',
+                        cod_origem: this.state.filial,
+                        tipo_destino: 'VEIC',
+                        cod_destino: response.data.estoq_mei_veic_dest,
+                        cod_ccdestino: '',
+                        descr_destino: response.data.estoq_mei_veic_dest,
                     },
                     onRefresh: this.onRefresh
                 });

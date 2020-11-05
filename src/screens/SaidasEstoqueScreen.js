@@ -18,7 +18,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.estoq_me_idf)}
-                onLongPress={() => onRegistroLongPress(registro.estoq_me_idf)}
+                // onLongPress={() => onRegistroLongPress(registro.estoq_me_idf)}
             >
 
                 <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>

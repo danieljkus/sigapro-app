@@ -228,7 +228,7 @@ export default class SaidaDieselScreen extends Component {
             carregarRegistro, loading, salvado } = this.state;
 
 
-        // console.log('SaidaDieselScreen - STATE: ', this.state);
+        console.log('SaidaDieselScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -368,26 +368,24 @@ export default class SaidaDieselScreen extends Component {
                                 />
                             </View>
                             <View style={{ flex: 2, marginLeft: 2 }}>
-                                {this.state.vendaEnviada && this.state.parSinc
-                                    ? <Text style={{ textAlign: 'center', color: '#d50000', marginTop: 5 }}> Pedido Enviado </Text>
-                                    : (
-                                        <Button
-                                            title="SALVAR SAÍDA"
-                                            loading={loading}
-                                            onPress={this.onFormSubmit}
-                                            buttonStyle={{ height: 45 }}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            textStyle={{
-                                                fontWeight: 'bold',
-                                                fontSize: 15
-                                            }}
-                                            icon={{
-                                                name: 'check',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    )}
+                                {this.state.estoq_me_idf ? null : (
+                                    <Button
+                                        title="SALVAR SAÍDA"
+                                        loading={loading}
+                                        onPress={this.onFormSubmit}
+                                        buttonStyle={{ height: 45 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        textStyle={{
+                                            fontWeight: 'bold',
+                                            fontSize: 15
+                                        }}
+                                        icon={{
+                                            name: 'check',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                )}
                             </View>
                         </View>
 
