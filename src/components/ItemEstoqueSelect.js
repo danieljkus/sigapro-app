@@ -105,7 +105,7 @@ class ItemEstoqueSelect extends PureComponent {
         }).then(response => {
             const { data } = response;
 
-            // console.log('ItemEstoqueSelect.buscaRegistros: ', data);
+            console.log('ItemEstoqueSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])

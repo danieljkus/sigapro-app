@@ -69,7 +69,7 @@ export default class SaidaDieselItensScreen extends Component {
             estoq_me_idf: props.navigation.state.params.estoq_me_idf,
             estoq_mei_seq: 0,
             estoq_mei_item: props.navigation.state.params.estoq_mei_item,
-            estoq_mei_qtde_mov: '1,00',
+            estoq_mei_qtde_mov: '0,00',
             estoq_mei_qtde_atual: maskValorMoeda(props.navigation.state.params.estoq_mei_qtde_atual),
             estoq_mei_valor_unit: maskValorMoeda(props.navigation.state.params.estoq_mei_valor_unit),
             estoq_mei_total_mov: maskValorMoeda(props.navigation.state.params.estoq_mei_total_mov),

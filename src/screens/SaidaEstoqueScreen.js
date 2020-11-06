@@ -58,7 +58,7 @@ export default class SaidaEstoqueScreen extends Component {
             estoq_mei_ordem_servico: '',
             controleOS: '',
             codOS: '',
-
+            descricaoOS: '',
 
             refreshing: false,
             carregarRegistro: false,
@@ -141,6 +141,7 @@ export default class SaidaEstoqueScreen extends Component {
                     codCC: '',
                     estoq_mei_ordem_servico: '',
                     controleOS: '',
+                    descricaoOS: '',
                     checkedVeiculo: true,
                     checkedFilial: false,
                     checkedOS: false,
@@ -153,6 +154,7 @@ export default class SaidaEstoqueScreen extends Component {
                     codCC: '',
                     estoq_mei_ordem_servico: '',
                     controleOS: '',
+                    descricaoOS: '',
                     checkedVeiculo: false,
                     checkedFilial: true,
                     checkedOS: false,
@@ -165,6 +167,7 @@ export default class SaidaEstoqueScreen extends Component {
                     codCC: '',
                     estoq_mei_ordem_servico: '',
                     controleOS: '',
+                    descricaoOS: '',
                     checkedVeiculo: false,
                     checkedFilial: false,
                     checkedOS: true,
@@ -178,6 +181,7 @@ export default class SaidaEstoqueScreen extends Component {
                     codCC: '',
                     estoq_mei_ordem_servico: '',
                     controleOS: '',
+                    descricaoOS: '',
                     checkedVeiculo: true,
                     checkedFilial: false,
                     checkedOS: false,
@@ -189,6 +193,7 @@ export default class SaidaEstoqueScreen extends Component {
                     codCC: this.props.navigation.state.params.registro.codCC ? this.props.navigation.state.params.registro.codCC : '',
                     estoq_mei_ordem_servico: '',
                     controleOS: '',
+                    descricaoOS: '',
                     checkedVeiculo: false,
                     checkedFilial: true,
                     checkedOS: false,
@@ -200,6 +205,7 @@ export default class SaidaEstoqueScreen extends Component {
                     codCC: '',
                     estoq_mei_ordem_servico: this.props.navigation.state.params.registro.estoq_mei_ordem_servico ? this.props.navigation.state.params.registro.estoq_mei_ordem_servico : '',
                     controleOS: this.props.navigation.state.params.registro.controleOS ? this.props.navigation.state.params.registro.controleOS : '',
+                    descricaoOS: '',
                     checkedVeiculo: false,
                     checkedFilial: false,
                     checkedOS: true,
@@ -241,18 +247,26 @@ export default class SaidaEstoqueScreen extends Component {
         let cod_destino = '';
         let cod_ccdestino = '';
 
-        if (this.state.checkedVeiculo) {
+        if (this.state.checkedOS) {
+            if (this.state.codOS.tipo === 'VEIC') {
+                tipo_destino = 'VEIC';
+                cod_destino = this.state.codOS.codigo;
+            } else if (this.state.codOS.tipo === 'DIV') {
+                tipo_destino = 'CC';
+                cod_destino = this.state.codOS.filial;
+                cod_ccdestino = this.state.codOS.codigo;
+            } else if (this.state.codOS.tipo === 'COMP') {
+                tipo_destino = 'COMP';
+            } else if (this.state.codOS.tipo === 'RECPEC') {
+                tipo_destino = 'RECPEC';
+            }
+        } else if (this.state.checkedVeiculo) {
             tipo_destino = 'VEIC';
             cod_destino = this.state.veiculo_select.codVeic;
-        }
-        if (this.state.checkedFilial) {
+        } if (this.state.checkedFilial) {
             tipo_destino = 'CC';
             cod_destino = this.state.filial_select.adm_fil_codigo;
             cod_ccdestino = this.state.cc_select.contab_cc_codigo;
-        }
-        if (this.state.checkedOS) {
-            tipo_destino = 'VEIC';
-            cod_destino = this.state.veiculo_select.codVeic;
         }
 
         let lista = listaItens.map(regList => {
@@ -413,6 +427,7 @@ export default class SaidaEstoqueScreen extends Component {
                     filial: data.filial,
                     codigo: data.codigo,
                     descricao: data.descricao,
+                    descricaoOS: data.tipo === 'MANU' ? 'MANUTENÇÃO' : data.tipo === 'DIV' ? 'DIVERSOS' : data.tipo === 'COMP' ? 'COMPONENTE' : data.tipo === 'RECPEC' ? 'REC. PEÇAS' : '',
                 },
                 carregando: false,
             })
@@ -441,6 +456,7 @@ export default class SaidaEstoqueScreen extends Component {
             veiculo_select, codVeiculo, filial_select, codFilial, cc_select, codCC, controleOS, codOS, estoq_mei_ordem_servico,
             tipo_destino, checkedVeiculo, checkedFilial, checkedOS,
             carregarRegistro, loading, salvado } = this.state;
+        const { descricaoOS } = this.state.codOS;
 
 
         console.log('SaidaEstoqueScreen - STATE: ', this.state);
@@ -526,9 +542,11 @@ export default class SaidaEstoqueScreen extends Component {
                         <Divider />
                         <Divider />
 
-                        <Text style={{ margin: 15, fontSize: 18 }}>
-                            DESTINO
-                        </Text>
+                        <View style={{ marginBottom: 15, height: 35, backgroundColor: Colors.dividerDark, }}>
+                            <Text style={{ paddingLeft: 15, paddingTop: 6, fontSize: 18 }}>
+                                DESTINO
+                            </Text>
+                        </View>
 
                         <View style={{ flexDirection: 'row', marginTop: 0, marginBottom: 25 }}>
                             <CheckBox
@@ -598,16 +616,30 @@ export default class SaidaEstoqueScreen extends Component {
 
                         {tipo_destino === 'OS' ? (
                             <View style={{}}>
-                                <TextInput
-                                    label="Nº O.S"
-                                    id="controleOS"
-                                    ref="controleOS"
-                                    value={String(controleOS)}
-                                    onChange={this.onInputChangeOS}
-                                    maxLength={6}
-                                    keyboardType="numeric"
-                                />
-                                {estoq_mei_ordem_servico && codOS && codOS.tipo === 'MANU' ? (
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ width: "47%", marginRight: 20 }}>
+                                        <TextInput
+                                            label="Nº O.S"
+                                            id="controleOS"
+                                            ref="controleOS"
+                                            value={String(controleOS)}
+                                            onChange={this.onInputChangeOS}
+                                            maxLength={6}
+                                            keyboardType="numeric"
+                                        />
+                                    </View>
+                                    <View style={{ width: "47%" }}>
+                                        <TextInput
+                                            label="Tipo O.S"
+                                            id="descricaoOS"
+                                            ref="descricaoOS"
+                                            value={descricaoOS ? String(descricaoOS) : ''}
+                                            enabled={false}
+                                        />
+                                    </View>
+                                </View>
+
+                                {/* {estoq_mei_ordem_servico && codOS && codOS.tipo === 'MANU' ? (
                                     <VeiculosSelect
                                         label="Veículo"
                                         id="veiculo_select"
@@ -638,30 +670,6 @@ export default class SaidaEstoqueScreen extends Component {
                                             enabled={false}
                                         />
                                     </View>
-                                ) : null}
-                                {/* {estoq_mei_ordem_servico && codOS && codOS.tipo === 'COMP' ? (
-                                    <TextInput
-                                        label="Componente"
-                                        id="codComp"
-                                        ref="codComp"
-                                        value={String(codOS.descricao)}
-                                        // onChange={this.onInputChangeOS}
-                                        // maxLength={6}
-                                        // keyboardType="numeric"
-                                        enabled={false}
-                                    />
-                                ) : null}
-                                {estoq_mei_ordem_servico && codOS && codOS.tipo === 'RECPEC' ? (
-                                    <TextInput
-                                        label="Rec. Peça"
-                                        id="codPeca"
-                                        ref="codPeca"
-                                        value={String(codOS.codigo)}
-                                        // onChange={this.onInputChangeOS}
-                                        // maxLength={6}
-                                        // keyboardType="numeric"
-                                        enabled={false}
-                                    />
                                 ) : null} */}
                             </View>
                         ) : null}
