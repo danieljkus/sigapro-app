@@ -32,6 +32,8 @@ import SaidasDieselScreen from './SaidasDieselScreen';
 import SaidaDieselScreen from './SaidaDieselScreen';
 import SaidaDieselItensScreen from './SaidaDieselItensScreen';
 
+import SolicitacoesEstoqueScreen from './SolicitacoesEstoqueScreen';
+
 import MedicaoTanqueArlaScreen from './MedicaoTanqueArlaScreen';
 import MedicoesTanqueArlaScreen from './MedicoesTanqueArlaScreen';
 
@@ -243,6 +245,15 @@ const HomeStackNavigator = StackNavigator({
         screen: SaidaDieselItensScreen,
         navigationOptions: {
             title: "Diesel/Arla",
+            ...defaultNavigationOptions,
+        }
+    },
+
+
+    SolicitacoesEstoqueScreen: {
+        screen: SolicitacoesEstoqueScreen,
+        navigationOptions: {
+            title: "Solicitações Filiais",
             ...defaultNavigationOptions,
         }
     },

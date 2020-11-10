@@ -8,10 +8,7 @@ import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import { maskDigitarVlrMoeda, maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
-import { getUsuario } from '../utils/LoginManager';
-import Icon from '../components/Icon';
-import AsyncStorage from '@react-native-community/async-storage';
-import VeiculosSelect from '../components/VeiculosSelect';
+import ItemEstoqueSelect from '../components/ItemEstoqueSelect';
 
 
 const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
@@ -29,21 +26,38 @@ const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                 onLongPress={() => onRegistroLongPress(registro.estoq_mei_seq)}
             >
 
+                <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 8, paddingRight: 10 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Item{': '}
+                    </Text>
+                    <Text>
+                        {registro.estoq_mei_item} - {registro.estoq_ie_descricao}
+                    </Text>
+                </View>
+
                 <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Veículo {': '}
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                            Qtde{': '}
                         </Text>
-                        <Text>
-                            {registro.cod_destino ? registro.cod_destino : registro.estoq_mei_veic_dest ? registro.estoq_mei_veic_dest : ''}
+                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                            {parseFloat(registro.estoq_mei_qtde_mov).toFixed(2)}
                         </Text>
                     </View>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Qtde {': '}
+                            Custo{': '}
+                        </Text>
+                        <Text style={{ fontSize: 12, marginTop: 2 }}>
+                            {parseFloat(registro.estoq_mei_valor_unit).toFixed(2)}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Total{': '}
                         </Text>
                         <Text>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
+                            {parseFloat(registro.estoq_mei_total_mov).toFixed(2)}
                         </Text>
                     </View>
                 </View>
@@ -56,7 +70,7 @@ const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
 
 
 
-export default class SaidaDieselItensScreen extends Component {
+export default class SolicitacaoEstoqueItensScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -66,25 +80,23 @@ export default class SaidaDieselItensScreen extends Component {
             salvado: false,
             refreshing: false,
 
+            item_select: null,
+            codItem: '',
+
             estoq_me_idf: props.navigation.state.params.estoq_me_idf,
             estoq_mei_seq: 0,
             estoq_mei_item: props.navigation.state.params.estoq_mei_item,
-            estoq_mei_qtde_mov: '0,00',
+            estoq_mei_qtde_mov: '1,00',
             estoq_mei_qtde_atual: maskValorMoeda(props.navigation.state.params.estoq_mei_qtde_atual),
             estoq_mei_valor_unit: maskValorMoeda(props.navigation.state.params.estoq_mei_valor_unit),
             estoq_mei_total_mov: maskValorMoeda(props.navigation.state.params.estoq_mei_total_mov),
-            tipo_origem: 'FIL',
-            cod_origem: props.navigation.state.params.filial,
-            tipo_destino: 'VEIC',
-            cod_destino: '',
-            cod_ccdestino: '',
+            tipo_origem: props.navigation.state.params.tipo_origem,
+            cod_origem: props.navigation.state.params.cod_origem,
+            tipo_destino: props.navigation.state.params.tipo_destino,
+            cod_destino: props.navigation.state.params.cod_destino,
+            cod_ccdestino: props.navigation.state.params.cod_ccdestino,
             descr_destino: '',
             estoq_mei_obs: 'BAIXA SIGAPRO',
-            estoq_mei_ordem_servico: '',
-            estoq_mei_ficha_viagem: '',
-
-            veiculo_select: null,
-            codVeiculo: '',
 
             listaItens: props.navigation.state.params.listaItens ? props.navigation.state.params.listaItens : [],
 
@@ -112,23 +124,21 @@ export default class SaidaDieselItensScreen extends Component {
         this.setState(state);
     }
 
-    onInputChangeVeiculo = (id, value) => {
+    onInputChangeItem = (id, value) => {
         const state = {};
         state[id] = value;
         this.setState(state);
         if (value) {
             this.setState({
-                codVeiculo: value.codVeic,
-                descr_destino: value.adm_vei_placa + ' - ' + value.adm_veimarca_descricao_chassi,
+                codItem: value.estoq_ie_codigo,
+                estoq_ie_descricao: value.estoq_ie_descricao,
+                qtdeEstoque: value.estoq_ef_estoque_atual,
+                custo: value.estoq_ef_custo_medio,
+                estoq_mei_qtde_atual: maskValorMoeda(parseFloat(value.estoq_ef_estoque_atual)),
+                estoq_mei_valor_unit: maskValorMoeda(parseFloat(value.estoq_ef_custo_medio)),
+                estoq_mei_total_mov: maskValorMoeda(parseFloat(value.estoq_ef_custo_medio)),
             });
         }
-    }
-
-    onErroChange = msgErro => {
-        this.setState({
-            listaRegistros: [],
-            msgErroVeiculo: msgErro,
-        })
     }
 
     onFormSubmit = (event) => {
@@ -144,18 +154,6 @@ export default class SaidaDieselItensScreen extends Component {
             estoq_mei_total_mov: maskValorMoeda(estoq_mei_total_mov),
             cod_destino,
             descr_destino,
-            veiculo_select: {
-                msgErro: 'OK',
-                idfRota: 0,
-                codRota: 0,
-                man_rt_flag_eventual: '',
-                sitRota: '',
-                codVeic: cod_destino,
-                adm_vei_placa: descr_destino,
-                adm_veimarca_descricao_chassi: '',
-                kmOdo: 0,
-                kmAcum: 0
-            },
             estoq_mei_obs,
         });
 
@@ -186,10 +184,9 @@ export default class SaidaDieselItensScreen extends Component {
 
         this.setState({
             estoq_mei_seq: 0,
-            estoq_mei_qtde_mov: '0,00',
+            estoq_mei_qtde_mov: '1,00',
             estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_valor_unit),
             cod_destino: '',
-            cod_ccdestino: '',
             descr_destino: '',
             estoq_mei_obs: '',
 
@@ -204,9 +201,9 @@ export default class SaidaDieselItensScreen extends Component {
 
 
     onFormIncluirProduto = (event) => {
-        // console.log('-------------onFormIncluirProduto---------------');
-        if (!this.state.veiculo_select) {
-            Alert.showAlert('Informe o Veículo');
+        console.log('-------------onFormIncluirProduto---------------');
+        if ((!this.state.item_select) || (!this.state.item_select.estoq_ie_codigo)) {
+            Alert.showAlert('Informe o Item');
             return;
         }
         if (this.state.stoq_mei_qtde_mov <= 0) {
@@ -219,26 +216,26 @@ export default class SaidaDieselItensScreen extends Component {
         }
 
 
-        // console.log('onFormIncluirProduto: ', this.state);
-        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual));
-        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_mov));
-        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_me_qtde));
-        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde));
+        console.log('onFormIncluirProduto: ', this.state);
+        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual));
+        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_mov));
+        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_me_qtde));
+        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde));
 
         if ((vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde)) < 0) {
             Alert.showAlert('Estoque Insuficiente');
             return;
         }
-        // if (vlrStringParaFloat(this.state.estoq_mei_total_mov) <= 0) {
-        //     Alert.showAlert('Informe o Valor do Produto');
-        //     return;
-        // }
+        if (vlrStringParaFloat(this.state.estoq_mei_total_mov) <= 0) {
+            Alert.showAlert('Informe o Valor do Produto');
+            return;
+        }
 
         this.onGravar();
     }
 
     onGravar = () => {
-        // console.log('-----------------onGravar-----------------------');
+        console.log('-----------------onGravar-----------------------');
 
         const { listaItens } = this.state;
 
@@ -248,43 +245,37 @@ export default class SaidaDieselItensScreen extends Component {
             listaItens[iIndItem].estoq_mei_qtde_mov = vlrStringParaFloat(this.state.estoq_mei_qtde_mov);
             listaItens[iIndItem].estoq_mei_valor_unit = vlrStringParaFloat(this.state.estoq_mei_valor_unit);
             listaItens[iIndItem].estoq_mei_total_mov = vlrStringParaFloat(this.state.estoq_mei_total_mov);
-            listaItens[iIndItem].cod_destino = this.state.codVeiculo;
-            listaItens[iIndItem].descr_destino = this.state.descr_destino;
 
         } else {
 
             listaItens.push({
                 estoq_mei_seq: listaItens.length + 1,
-                estoq_mei_item: this.state.estoq_mei_item,
+                estoq_mei_item: this.state.item_select.estoq_ie_codigo,
+                estoq_ie_descricao: this.state.item_select.estoq_ie_descricao,
                 estoq_mei_qtde_mov: vlrStringParaFloat(this.state.estoq_mei_qtde_mov),
                 estoq_mei_valor_unit: vlrStringParaFloat(this.state.estoq_mei_valor_unit),
                 estoq_mei_total_mov: vlrStringParaFloat(this.state.estoq_mei_total_mov),
                 tipo_origem: this.state.tipo_origem,
                 cod_origem: this.state.cod_origem,
                 tipo_destino: this.state.tipo_destino,
-                cod_destino: this.state.codVeiculo,
-                cod_ccdestino: '',
+                cod_destino: this.state.cod_destino,
+                cod_ccdestino: this.state.cod_ccdestino,
                 descr_destino: this.state.descr_destino,
                 estoq_mei_obs: this.state.estoq_mei_obs,
-                estoq_mei_ordem_servico: '',
-                man_osm_controle: '',
-                estoq_mei_ficha_viagem: '',
             })
 
         }
 
         this.setState({
             listaItens,
+            item_select: null,
+            codItem: '',
             estoq_mei_seq: 0,
-            estoq_mei_qtde_mov: '0,00',
+            estoq_mei_qtde_mov: '1,00',
             estoq_mei_total_mov: maskValorMoeda(this.state.estoq_mei_valor_unit),
             cod_destino: '',
-            cod_ccdestino: '',
             descr_destino: '',
             estoq_mei_obs: '',
-
-            veiculo_select: null,
-            codVeiculo: '',
         },
             this.calculoTotalPedido()
         );
@@ -357,8 +348,8 @@ export default class SaidaDieselItensScreen extends Component {
 
 
     calculoItem = (estoq_mei_qtde_mov, estoq_mei_valor_unit) => {
-        // console.log('----------------calculoItem---------------------');
-        const vlrUnit = estoq_mei_valor_unit;
+        console.log('----------------calculoItem---------------------');
+        const vlrUnit = vlrStringParaFloat(String(estoq_mei_valor_unit).replace('.', ''));
         const qtde = vlrStringParaFloat(String(estoq_mei_qtde_mov).replace('.', ''));
         // console.log('estoq_mei_qtde_mov: ', qtde);
         // console.log('estoq_mei_valor_unit: ', vlrUnit);
@@ -378,9 +369,9 @@ export default class SaidaDieselItensScreen extends Component {
 
     render() {
         const { estoq_mei_qtde_mov, estoq_mei_qtde_atual, estoq_mei_valor_unit, estoq_mei_total_mov,
-            listaItens, veiculo_select, codVeiculo, refreshing, loading, salvado } = this.state;
+            listaItens, item_select, codItem, refreshing, loading, salvado } = this.state;
 
-        // console.log('SaidaDieselItensScreen STATE: ', this.state);
+        console.log('SaidaEstoqueItensScreen STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background, paddingBottom: 8, paddingTop: 5 }}>
@@ -395,6 +386,14 @@ export default class SaidaDieselItensScreen extends Component {
                         <View style={{ flex: 1, backgroundColor: Colors.background }}>
 
                             <View style={{ paddingHorizontal: 10, marginTop: 20 }}>
+
+                                <ItemEstoqueSelect
+                                    label="Produto"
+                                    id="item_select"
+                                    codItem={codItem}
+                                    onChange={this.onInputChangeItem}
+                                    value={item_select}
+                                />
 
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ width: "47%", marginRight: 20, flexDirection: 'row' }}>
@@ -476,18 +475,6 @@ export default class SaidaDieselItensScreen extends Component {
                                             enabled={false}
                                         />
                                     </View>
-                                </View>
-
-                                <View style={{}}>
-                                    <VeiculosSelect
-                                        label="Veículo"
-                                        id="veiculo_select"
-                                        value={veiculo_select}
-                                        codVeiculo={codVeiculo}
-                                        onChange={this.onInputChangeVeiculo}
-                                        onErro={this.onErroChange}
-                                        tipo=""
-                                    />
                                 </View>
 
                                 <View style={{ flexDirection: 'row', marginBottom: 10 }}>
