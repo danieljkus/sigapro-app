@@ -33,6 +33,8 @@ import SaidaDieselScreen from './SaidaDieselScreen';
 import SaidaDieselItensScreen from './SaidaDieselItensScreen';
 
 import SolicitacoesEstoqueScreen from './SolicitacoesEstoqueScreen';
+import SolicitacaoEstoqueScreen from './SolicitacaoEstoqueScreen';
+import SolicitacaoEstoqueItensScreen from './SolicitacaoEstoqueItensScreen';
 
 import MedicaoTanqueArlaScreen from './MedicaoTanqueArlaScreen';
 import MedicoesTanqueArlaScreen from './MedicoesTanqueArlaScreen';
@@ -254,6 +256,20 @@ const HomeStackNavigator = StackNavigator({
         screen: SolicitacoesEstoqueScreen,
         navigationOptions: {
             title: "Solicitações Filiais",
+            ...defaultNavigationOptions,
+        }
+    },
+    SolicitacaoEstoqueScreen: {
+        screen: SolicitacaoEstoqueScreen,
+        navigationOptions: {
+            title: "Solicitação de Estoque",
+            ...defaultNavigationOptions,
+        }
+    },
+    SolicitacaoEstoqueItensScreen: {
+        screen: SolicitacaoEstoqueItensScreen,
+        navigationOptions: {
+            title: "Itens da Solicitação",
             ...defaultNavigationOptions,
         }
     },

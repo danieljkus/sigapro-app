@@ -4,7 +4,7 @@ const { OS } = Platform;
 
 import moment from 'moment';
 import axios from 'axios';
-import { Card, Divider } from 'react-native-elements';
+import { Card, Divider, Icon } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
@@ -13,73 +13,127 @@ import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
 
-const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
+const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinalizarPress, onPendentePress, onAbrirPress }) => {
     return (
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
-            <TouchableOpacity
-                onPress={() => onRegistroPress(registro.estoq_sf_controle)}
-            // onLongPress={() => onRegistroLongPress(registro.estoq_sf_controle)}
-            >
+            <View style={{}}>
+                <TouchableOpacity
+                    onPress={() => onRegistroPress(registro.estoq_sf_controle)}
+                // onLongPress={() => onRegistroLongPress(registro.estoq_sf_controle)}
+                >
 
-                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Controle {': '}
-                        </Text>
-                        <Text>
-                            {registro.estoq_sf_controle}
-                        </Text>
+                    <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Controle {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_sf_controle}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Data {': '}
+                            </Text>
+                            <Text>
+                                {moment(registro.estoq_sf_data).format('DD/MM/YYYY')}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Data {': '}
-                        </Text>
-                        <Text>
-                            {moment(registro.estoq_sf_data).format('DD/MM/YYYY')}
-                        </Text>
-                    </View>
-                </View>
 
-                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 0, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Filial Solicitada {': '}
-                        </Text>
-                        <Text>
-                            {registro.estoq_sf_filial_solicitada} {registro.estoq_sf_setor_solicitada ? ' / ' + registro.estoq_sf_setor_solicitada : ''}
-                        </Text>
+                    <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 0, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Filial Solicitada {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_sf_filial_solicitada} {registro.estoq_sf_setor_solicitada ? ' / ' + registro.estoq_sf_setor_solicitada : ''}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Situação {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_sf_situacao_descr}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Situação {': '}
-                        </Text>
-                        <Text>
-                            {registro.estoq_sf_situacao_descr}
-                        </Text>
-                    </View>
-                </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 10, paddingBottom: 5 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Tipo Solicitação {': '}
-                    </Text>
-                    <Text style={{ marginRight: 50 }}>
-                        {registro.compras_sugtip_descricao}
-                    </Text>
-                </View>
-
-                {registro.estoq_sf_obs ? (
                     <View style={{ flexDirection: 'row', paddingLeft: 10, paddingBottom: 5 }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            OBS {': '}
+                            Tipo Solicitação {': '}
                         </Text>
                         <Text style={{ marginRight: 50 }}>
-                            {registro.estoq_sf_obs}
+                            {registro.compras_sugtip_descricao}
                         </Text>
                     </View>
-                ) : null}
-            </TouchableOpacity>
 
+                    {registro.estoq_sf_obs ? (
+                        <View style={{ flexDirection: 'row', paddingLeft: 10, paddingBottom: 5 }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                OBS {': '}
+                            </Text>
+                            <Text style={{ marginRight: 50 }}>
+                                {registro.estoq_sf_obs}
+                            </Text>
+                        </View>
+                    ) : null}
+                </TouchableOpacity>
+
+                <View
+                    style={{
+                        flex: 1,
+                        margin: 0,
+                        marginTop: 5,
+                        height: 40,
+                        borderTopWidth: 1,
+                        borderColor: Colors.dividerDark,
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => onFinalizarPress(registro)}
+                    >
+                        <View style={{ width: 80, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Icon
+                                name='check'
+                                type='font-awesome'
+                                color={Colors.primaryLight}
+                                size={18}
+                            />
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => onPendentePress(registro)}
+                    >
+                        <View style={{ width: 80, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Icon
+                                name='hourglass-start'
+                                type='font-awesome'
+                                color={Colors.primaryLight}
+                                size={18}
+                            />
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => onAbrirPress(registro)}
+                    >
+                        <View style={{ width: 80, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Icon
+                                name='folder-open'
+                                type='font-awesome'
+                                color={Colors.primaryLight}
+                                size={18}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </Card>
     )
 }
@@ -147,47 +201,9 @@ export default class SolicitacoesEstoqueScreen extends Component {
 
                 console.log('onRegistroPress: ', response.data);
 
-                // let tipo_destino = '';
-                // let codVeiculo = '';
-                // let codFilial = '';
-                // let codCC = '';
-                // let controleOS = '';
-                // let estoq_mei_ordem_servico = '';
-                // let cod_destino = '';
-                // let cod_ccdestino = '';
-
-                // if ((response.data.listaItens[0].estoq_mei_ordem_servico !== '') && (response.data.listaItens[0].estoq_mei_ordem_servico !== null)) {
-                //     tipo_destino = 'OS';
-                //     cod_destino = response.data.listaItens[0].estoq_mei_ordem_servico;
-                //     estoq_mei_ordem_servico = response.data.listaItens[0].estoq_mei_ordem_servico;
-                //     controleOS = response.data.listaItens[0].man_osm_controle;
-                // } else if ((response.data.listaItens[0].estoq_mei_veic_dest !== '') && (response.data.listaItens[0].estoq_mei_veic_dest !== null)) {
-                //     tipo_destino = 'VEIC';
-                //     codVeiculo = response.data.listaItens[0].estoq_mei_veic_dest;
-                //     cod_destino = response.data.listaItens[0].estoq_mei_veic_dest;
-                // } else if ((response.data.listaItens[0].estoq_mei_cc_dest !== '') && (response.data.listaItens[0].estoq_mei_cc_dest !== null)) {
-                //     tipo_destino = 'CC';
-                //     codFilial = response.data.listaItens[0].estoq_mei_fil_dest;
-                //     cod_destino = response.data.listaItens[0].estoq_mei_fil_dest;
-                //     codCC = response.data.listaItens[0].estoq_mei_cc_dest;
-                //     cod_ccdestino = response.data.listaItens[0].estoq_mei_cc_dest;
-                // }
-
-                this.props.navigation.navigate('SaidaEstoqueScreen', {
+                this.props.navigation.navigate('SolicitacaoEstoqueScreen', {
                     registro: {
                         ...response.data,
-                        // checkedVeiculo: response.data.listaItens[0].estoq_mei_veic_dest ? true : false,
-                        // checkedFilial: response.data.listaItens[0].estoq_mei_cc_dest ? true : false,
-                        // checkedOS: response.data.listaItens[0].estoq_mei_ordem_servico ? true : false,
-
-                        // tipo_destino,
-                        // codVeiculo,
-                        // codFilial,
-                        // codCC,
-                        // codOS: '',
-                        // controleOS,
-                        // descricaoOS: '',
-                        // estoq_mei_ordem_servico,
                     },
                     onRefresh: this.onRefresh
                 });
@@ -201,40 +217,15 @@ export default class SolicitacoesEstoqueScreen extends Component {
     onAddPress = () => {
         console.log('onAddPress');
 
-        this.props.navigation.navigate('SaidaEstoqueScreen', {
+        this.props.navigation.navigate('SolicitacaoEstoqueScreen', {
             registro: {
-                // estoq_me_idf: 0,
-                // estoq_me_data: '', //moment(new Date()).format('DD/MM/YYYY'),
-                // estoq_me_numero: '0',
-                // estoq_me_obs: 'BAIXA SIGAPRO',
+                estoq_sf_controle: 0,
 
-                // estoq_mei_seq: 0,
-                // estoq_mei_item: 0,
-                // estoq_mei_qtde_mov: 0,
-                // estoq_mei_valor_unit: 0,
-                // estoq_mei_total_mov: 0,
-                // estoq_mei_obs: '',
+                filial_select: [],
+                codFilial: '',
 
-                // checkedVeiculo: true,
-                // checkedFilial: false,
-                // checkedOS: false,
-
-                // tipo_destino: 'VEIC',
-                // descr_destino: '',
-
-                // veiculo_select: [],
-                // codVeiculo: '',
-
-                // filial_select: [],
-                // codFilial: '',
-
-                // cc_select: [],
-                // codCC: '',
-
-                // codOS: '',
-                // controleOS: '',
-                // descricaoOS: '',
-                // estoq_mei_ordem_servico: '',
+                cc_select: [],
+                codCC: '',
             },
             onRefresh: this.onRefresh
         });
@@ -295,12 +286,69 @@ export default class SolicitacoesEstoqueScreen extends Component {
         return null;
     }
 
+    onFinalizarPress = (registro) => {
+        Alert.alert("Finalizar", `Deseja FINALIZAR esta solicitação?`, [
+            { text: "NÃO" },
+            {
+                text: "SIM",
+                onPress: () => this.onSituacaoChange(registro.estoq_sf_controle, 'F'),
+                style: "destructive"
+            }
+        ])
+    }
+
+    onPendentePress = (registro) => {
+        Alert.alert("Finalizar", `Deseja alterar para situação PENDENTE?`, [
+            { text: "NÃO" },
+            {
+                text: "SIM",
+                onPress: () => this.onSituacaoChange(registro.estoq_sf_controle, 'P'),
+                style: "destructive"
+            }
+        ])
+    }
+
+    onAbrirPress = (registro) => {
+        Alert.alert("Finalizar", `Deseja ABRIR esta solicitação?`, [
+            { text: "NÃO" },
+            {
+                text: "SIM",
+                onPress: () => this.onSituacaoChange(registro.estoq_sf_controle, 'G'),
+                style: "destructive"
+            }
+        ])
+    }
+
+
+    onSituacaoChange = (controle, sit) => {
+        this.setState({ refreshing: true });
+
+        axios.put('/solicitacoesEstoqueFiliais/mudaSituacao', {
+            controle,
+            sit,
+        }).then(response => {
+            const listaRegistros = [...this.state.listaRegistros];
+            const registro = listaRegistros.find(registro => registro.estoq_sf_controle === controle);
+            registro.estoq_sf_situacao_descr = sit === 'G' ? 'GERADA' : sit === 'F' ? 'FINALIZADO' : sit === 'P' ? 'PENDENTE' : sit === 'F' ? 'FECHADA' : sit === 'C' ? 'CANCELADA' : '';
+            this.setState({
+                listaRegistros,
+                refreshing: false,
+            });
+        }).catch(ex => {
+            console.warn(ex, ex.response);
+            this.setState({ refreshing: false });
+        })
+    }
+
     renderItem = ({ item }) => {
         return (
             <CardViewItem
                 registro={item}
                 onRegistroPress={this.onRegistroPress}
                 onRegistroLongPress={this.onRegistroLongPress}
+                onFinalizarPress={this.onFinalizarPress}
+                onPendentePress={this.onPendentePress}
+                onAbrirPress={this.onAbrirPress}
             />
         )
     }

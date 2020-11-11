@@ -8,9 +8,6 @@ import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import { maskDigitarVlrMoeda, maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
-import { getUsuario } from '../utils/LoginManager';
-import Icon from '../components/Icon';
-import AsyncStorage from '@react-native-community/async-storage';
 import VeiculosSelect from '../components/VeiculosSelect';
 
 
