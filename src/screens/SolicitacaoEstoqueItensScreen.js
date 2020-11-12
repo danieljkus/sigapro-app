@@ -21,59 +21,63 @@ const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
             backgroundColor: Colors.textDisabledLight,
             // opacity: 0.9
         }}>
-            <TouchableOpacity
-                onPress={() => onRegistroPress(registro.estoq_sfi_seq, registro.estoq_sfi_item, registro.estoq_sfi_qtde_solicitada, registro.estoq_sfi_qtde_atendida, registro.estoq_sfi_situacao, registro.estoq_sfi_obs)}
-                onLongPress={() => onRegistroLongPress(registro.estoq_sfi_seq)}
-            >
+            <View style={{ borderLeftWidth: 5, borderLeftColor: registro.estoq_sfi_situacao === 'S' ? 'red' : registro.estoq_sfi_situacao === 'P' ? '#fbc02d' : registro.estoq_sfi_situacao === 'A' ? '#10734a' : registro.estoq_sfi_situacao === 'C' ? Colors.accentDark : Colors.accentDark }}>
+                <TouchableOpacity
+                    onPress={() => onRegistroPress(registro.estoq_sfi_seq, registro.estoq_sfi_item, registro.estoq_sfi_qtde_solicitada, registro.estoq_sfi_qtde_atendida, registro.estoq_sfi_situacao, registro.estoq_sfi_obs)}
+                    onLongPress={() => onRegistroLongPress(registro.estoq_sfi_seq)}
+                >
 
-                <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 8, paddingRight: 10 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Item{': '}
-                    </Text>
-                    <Text>
-                        {registro.estoq_sfi_item} - {registro.estoq_ie_descricao}
-                    </Text>
-                </View>
-
-                <View style={{ paddingLeft: 10, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Qtde Sol.{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {parseFloat(registro.estoq_sfi_qtde_solicitada).toFixed(2)}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 8, paddingRight: 10 }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Qtde Aten.{': '}
+                            Item{': '}
                         </Text>
-                        <Text style={{ fontSize: 12, marginTop: 2 }}>
-                            {parseFloat(registro.estoq_sfi_qtde_atendida).toFixed(2)}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Situação{': '}
-                        </Text>
-                        <Text>
-                            {registro.estoq_sfi_situacao}
+                        <Text style={{ marginRight: 50 }}>
+                            {registro.estoq_sfi_item} - {registro.estoq_ie_descricao}
                         </Text>
                     </View>
-                </View>
 
-                {registro.estoq_sfi_obs ? (
-                    <View style={{ flexDirection: 'row', marginBottom: 5, paddingLeft: 10, paddingTop: 8, paddingRight: 10 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            OBS{': '}
-                        </Text>
-                        <Text>
-                            {registro.estoq_sfi_obs}
-                        </Text>
-                    </View>
-                ) : null}
+                    <View style={{ marginBottom: 5 }}>
+                        <View style={{ paddingLeft: 10, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                            <View style={{ flex: 3, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                    Qtde Sol.{': '}
+                                </Text>
+                                <Text style={{ fontSize: 12, marginTop: 3 }} >
+                                    {parseFloat(registro.estoq_sfi_qtde_solicitada).toFixed(2)}
+                                </Text>
+                            </View>
+                            <View style={{ flex: 3, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Qtde Aten.{': '}
+                                </Text>
+                                <Text style={{ fontSize: 12, marginTop: 3 }}>
+                                    {parseFloat(registro.estoq_sfi_qtde_atendida).toFixed(2)}
+                                </Text>
+                            </View>
+                            <View style={{ flex: 3, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Situação{': '}
+                                </Text>
+                                <Text>
+                                    {registro.estoq_sfi_situacao}
+                                </Text>
+                            </View>
+                        </View>
 
-            </TouchableOpacity>
+                        {registro.estoq_sfi_obs ? (
+                            <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 8, paddingRight: 10 }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    OBS{': '}
+                                </Text>
+                                <Text style={{ marginRight: 50 }} >
+                                    {registro.estoq_sfi_obs}
+                                </Text>
+                            </View>
+                        ) : null}
+                    </View>
+
+                </TouchableOpacity>
+            </View>
         </Card>
     )
 }
@@ -99,8 +103,13 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             estoq_sfi_item: props.navigation.state.params.estoq_sfi_item,
             estoq_sfi_qtde_solicitada: '0,00',
             estoq_sfi_qtde_atendida: '0,00',
-            estoq_sfi_situacao: 'G',
             estoq_sfi_obs: '',
+
+            estoq_sfi_situacao: 'S',
+            checkedSolicitado: props.navigation.state.params.checkedSolicitado ? props.navigation.state.params.checkedSolicitado : true,
+            checkedPendente: props.navigation.state.params.checkedPendente ? props.navigation.state.params.checkedPendente : false,
+            checkedAtendido: props.navigation.state.params.checkedAtendido ? props.navigation.state.params.checkedAtendido : false,
+            checkedCancelado: props.navigation.state.params.checkedCancelado ? props.navigation.state.params.checkedCancelado : false,
 
             listaItens: props.navigation.state.params.listaItens ? props.navigation.state.params.listaItens : [],
 
@@ -121,6 +130,46 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
     onFecharTela = () => {
         this.props.navigation.goBack(null);
     }
+
+
+    onMudaTipoSaida = (tipo) => {
+        console.log('onMudaTipoSaida: ', tipo);
+
+        if (tipo === 'S') {
+            this.setState({
+                estoq_sfi_situacao: 'S',
+                checkedSolicitado: true,
+                checkedPendente: false,
+                checkedAtendido: false,
+                checkedCancelado: false,
+            });
+        } else if (tipo === 'P') {
+            this.setState({
+                estoq_sfi_situacao: 'P',
+                checkedSolicitado: false,
+                checkedPendente: true,
+                checkedAtendido: false,
+                checkedCancelado: false,
+            });
+        } else if (tipo === 'A') {
+            this.setState({
+                estoq_sfi_situacao: 'A',
+                checkedSolicitado: false,
+                checkedPendente: false,
+                checkedAtendido: true,
+                checkedCancelado: false,
+            });
+        } else if (tipo === 'C') {
+            this.setState({
+                estoq_sfi_situacao: 'C',
+                checkedSolicitado: false,
+                checkedPendente: false,
+                checkedAtendido: false,
+                checkedCancelado: true,
+            });
+        }
+    }
+
 
     onInputChange = (id, value) => {
         const state = {};
@@ -149,12 +198,14 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
         // console.log('-------------onRegistroPress---------------');
         this.setState({
             estoq_sfi_seq,
-            estoq_sfi_qtde_solicitada: maskValorMoeda(estoq_sfi_qtde_solicitada),
-            estoq_sfi_qtde_atendida: maskValorMoeda(estoq_sfi_qtde_atendida),
+            codItem: String(estoq_sfi_item),
+            estoq_sfi_qtde_solicitada: maskValorMoeda(parseFloat(estoq_sfi_qtde_solicitada)),
+            estoq_sfi_qtde_atendida: maskValorMoeda(parseFloat(estoq_sfi_qtde_atendida)),
             estoq_sfi_situacao,
             estoq_sfi_obs,
         });
 
+        this.onMudaTipoSaida(estoq_sfi_situacao);
     }
 
 
@@ -185,8 +236,13 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             estoq_sfi_item: '',
             estoq_sfi_qtde_solicitada: '0,00',
             estoq_sfi_qtde_atendida: '0,00',
-            estoq_sfi_situacao: 'G',
             estoq_sfi_obs: '',
+
+            estoq_sfi_situacao: 'S',
+            checkedSolicitado: true,
+            checkedPendente: false,
+            checkedAtendido: false,
+            checkedCancelado: false,
 
             listaItens,
         },
@@ -200,6 +256,10 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
     onFormIncluirProduto = (event) => {
         console.log('-------------onFormIncluirProduto---------------');
+        if ((this.state.estoq_sfi_qtde_solicitada == '') || (this.state.estoq_sfi_qtde_solicitada <= 0)) {
+            Alert.showAlert('Informe a Quantidade Solicitada');
+            return;
+        }
         if ((!this.state.item_select) || (!this.state.item_select.estoq_ie_codigo)) {
             Alert.showAlert('Informe o Item');
             return;
@@ -223,6 +283,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             listaItens[iIndItem].estoq_sfi_qtde_solicitada = vlrStringParaFloat(this.state.estoq_sfi_qtde_solicitada);
             listaItens[iIndItem].estoq_sfi_qtde_atendida = vlrStringParaFloat(this.state.estoq_sfi_qtde_atendida);
             listaItens[iIndItem].estoq_sfi_obs = vlrStringParaFloat(this.state.estoq_sfi_obs);
+            listaItens[iIndItem].estoq_sfi_situacao = this.state.estoq_sfi_situacao;
 
         } else {
 
@@ -245,8 +306,13 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             estoq_sfi_seq: 0,
             estoq_sfi_qtde_solicitada: '0,00',
             estoq_sfi_qtde_atendida: '0,00',
-            estoq_sfi_situacao: 'G',
             estoq_sfi_obs: '',
+
+            estoq_sfi_situacao: 'S',
+            checkedSolicitado: true,
+            checkedPendente: false,
+            checkedAtendido: false,
+            checkedCancelado: false,
         },
             this.calculoTotalPedido()
         );
@@ -316,7 +382,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
     onDiminuirQtdeAten = () => {
         // console.log('-------------onDiminuirQtde---------------');
         let { estoq_sfi_qtde_atendida } = this.state;
-        if (vlrStringParaFloat(estoq_sfi_qtde_atendida) > 1) {
+        if (vlrStringParaFloat(estoq_sfi_qtde_atendida) >= 1) {
             estoq_sfi_qtde_atendida = maskValorMoeda(vlrStringParaFloat(estoq_sfi_qtde_atendida) - 1);
         }
         this.setState({ estoq_sfi_qtde_atendida });
@@ -330,6 +396,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
     render() {
         const { estoq_sfi_seq, estoq_sfi_item, estoq_sfi_qtde_solicitada, estoq_sfi_qtde_atendida, estoq_sfi_situacao, estoq_sfi_obs,
+            checkedSolicitado, checkedAtendido, checkedPendente, checkedCancelado,
             listaItens, item_select, codItem, refreshing, loading, salvado } = this.state;
 
         console.log('SolicitacaoEstoqueItensScreen STATE: ', this.state);
@@ -354,6 +421,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
                                     codItem={codItem}
                                     onChange={this.onInputChangeItem}
                                     value={item_select}
+                                    enabled={!estoq_sfi_seq}
                                 />
 
 
@@ -452,11 +520,53 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
                                     multiline={true}
                                 />
 
+                                <View style={{ flexDirection: 'row' }}>
+                                    <CheckBox
+                                        center
+                                        title='Solicitado'
+                                        checkedIcon='dot-circle-o'
+                                        uncheckedIcon='circle-o'
+                                        checked={checkedSolicitado}
+                                        onPress={() => { this.onMudaTipoSaida('S') }}
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                    <CheckBox
+                                        center
+                                        title='Pendente'
+                                        checkedIcon='dot-circle-o'
+                                        uncheckedIcon='circle-o'
+                                        checked={checkedPendente}
+                                        onPress={() => { this.onMudaTipoSaida('P') }}
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                </View>
+
+                                <View style={{ flexDirection: 'row' }}>
+                                    <CheckBox
+                                        center
+                                        title='Atendido'
+                                        checkedIcon='dot-circle-o'
+                                        uncheckedIcon='circle-o'
+                                        checked={checkedAtendido}
+                                        onPress={() => { this.onMudaTipoSaida('A') }}
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                    <CheckBox
+                                        center
+                                        title='Cancelado'
+                                        checkedIcon='dot-circle-o'
+                                        uncheckedIcon='circle-o'
+                                        checked={checkedCancelado}
+                                        onPress={() => { this.onMudaTipoSaida('C') }}
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                </View>
+
 
                                 <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                                     <View style={{ flex: 2, marginRight: 2 }}>
                                         <Button
-                                            title="INCLUIR"
+                                            title="GRAVAR"
                                             loading={loading}
                                             onPress={this.onFormIncluirProduto}
                                             buttonStyle={{ height: 40, marginTop: 15, marginHorizontal: 10 }}

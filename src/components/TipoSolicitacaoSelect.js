@@ -15,11 +15,11 @@ const Registro = ({ registro, onRegistroPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <TouchableOpacity
-                onPress={() => onRegistroPress(registro.estoq_ie_codigo)}
+                onPress={() => onRegistroPress(registro.compras_sugtip_codigo)}
             >
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
-                        #{registro.estoq_ie_codigo}
+                        #{registro.compras_sugtip_codigo}
                     </Text>
                 </View>
 
@@ -27,7 +27,7 @@ const Registro = ({ registro, onRegistroPress }) => {
 
                 <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                     <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        {String(registro.estoq_ie_descricao).trim()}
+                        {String(registro.compras_sugtip_descricao).trim()}
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -37,10 +37,10 @@ const Registro = ({ registro, onRegistroPress }) => {
 
 
 
-class ItemEstoqueSelect extends PureComponent {
+class TipoSolicitacaoSelect extends PureComponent {
 
     state = {
-        codItem: '',
+        codTipoSol: '',
         carregando: false,
 
         listaRegistros: [],
@@ -53,29 +53,30 @@ class ItemEstoqueSelect extends PureComponent {
     };
 
     componentDidUpdate(propsAnterior, stateAnterior) {
-        const { codItem, onChange, id } = this.props;
+        const { codTipoSol, onChange, id } = this.props;
 
         // console.log('componentDidUpdate.this.props: ', this.props);
         // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
 
-        if (codItem !== propsAnterior.codItem) {
+        if (codTipoSol !== propsAnterior.codTipoSol) {
             this.setState({
-                codItem,
+                codTipoSol,
             })
             onChange(id, null);
-            if (codItem) {
-                this.buscaRegistros(codItem);
+            if (codTipoSol) {
+                this.buscaRegistros(codTipoSol);
             }
         }
     }
 
     componentDidMount() {
-        // console.log('ItemEstoqueSelect.componentDidMount.this.props: ', this.props);
+        console.log('TipoSolicitacaoSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
-                item_select: {
-                    estoq_ie_codigo: this.props.estoq_ie_codigo,
-                    estoq_ie_descricao: String(this.props.estoq_ie_descricao).trim()
+                compras_sugtip_codigo: this.props.compras_sugtip_codigo,
+                tipoSolSelect: {
+                    compras_sugtip_codigo: this.props.compras_sugtip_codigo,
+                    compras_sugtip_descricao: String(this.props.compras_sugtip_descricao).trim()
                 },
             });
         }
@@ -86,8 +87,7 @@ class ItemEstoqueSelect extends PureComponent {
         state[id] = value;
         this.setState(state);
 
-        // console.log('ItemEstoqueSelect.onInputChange: ', state);
-
+        console.log('TipoSolicitacaoSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -98,14 +98,14 @@ class ItemEstoqueSelect extends PureComponent {
         this.setState({ carregando: true });
         const { id, onChange } = this.props;
 
-        axios.get('/listaItens', {
+        axios.get('/listaTipoSol', {
             params: {
-                codItem: value
+                codTipo: value
             }
         }).then(response => {
             const { data } = response;
 
-            console.log('ItemEstoqueSelect.buscaRegistros: ', data);
+            console.log('TipoSolicitacaoSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -129,7 +129,7 @@ class ItemEstoqueSelect extends PureComponent {
 
 
     // ---------------------------------------------------------------------------
-    // MODAL PARA SELECIONAR ITEM
+    // MODAL PARA SELECIONAR TIPO DE SOLICITAÇÃO
     // ---------------------------------------------------------------------------
 
     onAbrirBuscaModal = (visible) => {
@@ -152,7 +152,7 @@ class ItemEstoqueSelect extends PureComponent {
         const { buscaNome, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
-        axios.get('/listaItensBusca', {
+        axios.get('/listaTipoSolBusca', {
             params: {
                 page: pagina,
                 limite: 10,
@@ -199,12 +199,12 @@ class ItemEstoqueSelect extends PureComponent {
         }, this.getListaRegistros);
     }
 
-    onRegistroPress = (estoq_ie_codigo) => {
+    onRegistroPress = (compras_sugtip_codigo) => {
         this.setState({
-            codItem: estoq_ie_codigo,
+            codTipoSol: compras_sugtip_codigo,
         });
         this.onAbrirBuscaModal(false);
-        this.buscaRegistros(estoq_ie_codigo);
+        this.buscaRegistros(compras_sugtip_codigo);
     }
 
     carregarMaisRegistros = () => {
@@ -243,23 +243,23 @@ class ItemEstoqueSelect extends PureComponent {
 
     render() {
         const { label, enabled, value } = this.props;
-        const { codItem, carregando, loading, refreshing, listaRegistros } = this.state;
+        const { codTipoSol, carregando, loading, refreshing, listaRegistros } = this.state;
 
-        // console.log('ItemEstoqueSelect.this.props', this.props)
-        // console.log('ItemEstoqueSelect.this.state', this.state)
+        console.log('TipoSolicitacaoSelect.this.props', this.props)
+        console.log('TipoSolicitacaoSelect.this.state', this.state)
 
-        const codConta = codItem ? codItem : (value ? value.estoq_ie_codigo : '');
-        const descricao = value ? String(value.estoq_ie_descricao).trim() : '';
-        this.setState({ codItem: codConta });
+        const tipo = codTipoSol ? codTipoSol : (value ? value.compras_sugtip_codigo : '');
+        const descricao = value ? String(value.compras_sugtip_descricao).trim() : '';
+        this.setState({ codTipoSol: tipo });
 
         return (
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ width: "25%" }}>
                     <TextInput
                         label={label}
-                        id="codItem"
-                        ref="codItem"
-                        value={codItem}
+                        id="codTipoSol"
+                        ref="codTipoSol"
+                        value={codTipoSol}
                         maxLength={6}
                         keyboardType="numeric"
                         onChange={this.onInputChange}
@@ -268,20 +268,18 @@ class ItemEstoqueSelect extends PureComponent {
                 </View>
 
                 <View style={{ width: "7%", }}>
-                    {enabled ? (
-                        <Button
-                            title=""
-                            loading={loading}
-                            onPress={() => { this.onAbrirBuscaModal(true) }}
-                            buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
-                            backgroundColor={Colors.transparent}
-                            icon={{
-                                name: 'search',
-                                type: 'font-awesome',
-                                color: Colors.textPrimaryDark
-                            }}
-                        />
-                    ) : null}
+                    <Button
+                        title=""
+                        loading={loading}
+                        onPress={() => { this.onAbrirBuscaModal(true) }}
+                        buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                        backgroundColor={Colors.transparent}
+                        icon={{
+                            name: 'search',
+                            type: 'font-awesome',
+                            color: Colors.textPrimaryDark
+                        }}
+                    />
                 </View>
 
                 <View style={{ width: "75%", marginLeft: -23 }}>
@@ -306,7 +304,7 @@ class ItemEstoqueSelect extends PureComponent {
 
 
                 {/* -------------------------------- */}
-                {/* MODAL PARA BUSCA DA codConta       */}
+                {/* MODAL PARA BUSCA DA TIPO         */}
                 {/* -------------------------------- */}
                 <Modal
                     transparent={false}
@@ -332,7 +330,7 @@ class ItemEstoqueSelect extends PureComponent {
                             textAlign: 'center',
                             fontSize: 20,
                             fontWeight: 'bold',
-                        }}>Buscar Item Estoque</Text>
+                        }}>Buscar Tipo de Solicitação</Text>
                     </View>
 
                     <SearchBar
@@ -357,7 +355,7 @@ class ItemEstoqueSelect extends PureComponent {
                                     data={listaRegistros}
                                     renderItem={this.renderItem}
                                     contentContainerStyle={{ paddingBottom: 100 }}
-                                    keyExtractor={registro => registro.estoq_ie_codigo}
+                                    keyExtractor={registro => registro.compras_sugtip_codigo}
                                     onRefresh={this.onRefresh}
                                     refreshing={refreshing}
                                     onEndReached={this.carregarMaisRegistros}
@@ -375,4 +373,4 @@ class ItemEstoqueSelect extends PureComponent {
     }
 }
 
-export default ItemEstoqueSelect;
+export default TipoSolicitacaoSelect;

@@ -16,7 +16,7 @@ const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }]
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinalizarPress, onPendentePress, onAbrirPress }) => {
     return (
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
-            <View style={{}}>
+            <View style={{ borderLeftWidth: 5, borderLeftColor: registro.estoq_sf_situacao_descr === 'GERADA' ? 'red' : registro.estoq_sf_situacao_descr === 'PENDENTE' ? '#fbc02d' : registro.estoq_sf_situacao_descr === 'FECHADA' ? '#10734a' : Colors.accentDark }}>
                 <TouchableOpacity
                     onPress={() => onRegistroPress(registro.estoq_sf_controle)}
                 // onLongPress={() => onRegistroLongPress(registro.estoq_sf_controle)}
@@ -54,7 +54,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
                             <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                                 Situação {': '}
                             </Text>
-                            <Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 15, color: registro.estoq_sf_situacao_descr === 'GERADA' ? 'red' : registro.estoq_sf_situacao_descr === 'PENDENTE' ? '#fbc02d' : registro.estoq_sf_situacao_descr === 'FECHADA' ? '#10734a' : Colors.accentDark }} >
                                 {registro.estoq_sf_situacao_descr}
                             </Text>
                         </View>
@@ -86,7 +86,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
                         flex: 1,
                         margin: 0,
                         marginTop: 5,
-                        height: 40,
+                        height: 35,
                         borderTopWidth: 1,
                         borderColor: Colors.dividerDark,
                         flexDirection: 'row',
@@ -329,7 +329,7 @@ export default class SolicitacoesEstoqueScreen extends Component {
         }).then(response => {
             const listaRegistros = [...this.state.listaRegistros];
             const registro = listaRegistros.find(registro => registro.estoq_sf_controle === controle);
-            registro.estoq_sf_situacao_descr = sit === 'G' ? 'GERADA' : sit === 'F' ? 'FINALIZADO' : sit === 'P' ? 'PENDENTE' : sit === 'F' ? 'FECHADA' : sit === 'C' ? 'CANCELADA' : '';
+            registro.estoq_sf_situacao_descr = sit === 'G' ? 'GERADA' : sit === 'F' ? 'FECHADA' : sit === 'P' ? 'PENDENTE' : sit === 'F' ? 'FECHADA' : sit === 'C' ? 'CANCELADA' : '';
             this.setState({
                 listaRegistros,
                 refreshing: false,
@@ -360,7 +360,7 @@ export default class SolicitacoesEstoqueScreen extends Component {
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 80 }}
+                    contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
                     keyExtractor={registro => String(registro.estoq_sf_controle)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}

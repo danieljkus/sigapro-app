@@ -11,6 +11,7 @@ import Alert from '../components/Alert';
 import moment from 'moment';
 import { maskDate, maskValorMoeda } from '../utils/Maskers';
 import { getFilial, getUsuario } from '../utils/LoginManager';
+import TipoSolicitacaoSelect from '../components/TipoSolicitacaoSelect';
 import FiliaisSelect from '../components/FiliaisSelect';
 import CentroCustoSelect from '../components/CentroCustoSelect';
 
@@ -29,7 +30,6 @@ export default class SolicitacaoEstoqueScreen extends Component {
             estoq_sf_usuario: props.navigation.state.params.registro.estoq_sf_usuario ? props.navigation.state.params.registro.estoq_sf_usuario : '',
             estoq_sf_situacao: props.navigation.state.params.registro.estoq_sf_situacao ? props.navigation.state.params.registro.estoq_sf_situacao : 'G',
             estoq_sf_situacao_descr: props.navigation.state.params.registro.estoq_sf_situacao_descr ? props.navigation.state.params.registro.estoq_sf_situacao_descr : 'GERADA',
-            estoq_sf_tipo: props.navigation.state.params.registro.estoq_sf_tipo ? props.navigation.state.params.registro.estoq_sf_tipo : '1',
             estoq_sf_obs: props.navigation.state.params.registro.estoq_sf_obs ? props.navigation.state.params.registro.estoq_sf_obs : '',
 
             estoq_sf_filial_solicitante: props.navigation.state.params.registro.estoq_sf_filial_solicitante ? props.navigation.state.params.registro.estoq_sf_filial_solicitante : '',
@@ -37,13 +37,15 @@ export default class SolicitacaoEstoqueScreen extends Component {
             estoq_sf_setor_solicitada: props.navigation.state.params.registro.estoq_sf_setor_solicitada ? props.navigation.state.params.registro.estoq_sf_setor_solicitada : '',
             compras_sugtip_descricao: props.navigation.state.params.registro.compras_sugtip_descricao ? props.navigation.state.params.registro.compras_sugtip_descricao : '',
 
+            tipoSol_select: null,
+            estoq_sf_tipo: '',
+            codTipoSol: '',
+
             filial_select: null,
             codFilial: '',
-            // codFilial: props.navigation.state.params.registro.codFilial ? this.props.navigation.state.params.registro.codFilial : '',
 
             cc_select: null,
             codCC: '',
-            // codCC: props.navigation.state.params.registro.codCC ? this.props.navigation.state.params.registro.codCC : '',
 
             listaItens: props.navigation.state.params.registro.listaItens ? props.navigation.state.params.registro.listaItens : [],
 
@@ -70,6 +72,9 @@ export default class SolicitacaoEstoqueScreen extends Component {
                 filial,
                 codFilial: this.props.navigation.state.params.registro.estoq_sf_filial_solicitada,
                 codCC: this.props.navigation.state.params.registro.estoq_sf_setor_solicitada ? this.props.navigation.state.params.registro.estoq_sf_setor_solicitada : '',
+
+                estoq_sf_tipo: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
+                codTipoSol: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
             });
         })
     }
@@ -78,6 +83,19 @@ export default class SolicitacaoEstoqueScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
+    }
+
+    onInputChangeTipoSol = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        if (value) {
+            this.setState({
+                estoq_sf_tipo: value.compras_sugtip_codigo,
+                codTipoSol: value.compras_sugtip_codigo,
+                descr_tipoSol: value.compras_sugtip_descricao,
+            });
+        }
     }
 
     onInputChangeFilial = (id, value) => {
@@ -136,7 +154,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
             estoq_sf_situacao: estoq_sf_situacao ? estoq_sf_situacao : 'G',
             estoq_sf_tipo,
             estoq_sf_filial_solicitada: this.state.filial_select.adm_fil_codigo,
-            estoq_sf_setor_solicitada: this.state.cc_select.contab_cc_codigo ? this.state.cc_select.contab_cc_codigo : '',
+            estoq_sf_setor_solicitada: this.state.cc_select && this.state.cc_select.contab_cc_codigo ? this.state.cc_select.contab_cc_codigo : '',
             estoq_sf_obs,
 
             listaItens,
@@ -182,8 +200,14 @@ export default class SolicitacaoEstoqueScreen extends Component {
             estoq_sfi_item: 0,
             estoq_sfi_qtde_solicitada: 1,
             estoq_sfi_qtde_atendida: 1,
-            estoq_sfi_situacao: 'G',
             estoq_sfi_obs: '',
+
+            estoq_sfi_situacao: 'S',
+            checkedSolicitado: true,
+            checkedPendente: false,
+            checkedAtendido: false,
+            checkedCancelado: false,
+
             onCarregaProdutos: this.onCarregaProdutos
         });
     }
@@ -209,7 +233,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
 
     render() {
         const { estoq_sf_controle, estoq_sf_data, estoq_sf_situacao_descr, estoq_sf_usuario, estoq_sf_tipo, estoq_sf_obs,
-            filial_select, codFilial, cc_select, codCC, usuario,
+            filial_select, codFilial, cc_select, codCC, tipoSol_select, codTipoSol, usuario,
             carregarRegistro, loading, salvado } = this.state;
 
         console.log('SolicitacaoEstoqueScreen - STATE: ', this.state);
@@ -281,14 +305,13 @@ export default class SolicitacaoEstoqueScreen extends Component {
                             </View>
                         </View>
 
-                        <TextInput
-                            label="Tipo Solicitação"
-                            id="estoq_sf_tipo"
-                            ref="estoq_sf_tipo"
-                            value={String(estoq_sf_tipo)}
-                            onChange={this.onInputChange}
-                            maxLength={6}
-                            keyboardType="numeric"
+
+                        <TipoSolicitacaoSelect
+                            label="Tipo"
+                            id="tipoSol_select"
+                            codTipoSol={codTipoSol}
+                            onChange={this.onInputChangeTipoSol}
+                            value={tipoSol_select}
                         />
 
                         <TextInput
@@ -304,7 +327,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
                         <Divider />
                         <Divider />
 
-                        <View style={{ marginBottom: 15, height: 35, backgroundColor: Colors.dividerDark, }}>
+                        <View style={{ marginBottom: 15, height: 35, backgroundColor: Colors.dividerDark, borderRadius: 3 }}>
                             <Text style={{ paddingLeft: 15, paddingTop: 6, fontSize: 18 }}>
                                 FILIAL SOLICITADA
                             </Text>
@@ -351,7 +374,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
                             </View>
                             <View style={{ flex: 2, marginLeft: 2 }}>
                                 <Button
-                                    title="SALVAR SAÍDA"
+                                    title="SALVAR"
                                     loading={loading}
                                     onPress={this.onFormSubmit}
                                     buttonStyle={{ height: 45 }}
