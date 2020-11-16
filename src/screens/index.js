@@ -13,6 +13,10 @@ import EscalaVeiculoScreen from './EscalaVeiculoScreen';
 import EscalaVeiculosScreen from './EscalaVeiculosScreen';
 import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
+import OrdensServicosScreen from './OrdensServicosScreen';
+import OrdemServicoScreen from './OrdemServicoScreen';
+import OrdemServicoCorretivoScreen from './OrdemServicoCorretivoScreen';
+
 import VeiculosScreen from './VeiculosScreen';
 
 import PneusLocalizarScreen from './PneusLocalizarScreen';
@@ -147,6 +151,30 @@ const HomeStackNavigator = StackNavigator({
         screen: EscalaVeiculoLogScreen,
         navigationOptions: {
             title: "Log das Alterações",
+            ...defaultNavigationOptions
+        }
+    },
+
+
+
+    OrdensServicosScreen: {
+        screen: OrdensServicosScreen,
+        navigationOptions: {
+            title: "Ordens de Serviços",
+            ...defaultNavigationOptions
+        }
+    },
+    OrdemServicoScreen: {
+        screen: OrdemServicoScreen,
+        navigationOptions: {
+            title: "Ordem Serviço",
+            ...defaultNavigationOptions
+        }
+    },
+    OrdemServicoCorretivoScreen: {
+        screen: OrdemServicoCorretivoScreen,
+        navigationOptions: {
+            title: "Serviços Corretivos",
             ...defaultNavigationOptions
         }
     },

@@ -132,6 +132,15 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            {empresa && getTemPermissao('ORDENSSERVICOSSCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Ordem de Serviço"
+                                    onPress={() => navigation.navigate('OrdensServicosScreen')}
+                                />
+                            ) : null}
+
+                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+
                             {getTemPermissao('VIAGENSTURISMOSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Viagens Turismo"
