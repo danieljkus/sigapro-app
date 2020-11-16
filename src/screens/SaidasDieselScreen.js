@@ -155,7 +155,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onRegistroPress: ', response.data);
+                // console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('SaidaDieselScreen', {
                     registro: {

@@ -192,14 +192,14 @@ export default class SolicitacoesEstoqueScreen extends Component {
     }
 
     onRegistroPress = (estoq_sf_controle) => {
-        console.log('onRegistroPress: ', estoq_sf_controle);
+        // console.log('onRegistroPress: ', estoq_sf_controle);
 
         this.setState({ carregarRegistro: true });
         axios.get('/solicitacoesEstoqueFiliais/show/' + estoq_sf_controle)
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onRegistroPress: ', response.data);
+                // console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('SolicitacaoEstoqueScreen', {
                     registro: {
@@ -215,7 +215,7 @@ export default class SolicitacoesEstoqueScreen extends Component {
     }
 
     onAddPress = () => {
-        console.log('onAddPress');
+        // console.log('onAddPress');
 
         this.props.navigation.navigate('SolicitacaoEstoqueScreen', {
             registro: {

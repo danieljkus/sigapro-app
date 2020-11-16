@@ -305,7 +305,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico } = this.state;
 
-        console.log('this.state: ', this.state);
+        // console.log('this.state: ', this.state);
         // console.log('man_ev_veiculo: ', this.state.man_ev_veiculo);
         // console.log('man_ev_data_ini: ', man_ev_data_ini);
         // console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));

@@ -70,7 +70,7 @@ class TipoSolicitacaoSelect extends PureComponent {
     }
 
     componentDidMount() {
-        console.log('TipoSolicitacaoSelect.componentDidMount.this.props: ', this.props);
+        // console.log('TipoSolicitacaoSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
                 compras_sugtip_codigo: this.props.compras_sugtip_codigo,
@@ -87,7 +87,7 @@ class TipoSolicitacaoSelect extends PureComponent {
         state[id] = value;
         this.setState(state);
 
-        console.log('TipoSolicitacaoSelect.onInputChange: ', state);
+        // console.log('TipoSolicitacaoSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -105,7 +105,7 @@ class TipoSolicitacaoSelect extends PureComponent {
         }).then(response => {
             const { data } = response;
 
-            console.log('TipoSolicitacaoSelect.buscaRegistros: ', data);
+            // console.log('TipoSolicitacaoSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -245,8 +245,8 @@ class TipoSolicitacaoSelect extends PureComponent {
         const { label, enabled, value } = this.props;
         const { codTipoSol, carregando, loading, refreshing, listaRegistros } = this.state;
 
-        console.log('TipoSolicitacaoSelect.this.props', this.props)
-        console.log('TipoSolicitacaoSelect.this.state', this.state)
+        // console.log('TipoSolicitacaoSelect.this.props', this.props)
+        // console.log('TipoSolicitacaoSelect.this.state', this.state)
 
         const tipo = codTipoSol ? codTipoSol : (value ? value.compras_sugtip_codigo : '');
         const descricao = value ? String(value.compras_sugtip_descricao).trim() : '';

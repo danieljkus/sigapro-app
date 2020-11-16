@@ -65,7 +65,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
     }
 
     componentDidMount() {
-        console.log('PROPS: ', this.props.navigation.state.params.registro);
+        // console.log('PROPS: ', this.props.navigation.state.params.registro);
 
         getFilial().then(filial => {
             this.setState({
@@ -160,7 +160,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
             listaItens,
         };
 
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
         // return;
 
         this.setState({ salvado: true });
@@ -213,7 +213,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
     }
 
     onCarregaProdutos = (listaItens) => {
-        console.log('onCarregaProdutos: ', listaItens);
+        // console.log('onCarregaProdutos: ', listaItens);
         this.setState({ listaItens });
     }
 
@@ -236,7 +236,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
             filial_select, codFilial, cc_select, codCC, tipoSol_select, codTipoSol, usuario,
             carregarRegistro, loading, salvado } = this.state;
 
-        console.log('SolicitacaoEstoqueScreen - STATE: ', this.state);
+        // console.log('SolicitacaoEstoqueScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

@@ -127,14 +127,14 @@ export default class SaidasEstoqueScreen extends Component {
     }
 
     onRegistroPress = (estoq_me_idf) => {
-        console.log('onRegistroPress: ', estoq_me_idf);
+        // console.log('onRegistroPress: ', estoq_me_idf);
 
         this.setState({ carregarRegistro: true });
         axios.get('/saidasEstoque/show/' + estoq_me_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onRegistroPress: ', response.data);
+                // console.log('onRegistroPress: ', response.data);
 
                 let tipo_destino = '';
                 let codVeiculo = '';
@@ -188,7 +188,7 @@ export default class SaidasEstoqueScreen extends Component {
     }
 
     onAddPress = () => {
-        console.log('onAddPress');
+        // console.log('onAddPress');
 
         this.props.navigation.navigate('SaidaEstoqueScreen', {
             registro: {

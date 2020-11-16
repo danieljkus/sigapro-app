@@ -138,6 +138,16 @@ export default class SaidaEstoqueItensScreen extends Component {
                 estoq_mei_valor_unit: maskValorMoeda(parseFloat(value.estoq_ef_custo_medio)),
                 estoq_mei_total_mov: maskValorMoeda(parseFloat(value.estoq_ef_custo_medio)),
             });
+        } else {
+            this.setState({
+                // codItem: '',
+                // estoq_ie_descricao: '',
+                qtdeEstoque: 0,
+                custo: 0,
+                estoq_mei_qtde_atual: maskValorMoeda(0),
+                estoq_mei_valor_unit: maskValorMoeda(0),
+                estoq_mei_total_mov: maskValorMoeda(0),
+            });
         }
     }
 
@@ -201,7 +211,7 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     onFormIncluirProduto = (event) => {
-        console.log('-------------onFormIncluirProduto---------------');
+        // console.log('-------------onFormIncluirProduto---------------');
         if ((!this.state.item_select) || (!this.state.item_select.estoq_ie_codigo)) {
             Alert.showAlert('Informe o Item');
             return;
@@ -216,11 +226,11 @@ export default class SaidaEstoqueItensScreen extends Component {
         }
 
 
-        console.log('onFormIncluirProduto: ', this.state);
-        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual));
-        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_mov));
-        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_me_qtde));
-        console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde));
+        // console.log('onFormIncluirProduto: ', this.state);
+        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual));
+        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_mov));
+        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_me_qtde));
+        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde));
 
         if ((vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde)) < 0) {
             Alert.showAlert('Estoque Insuficiente');
@@ -235,7 +245,7 @@ export default class SaidaEstoqueItensScreen extends Component {
     }
 
     onGravar = () => {
-        console.log('-----------------onGravar-----------------------');
+        // console.log('-----------------onGravar-----------------------');
 
         const { listaItens } = this.state;
 
@@ -348,7 +358,7 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     calculoItem = (estoq_mei_qtde_mov, estoq_mei_valor_unit) => {
-        console.log('----------------calculoItem---------------------');
+        // console.log('----------------calculoItem---------------------');
         const vlrUnit = vlrStringParaFloat(String(estoq_mei_valor_unit).replace('.', ''));
         const qtde = vlrStringParaFloat(String(estoq_mei_qtde_mov).replace('.', ''));
         // console.log('estoq_mei_qtde_mov: ', qtde);
@@ -371,7 +381,7 @@ export default class SaidaEstoqueItensScreen extends Component {
         const { estoq_mei_qtde_mov, estoq_mei_qtde_atual, estoq_mei_valor_unit, estoq_mei_total_mov,
             listaItens, item_select, codItem, refreshing, loading, salvado } = this.state;
 
-        console.log('SaidaEstoqueItensScreen STATE: ', this.state);
+        // console.log('SaidaEstoqueItensScreen STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background, paddingBottom: 8, paddingTop: 5 }}>
@@ -391,8 +401,10 @@ export default class SaidaEstoqueItensScreen extends Component {
                                     label="Produto"
                                     id="item_select"
                                     codItem={codItem}
+                                    buscaEstoque={1}
                                     onChange={this.onInputChangeItem}
                                     value={item_select}
+                                    enabled={true}
                                 />
 
                                 <View style={{ flexDirection: 'row' }}>

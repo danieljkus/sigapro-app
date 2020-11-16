@@ -133,7 +133,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onMudaTipoSaida = (tipo) => {
-        console.log('onMudaTipoSaida: ', tipo);
+        // console.log('onMudaTipoSaida: ', tipo);
 
         if (tipo === 'S') {
             this.setState({
@@ -399,7 +399,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             checkedSolicitado, checkedAtendido, checkedPendente, checkedCancelado,
             listaItens, item_select, codItem, refreshing, loading, salvado } = this.state;
 
-        console.log('SolicitacaoEstoqueItensScreen STATE: ', this.state);
+        // console.log('SolicitacaoEstoqueItensScreen STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background, paddingBottom: 8, paddingTop: 5 }}>
@@ -419,7 +419,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
                                     label="Produto"
                                     id="item_select"
                                     codItem={codItem}
-                                    buscaEstoque={false}
+                                    buscaEstoque={0}
                                     onChange={this.onInputChangeItem}
                                     value={item_select}
                                     enabled={!estoq_sfi_seq}

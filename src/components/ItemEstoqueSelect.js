@@ -41,7 +41,8 @@ class ItemEstoqueSelect extends PureComponent {
 
     state = {
         codItem: '',
-        buscaEstoque: true,
+        enabled: true,
+        // buscaEstoque: 1,
         carregando: false,
 
         listaRegistros: [],
@@ -97,12 +98,14 @@ class ItemEstoqueSelect extends PureComponent {
 
     buscaRegistros = (value) => {
         this.setState({ carregando: true });
-        const { id, onChange } = this.props;
+        const { id, onChange, buscaEstoque } = this.props;
+
+        console.log('ItemEstoqueSelect.buscaRegistros: ', buscaEstoque);
 
         axios.get('/listaItens', {
             params: {
                 codItem: value,
-                buscaEstoque: this.state.buscaEstoque,
+                buscaEstoque: buscaEstoque,
             }
         }).then(response => {
             const { data } = response;
@@ -244,7 +247,7 @@ class ItemEstoqueSelect extends PureComponent {
 
 
     render() {
-        const { label, enabled, value, buscaEst } = this.props;
+        const { label, enabled, value } = this.props;
         const { codItem, carregando, loading, refreshing, listaRegistros } = this.state;
 
         // console.log('ItemEstoqueSelect.this.props', this.props)
@@ -252,8 +255,8 @@ class ItemEstoqueSelect extends PureComponent {
 
         const codConta = codItem ? codItem : (value ? value.estoq_ie_codigo : '');
         const descricao = value ? String(value.estoq_ie_descricao).trim() : '';
-        const buscaEstoque = buscaEst ? buscaEst : true;
-        this.setState({ codItem: codConta, buscaEstoque });
+        // const buscaEst = buscaEstoque ? buscaEstoque : 1;
+        this.setState({ codItem: codConta });
 
         return (
             <View style={{ flexDirection: 'row' }}>
