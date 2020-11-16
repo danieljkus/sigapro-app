@@ -255,8 +255,8 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onFormIncluirProduto = (event) => {
-        console.log('-------------onFormIncluirProduto---------------');
-        if ((this.state.estoq_sfi_qtde_solicitada == '') || (this.state.estoq_sfi_qtde_solicitada <= 0)) {
+        // console.log('-------------onFormIncluirProduto---------------');
+        if ((this.state.estoq_sfi_qtde_solicitada == '') || (vlrStringParaFloat(this.state.estoq_sfi_qtde_solicitada) <= 0)) {
             Alert.showAlert('Informe a Quantidade Solicitada');
             return;
         }
@@ -273,7 +273,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
     }
 
     onGravar = () => {
-        console.log('-----------------onGravar-----------------------');
+        // console.log('-----------------onGravar-----------------------');
 
         const { listaItens } = this.state;
 
@@ -419,6 +419,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
                                     label="Produto"
                                     id="item_select"
                                     codItem={codItem}
+                                    buscaEstoque={false}
                                     onChange={this.onInputChangeItem}
                                     value={item_select}
                                     enabled={!estoq_sfi_seq}
