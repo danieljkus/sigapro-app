@@ -9,6 +9,7 @@ import { ProgressDialog } from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
+import { getFilial } from '../utils/LoginManager';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -158,7 +159,12 @@ export default class OrdensServicosScreen extends Component {
     };
 
     componentDidMount() {
-        this.setState({ refreshing: false });
+        getFilial().then(filial => {
+            this.setState({
+                filial,
+                refreshing: false
+            });
+        })
         this.getListaRegistros();
     }
 
@@ -200,14 +206,14 @@ export default class OrdensServicosScreen extends Component {
     }
 
     onRegistroPress = (man_os_idf) => {
-        // console.log('onRegistroPress: ', man_os_idf);
+        console.log('onRegistroPress: ', man_os_idf);
 
         this.setState({ carregarRegistro: true });
         axios.get('/ordemServicos/show/' + man_os_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                // console.log('onRegistroPress: ', response.data);
+                console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('OrdemServicoScreen', {
                     registro: {
@@ -224,16 +230,10 @@ export default class OrdensServicosScreen extends Component {
 
     onAddPress = () => {
         // console.log('onAddPress');
-
         this.props.navigation.navigate('OrdemServicoScreen', {
             registro: {
                 man_os_idf: 0,
-
-                filial_select: [],
-                codFilial: '',
-
-                cc_select: [],
-                codCC: '',
+                man_os_filial: this.state.filial,
             },
             onRefresh: this.onRefresh
         });
@@ -271,7 +271,6 @@ export default class OrdensServicosScreen extends Component {
 
     carregarMaisRegistros = () => {
         const { carregarMais, refreshing, carregando, pagina } = this.state;
-
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -282,7 +281,6 @@ export default class OrdensServicosScreen extends Component {
 
     renderListFooter = () => {
         const { carregando } = this.state;
-
         if (carregando) {
             return (
                 <View style={{ marginTop: 8 }}>
@@ -290,7 +288,6 @@ export default class OrdensServicosScreen extends Component {
                 </View>
             )
         }
-
         return null;
     }
 
@@ -326,7 +323,7 @@ export default class OrdensServicosScreen extends Component {
         }).then(response => {
             const listaRegistros = [...this.state.listaRegistros];
             const registro = listaRegistros.find(registro => registro.man_os_idf === controle);
-            registro.estoq_sf_situacao_descr = sit === 'G' ? 'GERADA' : sit === 'F' ? 'FECHADA' : sit === 'P' ? 'PENDENTE' : sit === 'F' ? 'FECHADA' : sit === 'C' ? 'CANCELADA' : '';
+            registro.man_os_situacao_descr = sit === 'A' ? 'ABERTA' : 'FECHADA';
             this.setState({
                 listaRegistros,
                 refreshing: false,

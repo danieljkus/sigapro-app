@@ -1,21 +1,50 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { CheckBox, Divider } from 'react-native-elements';
+import {
+    View, Text, ScrollView, ActivityIndicator,
+    FlatList, Modal, TouchableOpacity
+} from 'react-native';
+import { CheckBox, Divider, SearchBar } from 'react-native-elements';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import Colors from '../values/Colors';
+import Icon from '../components/Icon';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import moment from 'moment';
-import { maskDate, maskValorMoeda } from '../utils/Maskers';
-import { getFilial, getUsuario } from '../utils/LoginManager';
-import TipoSolicitacaoSelect from '../components/TipoSolicitacaoSelect';
+import { maskDate, maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
+import { getFilial } from '../utils/LoginManager';
 import FiliaisSelect from '../components/FiliaisSelect';
-import CentroCustoSelect from '../components/CentroCustoSelect';
+import VeiculosSelect from '../components/VeiculosSelect';
+import RotasSelect from '../components/RotasSelect';
 
 const DATE_FORMAT = 'DD/MM/YYYY';
+
+const RegistroFunc = ({ registro, onRegistroFuncPress }) => {
+    return (
+        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
+            <TouchableOpacity
+                onPress={() => onRegistroFuncPress(registro.rh_func_codigo, registro.rh_func_empresa)}
+            >
+                <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
+                        #{registro.rh_func_codigo} / {registro.rh_func_empresa}
+                    </Text>
+                </View>
+
+                <Divider />
+
+                <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
+                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                        {registro.adm_pes_nome}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        </Card>
+    )
+}
+
 
 export default class OrdemServicoScreen extends Component {
 
@@ -25,38 +54,46 @@ export default class OrdemServicoScreen extends Component {
             loading: false,
             salvado: false,
 
-            estoq_sf_controle: props.navigation.state.params.registro.estoq_sf_controle ? props.navigation.state.params.registro.estoq_sf_controle : 0,
-            estoq_sf_data: props.navigation.state.params.registro.estoq_sf_data ? moment(props.navigation.state.params.registro.estoq_sf_data).format(DATE_FORMAT) : moment(new Date()).format(DATE_FORMAT),
-            estoq_sf_usuario: props.navigation.state.params.registro.estoq_sf_usuario ? props.navigation.state.params.registro.estoq_sf_usuario : '',
-            estoq_sf_situacao: props.navigation.state.params.registro.estoq_sf_situacao ? props.navigation.state.params.registro.estoq_sf_situacao : 'G',
-            estoq_sf_situacao_descr: props.navigation.state.params.registro.estoq_sf_situacao_descr ? props.navigation.state.params.registro.estoq_sf_situacao_descr : 'GERADA',
-            estoq_sf_obs: props.navigation.state.params.registro.estoq_sf_obs ? props.navigation.state.params.registro.estoq_sf_obs : '',
+            man_os_idf: props.navigation.state.params.registro.man_os_idf ? props.navigation.state.params.registro.man_os_idf : 0,
+            man_osm_controle: props.navigation.state.params.registro.man_osm_controle ? props.navigation.state.params.registro.man_osm_controle : 0,
+            man_os_data_inicial: props.navigation.state.params.registro.man_os_data_inicial ? moment(props.navigation.state.params.registro.man_os_data_inicial).format(DATE_FORMAT) : moment(new Date()).format(DATE_FORMAT),
+            man_os_data_fim: props.navigation.state.params.registro.man_os_data_fim ? moment(props.navigation.state.params.registro.man_os_data_fim).format(DATE_FORMAT) : '',
+            man_os_data_prevista: props.navigation.state.params.registro.man_os_data_prevista ? moment(props.navigation.state.params.registro.man_os_data_prevista).format(DATE_FORMAT) : moment(new Date()).format(DATE_FORMAT),
 
-            estoq_sf_filial_solicitante: props.navigation.state.params.registro.estoq_sf_filial_solicitante ? props.navigation.state.params.registro.estoq_sf_filial_solicitante : '',
-            estoq_sf_filial_solicitada: props.navigation.state.params.registro.estoq_sf_filial_solicitada ? props.navigation.state.params.registro.estoq_sf_filial_solicitada : '',
-            estoq_sf_setor_solicitada: props.navigation.state.params.registro.estoq_sf_setor_solicitada ? props.navigation.state.params.registro.estoq_sf_setor_solicitada : '',
-            compras_sugtip_descricao: props.navigation.state.params.registro.compras_sugtip_descricao ? props.navigation.state.params.registro.compras_sugtip_descricao : '',
+            man_os_filial: props.navigation.state.params.registro.man_os_filial ? props.navigation.state.params.registro.man_os_filial : '',
+            man_os_situacao: props.navigation.state.params.registro.man_os_situacao ? props.navigation.state.params.registro.man_os_situacao : 'A',
+            man_os_situacao_descr: props.navigation.state.params.registro.man_os_situacao_descr ? props.navigation.state.params.registro.man_os_situacao_descr : 'ABERTA',
+            man_os_valor: props.navigation.state.params.registro.man_os_valor ? props.navigation.state.params.registro.man_os_valor : 0,
+            man_osm_km_acumulado: props.navigation.state.params.registro.man_osm_km_acumulado ? props.navigation.state.params.registro.man_osm_km_acumulado : 0,
+            man_osm_km_odometro: props.navigation.state.params.registro.man_osm_km_odometro ? props.navigation.state.params.registro.man_osm_km_odometro : 0,
 
-            tipoSol_select: null,
-            estoq_sf_tipo: '',
-            codTipoSol: '',
+            man_osm_veiculo: props.navigation.state.params.registro.man_osm_veiculo ? props.navigation.state.params.registro.man_osm_veiculo : '',
+            man_osm_motorista: props.navigation.state.params.registro.man_osm_motorista ? props.navigation.state.params.registro.man_osm_motorista : '',
+            man_osm_nome_motorista: props.navigation.state.params.registro.man_osm_nome_motorista ? props.navigation.state.params.registro.man_osm_nome_motorista : '',
+            man_osm_oficina: props.navigation.state.params.registro.man_osm_oficina ? props.navigation.state.params.registro.man_osm_oficina : '',
+            man_osm_rota: props.navigation.state.params.registro.man_osm_rota ? props.navigation.state.params.registro.man_osm_rota : '',
 
             filial_select: null,
             codFilial: '',
 
-            cc_select: null,
-            codCC: '',
+            veiculo_select: null,
+            codVeiculo: '',
 
-            listaItens: props.navigation.state.params.registro.listaItens ? props.navigation.state.params.registro.listaItens : [],
+            funcionariosSelect: [],
+            codFunc: '',
+            empFunc: '',
+            nomeFunc: '',
+            carregandoFunc: false,
+            modalFuncBuscaVisible: false,
 
-            // ...props.navigation.state.params.registro,
+            rota_select: null,
+            codRota: '',
 
             refreshing: false,
             carregarRegistro: false,
             carregando: false,
             carregarMais: false,
             pagina: 1,
-
         }
     }
 
@@ -70,12 +107,20 @@ export default class OrdemServicoScreen extends Component {
         getFilial().then(filial => {
             this.setState({
                 filial,
-                codFilial: this.props.navigation.state.params.registro.estoq_sf_filial_solicitada,
-                codCC: this.props.navigation.state.params.registro.estoq_sf_setor_solicitada ? this.props.navigation.state.params.registro.estoq_sf_setor_solicitada : '',
+                codFilial: this.props.navigation.state.params.registro.man_os_filial,
 
-                estoq_sf_tipo: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
-                codTipoSol: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
+                codVeiculo: this.props.navigation.state.params.registro.man_osm_veiculo ? this.props.navigation.state.params.registro.man_osm_veiculo : '',
+
+                codFunc: this.props.navigation.state.params.registro.man_osm_motorista ? this.props.navigation.state.params.registro.man_osm_motorista : '',
+                empFunc: this.props.navigation.state.params.registro.man_osm_empresa_motorista ? this.props.navigation.state.params.registro.man_osm_empresa_motorista : '',
+                nomeFunc: this.props.navigation.state.params.registro.nome_motorista ? this.props.navigation.state.params.registro.nome_motorista : '',
+
+                codRota: this.props.navigation.state.params.registro.man_osm_rota ? this.props.navigation.state.params.registro.man_osm_rota : '',
             });
+
+            if (this.props.navigation.state.params.registro.man_osm_motorista) {
+                this.buscaFuncionários(this.props.navigation.state.params.registro.man_osm_motorista);
+            }
         })
     }
 
@@ -83,19 +128,6 @@ export default class OrdemServicoScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-    }
-
-    onInputChangeTipoSol = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-        if (value) {
-            this.setState({
-                estoq_sf_tipo: value.compras_sugtip_codigo,
-                codTipoSol: value.compras_sugtip_codigo,
-                descr_tipoSol: value.compras_sugtip_descricao,
-            });
-        }
     }
 
     onInputChangeFilial = (id, value) => {
@@ -110,17 +142,32 @@ export default class OrdemServicoScreen extends Component {
         }
     }
 
-    onInputChangeCC = (id, value) => {
+    onInputChangeVeiculo = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        if (value) {
+            console.log('onInputChangeVeiculo: ', value)
+            this.setState({
+                codVeiculo: value.codVeic,
+                man_osm_km_odometro: value.kmOdo,
+                man_osm_km_acumulado: value.kmAcum,
+            });
+        }
+    }
+
+    onInputChangeRota = (id, value) => {
         const state = {};
         state[id] = value;
         this.setState(state);
         if (value) {
             this.setState({
-                codCC: value.contab_cc_codigo,
-                descr_cc: value.contab_cc_descricao,
+                codRota: value.man_rt_codigo,
+                man_rt_flag_eventual: value.man_rt_flag_eventual,
             });
         }
     }
+
 
     onErroChange = msgErro => {
         this.setState({
@@ -137,84 +184,190 @@ export default class OrdemServicoScreen extends Component {
             return;
         }
 
-        if ((!this.state.listaItens) || (this.state.listaItens.length === 0)) {
-            Alert.showAlert('Inclua algum Item.');
+        if (this.state.msgErroVeiculo.trim() !== '') {
+            Alert.showAlert(this.state.msgErroVeiculo);
             return;
         }
+
+        if ((this.state.veiculo_select === undefined) || (!this.state.veiculo_select) || (!this.state.veiculo_select.codVeic)) {
+            Alert.showAlert('Informe o Veículo');
+            return;
+        }
+
         this.onSalvarRegistro();
     }
 
     onSalvarRegistro = () => {
-        const { listaItens, estoq_sf_controle, estoq_sf_data, estoq_sf_situacao, estoq_sf_tipo, estoq_sf_obs,
-            estoq_sf_filial_solicitada, estoq_sf_setor_solicitada } = this.state;
+        const { man_os_idf, man_os_valor, man_os_data_prevista, man_osm_km_acumulado, man_osm_oficina,
+            codFunc, empFunc, man_osm_nome_motorista,
+            filial_select, veiculo_select, rota_select, funcionariosSelect } = this.state;
 
         const registro = {
-            estoq_sf_controle,
-            estoq_sf_data: moment(estoq_sf_data, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
-            estoq_sf_situacao: estoq_sf_situacao ? estoq_sf_situacao : 'G',
-            estoq_sf_tipo,
-            estoq_sf_filial_solicitada: this.state.filial_select.adm_fil_codigo,
-            estoq_sf_setor_solicitada: this.state.cc_select && this.state.cc_select.contab_cc_codigo ? this.state.cc_select.contab_cc_codigo : '',
-            estoq_sf_obs,
+            man_os_idf,
+            man_os_filial: filial_select.adm_fil_codigo,
+            man_osm_veiculo: veiculo_select.codVeic,
+            man_os_data_prevista: moment(man_os_data_prevista, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
+            man_os_valor: vlrStringParaFloat(man_os_valor),
+            man_osm_km_acumulado: parseInt(man_osm_km_acumulado),
+            man_osm_km_odometro: parseInt(man_osm_km_acumulado),
 
-            listaItens,
+            man_osm_motorista: codFunc,
+            man_osm_empresa_motorista: empFunc,
+            man_osm_nome_motorista: codFunc ? '.' : man_osm_nome_motorista,
+
+            man_osm_rota: rota_select && rota_select.man_rt_codigo ? rota_select.man_rt_codigo : '',
+            man_osm_oficina: null,
         };
 
-        // console.log('onSalvarRegistro: ', registro);
+        console.log('onSalvarRegistro: ', registro);
         // return;
 
         this.setState({ salvado: true });
 
         let axiosMethod;
-        if (estoq_sf_controle) {
-            axiosMethod = axios.put('/solicitacoesEstoqueFiliais/update/' + estoq_sf_controle, registro);
+        if (man_os_idf) {
+            axiosMethod = axios.put('/ordemServicos/update/' + man_os_idf, registro);
         } else {
-            axiosMethod = axios.post('/solicitacoesEstoqueFiliais/store', registro);
+            axiosMethod = axios.post('/ordemServicos/store', registro);
         }
         axiosMethod.then(response => {
-            this.props.navigation.goBack(null);
-            if (this.props.navigation.state.params.onRefresh) {
-                this.props.navigation.state.params.onRefresh();
+            if (man_os_idf) {
+                this.setState({ salvado: false });
+                this.props.navigation.goBack(null);
+                if (this.props.navigation.state.params.onRefresh) {
+                    this.props.navigation.state.params.onRefresh();
+                }
+            } else {
+                this.setState({
+                    man_os_idf: response.data.idf,
+                    man_osm_controle: response.data.controle,
+                    salvado: false
+                });
+                Alert.showAlert('O.S Gravada com sucesso');
             }
         }).catch(ex => {
             this.setState({ salvado: false });
             console.warn(ex);
         })
+    }
 
+
+    // ---------------------------------------------------------------------------
+    // FUNÇÕES PARA FUNCIONARIOS
+    // ---------------------------------------------------------------------------
+
+    onInputChangeFunc = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+
+        clearTimeout(this.buscaRegistrosId);
+        this.buscaRegistrosId = setTimeout(() => {
+            this.buscaFuncionários(value);
+        }, 1000);
+    }
+
+    onInputChangeListaFunc = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+
+        if (value) {
+            const ind = value.indexOf("_");
+            const tam = value.length;
+            const codFunc = value.substr(0, ind).trim();
+            const empFunc = value.substr(ind + 1, tam).trim();
+
+            this.setState({
+                codFunc,
+                empFunc,
+            });
+        }
+    }
+
+    buscaFuncionários = (value) => {
+        this.setState({ funcionariosSelect: [], empFunc: '', });
+        const { codFunc } = this.state;
+
+        if (value) {
+            this.setState({ carregandoFunc: true });
+            axios.get('/listaFuncionarios', {
+                params: {
+                    ativo: 'S',
+                    codFunc: value
+                }
+            }).then(response => {
+                const { data } = response;
+
+                if (data) {
+                    const funcionariosSelect = data.map(regList => {
+                        return {
+                            key: regList.rh_func_codigo + '_' + regList.rh_func_empresa,
+                            label: regList.adm_pes_nome
+                        }
+                    });
+
+                    if (data.length > 0) {
+                        this.setState({
+                            funcionariosSelect,
+                            codFunc: data[0].rh_func_codigo,
+                            empFunc: data[0].rh_func_empresa,
+                            man_osm_nome_motorista: data[0].adm_pes_nome,
+                            carregandoFunc: false,
+                        })
+                    } else {
+                        this.setState({
+                            funcionariosSelect,
+                            carregandoFunc: false,
+                        })
+                    }
+
+                } else {
+                    this.setState({
+                        funcionariosSelect: [],
+                        carregandoFunc: false,
+                    })
+                }
+
+            }).catch(error => {
+                console.warn(error.response);
+                this.setState({
+                    carregandoFunc: false,
+                });
+            })
+        }
+    }
+
+    onRegistroFuncPress = (rh_func_codigo, rh_func_empresa) => {
+        this.setState({
+            codFunc: rh_func_codigo,
+            empFunc: rh_func_empresa,
+        });
+        this.onAbrirFuncBuscaModal(false);
+        this.buscaFuncionários(rh_func_codigo);
+    }
+
+    carregarMaisRegistrosFunc = () => {
+        const { carregarMais, refreshing, carregando, pagina } = this.state;
+        if (carregarMais && !refreshing && !carregando) {
+            this.setState({
+                carregando: true,
+                pagina: pagina + 1,
+            }, this.getListaRegistrosFunc);
+        }
     }
 
 
 
-
-
-
     // ---------------------------------------------------------------------------
-    // MODAL PARA PRODUTOS DA SAIDA
+    // MODAL PARA SERVIÇOS CORRETIVOS
     // ---------------------------------------------------------------------------
 
     onAbrirItensModal = () => {
-        this.props.navigation.navigate('SolicitacaoEstoqueItensScreen', {
-            estoq_sf_controle: this.state.estoq_sf_controle,
-            listaItens: this.state.listaItens,
-            estoq_sfi_seq: 0,
-            estoq_sfi_item: 0,
-            estoq_sfi_qtde_solicitada: 1,
-            estoq_sfi_qtde_atendida: 1,
-            estoq_sfi_obs: '',
-
-            estoq_sfi_situacao: 'S',
-            checkedSolicitado: true,
-            checkedPendente: false,
-            checkedAtendido: false,
-            checkedCancelado: false,
-
-            onCarregaProdutos: this.onCarregaProdutos
+        this.props.navigation.navigate('OrdemServicoCorretivoScreen', {
+            man_os_idf: this.state.man_os_idf,
+            // onCarregaProdutos: this.onCarregaProdutos
         });
-    }
-
-    onCarregaProdutos = (listaItens) => {
-        // console.log('onCarregaProdutos: ', listaItens);
-        this.setState({ listaItens });
     }
 
 
@@ -232,11 +385,14 @@ export default class OrdemServicoScreen extends Component {
 
 
     render() {
-        const { estoq_sf_controle, estoq_sf_data, estoq_sf_situacao_descr, estoq_sf_usuario, estoq_sf_tipo, estoq_sf_obs,
-            filial_select, codFilial, cc_select, codCC, tipoSol_select, codTipoSol, usuario,
-            carregarRegistro, loading, salvado } = this.state;
+        const { man_os_idf, man_os_data_inicial, man_os_data_fim, man_os_filial, man_os_situacao, man_os_situacao_descr, man_os_valor, man_os_data_prevista,
+            man_osm_controle, man_osm_veiculo, man_osm_motorista, man_osm_empresa_motorista, man_osm_km_acumulado, man_osm_km_odometro,
+            man_osm_oficina, man_osm_rota,
+            filial_select, codFilial, veiculo_select, codVeiculo, rota_select, codRota,
+            funcionariosSelect, codFunc, nomeFunc, listaRegistrosFunc, carregandoFunc,
+            usuario, carregarRegistro, loading, refreshing, salvado } = this.state;
 
-        // console.log('SolicitacaoEstoqueScreen - STATE: ', this.state);
+        console.log('OrdemServicoScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -253,10 +409,10 @@ export default class OrdemServicoScreen extends Component {
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
-                                    label="Nº Solicitação"
-                                    id="estoq_sf_controle"
-                                    ref="estoq_sf_controle"
-                                    value={String(estoq_sf_controle)}
+                                    label="Controle"
+                                    id="man_osm_controle"
+                                    ref="man_osm_controle"
+                                    value={String(man_osm_controle)}
                                     onChange={this.onInputChange}
                                     maxLength={6}
                                     keyboardType="numeric"
@@ -265,10 +421,10 @@ export default class OrdemServicoScreen extends Component {
                             </View>
                             <View style={{ width: "47%" }}>
                                 <TextInput
-                                    label="Usuário"
-                                    id="estoq_sf_usuario"
-                                    ref="estoq_sf_usuario"
-                                    value={String(estoq_sf_usuario)}
+                                    label="Situação"
+                                    id="man_os_situacao_descr"
+                                    ref="man_os_situacao_descr"
+                                    value={String(man_os_situacao_descr)}
                                     onChange={this.onInputChange}
                                     enabled={false}
                                 />
@@ -279,26 +435,47 @@ export default class OrdemServicoScreen extends Component {
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
-                                    type="date"
-                                    label="Data"
-                                    id="estoq_sf_data"
-                                    ref="estoq_sf_data"
-                                    value={estoq_sf_data}
-                                    masker={maskDate}
-                                    dateFormat={DATE_FORMAT}
+                                    label="Emissão"
+                                    id="man_os_data_inicial"
+                                    ref="man_os_data_inicial"
+                                    value={String(man_os_data_inicial)}
                                     onChange={this.onInputChange}
-                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
-                                    required={true}
-                                    errorMessage="Formato correto DD/MM/AAAA"
-                                    editable={estoq_sf_controle ? false : true}
+                                    enabled={false}
                                 />
                             </View>
                             <View style={{ width: "47%" }}>
                                 <TextInput
-                                    label="Situação"
-                                    id="estoq_sf_situacao_descr"
-                                    ref="estoq_sf_situacao_descr"
-                                    value={String(estoq_sf_situacao_descr)}
+                                    label="Encerramento"
+                                    id="man_os_data_fim"
+                                    ref="man_os_data_fim"
+                                    value={String(man_os_data_fim)}
+                                    onChange={this.onInputChange}
+                                    enabled={false}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: "47%", marginRight: 20 }}>
+                                <TextInput
+                                    type="date"
+                                    label="Previsão"
+                                    id="man_os_data_prevista"
+                                    ref="man_os_data_prevista"
+                                    value={man_os_data_prevista}
+                                    masker={maskDate}
+                                    dateFormat={DATE_FORMAT}
+                                    onChange={this.onInputChange}
+                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                    editable={man_os_situacao === 'F' ? false : true}
+                                />
+                            </View>
+                            <View style={{ width: "47%" }}>
+                                <TextInput
+                                    label="Valor"
+                                    id="man_os_valor"
+                                    ref="man_os_valor"
+                                    value={maskValorMoeda(man_os_valor)}
                                     onChange={this.onInputChange}
                                     enabled={false}
                                 />
@@ -306,93 +483,316 @@ export default class OrdemServicoScreen extends Component {
                         </View>
 
 
-                        <TipoSolicitacaoSelect
-                            label="Tipo"
-                            id="tipoSol_select"
-                            codTipoSol={codTipoSol}
-                            onChange={this.onInputChangeTipoSol}
-                            value={tipoSol_select}
+                        <FiliaisSelect
+                            label="Filial"
+                            id="filial_select"
+                            codFilial={codFilial}
+                            onChange={this.onInputChangeFilial}
+                            value={filial_select}
                         />
 
-                        <TextInput
-                            label="Observação"
-                            id="estoq_sf_obs"
-                            ref="estoq_sf_obs"
-                            value={estoq_sf_obs}
-                            maxLength={100}
-                            onChange={this.onInputChange}
-                            multiline={true}
+                        <VeiculosSelect
+                            label="Veículo"
+                            id="veiculo_select"
+                            value={veiculo_select}
+                            codVeiculo={codVeiculo}
+                            onChange={this.onInputChangeVeiculo}
+                            onErro={this.onErroChange}
+                            tipo=""
+                        />
+
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: "47%", marginRight: 20 }}>
+                                <TextInput
+                                    label="Km"
+                                    id="man_osm_km_acumulado"
+                                    ref="man_osm_km_acumulado"
+                                    value={man_osm_km_acumulado}
+                                    onChange={this.onInputChange}
+                                    enabled={false}
+                                />
+                            </View>
+                            <View style={{ width: "47%" }}>
+                                <TextInput
+                                    label="Odômetro"
+                                    id="man_osm_km_odometro"
+                                    ref="man_osm_km_odometro"
+                                    value={man_osm_km_odometro}
+                                    onChange={this.onInputChangeKm}
+                                    keyboardType="numeric"
+                                    enabled={false}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row' }} >
+                            <View style={{ width: "25%" }}>
+                                <TextInput
+                                    label="Motorista"
+                                    id="codFunc"
+                                    ref="codFunc"
+                                    value={codFunc}
+                                    maxLength={6}
+                                    keyboardType="numeric"
+                                    onChange={this.onInputChangeFunc}
+                                />
+                            </View>
+
+                            <View style={{ width: "7%", }}>
+                                <Button
+                                    title=""
+                                    loading={loading}
+                                    onPress={() => { this.onAbrirFuncBuscaModal(true) }}
+                                    buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                    backgroundColor={Colors.transparent}
+                                    icon={{
+                                        name: 'search',
+                                        type: 'font-awesome',
+                                        color: Colors.textPrimaryDark
+                                    }}
+                                />
+                            </View>
+
+                            <View style={{ width: "75%", marginLeft: -23 }}>
+                                {carregandoFunc
+                                    ? (
+                                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                            <ActivityIndicator style={{ margin: 10 }} />
+                                            <Text> Buscando... </Text>
+                                        </View>
+                                    ) : (
+                                        <TextInput
+                                            type="select"
+                                            label=" "
+                                            id="nomeFunc"
+                                            ref="nomeFunc"
+                                            value={nomeFunc}
+                                            selectedValue=""
+                                            options={funcionariosSelect}
+                                            onChange={this.onInputChangeListaFunc}
+                                        />
+                                    )
+                                }
+
+                            </View>
+                        </View >
+
+                        <RotasSelect
+                            label="Rota"
+                            id="rota_select"
+                            value={rota_select}
+                            codRota={codRota}
+                            onChange={this.onInputChangeRota}
                         />
 
                         <Divider />
                         <Divider />
 
-                        <View style={{ marginBottom: 15, height: 35, backgroundColor: Colors.dividerDark, borderRadius: 3 }}>
-                            <Text style={{ paddingLeft: 15, paddingTop: 6, fontSize: 18 }}>
-                                FILIAL SOLICITADA
-                            </Text>
-                        </View>
 
-                        <View style={{}}>
-                            <FiliaisSelect
-                                label="Filial"
-                                id="filial_select"
-                                codFilial={codFilial}
-                                onChange={this.onInputChangeFilial}
-                                value={filial_select}
-                            />
-                            <CentroCustoSelect
-                                label="Centro Custo"
-                                id="cc_select"
-                                codCC={codCC}
-                                onChange={this.onInputChangeCC}
-                                value={cc_select}
-                            />
-                        </View>
+                        {man_os_idf ? (
+                            <View >
+                                <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 4, marginTop: 20 }} >
+                                    <View style={{ flex: 2, marginRight: 2 }}>
+                                        <Button
+                                            title="PREVENTIVAS"
+                                            onPress={() => { this.onAbrirItensModal() }}
+                                            buttonStyle={{ height: 70 }}
+                                            backgroundColor={Colors.primaryLight}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'stethoscope',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={{ flex: 2, marginLeft: 2 }}>
+                                        <Button
+                                            title="CORRETIVAS"
+                                            onPress={() => { this.onAbrirItensModal() }}
+                                            buttonStyle={{ height: 70 }}
+                                            backgroundColor={Colors.primaryLight}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'wrench',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
+                                </View>
 
+                                <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 4 }} >
+                                    <View style={{ flex: 2, marginRight: 2 }}>
+                                        <Button
+                                            title="DEFEITOS"
+                                            onPress={() => { this.onAbrirItensModal() }}
+                                            buttonStyle={{ height: 70 }}
+                                            backgroundColor={Colors.primaryLight}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'bug',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={{ flex: 2, marginLeft: 2 }}>
+                                        <Button
+                                            title="PENDENCIAS"
+                                            onPress={() => { this.onAbrirItensModal() }}
+                                            buttonStyle={{ height: 70 }}
+                                            backgroundColor={Colors.primaryLight}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'clock-o',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
+                                </View>
 
-
-
-                        <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 20, marginTop: 30 }} >
-                            <View style={{ flex: 2, marginRight: 2 }}>
-                                <Button
-                                    title="ITENS"
-                                    loading={loading}
-                                    onPress={() => { this.onAbrirItensModal() }}
-                                    buttonStyle={{ height: 45 }}
-                                    backgroundColor={Colors.buttonSecondary}
-                                    textStyle={{
-                                        fontWeight: 'bold',
-                                        fontSize: 15
-                                    }}
-                                    icon={{
-                                        name: 'barcode',
-                                        type: 'font-awesome',
-                                        color: Colors.textOnPrimary
-                                    }}
-                                />
+                                <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 20 }} >
+                                    <View style={{ flex: 2, marginRight: 2 }}>
+                                        <Button
+                                            title="PEÇAS"
+                                            onPress={() => { this.onAbrirItensModal() }}
+                                            buttonStyle={{ height: 70 }}
+                                            backgroundColor={Colors.primaryLight}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'th',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={{ flex: 2, marginLeft: 2 }}>
+                                        <Button
+                                            title="RESPONSÁVEIS"
+                                            onPress={() => { this.onAbrirItensModal() }}
+                                            buttonStyle={{ height: 70 }}
+                                            backgroundColor={Colors.primaryLight}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'user-o',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
+                                </View>
                             </View>
-                            <View style={{ flex: 2, marginLeft: 2 }}>
-                                <Button
-                                    title="SALVAR"
-                                    loading={loading}
-                                    onPress={this.onFormSubmit}
-                                    buttonStyle={{ height: 45 }}
-                                    backgroundColor={Colors.buttonPrimary}
-                                    textStyle={{
-                                        fontWeight: 'bold',
-                                        fontSize: 15
-                                    }}
-                                    icon={{
-                                        name: 'check',
-                                        type: 'font-awesome',
-                                        color: Colors.textOnPrimary
-                                    }}
-                                />
-                            </View>
+                        ) : null}
+
+
+                        <View style={{ flex: 1, marginTop: 10, marginBottom: 20 }}>
+                            <Button
+                                title="SALVAR O.S"
+                                loading={loading}
+                                onPress={this.onFormSubmit}
+                                buttonStyle={{ height: 45 }}
+                                backgroundColor={Colors.buttonPrimary}
+                                textStyle={{
+                                    fontWeight: 'bold',
+                                    fontSize: 15
+                                }}
+                                icon={{
+                                    name: 'check',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary
+                                }}
+                            />
                         </View>
+
 
                     </View>
+
+
+
+                    {/* -------------------------------- */}
+                    {/* MODAL PARA BUSCA DO FUNCIONÁRIOS */}
+                    {/* -------------------------------- */}
+                    <Modal
+                        transparent={false}
+                        visible={this.state.modalFuncBuscaVisible}
+                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
+                        animationType={"slide"}
+                    >
+                        <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                            <TouchableOpacity
+                                onPress={() => { this.onAbrirFuncBuscaModal(!this.state.modalFuncBuscaVisible) }}
+                            >
+                                <Icon family="MaterialIcons"
+                                    name="arrow-back"
+                                    color={Colors.textOnPrimary}
+                                    style={{ padding: 16 }} />
+                            </TouchableOpacity>
+
+                            <Text style={{
+                                color: Colors.textPrimaryLight,
+                                marginTop: 15,
+                                marginBottom: 15,
+                                marginLeft: 16,
+                                textAlign: 'center',
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                            }}>Buscar Funcionário</Text>
+                        </View>
+
+                        <SearchBar
+                            placeholder="Busca por Nome"
+                            lightTheme={true}
+                            onChangeText={this.onBuscaNomeChange}
+                        />
+
+                        <View style={{
+                            flex: 1,
+                            paddingVertical: 8,
+                            paddingHorizontal: 10,
+                            backgroundColor: '#ffffff',
+                        }} >
+
+                            <ScrollView
+                                style={{ flex: 1, }}
+                                keyboardShouldPersistTaps="always"
+                            >
+                                <View style={{ marginTop: 4 }}>
+                                    <FlatList
+                                        data={listaRegistrosFunc}
+                                        renderItem={this.renderItemFunc}
+                                        contentContainerStyle={{ paddingBottom: 100 }}
+                                        keyExtractor={registro => String(registro.rh_func_codigo) + String(registro.rh_func_empresa)}
+                                        onRefresh={this.onRefreshFunc}
+                                        refreshing={refreshing}
+                                        onEndReached={this.carregarMaisRegistrosFunc}
+                                        ListFooterComponent={this.renderListFooter}
+                                    />
+                                </View>
+                            </ScrollView>
+                        </View>
+                    </Modal>
+
+
 
                     <ProgressDialog
                         visible={salvado}
