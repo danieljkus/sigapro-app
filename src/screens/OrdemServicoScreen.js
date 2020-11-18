@@ -359,12 +359,16 @@ export default class OrdemServicoScreen extends Component {
 
 
 
-    // ---------------------------------------------------------------------------
-    // MODAL PARA SERVIÇOS CORRETIVOS
-    // ---------------------------------------------------------------------------
 
-    onAbrirItensModal = () => {
+    onAbrirCorretivas = () => {
         this.props.navigation.navigate('OrdemServicoCorretivoScreen', {
+            man_os_idf: this.state.man_os_idf,
+            // onCarregaProdutos: this.onCarregaProdutos
+        });
+    }
+
+    onAbrirPreventivas = () => {
+        this.props.navigation.navigate('OrdemServicoPreventivoScreen', {
             man_os_idf: this.state.man_os_idf,
             // onCarregaProdutos: this.onCarregaProdutos
         });
@@ -595,7 +599,7 @@ export default class OrdemServicoScreen extends Component {
                                     <View style={{ flex: 2, marginRight: 2 }}>
                                         <Button
                                             title="PREVENTIVAS"
-                                            onPress={() => { this.onAbrirItensModal() }}
+                                            onPress={() => { this.onAbrirPreventivas() }}
                                             buttonStyle={{ height: 70 }}
                                             backgroundColor={Colors.primaryLight}
                                             textStyle={{
@@ -612,7 +616,7 @@ export default class OrdemServicoScreen extends Component {
                                     <View style={{ flex: 2, marginLeft: 2 }}>
                                         <Button
                                             title="CORRETIVAS"
-                                            onPress={() => { this.onAbrirItensModal() }}
+                                            onPress={() => { this.onAbrirCorretivas() }}
                                             buttonStyle={{ height: 70 }}
                                             backgroundColor={Colors.primaryLight}
                                             textStyle={{

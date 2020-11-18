@@ -67,7 +67,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
     )
 }
 
-export default class OrdemServicoCorretivoScreen extends Component {
+export default class OrdemServicoPreventivoScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -108,7 +108,7 @@ export default class OrdemServicoCorretivoScreen extends Component {
         const { pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
-        axios.get('/ordemServicos/listaCorretivas/' + this.state.man_os_idf)
+        axios.get('/ordemServicos/listaPreventivas/' + this.state.man_os_idf)
             .then(response => {
                 const novosRegistros = pagina === 1
                     ? response.data.data
@@ -166,7 +166,7 @@ export default class OrdemServicoCorretivoScreen extends Component {
 
     onExcluirRegistro = (man_sos_servico) => {
         this.setState({ refreshing: true });
-        axios.delete('/ordemServicos/deleteCorretivas/' + this.state.man_os_idf + '/' + man_sos_servico)
+        axios.delete('/ordemServicos/deletePreventivas/' + this.state.man_os_idf + '/' + man_sos_servico)
             .then(response => {
                 const listaRegistros = [...this.state.listaRegistros];
                 const index = listaRegistros.findIndex(registro => registro.man_sos_servico === man_sos_servico);
@@ -273,9 +273,9 @@ export default class OrdemServicoCorretivoScreen extends Component {
 
         let axiosMethod;
         // if (man_os_idf) {
-            // axiosMethod = axios.put('/ordemServicos/updateCorretivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
+            // axiosMethod = axios.put('/ordemServicos/updatePreventivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
         // } else {
-            axiosMethod = axios.post('/ordemServicos/storeCorretivas', registro);
+            axiosMethod = axios.post('/ordemServicos/storePreventivas', registro);
         // }
         axiosMethod.then(response => {
             this.setState({ 
@@ -301,7 +301,7 @@ export default class OrdemServicoCorretivoScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, loading, salvado,
             servico_select, codServico, man_sos_complemento } = this.state;
 
-        console.log('OrdemServicoCorretivoScreen: ', this.state);
+        console.log('OrdemServicoPreventivoScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

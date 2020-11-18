@@ -16,6 +16,7 @@ import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 import OrdensServicosScreen from './OrdensServicosScreen';
 import OrdemServicoScreen from './OrdemServicoScreen';
 import OrdemServicoCorretivoScreen from './OrdemServicoCorretivoScreen';
+import OrdemServicoPreventivoScreen from './OrdemServicoPreventivoScreen';
 
 import VeiculosScreen from './VeiculosScreen';
 
@@ -175,6 +176,13 @@ const HomeStackNavigator = StackNavigator({
         screen: OrdemServicoCorretivoScreen,
         navigationOptions: {
             title: "Serviços Corretivos",
+            ...defaultNavigationOptions
+        }
+    },
+    OrdemServicoPreventivoScreen: {
+        screen: OrdemServicoPreventivoScreen,
+        navigationOptions: {
+            title: "Serviços Preventivos",
             ...defaultNavigationOptions
         }
     },
