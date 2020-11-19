@@ -363,14 +363,48 @@ export default class OrdemServicoScreen extends Component {
     onAbrirCorretivas = () => {
         this.props.navigation.navigate('OrdemServicoCorretivoScreen', {
             man_os_idf: this.state.man_os_idf,
-            // onCarregaProdutos: this.onCarregaProdutos
         });
     }
 
     onAbrirPreventivas = () => {
         this.props.navigation.navigate('OrdemServicoPreventivoScreen', {
             man_os_idf: this.state.man_os_idf,
-            // onCarregaProdutos: this.onCarregaProdutos
+        });
+    }
+
+    onAbrirPecas = () => {
+        this.props.navigation.navigate('OrdemServicoPecasScreen', {
+            man_os_idf: this.state.man_os_idf,
+        });
+    }
+
+    onAbrirResponsaveis = () => {
+        this.props.navigation.navigate('OrdemServicoResponsaveisScreen', {
+            man_os_idf: this.state.man_os_idf,
+        });
+    }
+
+    onAbrirDefeitos = () => {
+        this.props.navigation.navigate('OrdemServicoResponsaveisScreen', {
+            man_os_idf: this.state.man_os_idf,
+        });
+    }
+
+    onAbrirPendencias = () => {
+        this.props.navigation.navigate('OrdemServicoResponsaveisScreen', {
+            man_os_idf: this.state.man_os_idf,
+        });
+    }
+
+    onAbrirDefeitos = () => {
+        this.props.navigation.navigate('OrdemServicoDefeitosConstScreen', {
+            man_os_idf: this.state.man_os_idf,
+        });
+    }
+
+    onAbrirPendencias = () => {
+        this.props.navigation.navigate('OrdemServicoServPendenteScreen', {
+            man_os_idf: this.state.man_os_idf,
         });
     }
 
@@ -635,45 +669,8 @@ export default class OrdemServicoScreen extends Component {
                                 <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 4 }} >
                                     <View style={{ flex: 2, marginRight: 2 }}>
                                         <Button
-                                            title="DEFEITOS"
-                                            onPress={() => { this.onAbrirItensModal() }}
-                                            buttonStyle={{ height: 70 }}
-                                            backgroundColor={Colors.primaryLight}
-                                            textStyle={{
-                                                fontWeight: 'bold',
-                                                fontSize: 15
-                                            }}
-                                            icon={{
-                                                name: 'bug',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    </View>
-                                    <View style={{ flex: 2, marginLeft: 2 }}>
-                                        <Button
-                                            title="PENDENCIAS"
-                                            onPress={() => { this.onAbrirItensModal() }}
-                                            buttonStyle={{ height: 70 }}
-                                            backgroundColor={Colors.primaryLight}
-                                            textStyle={{
-                                                fontWeight: 'bold',
-                                                fontSize: 15
-                                            }}
-                                            icon={{
-                                                name: 'clock-o',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    </View>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 20 }} >
-                                    <View style={{ flex: 2, marginRight: 2 }}>
-                                        <Button
                                             title="PEÇAS"
-                                            onPress={() => { this.onAbrirItensModal() }}
+                                            onPress={() => { this.onAbrirPecas() }}
                                             buttonStyle={{ height: 70 }}
                                             backgroundColor={Colors.primaryLight}
                                             textStyle={{
@@ -690,7 +687,7 @@ export default class OrdemServicoScreen extends Component {
                                     <View style={{ flex: 2, marginLeft: 2 }}>
                                         <Button
                                             title="RESPONSÁVEIS"
-                                            onPress={() => { this.onAbrirItensModal() }}
+                                            onPress={() => { this.onAbrirResponsaveis() }}
                                             buttonStyle={{ height: 70 }}
                                             backgroundColor={Colors.primaryLight}
                                             textStyle={{
@@ -705,6 +702,45 @@ export default class OrdemServicoScreen extends Component {
                                         />
                                     </View>
                                 </View>
+
+                                <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 20 }} >
+                                    <View style={{ flex: 2, marginRight: 2 }}>
+                                        <Button
+                                            title="DEFEITOS"
+                                            onPress={() => { this.onAbrirDefeitos() }}
+                                            buttonStyle={{ height: 70 }}
+                                            backgroundColor={Colors.primaryLight}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'bug',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={{ flex: 2, marginLeft: 2 }}>
+                                        <Button
+                                            title="PENDENCIAS"
+                                            onPress={() => { this.onAbrirPendencias() }}
+                                            buttonStyle={{ height: 70 }}
+                                            backgroundColor={Colors.primaryLight}
+                                            textStyle={{
+                                                fontWeight: 'bold',
+                                                fontSize: 15
+                                            }}
+                                            icon={{
+                                                name: 'clock-o',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+
+
                             </View>
                         ) : null}
 

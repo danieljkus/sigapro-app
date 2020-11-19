@@ -243,7 +243,7 @@ class TextInput extends PureComponent {
                         maxLength={maxLength}
                         style={{
                             width: '100%',
-                            height: 27,
+                            height: height ? height : 27,
                             paddingLeft: 16,
                             paddingBottom: 2,
                             paddingTop: 0,

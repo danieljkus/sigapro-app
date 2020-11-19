@@ -318,6 +318,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
                             label="Serviço"
                             id="servico_select"
                             codServico={codServico}
+                            tipoServico={'P'}
                             onChange={this.onInputChangeServico}
                             value={servico_select}
                         />
@@ -330,6 +331,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
                             maxLength={100}
                             onChange={this.onInputChange}
                             multiline={true}
+                            height={50}
                         />
 
 

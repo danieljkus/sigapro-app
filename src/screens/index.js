@@ -17,6 +17,10 @@ import OrdensServicosScreen from './OrdensServicosScreen';
 import OrdemServicoScreen from './OrdemServicoScreen';
 import OrdemServicoCorretivoScreen from './OrdemServicoCorretivoScreen';
 import OrdemServicoPreventivoScreen from './OrdemServicoPreventivoScreen';
+import OrdemServicoPecasScreen from './OrdemServicoPecasScreen';
+import OrdemServicoResponsaveisScreen from './OrdemServicoResponsaveisScreen';
+import OrdemServicoDefeitosConstScreen from './OrdemServicoDefeitosConstScreen';
+import OrdemServicoServPendenteScreen from './OrdemServicoServPendenteScreen';
 
 import VeiculosScreen from './VeiculosScreen';
 
@@ -186,10 +190,38 @@ const HomeStackNavigator = StackNavigator({
             ...defaultNavigationOptions
         }
     },
+    OrdemServicoPecasScreen: {
+        screen: OrdemServicoPecasScreen,
+        navigationOptions: {
+            title: "Peças Utilizadas",
+            ...defaultNavigationOptions
+        }
+    },
+    OrdemServicoResponsaveisScreen: {
+        screen: OrdemServicoResponsaveisScreen,
+        navigationOptions: {
+            title: "Responsáveis",
+            ...defaultNavigationOptions
+        }
+    },
+    OrdemServicoDefeitosConstScreen: {
+        screen: OrdemServicoDefeitosConstScreen,
+        navigationOptions: {
+            title: "Defeitos Constatados",
+            ...defaultNavigationOptions
+        }
+    },
+    OrdemServicoServPendenteScreen: {
+        screen: OrdemServicoServPendenteScreen,
+        navigationOptions: {
+            title: "Serviços Pendentes",
+            ...defaultNavigationOptions
+        }
+    },
 
 
 
-    
+
     VeiculosScreen: {
         screen: VeiculosScreen,
         navigationOptions: {
@@ -414,25 +446,25 @@ const HomeStackNavigator = StackNavigator({
 
 
 }, {
-        headerMode: 'float',
-        mode: 'modal',
-        headerLayoutPreset: 'center',
-        navigationOptions: {
-            headerStyle: {
-                backgroundColor: Colors.primary,
-            },
-            headerTitleStyle: {
-                color: Colors.textOnPrimary
-            },
-            headerTintColor: Colors.textOnPrimary,
-            headerBackTitleStyle: {
-                color: Colors.textOnPrimary,
-            },
-            // headerLeft: (props) => {
-            //     return <HeaderBackButton {...props} tintColor={Colors.textOnPrimary} />
-            // }
+    headerMode: 'float',
+    mode: 'modal',
+    headerLayoutPreset: 'center',
+    navigationOptions: {
+        headerStyle: {
+            backgroundColor: Colors.primary,
         },
-    });
+        headerTitleStyle: {
+            color: Colors.textOnPrimary
+        },
+        headerTintColor: Colors.textOnPrimary,
+        headerBackTitleStyle: {
+            color: Colors.textOnPrimary,
+        },
+        // headerLeft: (props) => {
+        //     return <HeaderBackButton {...props} tintColor={Colors.textOnPrimary} />
+        // }
+    },
+});
 
 
 

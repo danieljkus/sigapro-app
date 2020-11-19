@@ -41,6 +41,7 @@ class ServicosOSSelect extends PureComponent {
 
     state = {
         codServico: '',
+        tipoServico: '',
         carregando: false,
 
         listaRegistros: [],
@@ -95,11 +96,14 @@ class ServicosOSSelect extends PureComponent {
 
     buscaRegistros = (value) => {
         this.setState({ carregando: true });
-        const { id, onChange } = this.props;
+        const { id, onChange, tipoServico } = this.props;
+
+        console.log('ServicosOSSelect.buscaRegistros: ', tipoServico);
 
         axios.get('/listaServico', {
             params: {
-                codigo: value
+                codigo: value,
+                tipoServico
             }
         }).then(response => {
             const { data } = response;
@@ -148,7 +152,7 @@ class ServicosOSSelect extends PureComponent {
     }
 
     getListaRegistros = () => {
-        const { buscaNome, pagina, listaRegistros } = this.state;
+        const { buscaNome, tipoServico, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
         axios.get('/listaServicosBusca', {
@@ -156,6 +160,7 @@ class ServicosOSSelect extends PureComponent {
                 page: pagina,
                 limite: 10,
                 nome: buscaNome,
+                tipoServico: this.props.tipoServico,
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -242,14 +247,15 @@ class ServicosOSSelect extends PureComponent {
 
     render() {
         const { label, enabled, value } = this.props;
-        const { codServico, carregando, loading, refreshing, listaRegistros } = this.state;
+        const { codServico, tipoServico, carregando, loading, refreshing, listaRegistros } = this.state;
 
         // console.log('ServicosOSSelect.this.props', this.props)
         // console.log('ServicosOSSelect.this.state', this.state)
 
         const servico = codServico ? codServico : (value ? value.man_serv_codigo : '');
+        const tipo = tipoServico ? tipoServico : '';
         const descricao = value ? value.man_serv_descricao : '';
-        this.setState({ codServico: servico });
+        this.setState({ codServico: servico, tipoServico: tipo });
 
         return (
             <View style={{ flexDirection: 'row' }}>
@@ -263,6 +269,7 @@ class ServicosOSSelect extends PureComponent {
                         keyboardType="numeric"
                         onChange={this.onInputChange}
                         enabled={enabled}
+                        height={50}
                     />
                 </View>
 
@@ -271,7 +278,7 @@ class ServicosOSSelect extends PureComponent {
                         title=""
                         loading={loading}
                         onPress={() => { this.onAbrirBuscaModal(true) }}
-                        buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                        buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 40, marginLeft: -18 }}
                         backgroundColor={Colors.transparent}
                         icon={{
                             name: 'search',
@@ -292,6 +299,8 @@ class ServicosOSSelect extends PureComponent {
                             label=" "
                             value={descricao}
                             enabled={false}
+                            height={50}
+                            multiline={true}
                         />
                         )
                     }
