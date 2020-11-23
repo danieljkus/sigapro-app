@@ -140,6 +140,8 @@ export default class EscalaVeiculosScreen extends Component {
 
         const temFiltro = man_ev_servico !== '' || man_ev_veiculo !== '' || man_ev_od !== '';
 
+        this.setState({ refreshing: true });
+
         axios.get('/escalaVeiculos', {
             params: {
                 page: pagina,
@@ -152,12 +154,28 @@ export default class EscalaVeiculosScreen extends Component {
             }
         }).then(response => {
 
+            console.log('getListaRegistros ATUAL: ', listaRegistros);
+            console.log('getListaRegistros DATA: ', response.data);
+
+            // const novosRegistros = pagina === 1
+            //     ? response.data.data
+            //     : listaRegistros.concat(response.data.data);
+            // const total = response.data.total;
+            // console.log('getListaRegistros NOVO: ', novosRegistros);
+            // this.setState({
+            //     listaRegistros: novosRegistros,
+            //     refreshing: false,
+            //     carregando: false,
+            //     carregarMais: novosRegistros.length < total
+            // })
+
             this.setState({
                 listaRegistros: response.data,
                 refreshing: false,
                 carregando: false,
                 temFiltro
             })
+
         }).catch(ex => {
             console.warn(ex);
             console.warn(ex.response);
@@ -169,7 +187,11 @@ export default class EscalaVeiculosScreen extends Component {
         })
     }
 
+
+
+
     onRefresh = () => {
+        console.log('onRefresh');
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -177,54 +199,28 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        // console.log('onRegistroPress: ', registro);
-
+        console.log('onRegistroPress');
         this.props.navigation.navigate('EscalaVeiculoScreen', {
             registro: {
                 registro: registro,
             },
             onRefresh: this.onRefresh
         });
-
-        // this.setState({ carregarRegistro: true });
-        // axios.get('/escalaVeiculos/show/' + man_ev_idf)
-        //     .then(response => {
-        //         this.setState({ carregarRegistro: false });
-
-        //         // console.log('registro: ', response.data);
-
-        //         this.props.navigation.navigate('EscalaVeiculoScreen', {
-        //             registro: {
-        //                 registro: response.data.registro,
-        //                 qtdeComb: response.data.qtdeComb,
-        //                 dataComb: response.data.dataComb,
-        //                 filial: response.data.filial,
-        //                 descFilial: response.data.descFilial,
-        //                 listaHistorico: response.data.listaHistorico,
-        //             },
-        //             onRefresh: this.onRefresh
-        //         });
-        //     }).catch(ex => {
-        //         this.setState({ carregarRegistro: false });
-        //         console.warn(ex);
-        //         console.warn(ex.response);
-        //     });
     }
 
     carregarMaisRegistros = () => {
-        const { carregarMais, refreshing, carregando, pagina } = this.state;
-        if (carregarMais && !refreshing && !carregando) {
-            this.setState({
-                carregando: true,
-                pagina: pagina + 1,
-            }, this.getListaRegistros);
-        }
+        // console.log('carregarMaisRegistros');
+        // const { carregarMais, refreshing, carregando, pagina } = this.state;
+        // if (carregarMais && !refreshing && !carregando) {
+        //     this.setState({
+        //         carregando: true,
+        //         pagina: pagina + 1,
+        //     }, this.getListaRegistros);
+        // }
     }
-
 
     renderListFooter = () => {
         const { carregando } = this.state;
-
         if (carregando) {
             return (
                 <View style={{ marginTop: 8 }}>
@@ -232,7 +228,6 @@ export default class EscalaVeiculosScreen extends Component {
                 </View>
             )
         }
-
         return null;
     }
 
@@ -246,14 +241,14 @@ export default class EscalaVeiculosScreen extends Component {
         )
     }
 
-    onRefreshPress = (visible) => {
-        this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
-    }
+
+
+
+
+
 
     onSearchPress = (visible) => {
+        console.log('onSearchPress');
         this.setState({ modalFiltrosVisible: visible });
         this.setState({
             pagina: 1,
@@ -262,10 +257,12 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onClosePress = (visible) => {
+        console.log('onClosePress');
         this.setState({ modalFiltrosVisible: visible });
     }
 
     onClearSearchPress = () => {
+        console.log('onClearSearchPress');
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -280,7 +277,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).subtract(1, 'days').format(DATE_FORMAT);
-        // console.log('onAntPress: ', dataNova);
+        console.log('onAntPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -292,7 +289,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).add(1, 'days').format(DATE_FORMAT);
-        // console.log('onProxPress: ', dataNova);
+        console.log('onProxPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -301,14 +298,17 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
 
+
+
+
+
+
+
     render() {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico } = this.state;
 
-        // console.log('this.state: ', this.state);
-        // console.log('man_ev_veiculo: ', this.state.man_ev_veiculo);
-        // console.log('man_ev_data_ini: ', man_ev_data_ini);
-        // console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
+        console.log('EscalaVeiculosScreen - this.state: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -373,7 +373,7 @@ export default class EscalaVeiculosScreen extends Component {
                     data={listaRegistros}
                     renderItem={this.renderItem}
                     contentContainerStyle={{ paddingBottom: 100 }}
-                    keyExtractor={registro => String(registro.pas_via_servico) + '_' + String(registro.pas_via_servico_extra) + '_' + String(registro.veic1) + '_' + String(registro.veic2)}
+                    keyExtractor={registro => String(registro.pas_via_empresa) + '_' + String(registro.pas_via_servico) + '_' + (registro.pas_via_servico_extra ? String(registro.pas_via_servico_extra) : String(registro.pas_via_servico)) + '_' + String(registro.veic1) + '_' + String(registro.veic2)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
                     onEndReached={this.carregarMaisRegistros}
@@ -493,15 +493,15 @@ export default class EscalaVeiculosScreen extends Component {
 
 
 
-                {/* <FloatActionButton
+                <FloatActionButton
                     iconFamily="MaterialIcons"
                     iconName="cached"
                     iconColor={Colors.textOnPrimary}
-                    onPress={this.onRefreshPress}
+                    onPress={this.onRefresh}
                     backgroundColor={Colors.primary}
                     marginBottom={90}
                     marginRight={10}
-                /> */}
+                />
 
                 <FloatActionButton
                     iconFamily="MaterialIcons"
