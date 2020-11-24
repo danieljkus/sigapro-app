@@ -157,6 +157,27 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
+                            {empresa && getTemPermissao('FICHAESTOQUESCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Ficha do Estoque"
+                                    onPress={() => navigation.navigate('FichaEstoqueScreen')}
+                                />
+                            ) : null}
+
+                            {empresa && getTemPermissao('CONSULTAITENSESTOQUESCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Consultar Produto"
+                                    onPress={() => navigation.navigate('ConsultaItensEstoqueScreen')}
+                                />
+                            ) : null}
+
+                            {empresa && getTemPermissao('MOVESTOQUESCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Consulta Mov. Estoque"
+                                    onPress={() => navigation.navigate('MovEstoqueScreen')}
+                                />
+                            ) : null}
+
                             {empresa && getTemPermissao('SAIDASESTOQUECREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Baixa do Estoque"

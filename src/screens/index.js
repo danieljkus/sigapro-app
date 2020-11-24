@@ -33,6 +33,10 @@ import PneusSulcagemScreen from './PneusSulcagemScreen';
 import MedicaoTanqueDieselScreen from './MedicaoTanqueDieselScreen';
 import MedicoesTanqueDieselScreen from './MedicoesTanqueDieselScreen';
 
+import FichaEstoqueScreen from './FichaEstoqueScreen';
+import ConsultaItensEstoqueScreen from './ConsultaItensEstoqueScreen';
+import MovEstoqueScreen from './MovEstoqueScreen';
+
 import SaidasEstoqueScreen from './SaidasEstoqueScreen';
 import SaidaEstoqueScreen from './SaidaEstoqueScreen';
 import SaidaEstoqueItensScreen from './SaidaEstoqueItensScreen';
@@ -269,6 +273,32 @@ const HomeStackNavigator = StackNavigator({
         navigationOptions: {
             title: "Sulcagem",
             ...defaultNavigationOptions
+        }
+    },
+
+
+
+    FichaEstoqueScreen: {
+        screen: FichaEstoqueScreen,
+        navigationOptions: {
+            title: "Ficha do Estoque",
+            ...defaultNavigationOptions,
+        }
+    },
+
+    ConsultaItensEstoqueScreen: {
+        screen: ConsultaItensEstoqueScreen,
+        navigationOptions: {
+            title: "Consultar Produto",
+            ...defaultNavigationOptions,
+        }
+    },
+
+    MovEstoqueScreen: {
+        screen: MovEstoqueScreen,
+        navigationOptions: {
+            title: "Consulta Mov. Estoque",
+            ...defaultNavigationOptions,
         }
     },
 

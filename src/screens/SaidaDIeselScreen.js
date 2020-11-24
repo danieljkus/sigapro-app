@@ -107,7 +107,7 @@ export default class SaidaDieselScreen extends Component {
         }
 
         this.setState({ carregarRegistro: true });
-        axios.get('/saidasEstoque/buscaEstoque', {
+        axios.get('/estoque/buscaEstoque', {
             params: {
                 codItem: tipo === 'D' ? 19 : 166048,
             }

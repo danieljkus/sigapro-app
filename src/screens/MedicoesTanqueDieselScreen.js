@@ -136,7 +136,6 @@ export default class MedicoesTanqueDieselScreen extends Component {
 
     carregarMaisRegistros = () => {
         const { carregarMais, refreshing, carregando, pagina } = this.state;
-
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -147,7 +146,6 @@ export default class MedicoesTanqueDieselScreen extends Component {
 
     renderListFooter = () => {
         const { carregando } = this.state;
-
         if (carregando) {
             return (
                 <View style={{ marginTop: 8 }}>
@@ -155,7 +153,6 @@ export default class MedicoesTanqueDieselScreen extends Component {
                 </View>
             )
         }
-
         return null;
     }
 

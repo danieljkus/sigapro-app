@@ -304,7 +304,6 @@ class ServicosOSSelect extends PureComponent {
                         />
                         )
                     }
-
                 </View>
 
 
