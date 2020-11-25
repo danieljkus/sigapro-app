@@ -11,9 +11,10 @@ import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import { maskDate } from '../utils/Maskers';
+import { maskDate, maskValorMoeda } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
 import FiliaisSelect from '../components/FiliaisSelect';
+import ItemEstoqueSelect from '../components/ItemEstoqueSelect';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -22,87 +23,118 @@ moment.locale('pt-BR');
 const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const RegistroItem = ({ registro, onRegistroPress }) => {
+const RegistroItem = ({ registro }) => {
     return (
 
-        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 3, borderRadius: 5, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <TouchableOpacity
-                    onPress={() => onRegistroPress(registro.pneus_mov_idf)}
-                >
-                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 2, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                Pneu{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                {registro.pneus_mov_pneu}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 2, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                Filial{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                {registro.pneus_mov_filial}
-                            </Text>
-                        </View>
+                <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                            Data{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                            {moment(registro.estoq_me_data).format("DD/MM/YYYY")}
+                        </Text>
                     </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Marca{': '}
+                            IDF{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.estoq_me_idf}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Nº{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.estoq_me_numero}
+                        </Text>
+                    </View>
+                </View>
+
+                <Divider />
+
+                <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                            Filial{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                            {registro.estoq_mei_filial}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Tipo{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.estoq_tme_abrev}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                            {registro.tipo_mov}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 3, fontSize: 20 }}>
+                    <Text>
+                        {registro.descr_origem_destino}
+                    </Text>
+                </View>
+
+                {/* <Divider /> */}
+
+                <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Item {': '}
+                    </Text>
+                    <Text>
+                        {registro.estoq_mei_item}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 8, fontSize: 20, marginRight: 50 }}>
+                    <Text>
+                        {registro.estoq_ie_descricao}
+                    </Text>
+                </View>
+
+                <Divider />
+
+                <View style={{ paddingLeft: 10, marginBottom: 10, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                            Qtde{': '}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            C. Médio{': '}
+                        </Text>
+                        <Text style={{ fontSize: 12, marginTop: 2 }}>
+                            {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Total{': '}
                         </Text>
                         <Text>
-                            {registro.pneus_mar_descricao}
+                            {maskValorMoeda(parseFloat(registro.estoq_mei_total_mov))}
                         </Text>
                     </View>
+                </View>
 
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Modelo{': '}
-                        </Text>
-                        <Text>
-                            {registro.pneus_mod_descricao}
-                        </Text>
-                    </View>
+                <Divider />
 
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Dimenssão{': '}
-                        </Text>
-                        <Text>
-                            {registro.pneus_dim_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                Data{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                                {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Vida{': '}
-                            </Text>
-                            <Text style={{ fontSize: 12, marginTop: 2 }}>
-                                {registro.pneus_mov_vida === "0" ? 'NOVO' : registro.pneus_mov_vida + 'º VIDA'}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Km Vida{': '}
-                            </Text>
-                            <Text>
-                                {registro.pneus_mov_km_ini}
-                            </Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
             </View >
         </Card >
     )
@@ -119,16 +151,15 @@ export default class MovEstoqueScreen extends Component {
         carregarMais: false,
         pagina: 1,
 
-        pneus_mov_pneu: '',
-        pneus_mov_filial: '',
-        pneus_cp_marca: '',
-        pneus_cp_modelo: '',
-        pneus_cp_dimenssao: '',
+        empresa: '',
+        dataIni: moment(new Date()).format(DATE_FORMAT),
+        dataFim: moment(new Date()).format(DATE_FORMAT),
+        estoq_mei_filial: '',
+        estoq_mei_item: '',
+        estoq_me_idf: '',
+        estoq_me_numero: '',
 
         filialSelect: null,
-        marcaSelect: [],
-        modeloSelect: [],
-        dimenssaoSelect: [],
 
         temFiltro: false,
         modalFiltrosVisible: false,
@@ -138,7 +169,7 @@ export default class MovEstoqueScreen extends Component {
         getFilial().then(filial => {
             this.setState({
                 refreshing: true,
-                pneus_mov_filial: filial
+                estoq_mei_filial: filial
             });
 
             if (filial) {
@@ -161,10 +192,6 @@ export default class MovEstoqueScreen extends Component {
             } else {
                 this.getListaRegistros();
             }
-
-            this.buscaMarca();
-            this.buscaModelo();
-            this.buscaDimenssoes();
         })
     }
 
@@ -179,30 +206,43 @@ export default class MovEstoqueScreen extends Component {
         state[id] = value;
         this.setState(state);
         // console.log('onInputChangeFilial: ', state);
-
         if (value) {
             this.setState({
-                pneus_mov_filial: value.adm_fil_codigo
+                estoq_mei_filial: value.adm_fil_codigo
+            });
+        }
+    }
+
+    onInputChangeItem = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        // console.log('onInputChangeItem: ', state);
+        if (value) {
+            this.setState({
+                estoq_mei_item: value.estoq_ie_codigo
             });
         }
     }
 
 
     getListaRegistros = () => {
-        const { pneus_mov_pneu, pneus_mov_filial, pneus_cp_marca, pneus_cp_modelo, pneus_cp_dimenssao,
+        const { estoq_mei_item, estoq_mei_filial, dataIni, dataFim, estoq_me_idf, estoq_me_numero,
             pagina, listaRegistros } = this.state;
 
-        const temFiltro = pneus_mov_pneu !== '' || pneus_mov_filial !== '' || pneus_cp_marca !== '' || pneus_cp_modelo !== '' || pneus_cp_dimenssao !== '';
+        const temFiltro = estoq_mei_item !== '' || estoq_mei_filial !== '' || estoq_me_idf !== '' || estoq_me_numero !== '';
 
-        axios.get('/pneus/listaEstoque', {
+        axios.get('/estoque/movEstoque', {
             params: {
                 page: pagina,
                 limite: 10,
-                pneu: pneus_mov_pneu,
-                filial: pneus_mov_filial,
-                marca: pneus_cp_marca,
-                modelo: pneus_cp_modelo,
-                dimenssao: pneus_cp_dimenssao,
+                empresa: 1,
+                filial: estoq_mei_filial,
+                codItem: estoq_mei_item,
+                idf: estoq_me_idf,
+                numero: estoq_me_numero,
+                dtIni: moment(dataIni, DATE_FORMAT).format("YYYY-MM-DD"),
+                dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -227,26 +267,6 @@ export default class MovEstoqueScreen extends Component {
         })
     }
 
-    onRegistroPress = (pneus_mov_idf) => {
-        this.setState({ carregarRegistro: true });
-
-        axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
-            .then(response => {
-                this.setState({ carregarRegistro: false });
-                response.data.tipoTela = 'EST';
-                this.props.navigation.navigate('PneusTrocaScreen', {
-                    registro: {
-                        registro: response.data,
-                    },
-                    onRefresh: this.onRefresh,
-                });
-            }).catch(ex => {
-                this.setState({ carregarRegistro: false });
-                console.warn(ex);
-                console.warn(ex.response);
-            });
-    }
-
     onRefresh = () => {
         this.setState({
             pagina: 1,
@@ -267,7 +287,6 @@ export default class MovEstoqueScreen extends Component {
 
     renderListFooter = () => {
         const { carregando } = this.state;
-
         if (carregando) {
             return (
                 <View style={{ marginTop: 8 }}>
@@ -275,7 +294,6 @@ export default class MovEstoqueScreen extends Component {
                 </View>
             )
         }
-
         return null;
     }
 
@@ -313,96 +331,27 @@ export default class MovEstoqueScreen extends Component {
             refreshing: true,
             temFiltro: false,
             filialSelect: null,
-            pneus_mov_pneu: '',
-            pneus_mov_filial: '',
-            pneus_cp_marca: '',
-            pneus_cp_modelo: '',
-            pneus_cp_dimenssao: '',
+            empresa: '',
+            dataIni: moment(new Date()).format(DATE_FORMAT),
+            dataFim: moment(new Date()).format(DATE_FORMAT),
+            estoq_mei_item: '',
+            estoq_me_idf: '',
+            estoq_me_numero: '',
         }, this.getListaRegistros);
     }
 
 
 
-    buscaMarca = () => {
-        this.setState({ marcaSelect: [], pneus_cp_marca: '' });
-        axios.get('/pneus/listaMarcas', {
-        }).then(response => {
-            const { data } = response;
-            const marcaSelect = data.map(regList => {
-                return {
-                    key: regList.pneus_mar_codigo,
-                    label: regList.pneus_mar_descricao
-                }
-            });
-            marcaSelect.unshift({ key: 0, label: "Selecione uma Marca" });
-            this.setState({
-                marcaSelect,
-            })
-        }).catch(error => {
-            console.error(error.response);
-            this.setState({
-                marcaSelect: [{ label: "Marca não encontrda", key: 0 }],
-            });
-        })
 
-    }
-
-    buscaModelo = () => {
-        this.setState({ modeloSelect: [], pneus_cp_modelo: '' });
-        axios.get('/pneus/listaModelos', {
-        }).then(response => {
-            const { data } = response;
-            const modeloSelect = data.map(regList => {
-                return {
-                    key: regList.pneus_mod_codigo,
-                    label: regList.pneus_mod_descricao
-                }
-            });
-            modeloSelect.unshift({ key: 0, label: "Selecione um Modelo" });
-            this.setState({
-                modeloSelect,
-            })
-        }).catch(error => {
-            console.error(error.response);
-            this.setState({
-                modeloSelect: [{ label: "Modelo não encontrdo", key: 0 }],
-            });
-        })
-
-    }
-
-    buscaDimenssoes = () => {
-        this.setState({ dimenssaoSelect: [], pneus_cp_dimenssao: '' });
-        axios.get('/pneus/listaDimenssoes', {
-        }).then(response => {
-            const { data } = response;
-            const dimenssaoSelect = data.map(regList => {
-                return {
-                    key: regList.pneus_dim_codigo,
-                    label: regList.pneus_dim_descricao
-                }
-            });
-            dimenssaoSelect.unshift({ key: 0, label: "Selecione uma Dimenssão" });
-            this.setState({
-                dimenssaoSelect,
-            })
-        }).catch(error => {
-            console.error(error.response);
-            this.setState({
-                dimenssaoSelect: [{ label: "Dimenssão não encontrda", key: 0 }],
-            });
-        })
-
-    }
 
 
 
     render() {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro,
-            pneus_mov_pneu, pneus_mov_filial, pneus_cp_marca, pneus_cp_modelo, pneus_cp_dimenssao,
-            filialSelect, marcaSelect, modeloSelect, dimenssaoSelect } = this.state;
+            dataIni, dataFim, estoq_mei_item, estoq_mei_filial, estoq_me_idf, estoq_me_numero,
+            filialSelect, item_select } = this.state;
 
-        // console.log('PneusEstoqueScreen.this.state: ', this.state);
+        // console.log('MovEstoqueScreen.this.state: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -412,7 +361,7 @@ export default class MovEstoqueScreen extends Component {
                     data={listaRegistros}
                     renderItem={this.renderItem}
                     contentContainerStyle={{ paddingBottom: 100 }}
-                    keyExtractor={registro => String(registro.pneus_mov_pneu)}
+                    keyExtractor={registro => String(registro.estoq_me_idf) + '_' + String(registro.estoq_mei_seq)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
                     onEndReached={this.carregarMaisRegistros}
@@ -440,7 +389,7 @@ export default class MovEstoqueScreen extends Component {
                         <View style={{
                             flex: 1,
                             width: "90%",
-                            paddingTop: 100,
+                            paddingTop: 10,
                         }} >
                             <View style={{
                                 paddingVertical: 15,
@@ -458,60 +407,87 @@ export default class MovEstoqueScreen extends Component {
                                         textAlign: 'center',
                                         fontSize: 20,
                                         fontWeight: 'bold',
-                                    }}>Filtrar Estoque</Text>
+                                    }}>Filtrar</Text>
                                 </View>
 
                                 <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
+                                    <ScrollView style={{ height: 50, width: "100%", marginBottom: 10 }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <View style={{ width: "47%", marginRight: 20 }}>
+                                                <TextInput
+                                                    type="date"
+                                                    label="Data Início"
+                                                    id="dataIni"
+                                                    ref="dataIni"
+                                                    value={dataIni}
+                                                    masker={maskDate}
+                                                    dateFormat={DATE_FORMAT}
+                                                    onChange={this.onInputChange}
+                                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                                    fontSize={12}
+                                                />
+                                            </View>
+                                            <View style={{ width: "47%" }}>
+                                                <TextInput
+                                                    type="date"
+                                                    label="Data Fim"
+                                                    id="dataFim"
+                                                    ref="dataFim"
+                                                    value={dataFim}
+                                                    masker={maskDate}
+                                                    dateFormat={DATE_FORMAT}
+                                                    onChange={this.onInputChange}
+                                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                                    fontSize={12}
+                                                />
+                                            </View>
+                                        </View>
+                                    </ScrollView>
+
                                     <FiliaisSelect
                                         label="Filial"
                                         id="filialSelect"
-                                        codFilial={pneus_mov_filial}
+                                        codFilial={estoq_mei_filial}
                                         onChange={this.onInputChangeFilial}
                                         value={filialSelect}
                                     />
 
-                                    <TextInput
-                                        label="Pneu"
-                                        id="pneus_mov_pneu"
-                                        ref="pneus_mov_pneu"
-                                        value={pneus_mov_pneu}
-                                        maxLength={20}
-                                        onChange={this.onInputChange}
+                                    <ItemEstoqueSelect
+                                        label="Produto"
+                                        id="item_select"
+                                        codItem={estoq_mei_item}
+                                        buscaEstoque={1}
+                                        onChange={this.onInputChangeItem}
+                                        value={item_select}
+                                        enabled={true}
                                     />
 
-                                    <TextInput
-                                        type="select"
-                                        label="Marca"
-                                        id="pneus_cp_marca"
-                                        ref="pneus_cp_marca"
-                                        value={pneus_cp_marca}
-                                        selectedValue=""
-                                        options={marcaSelect}
-                                        onChange={this.onInputChange}
-                                    />
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <View style={{ width: "47%", marginRight: 20 }}>
+                                            <TextInput
+                                                label="IDF"
+                                                id="estoq_me_idf"
+                                                ref="estoq_me_idf"
+                                                value={estoq_me_idf}
+                                                maxLength={10}
+                                                onChange={this.onInputChange}
+                                                keyboardType="numeric"
+                                            />
+                                        </View>
+                                        <View style={{ width: "47%" }}>
+                                            <TextInput
+                                                label="Número"
+                                                id="estoq_me_numero"
+                                                ref="estoq_me_numero"
+                                                value={estoq_me_numero}
+                                                maxLength={10}
+                                                onChange={this.onInputChange}
+                                                keyboardType="numeric"
+                                            />
+                                        </View>
+                                    </View>
 
-                                    <TextInput
-                                        type="select"
-                                        label="Modelo"
-                                        id="pneus_cp_modelo"
-                                        ref="pneus_cp_modelo"
-                                        value={pneus_cp_modelo}
-                                        selectedValue=""
-                                        options={modeloSelect}
-                                        onChange={this.onInputChange}
-                                    />
-
-                                    <TextInput
-                                        type="select"
-                                        label="Dimenssão"
-                                        id="pneus_cp_dimenssao"
-                                        ref="pneus_cp_dimenssao"
-                                        value={pneus_cp_dimenssao}
-                                        selectedValue=""
-                                        options={dimenssaoSelect}
-                                        onChange={this.onInputChange}
-                                    />
 
 
                                     <Button
@@ -552,19 +528,16 @@ export default class MovEstoqueScreen extends Component {
                     marginRight={10}
                 />
 
-                {
-                    temFiltro
-                        ? (
-                            <FloatActionButton
-                                iconFamily="MaterialIcons"
-                                iconName="clear"
-                                iconColor={Colors.textOnPrimary}
-                                onPress={this.onClearSearchPress}
-                                backgroundColor={Colors.primary}
-                                marginRight={60}
-                            />
-                        ) : null
-                }
+                {temFiltro ? (
+                    <FloatActionButton
+                        iconFamily="MaterialIcons"
+                        iconName="clear"
+                        iconColor={Colors.textOnPrimary}
+                        onPress={this.onClearSearchPress}
+                        backgroundColor={Colors.primary}
+                        marginRight={60}
+                    />
+                ) : null}
 
                 <ProgressDialog
                     visible={carregarRegistro}

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {
     View, Text, FlatList, Modal,
-    Platform, TouchableOpacity,
-    ActivityIndicator, ScrollView,
-    PermissionsAndroid
+    Platform, ActivityIndicator,
+
 } from 'react-native';
 import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
-import GetLocation from 'react-native-get-location';
-import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
@@ -24,107 +21,44 @@ moment.locale('pt-BR');
 const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const RegistroItem = ({ registro }) => {
+const RegistroItemFiliais = ({ registro }) => {
     return (
 
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Data{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {moment(registro.estoq_me_data).format("DD/MM/YYYY")}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            IDF{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.estoq_me_idf}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Nº{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.estoq_me_numero}
-                        </Text>
-                    </View>
-                </View>
 
-                <Divider />
-
-                <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 8, fontSize: 20 }}>
+                <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
                     <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Movimentação{': '}
+                        Filial {': '}
                     </Text>
                     <Text>
-                        {registro.estoq_tme_abrev}
+                        {registro.estoq_ef_filial}
                     </Text>
                 </View>
 
-                <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Qtde{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            C. Médio{': '}
-                        </Text>
-                        <Text style={{ fontSize: 12, marginTop: 2 }}>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Total{': '}
-                        </Text>
-                        <Text>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_total_mov))}
-                        </Text>
-                    </View>
+                <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 8, fontSize: 20, marginRight: 50 }}>
+                    <Text>
+                        {registro.adm_fil_descricao}
+                    </Text>
                 </View>
 
                 <Divider />
 
-                <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 8 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 16 }} >
-                        Estoque Atual
-                    </Text>
-                </View>
-
                 <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Qtde{': '}
+                            Qtde Est{': '}
                         </Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_estoque_atual))}
+                            {maskValorMoeda(parseFloat(registro.estoq_ef_estoque_atual))}
                         </Text>
                     </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            C. Médio{': '}
+                            Custo Médio{': '}
                         </Text>
                         <Text style={{ fontSize: 12, marginTop: 2 }}>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_custo_medio_estoque))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Total{': '}
-                        </Text>
-                        <Text>
-                            {maskValorMoeda(parseFloat(parseFloat(registro.estoq_mei_qtde_estoque_atual) * parseFloat(registro.estoq_mei_custo_medio_estoque)))}
+                            {maskValorMoeda(parseFloat(registro.estoq_ef_custo_medio))}
                         </Text>
                     </View>
                 </View>
@@ -135,10 +69,35 @@ const RegistroItem = ({ registro }) => {
 }
 
 
+const RegistroItemFornecedores = ({ registro }) => {
+    return (
+        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
+            <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
+                <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        CNPJ/CPF {': '}
+                    </Text>
+                    <Text>
+                        {registro.estoq_ifor_fornecedor}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 8, fontSize: 20, marginRight: 50 }}>
+                    <Text>
+                        {registro.adm_pes_nome}
+                    </Text>
+                </View>
+            </View >
+        </Card >
+    )
+}
+
+
 export default class ConsultaItensEstoqueScreen extends Component {
 
     state = {
-        listaRegistros: [],
+        listaRegistrosFiliais: [],
+        listaRegistrosFornec: [],
         refreshing: false,
         carregando: false,
         carregarMais: false,
@@ -149,6 +108,12 @@ export default class ConsultaItensEstoqueScreen extends Component {
         estoq_ie_descricao: '',
         qtdeEstoque: 0,
         custo: 0,
+
+        tipoListaFiliais: 1,
+        checkedFiliais: true,
+
+        tipoListaNotas: 0,
+        checkedNotas: false,
     };
 
     componentDidMount() {
@@ -167,7 +132,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
         state[id] = value;
         this.setState(state);
         if (value) {
-            console.log('onInputChangeItem OK ')
+            // console.log('onInputChangeItem OK ')
             this.setState({
                 codItem: value.estoq_ie_codigo,
                 estoq_ie_descricao: value.estoq_ie_descricao,
@@ -179,20 +144,22 @@ export default class ConsultaItensEstoqueScreen extends Component {
                 this.getListaRegistros()
             });
         } else {
-            console.log('onInputChangeItem NÂO')
+            // console.log('onInputChangeItem NÂO')
             this.setState({
                 // codItem: '',
                 // estoq_ie_descricao: '',
                 qtdeEstoque: 0,
                 custo: 0,
-                listaRegistros: [],
+                listaRegistrosFiliais: [],
+                listaRegistrosFornec: [],
             });
         }
     }
 
     onErroChange = msgErro => {
         this.setState({
-            listaRegistros: [],
+            listaRegistrosFiliais: [],
+            listaRegistrosFornec: [],
             msgErroVeiculo: msgErro,
         })
     }
@@ -220,25 +187,75 @@ export default class ConsultaItensEstoqueScreen extends Component {
 
 
     getListaRegistros = () => {
-        const { item_select, pagina, listaRegistros } = this.state;
+        if (this.state.checkedFiliais) {
+            this.getListaFiliais();
+        } else if (this.state.checkedFornec) {
+            this.getListaFornecedores();
+        } else if (this.state.checkedSaidas) {
+            this.getListaFiliais();
+        } else if (this.state.checkedCompras) {
+            this.getListaFiliais();
+        } else if (this.state.checkedCompPend) {
+            this.getListaFiliais();
+        } else if (this.state.checkedNotas) {
+            this.getListaFiliais();
+        }
+    }
 
-        console.log('getListaRegistros')
+    getListaFiliais = () => {
+        const { item_select, pagina, listaRegistrosFiliais } = this.state;
 
-        axios.get('/estoque/fichaEstoque', {
+        console.log('getListaFiliais')
+
+        axios.get('/estoque/itensEstoqueFiliais', {
             params: {
                 page: pagina,
                 limite: 10,
                 codItem: item_select.estoq_ie_codigo,
             }
         }).then(response => {
-            console.log('getListaRegistros: ', response.data.data)
+            console.log('getListaFiliais: ', response.data.data)
 
             const novosRegistros = pagina === 1
                 ? response.data.data
-                : listaRegistros.concat(response.data.data);
+                : listaRegistrosFiliais.concat(response.data.data);
             const total = response.data.total;
             this.setState({
-                listaRegistros: novosRegistros,
+                listaRegistrosFiliais: novosRegistros,
+                refreshing: false,
+                carregando: false,
+                carregarMais: novosRegistros.length < total
+            })
+        }).catch(ex => {
+            console.warn(ex);
+            console.warn(ex.response);
+            this.setState({
+                refreshing: false,
+                carregando: false,
+            });
+        })
+    }
+
+    getListaFornecedores = () => {
+        const { item_select, pagina, listaRegistrosFornec } = this.state;
+
+        console.log('getListaFornecedores')
+
+        axios.get('/estoque/itensEstoqueFornecedores', {
+            params: {
+                page: pagina,
+                limite: 10,
+                codItem: item_select.estoq_ie_codigo,
+            }
+        }).then(response => {
+            console.log('getListaFornecedores: ', response.data.data)
+
+            const novosRegistros = pagina === 1
+                ? response.data.data
+                : listaRegistrosFornec.concat(response.data.data);
+            const total = response.data.total;
+            this.setState({
+                listaRegistrosFornec: novosRegistros,
                 refreshing: false,
                 carregando: false,
                 carregarMais: novosRegistros.length < total
@@ -283,9 +300,17 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
 
-    renderItem = ({ item, index }) => {
+    renderItemFiliais = ({ item, index }) => {
         return (
-            <RegistroItem
+            <RegistroItemFiliais
+                registro={item}
+            />
+        )
+    }
+
+    renderItemFornec = ({ item, index }) => {
+        return (
+            <RegistroItemFornecedores
                 registro={item}
             />
         )
@@ -306,10 +331,71 @@ export default class ConsultaItensEstoqueScreen extends Component {
         }, this.getListaRegistros);
     }
 
+    onMudaLista = (tipo) => {
+        // console.log('onMudaLista: ', tipo);
+
+        if (tipo === 'FIL') {
+            this.setState({
+                checkedFiliais: true,
+                checkedNotas: false,
+                checkedCompras: false,
+                checkedSaidas: false,
+                checkedCompPend: false,
+                checkedFornec: false,
+            }, this.getListaFiliais());
+        } else if (tipo === 'FOR') {
+            this.setState({
+                checkedFiliais: false,
+                checkedNotas: false,
+                checkedCompras: false,
+                checkedSaidas: false,
+                checkedCompPend: false,
+                checkedFornec: true,
+            }, this.getListaFornecedores());
+        } else if (tipo === 'SAI') {
+            this.setState({
+                checkedFiliais: false,
+                checkedNotas: false,
+                checkedCompras: false,
+                checkedSaidas: true,
+                checkedCompPend: false,
+                checkedFornec: false,
+            }, this.getListaFiliais());
+        } else if (tipo === 'COMP') {
+            this.setState({
+                checkedFiliais: false,
+                checkedNotas: false,
+                checkedCompras: true,
+                checkedSaidas: false,
+                checkedCompPend: false,
+                checkedFornec: false,
+            }, this.getListaFiliais());
+        } else if (tipo === 'CPEN') {
+            this.setState({
+                checkedFiliais: false,
+                checkedNotas: false,
+                checkedCompras: false,
+                checkedSaidas: false,
+                checkedCompPend: true,
+                checkedFornec: false,
+            }, this.getListaFiliais());
+        } else if (tipo === 'NF') {
+            this.setState({
+                checkedFiliais: false,
+                checkedNotas: true,
+                checkedCompras: false,
+                checkedSaidas: false,
+                checkedCompPend: false,
+                checkedFornec: false,
+            }, this.getListaFiliais());
+        }
+    }
 
     render() {
-        const { listaRegistros, refreshing, carregarRegistro,
-            item_select, codItem, qtdeEstoque, custo } = this.state;
+        const { listaRegistrosFiliais, listaRegistrosFornec, 
+            refreshing, carregarRegistro,
+            item_select, codItem, qtdeEstoque, custo,
+            checkedFiliais, checkedNotas, checkedCompras, checkedSaidas, checkedCompPend, checkedFornec } = this.state;
 
         console.log('FichaEstoqueScreen.this.state: ', this.state);
 
@@ -359,17 +445,104 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     ) : null}
                 </View>
 
+                <View style={{ flexDirection: 'row', marginBottom: 5 }}>
+                    <View style={{ flex: 3, margin: 0, padding: 0 }}>
+                        <CheckBox
+                            left
+                            title='Filiais'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={checkedFiliais}
+                            onPress={() => { this.onMudaLista('FIL') }}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                        />
+                    </View>
+                    <View style={{ flex: 3, margin: 0, padding: 0 }}>
+                        <CheckBox
+                            left
+                            title='Fornec.'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={checkedFornec}
+                            onPress={() => { this.onMudaLista('FOR') }}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                        />
+                    </View>
+                    <View style={{ flex: 3, margin: 0, padding: 0 }}>
+                        <CheckBox
+                            left
+                            title='Saídas'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={checkedSaidas}
+                            onPress={() => { this.onMudaLista('SAI') }}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                        />
+                    </View>
+                </View>
 
-                <FlatList
-                    data={listaRegistros}
-                    renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 80 }}
-                    keyExtractor={registro => String(registro.estoq_me_idf) + '_' + String(registro.estoq_mei_seq)}
-                    onRefresh={this.onRefresh}
-                    refreshing={refreshing}
-                    onEndReached={this.carregarMaisRegistros}
-                    ListFooterComponent={this.renderListFooter}
-                />
+                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                    <View style={{ flex: 3, margin: 0, padding: 0 }}>
+                        <CheckBox
+                            left
+                            title='Compras'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={checkedCompras}
+                            onPress={() => { this.onMudaLista('COM') }}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                        />
+                    </View>
+                    <View style={{ flex: 3, margin: 0, padding: 0 }}>
+                        <CheckBox
+                            left
+                            title='Pendencias'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={checkedCompPend}
+                            onPress={() => { this.onMudaLista('CPEN') }}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                        />
+                    </View>
+                    <View style={{ flex: 3, margin: 0, padding: 0 }}>
+                        <CheckBox
+                            left
+                            title='Notas'
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            checked={checkedNotas}
+                            onPress={() => { this.onMudaLista('NF') }}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                        />
+                    </View>
+                </View>
+
+
+                {checkedFiliais ? (
+                    <FlatList
+                        data={listaRegistrosFiliais}
+                        renderItem={this.renderItemFiliais}
+                        contentContainerStyle={{ paddingBottom: 80 }}
+                        keyExtractor={registro => String(registro.estoq_ef_filial)}
+                        onRefresh={this.onRefresh}
+                        refreshing={refreshing}
+                        onEndReached={this.carregarMaisRegistros}
+                        ListFooterComponent={this.renderListFooter}
+                    />
+                ) : null}
+
+                {checkedFornec ? (
+                    <FlatList
+                        data={listaRegistrosFornec}
+                        renderItem={this.renderItemFornec}
+                        contentContainerStyle={{ paddingBottom: 80 }}
+                        keyExtractor={registro => String(registro.estoq_ifor_fornecedor)}
+                        onRefresh={this.onRefresh}
+                        refreshing={refreshing}
+                        onEndReached={this.carregarMaisRegistros}
+                        ListFooterComponent={this.renderListFooter}
+                    />
+                ) : null}
 
 
                 <ProgressDialog

@@ -59,7 +59,7 @@ const RegistroItem = ({ registro }) => {
                 <Divider />
 
                 <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 8, fontSize: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 16 }} >
                         Movimentação{': '}
                     </Text>
                     <Text>
