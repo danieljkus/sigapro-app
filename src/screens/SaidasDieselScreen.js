@@ -19,7 +19,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.estoq_me_idf)}
-                // onLongPress={() => onRegistroLongPress(registro.estoq_me_idf)}
+            // onLongPress={() => onRegistroLongPress(registro.estoq_me_idf)}
             >
 
                 <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
@@ -104,9 +104,10 @@ export default class MedicoesTanqueArlaScreen extends Component {
     };
 
     componentDidMount() {
-        getFilial().then(filial => { this.setState({ filial }); })
-        this.setState({ refreshing: false });
-        this.getListaRegistros();
+        getFilial().then(filial => {
+            this.setState({ filial });
+            this.setState({ refreshing: false }, this.getListaRegistros());
+        })
     }
 
     onRefresh = () => {
@@ -117,8 +118,9 @@ export default class MedicoesTanqueArlaScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { buscaCTE, buscaRomaneio, pagina, listaRegistros } = this.state;
+        const { filial, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
+        console.log('getListaRegistros: ', filial);
 
         axios.get('/saidasEstoque', {
             params: {
@@ -126,6 +128,11 @@ export default class MedicoesTanqueArlaScreen extends Component {
                 tipoTela: 'COMB',
                 page: pagina,
                 limite: 10,
+                filial,
+                idf: '',
+                numero: '',
+                dtIni: '',
+                dtFim: '',
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -274,6 +281,9 @@ export default class MedicoesTanqueArlaScreen extends Component {
 
     render() {
         const { listaRegistros, refreshing, carregarRegistro } = this.state;
+
+        console.log('SaidasDieselScreen: ', this.state);
+
         return (
             <View style={{ flex: 1, }}>
                 <FlatList

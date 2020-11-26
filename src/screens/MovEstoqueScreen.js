@@ -236,7 +236,6 @@ export default class MovEstoqueScreen extends Component {
             params: {
                 page: pagina,
                 limite: 10,
-                empresa: 1,
                 filial: estoq_mei_filial,
                 codItem: estoq_mei_item,
                 idf: estoq_me_idf,
@@ -330,7 +329,6 @@ export default class MovEstoqueScreen extends Component {
             pagina: 1,
             refreshing: true,
             temFiltro: false,
-            filialSelect: null,
             empresa: '',
             dataIni: moment(new Date()).format(DATE_FORMAT),
             dataFim: moment(new Date()).format(DATE_FORMAT),
@@ -528,7 +526,7 @@ export default class MovEstoqueScreen extends Component {
                     marginRight={10}
                 />
 
-                {temFiltro ? (
+                {/* {temFiltro ? (
                     <FloatActionButton
                         iconFamily="MaterialIcons"
                         iconName="clear"
@@ -537,7 +535,7 @@ export default class MovEstoqueScreen extends Component {
                         backgroundColor={Colors.primary}
                         marginRight={60}
                     />
-                ) : null}
+                ) : null} */}
 
                 <ProgressDialog
                     visible={carregarRegistro}
