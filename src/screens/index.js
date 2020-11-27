@@ -54,7 +54,7 @@ import MedicoesTanqueArlaScreen from './MedicoesTanqueArlaScreen';
 
 import PreDigitacaoNotaScreen from './PreDigitacaoNotaScreen';
 import PreDigitacaoNotasScreen from './PreDigitacaoNotasScreen';
-import BarCodeScreen from './BarCodeScreen';
+import BarCodeScreen from '../components/BarCodeScreen';
 
 import FichaViagemScreen from './FichaViagemScreen';
 

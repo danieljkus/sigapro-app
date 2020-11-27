@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Modal } from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -8,8 +8,13 @@ import { Card, Divider, Icon } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
-import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
+import { maskDate, maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
+import FiliaisSelect from '../components/FiliaisSelect';
+import TextInput from '../components/TextInput';
+import Button from '../components/Button';
+
+const DATE_FORMAT = 'DD/MM/YYYY';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -156,34 +161,77 @@ export default class OrdensServicosScreen extends Component {
         carregando: false,
         carregarMais: false,
         pagina: 1,
+
+        empresa: '',
+        dataIni: moment(moment().subtract(15, 'days')).format(DATE_FORMAT),
+        dataFim: moment(new Date()).format(DATE_FORMAT),
+        manu_os_filial: '',
+        idf: '',
+
+        filialSelect: null,
+
+        temFiltro: false,
+        modalFiltrosVisible: false,
     };
 
     componentDidMount() {
         getFilial().then(filial => {
             this.setState({
-                filial,
-                refreshing: false
+                refreshing: true,
+                manu_os_filial: filial
             });
+
+            if (filial) {
+                axios.get('/listaFiliais', {
+                    params: {
+                        codFilial: filial
+                    }
+                }).then(response => {
+                    const { data } = response;
+                    // console.log('FiliaisSelect.componentDidMount: ', data);
+                    this.setState({
+                        filialSelect: {
+                            adm_fil_codigo: filial,
+                            adm_fil_descricao: data[0].adm_fil_descricao
+                        },
+                    },
+                        this.getListaRegistros()
+                    );
+                });
+            }
         })
-        this.getListaRegistros();
     }
 
-    onRefresh = () => {
-        this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
+    onInputChange = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+    }
+
+    onInputChangeFilial = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        // console.log('onInputChangeFilial: ', state);
+        if (value) {
+            this.setState({
+                manu_os_filial: value.adm_fil_codigo
+            });
+        }
     }
 
     getListaRegistros = () => {
-        const { buscaCTE, buscaRomaneio, pagina, listaRegistros } = this.state;
-        this.setState({ carregando: true });
+        const { manu_os_filial, dataIni, dataFim, idf, pagina, listaRegistros } = this.state;
 
         axios.get('/ordemServicos', {
             params: {
                 tipoDig: 2,
                 page: pagina,
                 limite: 10,
+                filial: manu_os_filial,
+                idf,
+                dtIni: moment(dataIni, DATE_FORMAT).format("YYYY-MM-DD"),
+                dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -268,6 +316,12 @@ export default class OrdensServicosScreen extends Component {
             })
     }
 
+    onRefresh = () => {
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+        }, this.getListaRegistros);
+    }
 
     carregarMaisRegistros = () => {
         const { carregarMais, refreshing, carregando, pagina } = this.state;
@@ -346,8 +400,27 @@ export default class OrdensServicosScreen extends Component {
         )
     }
 
+    onSearchPress = (visible) => {
+        this.setState({ modalFiltrosVisible: visible });
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+        }, this.getListaRegistros);
+    }
+
+    onClosePress = (visible) => {
+        this.setState({ modalFiltrosVisible: visible });
+    }
+
+
+
+
     render() {
-        const { listaRegistros, refreshing, carregarRegistro } = this.state;
+        const { listaRegistros, refreshing, carregarRegistro,
+            manu_os_filial, dataIni, dataFim, idf, filialSelect } = this.state;
+
+        console.log('OrdensServicosScreen: ', this.state)
+
         return (
             <View style={{ flex: 1, }}>
                 <FlatList
@@ -361,12 +434,149 @@ export default class OrdensServicosScreen extends Component {
                     ListFooterComponent={this.renderListFooter}
                 />
 
+
+
+
+                {/* ----------------------------- */}
+                {/* MODAL PARA FILTROS            */}
+                {/* ----------------------------- */}
+                <Modal
+                    visible={this.state.modalFiltrosVisible}
+                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
+                    animationType={"slide"}
+                    transparent={true}
+                >
+                    <View style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            width: "90%",
+                            paddingTop: 10,
+                        }} >
+                            <View style={{
+                                paddingVertical: 15,
+                                paddingHorizontal: 15,
+                                backgroundColor: Colors.background,
+                                borderRadius: 5,
+                            }}>
+
+                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                                    <Text style={{
+                                        color: Colors.textOnPrimary,
+                                        marginTop: 15,
+                                        marginBottom: 15,
+                                        marginLeft: 16,
+                                        textAlign: 'center',
+                                        fontSize: 20,
+                                        fontWeight: 'bold',
+                                    }}>Filtrar</Text>
+                                </View>
+
+                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
+
+                                    <ScrollView style={{ height: 50, width: "100%", marginBottom: 10 }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <View style={{ width: "47%", marginRight: 20 }}>
+                                                <TextInput
+                                                    type="date"
+                                                    label="Data Início"
+                                                    id="dataIni"
+                                                    ref="dataIni"
+                                                    value={dataIni}
+                                                    masker={maskDate}
+                                                    dateFormat={DATE_FORMAT}
+                                                    onChange={this.onInputChange}
+                                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                                    fontSize={12}
+                                                />
+                                            </View>
+                                            <View style={{ width: "47%" }}>
+                                                <TextInput
+                                                    type="date"
+                                                    label="Data Fim"
+                                                    id="dataFim"
+                                                    ref="dataFim"
+                                                    value={dataFim}
+                                                    masker={maskDate}
+                                                    dateFormat={DATE_FORMAT}
+                                                    onChange={this.onInputChange}
+                                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                                    fontSize={12}
+                                                />
+                                            </View>
+                                        </View>
+                                    </ScrollView>
+
+                                    <FiliaisSelect
+                                        label="Filial"
+                                        id="filialSelect"
+                                        codFilial={manu_os_filial}
+                                        onChange={this.onInputChangeFilial}
+                                        value={filialSelect}
+                                    />
+
+                                    <TextInput
+                                        label="Controle"
+                                        id="idf"
+                                        ref="idf"
+                                        value={idf}
+                                        maxLength={10}
+                                        onChange={this.onInputChange}
+                                        keyboardType="numeric"
+                                    />
+
+
+
+                                    <Button
+                                        title="FILTRAR"
+                                        onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
+                                        buttonStyle={{ marginTop: 15, height: 35 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'filter',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                    <Button
+                                        title="FECHAR"
+                                        onPress={() => { this.onClosePress(!this.state.modalFiltrosVisible) }}
+                                        buttonStyle={{ marginTop: 10, height: 35 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'close',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+
+
+                <FloatActionButton
+                    iconFamily="MaterialIcons"
+                    iconName="search"
+                    iconColor={Colors.textOnPrimary}
+                    onPress={() => { this.onSearchPress(true) }}
+                    backgroundColor={Colors.primary}
+                    marginBottom={90}
+                    marginRight={10}
+                />
+
                 <FloatActionButton
                     iconFamily="MaterialIcons"
                     iconName="add"
                     iconColor={Colors.textOnAccent}
                     onPress={this.onAddPress}
                     backgroundColor={Colors.primary}
+                    marginRight={10}
                 />
 
                 <ProgressDialog

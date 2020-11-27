@@ -307,6 +307,48 @@ export default class FichaEstoqueScreen extends Component {
     }
 
 
+    onEscanearPress = () => {
+        this.props.navigation.push('BarCodeScreen', {
+            onBarCodeRead: this.onBarCodeRead
+        })
+    }
+
+    onBarCodeRead = event => {
+        const { data, rawData, type } = event;
+        console.log('FichaEstoqueScreen.onBarCodeRead: ', data);
+
+        const codBar = String(data).substr(6, 6);
+        console.log('FichaEstoqueScreen.onBarCodeRead: ', codBar);
+
+        this.setState({
+            codItem: codBar,
+        }, this.buscaItem(codBar));
+    }
+
+    buscaItem = (value) => {
+        this.setState({ carregando: true });
+        console.log('FichaEstoqueScreen.buscaItem: ', value);
+        axios.get('/listaItens', {
+            params: {
+                codItem: value,
+                buscaEstoque: 0,
+            }
+        }).then(response => {
+            const { data } = response;
+            console.log('FichaEstoqueScreen.buscaItem: ', data);
+            this.setState({
+                carregando: false,
+            })
+        }).catch(error => {
+            console.warn(error);
+            console.warn(error.response);
+            this.setState({
+                carregando: false,
+            });
+        })
+    }
+
+
     render() {
         const { listaRegistros, refreshing, carregarRegistro,
             item_select, codItem, qtdeEstoque, custo } = this.state;
@@ -318,19 +360,34 @@ export default class FichaEstoqueScreen extends Component {
 
                 <View style={{ margin: 10, marginBottom: -10, padding: 0 }}>
 
-                    <ItemEstoqueSelect
-                        label="Produto"
-                        id="item_select"
-                        codItem={codItem}
-                        buscaEstoque={0}
-                        onChange={this.onInputChangeItem}
-                        value={item_select}
-                        enabled={true}
-                    />
+                    <View>
+                        <ItemEstoqueSelect
+                            label="Item"
+                            id="item_select"
+                            codItem={codItem}
+                            buscaEstoque={0}
+                            onChange={this.onInputChangeItem}
+                            value={item_select}
+                            enabled={true}
+                        />
+                        <View style={{ float: "right" }}>
+                            <Button
+                                title=""
+                                onPress={this.onEscanearPress}
+                                buttonStyle={{ width: 30, height: 30, padding: 0, marginTop: -50, marginLeft: 65 }}
+                                backgroundColor={Colors.transparent}
+                                icon={{
+                                    name: 'barcode',
+                                    type: 'font-awesome',
+                                    color: Colors.textPrimaryDark
+                                }}
+                            />
+                        </View>
+                    </View>
 
                     {item_select && item_select.estoq_ie_codigo ? (
 
-                        <View style={{ flexDirection: 'row', marginTop: -10, marginBottom: 25, marginLeft: 5 }}>
+                        <View style={{ flexDirection: 'row', marginTop: -10, marginBottom: 20, marginLeft: 5 }}>
                             <View style={{ flex: 3, flexDirection: 'row' }}>
                                 <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                                     Estoq{': '}

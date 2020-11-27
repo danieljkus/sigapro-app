@@ -150,7 +150,7 @@ export default class SolicitacoesEstoqueScreen extends Component {
     };
 
     componentDidMount() {
-        this.setState({ refreshing: false });
+        this.setState({ refreshing: true });
         this.getListaRegistros();
     }
 
@@ -162,9 +162,7 @@ export default class SolicitacoesEstoqueScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { buscaCTE, buscaRomaneio, pagina, listaRegistros } = this.state;
-        this.setState({ carregando: true });
-
+        const { pagina, listaRegistros } = this.state;
         axios.get('/solicitacoesEstoqueFiliais', {
             params: {
                 tipoDig: 2,

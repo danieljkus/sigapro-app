@@ -100,7 +100,7 @@ class ItemEstoqueSelect extends PureComponent {
         this.setState({ carregando: true });
         const { id, onChange, buscaEstoque } = this.props;
 
-        // console.log('ItemEstoqueSelect.buscaRegistros: ', buscaEstoque);
+        console.log('ItemEstoqueSelect.buscaRegistros: ', buscaEstoque);
 
         axios.get('/listaItens', {
             params: {
@@ -275,18 +275,20 @@ class ItemEstoqueSelect extends PureComponent {
                 </View>
 
                 <View style={{ width: "7%", }}>
-                    <Button
-                        title=""
-                        loading={loading}
-                        onPress={() => { this.onAbrirBuscaModal(true) }}
-                        buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 40, marginLeft: -18 }}
-                        backgroundColor={Colors.transparent}
-                        icon={{
-                            name: 'search',
-                            type: 'font-awesome',
-                            color: Colors.textPrimaryDark
-                        }}
-                    />
+                    {enabled ? (
+                        <Button
+                            title=""
+                            loading={loading}
+                            onPress={() => { this.onAbrirBuscaModal(true) }}
+                            buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 10, marginLeft: -18 }}
+                            backgroundColor={Colors.transparent}
+                            icon={{
+                                name: 'search',
+                                type: 'font-awesome',
+                                color: Colors.textPrimaryDark
+                            }}
+                        />
+                    ) : null}
                 </View>
 
                 <View style={{ width: "75%", marginLeft: -23 }}>
@@ -305,6 +307,7 @@ class ItemEstoqueSelect extends PureComponent {
                         />
                         )
                     }
+
                 </View>
 
 

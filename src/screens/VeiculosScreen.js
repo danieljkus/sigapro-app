@@ -26,7 +26,7 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
                 <TouchableOpacity
-                    // onPress={() => onRegistroPress(registro.adm_vei_idf)}
+                // onPress={() => onRegistroPress(registro.adm_vei_idf)}
                 >
 
                     <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
@@ -186,8 +186,8 @@ export default class VeiculosScreen extends Component {
     };
 
     componentDidMount() {
-        this.setState({ refreshing: true });
-        this.getListaRegistros();
+        // this.setState({ refreshing: true });
+        // this.getListaRegistros();
         this.buscaLocal();
         this.buscaEspecie();
         this.buscaTipo();
@@ -201,6 +201,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onInputChangeData = (id, value) => {
+        console.log('onInputChangeData')
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -252,6 +253,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onRefresh = () => {
+        console.log('onRefresh')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -259,6 +261,7 @@ export default class VeiculosScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
+        console.log('carregarMaisRegistros')
         const { carregarMais, refreshing, carregando, pagina } = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
@@ -293,6 +296,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onRefreshPress = (visible) => {
+        console.log('onRefreshPress')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -301,10 +305,13 @@ export default class VeiculosScreen extends Component {
 
     onSearchPress = (visible) => {
         this.setState({ modalFiltrosVisible: visible });
-        this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
+        if (!visible) {
+            console.log('onSearchPress')
+            this.setState({
+                pagina: 1,
+                refreshing: true,
+            }, this.getListaRegistros);
+        }
     }
 
     onClosePress = (visible) => {
@@ -312,6 +319,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onClearSearchPress = () => {
+        console.log('onClearSearchPress')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -466,7 +474,7 @@ export default class VeiculosScreen extends Component {
                         <View style={{
                             flex: 1,
                             width: "90%",
-                            paddingTop: 100,
+                            paddingTop: 10,
                         }} >
                             <View style={{
                                 paddingVertical: 15,
@@ -573,6 +581,15 @@ export default class VeiculosScreen extends Component {
                 </Modal>
 
 
+                <FloatActionButton
+                    iconFamily="MaterialIcons"
+                    iconName="cached"
+                    iconColor={Colors.textOnPrimary}
+                    onPress={this.onRefresh}
+                    backgroundColor={Colors.primary}
+                    marginBottom={90}
+                    marginRight={10}
+                />
                 <FloatActionButton
                     iconFamily="MaterialIcons"
                     iconName="search"

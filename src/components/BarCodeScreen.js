@@ -2,7 +2,7 @@ import React, { Component, createRef } from 'react';
 import { View, StyleSheet, Keyboard } from 'react-native';
 
 import { RNCamera } from 'react-native-camera';
-import Orientation from 'react-native-orientation';
+// import Orientation from 'react-native-orientation';
 
 import Button from '../components/Button';
 import Colors from '../values/Colors';
@@ -37,20 +37,23 @@ export default class BarCodeScreen extends Component {
 
     componentDidMount() {
         Keyboard.dismiss();
-        Orientation.lockToLandscapeRight();
+        // Orientation.lockToLandscapeRight();
     }
 
     back = () => {
         this.props.navigation.goBack(null);
-        Orientation.lockToPortrait();
+        // Orientation.lockToPortrait();
     }
 
     onBarCodeRead = event => {
-        if (!this.barCodeReaded) {
-            this.barCodeReaded = true;
-            this.back()
-            this.state.onBarCodeRead(event);
-        }
+        // console.log('BarCodeScreen.onBarCodeRead: ', event);
+        // if (event.type === 'EAN_13') {
+            if (!this.barCodeReaded) {
+                this.barCodeReaded = true;
+                this.back()
+                this.state.onBarCodeRead(event);
+            }
+        // }
     }
 
     onBackPress = () => {
@@ -59,7 +62,7 @@ export default class BarCodeScreen extends Component {
 
     render() {
         const { flash } = this.state;
-        console.log(flash)
+        // console.log(flash)
         return (
             <View style={styles.container}>
                 <RNCamera
@@ -80,7 +83,7 @@ export default class BarCodeScreen extends Component {
                             style={{
                                 borderWidth: 1,
                                 margin: 20,
-                                flex: 0.9,
+                                flex: 1,
                                 justifyContent: 'center',
                                 alignItems: 'center',
                             }}

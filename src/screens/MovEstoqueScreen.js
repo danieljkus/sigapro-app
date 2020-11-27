@@ -452,7 +452,7 @@ export default class MovEstoqueScreen extends Component {
                                     />
 
                                     <ItemEstoqueSelect
-                                        label="Produto"
+                                        label="Item"
                                         id="item_select"
                                         codItem={estoq_mei_item}
                                         buscaEstoque={1}

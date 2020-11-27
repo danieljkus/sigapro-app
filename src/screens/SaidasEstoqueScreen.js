@@ -104,7 +104,7 @@ export default class SaidasEstoqueScreen extends Component {
     componentDidMount() {
         getFilial().then(filial => {
             this.setState({
-                refreshing: false,
+                refreshing: true,
                 estoq_mei_filial: filial
             });
 
@@ -149,7 +149,6 @@ export default class SaidasEstoqueScreen extends Component {
 
     getListaRegistros = () => {
         const { estoq_mei_filial, dataIni, dataFim, idf, numero, pagina, listaRegistros } = this.state;
-        this.setState({ carregando: true });
 
         axios.get('/saidasEstoque', {
             params: {
@@ -323,7 +322,6 @@ export default class SaidasEstoqueScreen extends Component {
 
     carregarMaisRegistros = () => {
         const { carregarMais, refreshing, carregando, pagina } = this.state;
-
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -334,7 +332,6 @@ export default class SaidasEstoqueScreen extends Component {
 
     renderListFooter = () => {
         const { carregando } = this.state;
-
         if (carregando) {
             return (
                 <View style={{ marginTop: 8 }}>
@@ -342,7 +339,6 @@ export default class SaidasEstoqueScreen extends Component {
                 </View>
             )
         }
-
         return null;
     }
 
