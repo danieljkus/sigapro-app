@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, ScrollView, RefreshControl, Text, FlatList } from 'react-native';
-import { Card, Divider } from 'react-native-elements';
+import { View, ScrollView, RefreshControl, Text, FlatList, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
+import { Card, Divider, SearchBar } from 'react-native-elements';
 
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
@@ -13,6 +13,7 @@ import Alert from '../components/Alert';
 import { getTemPermissao, getPermissoes } from '../utils/LoginManager';
 import { maskValorMoeda } from '../utils/Maskers';
 import moment from 'moment';
+import Icon from '../components/Icon';
 
 const RegistroItem = ({ registro }) => {
     return (
@@ -62,18 +63,58 @@ const RegistroItem = ({ registro }) => {
     )
 }
 
+
+const RegistroFunc = ({ registro, onRegistroFuncPress }) => {
+    return (
+        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
+            <TouchableOpacity
+                onPress={() => onRegistroFuncPress(registro.rh_func_codigo, registro.rh_func_empresa)}
+            >
+                <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
+                        #{registro.rh_func_codigo} / {registro.rh_func_empresa}
+                    </Text>
+                </View>
+
+                <Divider />
+
+                <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
+                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                        {registro.adm_pes_nome}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        </Card>
+    )
+}
+
+
+
 export default class EscalaVeiculoScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            loading: false,
             salvando: false,
+            refreshing: false,
             carregarRegistro: false,
             man_ev_veiculo_trocar: '',
             qtdeComb: 0,
             dataComb: '',
             filial: 0,
             descFilial: '',
+
+            listaRegistrosFunc: [],
+            modalFuncBuscaVisible: false,
+            carregandoFunc: false,
+            funcionariosSelect: [],
+            funcionario_select: null,
+            codFunc: '',
+            empFunc: '',
+            nomeFunc: '',
+            nomeFuncFL: '',
+
             listaHistorico: [],
             ...props.navigation.state.params.registro,
         }
@@ -95,12 +136,22 @@ export default class EscalaVeiculoScreen extends Component {
             axios.get('/escalaVeiculos/show', {
                 params: {
                     veiculo,
+                    servico: this.state.registro.pas_via_servico,
+                    servico_extra: this.state.registro.pas_via_servico_extra,
                     data: this.state.registro.pas_via_data_viagem,
                 }
             }).then(response => {
                 this.setState({ carregarRegistro: false });
 
-                // console.log('registro: ', response.data);
+                console.log('registro: ', response.data);
+
+                let funcionariosSelect = [];
+                if (response.data.codMot) {
+                    funcionariosSelect = [{
+                        key: response.data.codMot + '_' + response.data.empMot,
+                        label: response.data.nomeMot
+                    }]
+                }
 
                 this.setState({
                     carregarRegistro: false,
@@ -108,6 +159,13 @@ export default class EscalaVeiculoScreen extends Component {
                     dataComb: response.data.dataComb,
                     filial: response.data.filial,
                     descFilial: response.data.descFilial,
+
+                    codFunc: response.data.codMot,
+                    empFunc: response.data.empMot,
+                    nomeFunc: '',
+                    nomeFuncFL: !response.data.codMot && response.data.nomeMot ? response.data.nomeMot : '',
+                    funcionariosSelect,
+
                     listaHistorico: response.data.listaHistorico,
                 });
 
@@ -125,6 +183,93 @@ export default class EscalaVeiculoScreen extends Component {
         this.setState(state);
     }
 
+    onInputChangeFunc = (id, value) => {
+        console.log('onInputChangeFunc: ', value)
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+
+        clearTimeout(this.buscaRegistrosId);
+        this.buscaRegistrosId = setTimeout(() => {
+            this.buscaFuncionários(value);
+        }, 1000);
+    }
+
+    onInputChangeListaFunc = (id, value) => {
+        console.log('onInputChangeListaFunc: ', value)
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+
+        if (value) {
+            const ind = value.indexOf("_");
+            const tam = value.length;
+            const codFunc = value.substr(0, ind).trim();
+            const empFunc = value.substr(ind + 1, tam).trim();
+            this.setState({
+                codFunc,
+                empFunc,
+            });
+        }
+    }
+
+    buscaFuncionários = (value) => {
+        this.setState({ funcionariosSelect: [], empFunc: '', });
+        const { codFunc } = this.state;
+
+        console.log('buscaFuncionários: ', value)
+
+        if (value) {
+            this.setState({ carregandoFunc: true });
+            axios.get('/listaFuncionarios', {
+                params: {
+                    ativo: 'S',
+                    codFunc: value
+                }
+            }).then(response => {
+                const { data } = response;
+
+                console.log('buscaFuncionários: ', data)
+
+                if (data) {
+                    const funcionariosSelect = data.map(regList => {
+                        return {
+                            key: regList.rh_func_codigo + '_' + regList.rh_func_empresa,
+                            label: regList.adm_pes_nome
+                        }
+                    });
+
+                    if (data.length > 0) {
+                        this.setState({
+                            funcionariosSelect,
+                            codFunc: data[0].rh_func_codigo,
+                            empFunc: data[0].rh_func_empresa,
+                            carregandoFunc: false,
+                        })
+                    } else {
+                        this.setState({
+                            funcionariosSelect,
+                            carregandoFunc: false,
+                        })
+                    }
+
+                } else {
+                    this.setState({
+                        funcionariosSelect: [],
+                        carregandoFunc: false,
+                    })
+                }
+
+            }).catch(error => {
+                console.warn(error.response);
+                this.setState({
+                    carregandoFunc: false,
+                });
+            })
+        }
+    }
+
+
     onFormSubmit = (event) => {
         if (this.state.man_ev_veiculo_trocar !== '') {
             this.onSalvarRegistro();
@@ -137,13 +282,17 @@ export default class EscalaVeiculoScreen extends Component {
         this.setState({ salvando: true });
 
         const idf = this.state.registro.idf2 ? this.state.registro.idf2 : (this.state.registro.idf1 ? this.state.registro.idf1 : 0);
-       
+
         axios.put('/escalaVeiculos/trocaCarro', {
             idf,
             man_ev_veiculo: this.state.man_ev_veiculo_trocar,
             man_ev_data_ini: this.state.registro.pas_via_data_viagem,
             man_ev_servico: this.state.registro.pas_via_servico,
             man_ev_servico_estra: this.state.registro.pas_via_servico_extra,
+
+            codMot: this.state.codFunc,
+            empMot: this.state.empFunc,
+            nomeMot: this.state.codFunc ? this.state.funcionariosSelect[0].label : this.state.nomeFuncFL,
         })
             .then(response => {
                 if (response.data === 'OK') {
@@ -180,13 +329,127 @@ export default class EscalaVeiculoScreen extends Component {
         });
     }
 
+
+
+
+
+    // ---------------------------------------------------------------------------
+    // MODAL PARA SELECIONAR FUNCIONARIO
+    // ---------------------------------------------------------------------------
+
+    onAbrirFuncBuscaModal = (visible) => {
+        console.log('onAbrirFuncBuscaModal: ', visible)
+        this.setState({ modalFuncBuscaVisible: visible });
+        if (visible) {
+            this.getListaRegistrosFunc();
+        } else {
+            this.setState({
+                buscaNome: '',
+                refreshing: false,
+                carregarRegistro: false,
+                carregando: false,
+                carregarMais: false,
+                pagina: 1,
+            });
+        }
+    }
+
+    getListaRegistrosFunc = () => {
+        const { buscaNome, pagina, listaRegistrosFunc } = this.state;
+        this.setState({ carregando: true });
+        console.log('getListaRegistrosFunc')
+
+        axios.get('/listaFuncionariosBusca', {
+            params: {
+                page: pagina,
+                limite: 10,
+                nome: buscaNome,
+            }
+        }).then(response => {
+            const novosRegistros = pagina === 1
+                ? response.data.data
+                : listaRegistrosFunc.concat(response.data.data);
+            const total = response.data.total;
+
+            console.log('getListaRegistrosFunc: ', novosRegistros)
+
+            this.setState({
+                listaRegistrosFunc: novosRegistros,
+                refreshing: false,
+                carregando: false,
+                carregarMais: novosRegistros.length < total
+            })
+        }).catch(ex => {
+            console.warn(ex);
+            console.warn(ex.response);
+            this.setState({
+                refreshing: false,
+                carregando: false,
+            });
+        })
+    }
+
+    onBuscaNomeChange = (text) => {
+        clearTimeout(this.buscaTimeout);
+        this.termoBusca = text;
+        this.setState({
+            pagina: 1,
+            buscaNome: text,
+            refreshing: true,
+        })
+        this.buscaTimeout = setTimeout(() => {
+            this.getListaRegistrosFunc();
+        }, 1000);
+    }
+
+    onRefreshFunc = () => {
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+        }, this.getListaRegistrosFunc);
+    }
+
+    onRegistroFuncPress = (rh_func_codigo, rh_func_empresa) => {
+        this.setState({
+            codFunc: rh_func_codigo,
+            empFunc: rh_func_empresa,
+        });
+        this.onAbrirFuncBuscaModal(false);
+        this.buscaFuncionários(rh_func_codigo);
+    }
+
+    carregarMaisRegistrosFunc = () => {
+        const { carregarMais, refreshing, carregando, pagina } = this.state;
+        if (carregarMais && !refreshing && !carregando) {
+            this.setState({
+                carregando: true,
+                pagina: pagina + 1,
+            }, this.getListaRegistrosFunc);
+        }
+    }
+
+    renderItemFunc = ({ item, index }) => {
+        return (
+            <RegistroFunc
+                registro={item}
+                onRegistroFuncPress={this.onRegistroFuncPress}
+            />
+        )
+    }
+
+
+
+
+
     render() {
         const { pas_via_data_viagem, pas_via_servico, pas_serv_linha, pas_via_servico_extra,
             idf1, idf2, veic1, veic2, desc_sec_ini, desc_sec_fim, hora_ini, hora_fim,
         } = this.state.registro;
-        const { man_ev_veiculo_trocar, salvando, carregarRegistro, permissoes } = this.state;
+        const { man_ev_veiculo_trocar, salvando, loading, refreshing, carregarRegistro, permissoes,
+            codFunc, nomeFunc, nomeFuncFL, funcionariosSelect, carregandoFunc, listaRegistrosFunc,
+        } = this.state;
 
-        // console.log('this.state', this.state);
+        console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -212,8 +475,69 @@ export default class EscalaVeiculoScreen extends Component {
                                     keyboardType="numeric"
                                 />
 
+                                <View style={{ flexDirection: 'row' }} >
+                                    <View style={{ width: "25%" }}>
+                                        <TextInput
+                                            label="Motorista"
+                                            id="codFunc"
+                                            ref="codFunc"
+                                            value={codFunc}
+                                            maxLength={6}
+                                            keyboardType="numeric"
+                                            onChange={this.onInputChangeFunc}
+                                        />
+                                    </View>
+
+                                    <View style={{ width: "7%", }}>
+                                        <Button
+                                            title=""
+                                            loading={loading}
+                                            onPress={() => { this.onAbrirFuncBuscaModal(true) }}
+                                            buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                            backgroundColor={Colors.transparent}
+                                            icon={{
+                                                name: 'search',
+                                                type: 'font-awesome',
+                                                color: Colors.textPrimaryDark
+                                            }}
+                                        />
+                                    </View>
+
+                                    <View style={{ width: "75%", marginLeft: -23 }}>
+                                        {carregandoFunc
+                                            ? (
+                                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                                    <ActivityIndicator style={{ margin: 10 }} />
+                                                    <Text> Buscando... </Text>
+                                                </View>
+                                            ) : (
+                                                <TextInput
+                                                    type="select"
+                                                    label=" "
+                                                    id="nomeFunc"
+                                                    ref="nomeFunc"
+                                                    value={nomeFunc}
+                                                    selectedValue=""
+                                                    options={funcionariosSelect}
+                                                    onChange={this.onInputChangeListaFunc}
+                                                />
+                                            )
+                                        }
+
+                                    </View>
+                                </View >
+
+                                <TextInput
+                                    label="Motorista Free-Lance"
+                                    id="nomeFuncFL"
+                                    ref="nomeFuncFL"
+                                    value={nomeFuncFL}
+                                    maxLength={60}
+                                    onChange={this.onInputChange}
+                                />
+
                                 <Button
-                                    title="TROCAR VEÍCULO"
+                                    title="TROCAR"
                                     loading={salvando}
                                     onPress={this.onFormSubmit}
                                     color={Colors.textOnPrimary}
@@ -380,6 +704,72 @@ export default class EscalaVeiculoScreen extends Component {
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 }}>
                         {idf2 ? idf2 : idf1}
                     </Text>
+
+
+
+                    {/* -------------------------------- */}
+                    {/* MODAL PARA BUSCA DO FUNCIONÁRIOS */}
+                    {/* -------------------------------- */}
+                    <Modal
+                        transparent={false}
+                        visible={this.state.modalFuncBuscaVisible}
+                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
+                        animationType={"slide"}
+                    >
+                        <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                            <TouchableOpacity
+                                onPress={() => { this.onAbrirFuncBuscaModal(!this.state.modalFuncBuscaVisible) }}
+                            >
+                                <Icon family="MaterialIcons"
+                                    name="arrow-back"
+                                    color={Colors.textOnPrimary}
+                                    style={{ padding: 16 }} />
+                            </TouchableOpacity>
+
+                            <Text style={{
+                                color: Colors.textPrimaryLight,
+                                marginTop: 15,
+                                marginBottom: 15,
+                                marginLeft: 16,
+                                textAlign: 'center',
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                            }}>Buscar Funcionário</Text>
+                        </View>
+
+                        <SearchBar
+                            placeholder="Busca por Nome"
+                            lightTheme={true}
+                            onChangeText={this.onBuscaNomeChange}
+                        />
+
+                        <View style={{
+                            flex: 1,
+                            paddingVertical: 8,
+                            paddingHorizontal: 10,
+                            backgroundColor: '#ffffff',
+                        }} >
+                            <ScrollView
+                                style={{ flex: 1, }}
+                                keyboardShouldPersistTaps="always"
+                            >
+                                <View style={{ marginTop: 4 }}>
+                                    <FlatList
+                                        data={listaRegistrosFunc}
+                                        renderItem={this.renderItemFunc}
+                                        contentContainerStyle={{ paddingBottom: 100 }}
+                                        keyExtractor={registro => String(registro.rh_func_codigo) + String(registro.rh_func_empresa)}
+                                        onRefresh={this.onRefreshFunc}
+                                        refreshing={refreshing}
+                                        onEndReached={this.carregarMaisRegistrosFunc}
+                                        ListFooterComponent={this.renderListFooter}
+                                    />
+                                </View>
+                            </ScrollView>
+                        </View>
+                    </Modal>
+
+
 
                     <ProgressDialog
                         visible={carregarRegistro}

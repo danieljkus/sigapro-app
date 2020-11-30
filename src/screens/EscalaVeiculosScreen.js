@@ -74,7 +74,7 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
                     {registro.motorista ? (
                         <View>
                             <Divider />
-                            <View style={{ paddingLeft: 10, paddingVertical: 4, flexDirection: 'row' }}>
+                            <View style={{ paddingLeft: 10, paddingVertical: 4, marginRight: 50, flexDirection: 'row' }}>
                                 <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                                     Motorista {': '}
                                 </Text>
@@ -140,7 +140,7 @@ export default class EscalaVeiculosScreen extends Component {
 
         const temFiltro = man_ev_servico !== '' || man_ev_veiculo !== '' || man_ev_od !== '';
 
-        this.setState({ refreshing: true });
+        // this.setState({ refreshing: true });
 
         axios.get('/escalaVeiculos', {
             params: {
@@ -199,7 +199,7 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        console.log('onRegistroPress');
+        console.log('onRegistroPress: ', registro);
         this.props.navigation.navigate('EscalaVeiculoScreen', {
             registro: {
                 registro: registro,
