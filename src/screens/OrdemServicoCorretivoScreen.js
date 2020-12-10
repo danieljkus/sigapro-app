@@ -341,6 +341,7 @@ export default class OrdemServicoCorretivoScreen extends Component {
                             onPress={this.onFormSubmit}
                             buttonStyle={{ height: 45 }}
                             backgroundColor={Colors.buttonPrimary}
+                            disabled={true}
                             textStyle={{
                                 fontWeight: 'bold',
                                 fontSize: 15
