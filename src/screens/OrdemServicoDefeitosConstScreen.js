@@ -44,6 +44,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
         super(props);
         this.state = {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
+            man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
 
             listaRegistros: [],
             refreshing: false,
@@ -75,7 +76,11 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
         const { pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
-        axios.get('/ordemServicos/listaDefeitosConst/' + this.state.man_os_idf)
+        axios.get('/ordemServicos/listaDefeitosConst/' + this.state.man_os_idf, {
+            params: {
+                grupo: this.state.man_grupo_servico,
+            }
+        })
             .then(response => {
                 const novosRegistros = pagina === 1
                     ? response.data.data

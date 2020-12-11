@@ -121,7 +121,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
                 >
                     <TouchableOpacity
                         onPress={() => onFinalizarPress(registro)}
-                        disabled={true}
+                        // disabled={true}
                     >
                         <View style={{ width: 150, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
                             <Icon
@@ -136,7 +136,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
 
                     <TouchableOpacity
                         onPress={() => onAbrirPress(registro)}
-                        disabled={true}
+                        // disabled={true}
                     >
                         <View style={{ width: 150, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
                             <Icon

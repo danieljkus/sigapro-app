@@ -2,19 +2,15 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
 const { OS } = Platform;
 
-import moment from 'moment';
 import axios from 'axios';
 import { Card, Divider, Icon } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
-import FloatActionButton from '../components/FloatActionButton';
 import StatusBar from '../components/StatusBar';
 import Button from '../components/Button';
 import Colors from '../values/Colors';
-import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
+import { vlrStringParaFloat } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
-import ServicosOSSelect from '../components/ServicosOSSelect';
 import TextInput from '../components/TextInput';
-// import Alert from '../components/Alert';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -31,7 +27,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
                     <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
                         <View style={{ flex: 2, flexDirection: 'row' }}>
                             <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                {registro.man_osf_funcionario ? 'Funcionário' : 'Terceirizado'}  {': '}
+                                {registro.man_osf_funcionario ? 'Funcionário' : 'Terceirizado'}{': '}
                             </Text>
                             <Text>
                                 {registro.man_osf_funcionario}
@@ -98,6 +94,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
         super(props);
         this.state = {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
+            man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
 
             man_osf_nome_funcionario: '',
             man_osf_obs: '',
@@ -139,7 +136,11 @@ export default class OrdemServicoResponsaveisScreen extends Component {
         const { pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
-        axios.get('/ordemServicos/listaResponsaveis/' + this.state.man_os_idf)
+        axios.get('/ordemServicos/listaResponsaveis/' + this.state.man_os_idf, {
+            params: {
+                grupo: this.state.man_grupo_servico,
+            }
+        })
             .then(response => {
                 const novosRegistros = pagina === 1
                     ? response.data.data

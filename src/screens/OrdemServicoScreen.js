@@ -21,6 +21,11 @@ import RotasSelect from '../components/RotasSelect';
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
+export const OPCOES_COMBO_GRUPO = [
+    { key: '00010001', label: 'MECÂNICA - ELETÉTRICA - LUBRIF.' },
+    { key: '00010002', label: 'CHAPEAÇÃO - BORRACHARIA' },
+]
+
 const RegistroFunc = ({ registro, onRegistroFuncPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
@@ -72,6 +77,8 @@ export default class OrdemServicoScreen extends Component {
             man_osm_nome_motorista: props.navigation.state.params.registro.man_osm_nome_motorista ? props.navigation.state.params.registro.man_osm_nome_motorista : '',
             man_osm_oficina: props.navigation.state.params.registro.man_osm_oficina ? props.navigation.state.params.registro.man_osm_oficina : '',
             man_osm_rota: props.navigation.state.params.registro.man_osm_rota ? props.navigation.state.params.registro.man_osm_rota : '',
+
+            man_grupo_servico: '00010001',
 
             filial_select: null,
             codFilial: '',
@@ -363,12 +370,14 @@ export default class OrdemServicoScreen extends Component {
     onAbrirCorretivas = () => {
         this.props.navigation.navigate('OrdemServicoCorretivoScreen', {
             man_os_idf: this.state.man_os_idf,
+            man_grupo_servico: this.state.man_grupo_servico,
         });
     }
 
     onAbrirPreventivas = () => {
         this.props.navigation.navigate('OrdemServicoPreventivoScreen', {
             man_os_idf: this.state.man_os_idf,
+            man_grupo_servico: this.state.man_grupo_servico,
         });
     }
 
@@ -381,30 +390,21 @@ export default class OrdemServicoScreen extends Component {
     onAbrirResponsaveis = () => {
         this.props.navigation.navigate('OrdemServicoResponsaveisScreen', {
             man_os_idf: this.state.man_os_idf,
-        });
-    }
-
-    onAbrirDefeitos = () => {
-        this.props.navigation.navigate('OrdemServicoResponsaveisScreen', {
-            man_os_idf: this.state.man_os_idf,
-        });
-    }
-
-    onAbrirPendencias = () => {
-        this.props.navigation.navigate('OrdemServicoResponsaveisScreen', {
-            man_os_idf: this.state.man_os_idf,
+            man_grupo_servico: this.state.man_grupo_servico,
         });
     }
 
     onAbrirDefeitos = () => {
         this.props.navigation.navigate('OrdemServicoDefeitosConstScreen', {
             man_os_idf: this.state.man_os_idf,
+            man_grupo_servico: this.state.man_grupo_servico,
         });
     }
 
     onAbrirPendencias = () => {
         this.props.navigation.navigate('OrdemServicoServPendenteScreen', {
             man_os_idf: this.state.man_os_idf,
+            man_grupo_servico: this.state.man_grupo_servico,
         });
     }
 
@@ -425,7 +425,7 @@ export default class OrdemServicoScreen extends Component {
     render() {
         const { man_os_idf, man_os_data_inicial, man_os_data_fim, man_os_filial, man_os_situacao, man_os_situacao_descr, man_os_valor, man_os_data_prevista,
             man_osm_controle, man_osm_veiculo, man_osm_motorista, man_osm_empresa_motorista, man_osm_km_acumulado, man_osm_km_odometro,
-            man_osm_oficina, man_osm_rota,
+            man_osm_oficina, man_osm_rota, man_grupo_servico,
             filial_select, codFilial, veiculo_select, codVeiculo, rota_select, codRota,
             funcionariosSelect, codFunc, nomeFunc, listaRegistrosFunc, carregandoFunc,
             usuario, carregarRegistro, loading, refreshing, salvado } = this.state;
@@ -623,9 +623,21 @@ export default class OrdemServicoScreen extends Component {
                             onChange={this.onInputChangeRota}
                         />
 
-                        <Divider />
-                        <Divider />
+                        <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
+                        <View style={{ marginTop: 20 }} >
+                            <TextInput
+                                type="select"
+                                label="Grupo"
+                                id="man_grupo_servico"
+                                ref="man_grupo_servico"
+                                value={man_grupo_servico}
+                                options={OPCOES_COMBO_GRUPO}
+                                onChange={this.onInputChange}
+                            />
+                        </View>
+
+                        <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
                         {man_os_idf ? (
                             <View >

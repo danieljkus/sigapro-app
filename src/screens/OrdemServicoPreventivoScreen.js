@@ -73,6 +73,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
         super(props);
         this.state = {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
+            man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
             man_sos_complemento: '',
 
             servico_select: null,
@@ -108,7 +109,11 @@ export default class OrdemServicoPreventivoScreen extends Component {
         const { pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
-        axios.get('/ordemServicos/listaPreventivas/' + this.state.man_os_idf)
+        axios.get('/ordemServicos/listaPreventivas/' + this.state.man_os_idf, {
+            params: {
+                grupo: this.state.man_grupo_servico,
+            }
+        })
             .then(response => {
                 const novosRegistros = pagina === 1
                     ? response.data.data
@@ -341,7 +346,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
                             onPress={this.onFormSubmit}
                             buttonStyle={{ height: 45 }}
                             backgroundColor={Colors.buttonPrimary}
-                            disabled={true}
+                            // disabled={true}
                             textStyle={{
                                 fontWeight: 'bold',
                                 fontSize: 15
