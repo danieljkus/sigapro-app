@@ -100,8 +100,6 @@ class ItemEstoqueSelect extends PureComponent {
         this.setState({ carregando: true });
         const { id, onChange, buscaEstoque } = this.props;
 
-        console.log('ItemEstoqueSelect.buscaRegistros: ', buscaEstoque);
-
         axios.get('/listaItens', {
             params: {
                 codItem: value,

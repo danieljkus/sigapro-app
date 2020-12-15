@@ -180,7 +180,7 @@ class TextInput extends PureComponent {
                             style={{
                                 width: '100%',
                                 color: Colors.textPrimaryDark,
-                                height: 25,
+                                height: height ? height : 25,
                                 minHeight: 25,
                                 ...style
                             }}

@@ -268,18 +268,20 @@ class FiliaisSelect extends PureComponent {
                 </View>
 
                 <View style={{ width: "7%", }}>
-                    <Button
-                        title=""
-                        loading={loading}
-                        onPress={() => { this.onAbrirBuscaModal(true) }}
-                        buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
-                        backgroundColor={Colors.transparent}
-                        icon={{
-                            name: 'search',
-                            type: 'font-awesome',
-                            color: Colors.textPrimaryDark
-                        }}
-                    />
+                    {enabled ? (
+                        <Button
+                            title=""
+                            loading={loading}
+                            onPress={() => { this.onAbrirBuscaModal(true) }}
+                            buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                            backgroundColor={Colors.transparent}
+                            icon={{
+                                name: 'search',
+                                type: 'font-awesome',
+                                color: Colors.textPrimaryDark
+                            }}
+                        />
+                    ) : null}
                 </View>
 
                 <View style={{ width: "75%", marginLeft: -23 }}>

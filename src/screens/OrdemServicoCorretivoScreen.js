@@ -271,24 +271,24 @@ export default class OrdemServicoCorretivoScreen extends Component {
             man_sos_situacao: 'A',
         };
 
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
         // return;
 
         this.setState({ salvado: true });
 
         let axiosMethod;
         // if (man_os_idf) {
-            // axiosMethod = axios.put('/ordemServicos/updateCorretivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
+        // axiosMethod = axios.put('/ordemServicos/updateCorretivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
         // } else {
-            axiosMethod = axios.post('/ordemServicos/storeCorretivas', registro);
+        axiosMethod = axios.post('/ordemServicos/storeCorretivas', registro);
         // }
         axiosMethod.then(response => {
-            this.setState({ 
+            this.setState({
                 man_sos_complemento: '',
                 servico_select: null,
                 codServico: '',
-                salvado: false, 
-                refreshing: true 
+                salvado: false,
+                refreshing: true
             });
             this.getListaRegistros();
         }).catch(ex => {
@@ -306,7 +306,7 @@ export default class OrdemServicoCorretivoScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, loading, salvado,
             servico_select, codServico, man_sos_complemento } = this.state;
 
-        console.log('OrdemServicoCorretivoScreen: ', this.state);
+        // console.log('OrdemServicoCorretivoScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -326,6 +326,9 @@ export default class OrdemServicoCorretivoScreen extends Component {
                             tipoServico={'C'}
                             onChange={this.onInputChangeServico}
                             value={servico_select}
+                            select={false}
+                            grupo={this.state.man_grupo_servico}
+                            veiculo=''
                         />
 
                         <TextInput

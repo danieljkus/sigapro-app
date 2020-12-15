@@ -154,7 +154,6 @@ export default class OrdemServicoScreen extends Component {
         state[id] = value;
         this.setState(state);
         if (value) {
-            console.log('onInputChangeVeiculo: ', value)
             this.setState({
                 codVeiculo: value.codVeic,
                 man_osm_km_odometro: value.kmOdo,
@@ -378,6 +377,7 @@ export default class OrdemServicoScreen extends Component {
         this.props.navigation.navigate('OrdemServicoPreventivoScreen', {
             man_os_idf: this.state.man_os_idf,
             man_grupo_servico: this.state.man_grupo_servico,
+            man_osm_veiculo: this.state.man_osm_veiculo,
         });
     }
 
@@ -430,7 +430,7 @@ export default class OrdemServicoScreen extends Component {
             funcionariosSelect, codFunc, nomeFunc, listaRegistrosFunc, carregandoFunc,
             usuario, carregarRegistro, loading, refreshing, salvado } = this.state;
 
-        console.log('OrdemServicoScreen - STATE: ', this.state);
+        // console.log('OrdemServicoScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -527,6 +527,7 @@ export default class OrdemServicoScreen extends Component {
                             codFilial={codFilial}
                             onChange={this.onInputChangeFilial}
                             value={filial_select}
+                            enabled={!man_os_idf}
                         />
 
                         <VeiculosSelect
@@ -537,6 +538,7 @@ export default class OrdemServicoScreen extends Component {
                             onChange={this.onInputChangeVeiculo}
                             onErro={this.onErroChange}
                             tipo=""
+                            enabled={!man_os_idf}
                         />
 
                         <View style={{ flexDirection: 'row' }}>
@@ -625,22 +627,22 @@ export default class OrdemServicoScreen extends Component {
 
                         <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                        <View style={{ marginTop: 20 }} >
-                            <TextInput
-                                type="select"
-                                label="Grupo"
-                                id="man_grupo_servico"
-                                ref="man_grupo_servico"
-                                value={man_grupo_servico}
-                                options={OPCOES_COMBO_GRUPO}
-                                onChange={this.onInputChange}
-                            />
-                        </View>
-
-                        <Divider style={{ backgroundColor: Colors.dividerDark }} />
-
                         {man_os_idf ? (
                             <View >
+                                <View style={{ marginTop: 20 }} >
+                                    <TextInput
+                                        type="select"
+                                        label="Grupo"
+                                        id="man_grupo_servico"
+                                        ref="man_grupo_servico"
+                                        value={man_grupo_servico}
+                                        options={OPCOES_COMBO_GRUPO}
+                                        onChange={this.onInputChange}
+                                    />
+                                </View>
+
+                                <Divider style={{ backgroundColor: Colors.dividerDark }} />
+
                                 <View style={{ flexDirection: 'row', justifyContent: "center", marginBottom: 4, marginTop: 20 }} >
                                     <View style={{ flex: 2, marginRight: 2 }}>
                                         <Button

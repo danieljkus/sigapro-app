@@ -41,7 +41,10 @@ class ServicosOSSelect extends PureComponent {
 
     state = {
         codServico: '',
+        codServ: '',
         tipoServico: '',
+        servicoSelect: [],
+        servicoSelectCombo: [],
         carregando: false,
 
         listaRegistros: [],
@@ -73,12 +76,16 @@ class ServicosOSSelect extends PureComponent {
     componentDidMount() {
         // console.log('ServicosOSSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
-            this.setState({
-                servicoSelect: {
-                    man_serv_codigo: this.props.man_serv_codigo,
-                    man_serv_descricao: this.props.man_serv_descricao
-                },
-            });
+            if (this.props.select) {
+                this.getServicosSelect()
+            } else {
+                this.setState({
+                    servicoSelect: {
+                        man_serv_codigo: this.props.man_serv_codigo,
+                        man_serv_descricao: this.props.man_serv_descricao
+                    },
+                });
+            }
         }
     }
 
@@ -96,19 +103,18 @@ class ServicosOSSelect extends PureComponent {
 
     buscaRegistros = (value) => {
         this.setState({ carregando: true });
-        const { id, onChange, tipoServico } = this.props;
-
-        console.log('ServicosOSSelect.buscaRegistros: ', tipoServico);
+        const { id, onChange, tipoServico, grupo } = this.props;
 
         axios.get('/listaServico', {
             params: {
                 codigo: value,
-                tipoServico
+                tipoServico,
+                grupo,
             }
         }).then(response => {
             const { data } = response;
 
-            console.log('ServicosOSSelect.buscaRegistros: ', data);
+            // console.log('ServicosOSSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -123,6 +129,49 @@ class ServicosOSSelect extends PureComponent {
             console.warn(error);
             console.warn(error.response);
             this.setState({
+                carregando: false,
+            });
+        })
+    }
+
+    getServicosSelect = () => {
+        const { pagina } = this.state;
+        this.setState({ carregando: true });
+
+        // console.log('getServicosSelect');
+
+        axios.get('/listaServicosBusca', {
+            params: {
+                page: pagina,
+                limite: 10,
+                tipoServico: this.props.tipoServico,
+                select: this.props.select,
+                grupo: this.props.grupo,
+                veiculo: this.props.veiculo,
+            }
+        }).then(response => {
+
+            const { data } = response;
+
+            // console.log('getServicosSelect: ', data);
+
+            const servicoSelectCombo = data.map(regList => {
+                return {
+                    key: regList.man_sos_servico,
+                    label: regList.man_sos_servico + ' - ' + regList.man_serv_descricao
+                }
+            });
+
+            this.setState({
+                servicoSelectCombo,
+                refreshing: false,
+                carregando: false,
+            })
+        }).catch(ex => {
+            console.warn(ex);
+            console.warn(ex.response);
+            this.setState({
+                refreshing: false,
                 carregando: false,
             });
         })
@@ -161,6 +210,7 @@ class ServicosOSSelect extends PureComponent {
                 limite: 10,
                 nome: buscaNome,
                 tipoServico: this.props.tipoServico,
+                grupo: this.props.grupo,
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -246,8 +296,9 @@ class ServicosOSSelect extends PureComponent {
 
 
     render() {
-        const { label, enabled, value } = this.props;
-        const { codServico, tipoServico, carregando, loading, refreshing, listaRegistros } = this.state;
+        const { label, enabled, value, select } = this.props;
+        const { codServico, codServ, tipoServico, servicoSelect, servicoSelectCombo,
+            carregando, loading, refreshing, listaRegistros } = this.state;
 
         // console.log('ServicosOSSelect.this.props', this.props)
         // console.log('ServicosOSSelect.this.state', this.state)
@@ -258,53 +309,69 @@ class ServicosOSSelect extends PureComponent {
         this.setState({ codServico: servico, tipoServico: tipo });
 
         return (
-            <View style={{ flexDirection: 'row' }}>
-                <View style={{ width: "25%" }}>
-                    <TextInput
-                        label={label}
-                        id="codServico"
-                        ref="codServico"
-                        value={codServico}
-                        maxLength={6}
-                        keyboardType="numeric"
-                        onChange={this.onInputChange}
-                        enabled={enabled}
-                        height={50}
-                    />
-                </View>
+            <View>
+                {!select ? (
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ width: "25%" }}>
+                            <TextInput
+                                label={label}
+                                id="codServico"
+                                ref="codServico"
+                                value={codServico}
+                                maxLength={6}
+                                keyboardType="numeric"
+                                onChange={this.onInputChange}
+                                enabled={enabled}
+                                height={50}
+                            />
+                        </View>
 
-                <View style={{ width: "7%", }}>
-                    <Button
-                        title=""
-                        loading={loading}
-                        onPress={() => { this.onAbrirBuscaModal(true) }}
-                        buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 40, marginLeft: -18 }}
-                        backgroundColor={Colors.transparent}
-                        icon={{
-                            name: 'search',
-                            type: 'font-awesome',
-                            color: Colors.textPrimaryDark
-                        }}
-                    />
-                </View>
+                        <View style={{ width: "7%", }}>
+                            <Button
+                                title=""
+                                loading={loading}
+                                onPress={() => { this.onAbrirBuscaModal(true) }}
+                                buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 40, marginLeft: -18 }}
+                                backgroundColor={Colors.transparent}
+                                icon={{
+                                    name: 'search',
+                                    type: 'font-awesome',
+                                    color: Colors.textPrimaryDark
+                                }}
+                            />
+                        </View>
 
-                <View style={{ width: "75%", marginLeft: -23 }}>
-                    {carregando
-                        ? (
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                <ActivityIndicator style={{ margin: 10 }} />
-                                <Text> Buscando... </Text>
-                            </View>
-                        ) : (<TextInput
-                            label=" "
-                            value={descricao}
-                            enabled={false}
-                            height={50}
+                        <View style={{ width: "75%", marginLeft: -23 }}>
+                            {carregando
+                                ? (
+                                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                        <ActivityIndicator style={{ margin: 10 }} />
+                                        <Text> Buscando... </Text>
+                                    </View>
+                                ) : (<TextInput
+                                    label=" "
+                                    value={descricao}
+                                    enabled={false}
+                                    height={50}
+                                    multiline={true}
+                                />
+                                )
+                            }
+                        </View>
+                    </View>
+                ) : (
+                        <TextInput
+                            type="select"
+                            label="Serviço"
+                            id="codServ"
+                            ref="codServ"
+                            value={codServ}
+                            options={servicoSelectCombo}
+                            onChange={this.onInputChange}
+                            // height={50}
                             multiline={true}
                         />
-                        )
-                    }
-                </View>
+                    )}
 
 
 

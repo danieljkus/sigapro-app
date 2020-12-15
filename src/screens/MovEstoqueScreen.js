@@ -455,7 +455,7 @@ export default class MovEstoqueScreen extends Component {
                                         label="Item"
                                         id="item_select"
                                         codItem={estoq_mei_item}
-                                        buscaEstoque={1}
+                                        buscaEstoque={0}
                                         onChange={this.onInputChangeItem}
                                         value={item_select}
                                         enabled={true}

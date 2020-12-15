@@ -256,14 +256,14 @@ export default class OrdensServicosScreen extends Component {
     }
 
     onRegistroPress = (man_os_idf) => {
-        console.log('onRegistroPress: ', man_os_idf);
+        // console.log('onRegistroPress: ', man_os_idf);
 
         this.setState({ carregarRegistro: true });
         axios.get('/ordemServicos/show/' + man_os_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onRegistroPress: ', response.data);
+                // console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('OrdemServicoScreen', {
                     registro: {
@@ -421,7 +421,7 @@ export default class OrdensServicosScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro,
             manu_os_filial, dataIni, dataFim, idf, filialSelect } = this.state;
 
-        console.log('OrdensServicosScreen: ', this.state)
+        // console.log('OrdensServicosScreen: ', this.state)
 
         return (
             <View style={{ flex: 1, }}>

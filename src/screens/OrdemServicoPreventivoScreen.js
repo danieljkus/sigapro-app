@@ -74,6 +74,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
         this.state = {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
             man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
+            man_osm_veiculo: props.navigation.state.params.man_osm_veiculo ? props.navigation.state.params.man_osm_veiculo : '',
             man_sos_complemento: '',
 
             servico_select: null,
@@ -271,7 +272,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
             man_sos_situacao: 'A',
         };
 
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
         // return;
 
         this.setState({ salvado: true });
@@ -306,7 +307,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, loading, salvado,
             servico_select, codServico, man_sos_complemento } = this.state;
 
-        console.log('OrdemServicoPreventivoScreen: ', this.state);
+        // console.log('OrdemServicoPreventivoScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -326,6 +327,9 @@ export default class OrdemServicoPreventivoScreen extends Component {
                             tipoServico={'P'}
                             onChange={this.onInputChangeServico}
                             value={servico_select}
+                            select={true}
+                            grupo={this.state.man_grupo_servico}
+                            veiculo={this.state.man_osm_veiculo}
                         />
 
                         <TextInput
