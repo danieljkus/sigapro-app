@@ -22,24 +22,22 @@ export const isLoggedIn = async () => {
 
 
 
-// export const getTemPermissao = async (permissao) => {
 export const getTemPermissao = (permissao, permissoes) => {
-    // return AsyncStorage.getItem(PROF_COOKIE_NAME + '-permissoes').then((v) => {
-    //     let permissoes = (v != '') ? JSON.parse(v) : [];
+    // getPermissoes().then(permissoes => {
+        // this.setState({ permissoes });
 
-        // console.log('getTemPermissao: ', permissoes);
         // console.log('getTemPermissao: ', permissao);
+        // console.log('getTemPermissao: ', permissoes);
 
         if ((permissoes) && (permissoes.length > 0) && (permissao)) {
+            // console.log('getTemPermissao: ', permissoes);
             const iIndItem = permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
             // console.log('getTemPermissao: ', permissao + ' - ' + (iIndItem >= 0 ? true : false));
-            return iIndItem >= 0 ? true : false;
+            return iIndItem >= 0 ? 'S' : 'N';
         } else {
             // return false;
         }
-
-        // return ok = true;
-    // });
+    // })
 }
 
 export const removePermissoes = async () => {

@@ -1,38 +1,41 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
-const { OS } = Platform;
-
-import moment from 'moment';
 import axios from 'axios';
 import { Card, Divider, Icon } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import StatusBar from '../components/StatusBar';
 import Colors from '../values/Colors';
-import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
-// import Alert from '../components/Alert';
+import TextInput from '../components/TextInput';
+import Button from '../components/Button';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
+const { OS } = Platform;
 
 
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
     return (
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_osd_situacao === 'A' ? 'red' : '#10734a' }}>
-                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5, paddingTop: 5 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Situação {': '}
-                    </Text>
-                    <Text>
-                        {registro.man_osd_situacao}
-                    </Text>
-                </View>
+                <TouchableOpacity
+                    onPress={() => onRegistroPress(registro.man_osd_sequencia)}
+                    onLongPress={() => onRegistroLongPress(registro.man_osd_sequencia)}
+                >
+                    <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5, paddingTop: 5 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Situação {': '}
+                        </Text>
+                        <Text>
+                            {registro.man_osd_situacao}
+                        </Text>
+                    </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5 }}>
-                    <Text>
-                        {registro.man_osd_defeitos}
-                    </Text>
-                </View>
+                    <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5 }}>
+                        <Text>
+                            {registro.man_osd_defeitos}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
             </View>
         </Card>
     )
@@ -45,6 +48,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
         this.state = {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
             man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
+            man_osd_defeitos: '',
 
             listaRegistros: [],
             refreshing: false,
@@ -101,6 +105,84 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
             })
     }
 
+    onRegistroLongPress = (man_osd_sequencia) => {
+        Alert.alert("Excluir registro", `Deseja excluir este Serviço?`, [
+            { text: "Cancelar" },
+            {
+                text: "Excluir",
+                onPress: () => this.onExcluirRegistro(man_osd_sequencia),
+                style: "destructive"
+            }
+        ])
+    }
+
+    onExcluirRegistro = (man_osd_sequencia) => {
+        this.setState({ refreshing: true });
+        axios.delete('/ordemServicos/deleteDefeitosConst/' + this.state.man_os_idf + '/' + man_osd_sequencia)
+            .then(response => {
+                const listaRegistros = [...this.state.listaRegistros];
+                const index = listaRegistros.findIndex(registro => registro.man_osd_sequencia === man_osd_sequencia);
+                listaRegistros.splice(index, 1);
+                this.setState({
+                    listaRegistros,
+                    refreshing: false
+                });
+            }).catch(ex => {
+                console.warn(ex);
+                console.warn(ex.response);
+                this.setState({ refreshing: false });
+            })
+    }
+
+    onInputChange = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+    }
+
+    onFormSubmit = (event) => {
+        if ((!this.state.man_osd_defeitos) || (this.state.man_osd_defeitos === '')) {
+            Alert.alert("Atenção", `Informe um Defeito`, [{ text: "OK" }])
+            return;
+        }
+        this.onSalvarRegistro();
+    }
+
+    onSalvarRegistro = () => {
+        const { man_os_idf, man_grupo_servico, man_osd_defeitos } = this.state;
+
+        const registro = {
+            man_osf_ordem_servico: man_os_idf,
+            man_osd_grupo: man_grupo_servico,
+            man_osd_defeitos,
+            man_osd_situacao: 'A',
+        };
+
+        // console.log('onSalvarRegistro: ', registro);
+        // return;
+
+        this.setState({ salvado: true });
+
+        let axiosMethod;
+        // if (man_os_idf) {
+        // axiosMethod = axios.put('/ordemServicos/updateCorretivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
+        // } else {
+        axiosMethod = axios.post('/ordemServicos/storeDefeitosConst', registro);
+        // }
+        axiosMethod.then(response => {
+            this.setState({
+                man_osd_defeitos: '',
+                codServico: '',
+                salvado: false,
+                refreshing: true
+            });
+            this.getListaRegistros();
+        }).catch(ex => {
+            this.setState({ salvado: false });
+            console.warn(ex);
+        })
+    }
+
 
     carregarMaisRegistros = () => {
         const { carregarMais, refreshing, carregando, pagina } = this.state;
@@ -143,7 +225,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
 
 
     render() {
-        const { listaRegistros, refreshing, carregarRegistro, loading, salvado } = this.state;
+        const { listaRegistros, man_osd_defeitos, refreshing, carregarRegistro, loading, salvado } = this.state;
 
         console.log('OrdemServicoDefeitosConstScreen: ', this.state);
 
@@ -155,6 +237,39 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
                     style={{ flex: 1, }}
                     keyboardShouldPersistTaps="always"
                 >
+
+                    <View
+                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
+                    >
+                        <TextInput
+                            label="Descrição do Defeito"
+                            id="man_osd_defeitos"
+                            ref="man_osd_defeitos"
+                            value={man_osd_defeitos}
+                            maxLength={1000}
+                            onChange={this.onInputChange}
+                            multiline={true}
+                            height={50}
+                        />
+
+                        <Button
+                            title="SALVAR DEFEITO"
+                            loading={salvado}
+                            onPress={this.onFormSubmit}
+                            buttonStyle={{ height: 45 }}
+                            backgroundColor={Colors.buttonPrimary}
+                            textStyle={{
+                                fontWeight: 'bold',
+                                fontSize: 15
+                            }}
+                            icon={{
+                                name: 'check',
+                                type: 'font-awesome',
+                                color: Colors.textOnPrimary
+                            }}
+                        />
+
+                    </View>
 
                     <FlatList
                         data={listaRegistros}

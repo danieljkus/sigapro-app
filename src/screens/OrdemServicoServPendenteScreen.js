@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Modal } from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -8,70 +8,97 @@ import { Card, Divider, Icon } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import StatusBar from '../components/StatusBar';
 import Colors from '../values/Colors';
-import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
+import { maskDate } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
 // import Alert from '../components/Alert';
+import TextInput from '../components/TextInput';
+import Button from '../components/Button';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
-
+const DATE_FORMAT = 'DD/MM/YYYY';
 
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
     return (
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
-            <View style={{ borderLeftWidth: 5, borderLeftColor: 'red' }}>
+            <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_sp_data_execucao ? '#10734a' : 'red' }}>
+                <TouchableOpacity
+                    onPress={() => onRegistroPress(registro.man_sp_idf, registro.man_sp_data_execucao ? false : true)}
+                // onLongPress={() => onRegistroLongPress(registro.man_os_idf)}
+                >
 
-                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Inclusão {': '}
-                        </Text>
-                        <Text>
-                            {registro.man_sp_data_inclusao ? moment(registro.man_sp_data_inclusao).format('DD/MM/YYYY') : ''}
-                        </Text>
+                    <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Inclusão {': '}
+                            </Text>
+                            <Text>
+                                {registro.man_sp_data_inclusao ? moment(registro.man_sp_data_inclusao).format('DD/MM/YYYY') : ''}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Execução {': '}
+                            </Text>
+                            <Text>
+                                {registro.man_sp_data_execucao ? moment(registro.man_sp_data_execucao).format('DD/MM/YYYY') : ''}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Execução {': '}
-                        </Text>
-                        <Text>
-                            {registro.man_sp_data_execucao ? moment(registro.man_sp_data_execucao).format('DD/MM/YYYY') : ''}
-                        </Text>
-                    </View>
-                </View>
 
-                <View style={{ paddingLeft: 10, marginBottom: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                    <View style={{ paddingLeft: 10, marginBottom: 5, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Serviço {': '}
+                            </Text>
+                            <Text>
+                                {registro.man_sp_servico}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Prioridade {': '}
+                            </Text>
+                            <Text>
+                                {registro.man_spc_prioridade}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <Divider />
+
+                    <View style={{ flexDirection: 'row', paddingLeft: 10, paddingVertical: 5 }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Serviço {': '}
                         </Text>
                         <Text>
-                            {registro.man_sp_servico}
+                            {registro.man_spc_descricao}
                         </Text>
                     </View>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Prioridade {': '}
-                        </Text>
-                        <Text>
-                            {registro.man_spc_prioridade}
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5 }}>
-                    <Text>
-                        {registro.man_spc_descricao}
-                    </Text>
-                </View>
 
 
-                {registro.man_sp_obs ? (
-                    <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5 }}>
-                        <Text>
-                            {registro.man_sp_obs}
-                        </Text>
-                    </View>
-                ) : null}
+                    {registro.man_sp_obs ? (
+                        <View style={{ flexDirection: 'row', paddingLeft: 10, paddingBottom: 5, marginRight: 50 }}>
+                            <Text>
+                                {registro.man_sp_obs}
+                            </Text>
+                        </View>
+                    ) : null}
+
+                    {registro.man_sp_data_execucao ? (
+                        <View>
+                            <Divider />
+                            <View style={{ flexDirection: 'row', paddingLeft: 10, paddingVertical: 5, marginRight: 50 }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Execução {': '}
+                                </Text>
+                                <Text>
+                                    {registro.man_sp_obs_execucao}
+                                </Text>
+                            </View>
+                        </View>
+                    ) : null}
+
+                </TouchableOpacity>
             </View>
         </Card>
     )
@@ -85,12 +112,18 @@ export default class OrdemServicoServPendenteScreen extends Component {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
             man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
 
+            man_sp_idf: 0,
+            man_sp_data_execucao: moment(new Date()).format(DATE_FORMAT),
+            man_sp_data_execucao: '',
+
             listaRegistros: [],
             refreshing: false,
             carregando: false,
             carregarMais: false,
             loading: false,
             pagina: 1,
+
+            modalBaixaVisible: false,
         }
     };
 
@@ -174,6 +207,55 @@ export default class OrdemServicoServPendenteScreen extends Component {
         )
     }
 
+    onRegistroPress = (man_sp_idf, visible) => {
+        if (visible) {
+            this.setState({
+                man_sp_idf: man_sp_idf,
+                modalBaixaVisible: visible,
+            });
+            this.setState({
+                pagina: 1,
+                refreshing: true,
+            }, this.getListaRegistros);
+        }
+    }
+
+    onClosePress = (visible) => {
+        this.setState({ modalBaixaVisible: visible });
+    }
+
+    onSalvarRegistro = () => {
+        const { man_os_idf, man_grupo_servico, man_sp_idf, man_sp_data_execucao, man_sp_obs } = this.state;
+
+        const registro = {
+            man_sp_idf,
+            man_sp_os: man_os_idf,
+            man_sp_data_execucao: moment(man_sp_data_execucao, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
+            man_sp_obs,
+        };
+
+        console.log('onSalvarRegistro: ', registro);
+        // return;
+
+        this.setState({ salvado: true });
+        axios.post('/ordemServicos/storeServPendentes', registro)
+            .then(response => {
+                this.setState({
+                    man_sp_idf: 0,
+                    modalBaixaVisible: false,
+                    salvado: false
+                });
+            }).catch(ex => {
+                this.setState({ salvado: false });
+                console.warn(ex);
+            })
+    }
+
+    onInputChange = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+    }
 
 
     // ------------------------------------------------------------
@@ -182,7 +264,8 @@ export default class OrdemServicoServPendenteScreen extends Component {
 
 
     render() {
-        const { listaRegistros, refreshing, carregarRegistro, loading, salvado } = this.state;
+        const { listaRegistros, refreshing, carregarRegistro, man_sp_data_execucao, man_sp_obs,
+            modalBaixaVisible, loading, salvado } = this.state;
 
         console.log('OrdemServicoServPendenteScreen: ', this.state);
 
@@ -207,6 +290,103 @@ export default class OrdemServicoServPendenteScreen extends Component {
                     />
 
                 </ScrollView>
+
+
+                {/* ----------------------------- */}
+                {/* MODAL PARA BAIXA              */}
+                {/* ----------------------------- */}
+                <Modal
+                    visible={this.state.modalBaixaVisible}
+                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
+                    animationType={"slide"}
+                    transparent={true}
+                >
+                    <View style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            width: "90%",
+                            paddingTop: 10,
+                        }} >
+                            <View style={{
+                                paddingVertical: 15,
+                                paddingHorizontal: 15,
+                                backgroundColor: Colors.background,
+                                borderRadius: 5,
+                            }}>
+
+                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                                    <Text style={{
+                                        color: Colors.textOnPrimary,
+                                        marginTop: 15,
+                                        marginBottom: 15,
+                                        marginLeft: 16,
+                                        textAlign: 'center',
+                                        fontSize: 20,
+                                        fontWeight: 'bold',
+                                    }}>Serviço Executado</Text>
+                                </View>
+
+                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
+
+                                    <ScrollView style={{ height: 50, width: "100%", marginBottom: 10 }}>
+                                        <TextInput
+                                            type="date"
+                                            label="Data Execução"
+                                            id="man_sp_data_execucao"
+                                            ref="man_sp_data_execucao"
+                                            value={man_sp_data_execucao}
+                                            masker={maskDate}
+                                            dateFormat={DATE_FORMAT}
+                                            onChange={this.onInputChange}
+                                            validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                            fontSize={12}
+                                        />
+                                    </ScrollView>
+                                    <TextInput
+                                        label="Descrição da Execução"
+                                        id="man_sp_obs"
+                                        ref="man_sp_obs"
+                                        value={man_sp_obs}
+                                        maxLength={150}
+                                        onChange={this.onInputChange}
+                                        multiline={true}
+                                        height={50}
+                                    />
+
+
+                                    <Button
+                                        title="GRAVAR"
+                                        onPress={() => { this.onSalvarRegistro() }}
+                                        // onPress={this.onFormSubmit}
+                                        buttonStyle={{ marginTop: 15, height: 35 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'filter',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                    <Button
+                                        title="FECHAR"
+                                        onPress={() => { this.onClosePress(!this.state.modalBaixaVisible) }}
+                                        buttonStyle={{ marginTop: 10, height: 35 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'close',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
 
                 <ProgressDialog
                     visible={carregarRegistro}

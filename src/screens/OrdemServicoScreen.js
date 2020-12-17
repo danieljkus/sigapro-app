@@ -114,7 +114,7 @@ export default class OrdemServicoScreen extends Component {
         getFilial().then(filial => {
             this.setState({
                 filial,
-                codFilial: this.props.navigation.state.params.registro.man_os_filial,
+                codFilial: this.props.navigation.state.params.registro.man_os_filial ? this.props.navigation.state.params.registro.man_os_filial : filial,
 
                 codVeiculo: this.props.navigation.state.params.registro.man_osm_veiculo ? this.props.navigation.state.params.registro.man_osm_veiculo : '',
 
@@ -430,7 +430,7 @@ export default class OrdemServicoScreen extends Component {
             funcionariosSelect, codFunc, nomeFunc, listaRegistrosFunc, carregandoFunc,
             usuario, carregarRegistro, loading, refreshing, salvado } = this.state;
 
-        // console.log('OrdemServicoScreen - STATE: ', this.state);
+        console.log('OrdemServicoScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -737,7 +737,7 @@ export default class OrdemServicoScreen extends Component {
                                     </View>
                                     <View style={{ flex: 2, marginLeft: 2 }}>
                                         <Button
-                                            title="PENDENCIAS"
+                                            title="SERV. PEND."
                                             onPress={() => { this.onAbrirPendencias() }}
                                             buttonStyle={{ height: 70 }}
                                             backgroundColor={Colors.primaryLight}
