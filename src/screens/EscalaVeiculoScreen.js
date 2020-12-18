@@ -470,7 +470,7 @@ export default class EscalaVeiculoScreen extends Component {
                                     id="man_ev_veiculo_trocar"
                                     ref="man_ev_veiculo_trocar"
                                     value={man_ev_veiculo_trocar}
-                                    maxLength={4}
+                                    maxLength={9}
                                     onChange={this.onInputChange}
                                     keyboardType="numeric"
                                 />

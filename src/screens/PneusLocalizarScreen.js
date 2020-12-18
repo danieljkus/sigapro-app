@@ -1,22 +1,12 @@
 import React, { Component } from 'react';
-import {
-    View, Text, FlatList, Modal,
-    Platform, TouchableOpacity,
-    ActivityIndicator, ScrollView,
-    PermissionsAndroid
-} from 'react-native';
-import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
+import { View, Text, Platform, TouchableOpacity } from 'react-native';
+import { Icon, Card } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
-import GetLocation from 'react-native-get-location';
-import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import { maskDate } from '../utils/Maskers';
-import Alert from '../components/Alert';
 
-import VeiculosSelect from '../components/VeiculosSelect';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 moment.locale('pt-BR');

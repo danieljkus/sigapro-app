@@ -116,7 +116,7 @@ class VeiculosSelect extends PureComponent {
                         id="codVeiculo"
                         ref="codVeiculo"
                         value={codVeiculo}
-                        maxLength={6}
+                        maxLength={9}
                         keyboardType="numeric"
                         onChange={this.onChange}
                         enabled={enabled}

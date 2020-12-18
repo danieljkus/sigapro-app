@@ -429,7 +429,7 @@ export default class EscalaVeiculosScreen extends Component {
                                         id="man_ev_veiculo"
                                         ref="man_ev_veiculo"
                                         value={man_ev_veiculo}
-                                        maxLength={20}
+                                        maxLength={9}
                                         onChange={this.onInputChange}
                                         keyboardType="numeric"
                                     />
