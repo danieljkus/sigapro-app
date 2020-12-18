@@ -13,6 +13,7 @@ import { getFilial } from '../utils/LoginManager';
 // import Alert from '../components/Alert';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
+import FloatActionButton from '../components/FloatActionButton';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 const DATE_FORMAT = 'DD/MM/YYYY';
@@ -111,10 +112,12 @@ export default class OrdemServicoServPendenteScreen extends Component {
         this.state = {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
             man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
+            man_osm_veiculo: props.navigation.state.params.man_osm_veiculo ? props.navigation.state.params.man_osm_veiculo : '',
 
             man_sp_idf: 0,
             man_sp_data_execucao: moment(new Date()).format(DATE_FORMAT),
             man_sp_data_execucao: '',
+            man_sp_servico: '',
 
             listaRegistros: [],
             refreshing: false,
@@ -207,10 +210,23 @@ export default class OrdemServicoServPendenteScreen extends Component {
         )
     }
 
+    onAddPress = () => {
+        // console.log('onAddPress');
+        this.setState({
+            man_sp_idf: 0,
+            modalBaixaVisible: true,
+        });
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+        }, this.getListaRegistros);
+    }
+
     onRegistroPress = (man_sp_idf, visible) => {
         if (visible) {
             this.setState({
                 man_sp_idf: man_sp_idf,
+                man_sp_data_execucao: moment(new Date()).format(DATE_FORMAT),
                 modalBaixaVisible: visible,
             });
             this.setState({
@@ -225,11 +241,15 @@ export default class OrdemServicoServPendenteScreen extends Component {
     }
 
     onSalvarRegistro = () => {
-        const { man_os_idf, man_grupo_servico, man_sp_idf, man_sp_data_execucao, man_sp_obs } = this.state;
+        const { man_grupo_servico, man_osm_veiculo, man_os_idf, man_sp_idf, man_sp_data_execucao, man_sp_obs, man_sp_servico } = this.state;
 
         const registro = {
             man_sp_idf,
             man_sp_os: man_os_idf,
+            man_sp_veiculo: man_osm_veiculo,
+            man_sp_grupo_servico: man_grupo_servico,
+            man_sp_obs,
+            man_sp_servico,
             man_sp_data_execucao: moment(man_sp_data_execucao, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
             man_sp_obs,
         };
@@ -245,6 +265,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
                     modalBaixaVisible: false,
                     salvado: false
                 });
+                this.getListaRegistros();
             }).catch(ex => {
                 this.setState({ salvado: false });
                 console.warn(ex);
@@ -264,7 +285,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
 
 
     render() {
-        const { listaRegistros, refreshing, carregarRegistro, man_sp_data_execucao, man_sp_obs,
+        const { listaRegistros, refreshing, carregarRegistro, man_sp_idf, man_sp_data_execucao, man_sp_obs,
             modalBaixaVisible, loading, salvado } = this.state;
 
         console.log('OrdemServicoServPendenteScreen: ', this.state);
@@ -328,27 +349,30 @@ export default class OrdemServicoServPendenteScreen extends Component {
                                         textAlign: 'center',
                                         fontSize: 20,
                                         fontWeight: 'bold',
-                                    }}>Serviço Executado</Text>
+                                    }}>Serviço Pendente</Text>
                                 </View>
 
                                 <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
-                                    <ScrollView style={{ height: 50, width: "100%", marginBottom: 10 }}>
-                                        <TextInput
-                                            type="date"
-                                            label="Data Execução"
-                                            id="man_sp_data_execucao"
-                                            ref="man_sp_data_execucao"
-                                            value={man_sp_data_execucao}
-                                            masker={maskDate}
-                                            dateFormat={DATE_FORMAT}
-                                            onChange={this.onInputChange}
-                                            validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
-                                            fontSize={12}
-                                        />
-                                    </ScrollView>
+                                    {man_sp_idf ? (
+                                        <ScrollView style={{ height: 50, width: "100%", marginBottom: 10 }}>
+                                            <TextInput
+                                                type="date"
+                                                label="Data Execução"
+                                                id="man_sp_data_execucao"
+                                                ref="man_sp_data_execucao"
+                                                value={man_sp_data_execucao}
+                                                masker={maskDate}
+                                                dateFormat={DATE_FORMAT}
+                                                onChange={this.onInputChange}
+                                                validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                                fontSize={12}
+                                            />
+                                        </ScrollView>
+                                    ) : null}
+
                                     <TextInput
-                                        label="Descrição da Execução"
+                                        label="Descrição do Serviço"
                                         id="man_sp_obs"
                                         ref="man_sp_obs"
                                         value={man_sp_obs}
@@ -387,6 +411,16 @@ export default class OrdemServicoServPendenteScreen extends Component {
                         </View>
                     </View>
                 </Modal>
+
+
+                <FloatActionButton
+                    iconFamily="MaterialIcons"
+                    iconName="add"
+                    iconColor={Colors.textOnAccent}
+                    onPress={this.onAddPress}
+                    backgroundColor={Colors.primary}
+                    marginRight={10}
+                />
 
                 <ProgressDialog
                     visible={carregarRegistro}

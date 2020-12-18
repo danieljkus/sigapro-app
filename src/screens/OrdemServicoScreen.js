@@ -405,6 +405,7 @@ export default class OrdemServicoScreen extends Component {
         this.props.navigation.navigate('OrdemServicoServPendenteScreen', {
             man_os_idf: this.state.man_os_idf,
             man_grupo_servico: this.state.man_grupo_servico,
+            man_osm_veiculo: this.state.man_osm_veiculo,
         });
     }
 
