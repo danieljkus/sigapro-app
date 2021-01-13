@@ -172,7 +172,7 @@ class TextInput extends PureComponent {
                     }}>
                         <Picker
                             note
-                            mode="dropdown"
+                            mode="dialog"
                             selectedValue={value}
                             onValueChange={this.onChange}
                             enabled={enabled}

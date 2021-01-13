@@ -120,7 +120,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
     getListaRegistros = () => {
         const { filial, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
-        console.log('getListaRegistros: ', filial);
+        // console.log('getListaRegistros: ', filial);
 
         axios.get('/saidasEstoque', {
             params: {
@@ -282,7 +282,7 @@ export default class MedicoesTanqueArlaScreen extends Component {
     render() {
         const { listaRegistros, refreshing, carregarRegistro } = this.state;
 
-        console.log('SaidasDieselScreen: ', this.state);
+        // console.log('SaidasDieselScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, }}>

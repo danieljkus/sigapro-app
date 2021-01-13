@@ -95,7 +95,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
         this.state = {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
             man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
-
+            man_os_situacao: props.navigation.state.params.man_os_situacao ? props.navigation.state.params.man_os_situacao : '',
             man_osf_nome_funcionario: '',
             man_osf_obs: '',
 
@@ -300,7 +300,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
             man_osf_obs,
         };
 
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
         // return;
 
         this.setState({ salvado: true });
@@ -536,7 +536,8 @@ export default class OrdemServicoResponsaveisScreen extends Component {
                         />
 
 
-                        <Button
+{this.state.man_os_situacao === 'A' ? (
+                       <Button
                             title="SALVAR SERVIÇO"
                             loading={salvado}
                             onPress={this.onFormSubmit}
@@ -552,6 +553,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
                                 color: Colors.textOnPrimary
                             }}
                         />
+) : null}
 
                     </View>
 

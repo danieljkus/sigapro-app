@@ -64,6 +64,8 @@ import SaldosFiliaisScreen from './SaldosFiliaisScreen';
 import AutorizacaoDespesasScreen from './AutorizacaoDespesasScreen';
 import AutorizacaoDespesaScreen from './AutorizacaoDespesaScreen';
 
+import BoletinsDiferencaScreen from './BoletinsDiferencaScreen';
+
 import TrocarSenhaScreen from './TrocarSenhaScreen';
 
 import Icon from '../components/Icon';
@@ -439,6 +441,14 @@ const HomeStackNavigator = StackNavigator({
         screen: AutorizacaoDespesaScreen,
         navigationOptions: {
             title: "Autorização de Despesa",
+            ...defaultNavigationOptions
+        }
+    },
+
+    BoletinsDiferencaScreen: {
+        screen: BoletinsDiferencaScreen,
+        navigationOptions: {
+            title: "Boletins de Diferença",
             ...defaultNavigationOptions
         }
     },

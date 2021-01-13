@@ -225,7 +225,7 @@ export default class OrdemServicoScreen extends Component {
             man_osm_oficina: null,
         };
 
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
         // return;
 
         this.setState({ salvado: true });
@@ -370,6 +370,7 @@ export default class OrdemServicoScreen extends Component {
         this.props.navigation.navigate('OrdemServicoCorretivoScreen', {
             man_os_idf: this.state.man_os_idf,
             man_grupo_servico: this.state.man_grupo_servico,
+            man_os_situacao: this.state.man_os_situacao,
         });
     }
 
@@ -378,12 +379,14 @@ export default class OrdemServicoScreen extends Component {
             man_os_idf: this.state.man_os_idf,
             man_grupo_servico: this.state.man_grupo_servico,
             man_osm_veiculo: this.state.man_osm_veiculo,
+            man_os_situacao: this.state.man_os_situacao,
         });
     }
 
     onAbrirPecas = () => {
         this.props.navigation.navigate('OrdemServicoPecasScreen', {
             man_os_idf: this.state.man_os_idf,
+            man_os_situacao: this.state.man_os_situacao,
         });
     }
 
@@ -391,6 +394,7 @@ export default class OrdemServicoScreen extends Component {
         this.props.navigation.navigate('OrdemServicoResponsaveisScreen', {
             man_os_idf: this.state.man_os_idf,
             man_grupo_servico: this.state.man_grupo_servico,
+            man_os_situacao: this.state.man_os_situacao,
         });
     }
 
@@ -398,6 +402,7 @@ export default class OrdemServicoScreen extends Component {
         this.props.navigation.navigate('OrdemServicoDefeitosConstScreen', {
             man_os_idf: this.state.man_os_idf,
             man_grupo_servico: this.state.man_grupo_servico,
+            man_os_situacao: this.state.man_os_situacao,
         });
     }
 
@@ -406,6 +411,7 @@ export default class OrdemServicoScreen extends Component {
             man_os_idf: this.state.man_os_idf,
             man_grupo_servico: this.state.man_grupo_servico,
             man_osm_veiculo: this.state.man_osm_veiculo,
+            man_os_situacao: this.state.man_os_situacao,
         });
     }
 
@@ -431,7 +437,7 @@ export default class OrdemServicoScreen extends Component {
             funcionariosSelect, codFunc, nomeFunc, listaRegistrosFunc, carregandoFunc,
             usuario, carregarRegistro, loading, refreshing, salvado } = this.state;
 
-        console.log('OrdemServicoScreen - STATE: ', this.state);
+        // console.log('OrdemServicoScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -760,24 +766,26 @@ export default class OrdemServicoScreen extends Component {
                         ) : null}
 
 
-                        <View style={{ flex: 1, marginTop: 10, marginBottom: 20 }}>
-                            <Button
-                                title="SALVAR O.S"
-                                loading={loading}
-                                onPress={this.onFormSubmit}
-                                buttonStyle={{ height: 45 }}
-                                backgroundColor={Colors.buttonPrimary}
-                                textStyle={{
-                                    fontWeight: 'bold',
-                                    fontSize: 15
-                                }}
-                                icon={{
-                                    name: 'check',
-                                    type: 'font-awesome',
-                                    color: Colors.textOnPrimary
-                                }}
-                            />
-                        </View>
+                        {this.state.man_os_situacao === 'A' ? (
+                            <View style={{ flex: 1, marginTop: 10, marginBottom: 20 }}>
+                                <Button
+                                    title="SALVAR O.S"
+                                    loading={loading}
+                                    onPress={this.onFormSubmit}
+                                    buttonStyle={{ height: 45 }}
+                                    backgroundColor={Colors.buttonPrimary}
+                                    textStyle={{
+                                        fontWeight: 'bold',
+                                        fontSize: 15
+                                    }}
+                                    icon={{
+                                        name: 'check',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
+                            </View>
+                        ) : null}
 
 
                     </View>

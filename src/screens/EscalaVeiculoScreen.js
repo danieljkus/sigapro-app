@@ -143,7 +143,7 @@ export default class EscalaVeiculoScreen extends Component {
             }).then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('registro: ', response.data);
+                // console.log('registro: ', response.data);
 
                 let funcionariosSelect = [];
                 if (response.data.codMot) {
@@ -184,7 +184,7 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     onInputChangeFunc = (id, value) => {
-        console.log('onInputChangeFunc: ', value)
+        // console.log('onInputChangeFunc: ', value)
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -196,7 +196,7 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     onInputChangeListaFunc = (id, value) => {
-        console.log('onInputChangeListaFunc: ', value)
+        // console.log('onInputChangeListaFunc: ', value)
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -217,7 +217,7 @@ export default class EscalaVeiculoScreen extends Component {
         this.setState({ funcionariosSelect: [], empFunc: '', });
         const { codFunc } = this.state;
 
-        console.log('buscaFuncionários: ', value)
+        // console.log('buscaFuncionários: ', value)
 
         if (value) {
             this.setState({ carregandoFunc: true });
@@ -229,7 +229,7 @@ export default class EscalaVeiculoScreen extends Component {
             }).then(response => {
                 const { data } = response;
 
-                console.log('buscaFuncionários: ', data)
+                // console.log('buscaFuncionários: ', data)
 
                 if (data) {
                     const funcionariosSelect = data.map(regList => {
@@ -338,7 +338,7 @@ export default class EscalaVeiculoScreen extends Component {
     // ---------------------------------------------------------------------------
 
     onAbrirFuncBuscaModal = (visible) => {
-        console.log('onAbrirFuncBuscaModal: ', visible)
+        // console.log('onAbrirFuncBuscaModal: ', visible)
         this.setState({ modalFuncBuscaVisible: visible });
         if (visible) {
             this.getListaRegistrosFunc();
@@ -357,7 +357,7 @@ export default class EscalaVeiculoScreen extends Component {
     getListaRegistrosFunc = () => {
         const { buscaNome, pagina, listaRegistrosFunc } = this.state;
         this.setState({ carregando: true });
-        console.log('getListaRegistrosFunc')
+        // console.log('getListaRegistrosFunc')
 
         axios.get('/listaFuncionariosBusca', {
             params: {
@@ -371,7 +371,7 @@ export default class EscalaVeiculoScreen extends Component {
                 : listaRegistrosFunc.concat(response.data.data);
             const total = response.data.total;
 
-            console.log('getListaRegistrosFunc: ', novosRegistros)
+            // console.log('getListaRegistrosFunc: ', novosRegistros)
 
             this.setState({
                 listaRegistrosFunc: novosRegistros,
@@ -449,7 +449,7 @@ export default class EscalaVeiculoScreen extends Component {
             codFunc, nomeFunc, nomeFuncFL, funcionariosSelect, carregandoFunc, listaRegistrosFunc,
         } = this.state;
 
-        console.log('this.state', this.state);
+        // console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

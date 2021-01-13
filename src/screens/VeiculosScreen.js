@@ -201,7 +201,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onInputChangeData = (id, value) => {
-        console.log('onInputChangeData')
+        // console.log('onInputChangeData')
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -253,7 +253,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onRefresh = () => {
-        console.log('onRefresh')
+        // console.log('onRefresh')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -261,7 +261,7 @@ export default class VeiculosScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        console.log('carregarMaisRegistros')
+        // console.log('carregarMaisRegistros')
         const { carregarMais, refreshing, carregando, pagina } = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
@@ -296,7 +296,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onRefreshPress = (visible) => {
-        console.log('onRefreshPress')
+        // console.log('onRefreshPress')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -306,7 +306,7 @@ export default class VeiculosScreen extends Component {
     onSearchPress = (visible) => {
         this.setState({ modalFiltrosVisible: visible });
         if (!visible) {
-            console.log('onSearchPress')
+            // console.log('onSearchPress')
             this.setState({
                 pagina: 1,
                 refreshing: true,
@@ -319,7 +319,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onClearSearchPress = () => {
-        console.log('onClearSearchPress')
+        // console.log('onClearSearchPress')
         this.setState({
             pagina: 1,
             refreshing: true,

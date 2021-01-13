@@ -383,10 +383,10 @@ export default class SaidaEstoqueItensScreen extends Component {
 
     onBarCodeRead = event => {
         const { data, rawData, type } = event;
-        console.log('FichaEstoqueScreen.onBarCodeRead: ', data);
+        // console.log('FichaEstoqueScreen.onBarCodeRead: ', data);
 
         const codBar = String(data).substr(6, 6);
-        console.log('FichaEstoqueScreen.onBarCodeRead: ', codBar);
+        // console.log('FichaEstoqueScreen.onBarCodeRead: ', codBar);
 
         this.setState({
             codItem: codBar,
@@ -395,7 +395,7 @@ export default class SaidaEstoqueItensScreen extends Component {
 
     buscaItem = (value) => {
         this.setState({ carregando: true });
-        console.log('FichaEstoqueScreen.buscaItem: ', value);
+        // console.log('FichaEstoqueScreen.buscaItem: ', value);
         axios.get('/listaItens', {
             params: {
                 codItem: value,
@@ -403,7 +403,7 @@ export default class SaidaEstoqueItensScreen extends Component {
             }
         }).then(response => {
             const { data } = response;
-            console.log('FichaEstoqueScreen.buscaItem: ', data);
+            // console.log('FichaEstoqueScreen.buscaItem: ', data);
             this.setState({
                 carregando: false,
             })

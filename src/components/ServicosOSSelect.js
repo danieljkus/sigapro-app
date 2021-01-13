@@ -209,20 +209,41 @@ class ServicosOSSelect extends PureComponent {
                 page: pagina,
                 limite: 10,
                 nome: buscaNome,
+                veiculo: this.props.veiculo,
                 tipoServico: this.props.tipoServico,
                 grupo: this.props.grupo,
             }
         }).then(response => {
-            const novosRegistros = pagina === 1
-                ? response.data.data
-                : listaRegistros.concat(response.data.data);
-            const total = response.data.total;
-            this.setState({
-                listaRegistros: novosRegistros,
-                refreshing: false,
-                carregando: false,
-                carregarMais: novosRegistros.length < total
-            })
+            // console.log('getServicosSelect: ', response.data);
+
+            if (this.props.tipoServico === 'P') {
+                
+                const listaRegistros = response.data.map(regList => {
+                    return {
+                        man_serv_codigo: regList.man_sos_servico,
+                        man_serv_descricao: regList.man_sos_servico + ' - ' + regList.man_serv_descricao
+                    }
+                });
+                this.setState({
+                    listaRegistros,
+                    refreshing: false,
+                    carregando: false,
+                })
+
+            } else {
+
+                const novosRegistros = pagina === 1
+                    ? response.data.data
+                    : listaRegistros.concat(response.data.data);
+                const total = response.data.total;
+                this.setState({
+                    listaRegistros: novosRegistros,
+                    refreshing: false,
+                    carregando: false,
+                    carregarMais: novosRegistros.length < total
+                })
+
+            }
         }).catch(ex => {
             console.warn(ex);
             console.warn(ex.response);

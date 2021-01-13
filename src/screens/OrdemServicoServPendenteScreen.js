@@ -23,7 +23,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_sp_data_execucao ? '#10734a' : 'red' }}>
                 <TouchableOpacity
-                    onPress={() => onRegistroPress(registro.man_sp_idf, registro.man_sp_data_execucao ? false : true)}
+                    onPress={() => onRegistroPress(registro.man_sp_idf, registro.man_sp_data_execucao ? false : true, registro)}
                 // onLongPress={() => onRegistroLongPress(registro.man_os_idf)}
                 >
 
@@ -113,11 +113,13 @@ export default class OrdemServicoServPendenteScreen extends Component {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
             man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
             man_osm_veiculo: props.navigation.state.params.man_osm_veiculo ? props.navigation.state.params.man_osm_veiculo : '',
+            man_os_situacao: props.navigation.state.params.man_os_situacao ? props.navigation.state.params.man_os_situacao : '',
 
             man_sp_idf: 0,
             man_sp_data_execucao: moment(new Date()).format(DATE_FORMAT),
-            man_sp_data_execucao: '',
             man_sp_servico: '',
+            man_sp_obs: '',
+            man_sp_obs_execucao: '',
 
             listaRegistros: [],
             refreshing: false,
@@ -214,6 +216,8 @@ export default class OrdemServicoServPendenteScreen extends Component {
         // console.log('onAddPress');
         this.setState({
             man_sp_idf: 0,
+            man_sp_obs: '',
+            man_sp_obs_execucao: '',
             modalBaixaVisible: true,
         });
         this.setState({
@@ -222,12 +226,13 @@ export default class OrdemServicoServPendenteScreen extends Component {
         }, this.getListaRegistros);
     }
 
-    onRegistroPress = (man_sp_idf, visible) => {
+    onRegistroPress = (man_sp_idf, visible, registro) => {
         if (visible) {
             this.setState({
                 man_sp_idf: man_sp_idf,
                 man_sp_data_execucao: moment(new Date()).format(DATE_FORMAT),
                 modalBaixaVisible: visible,
+                man_sp_obs: registro.man_sp_obs,
             });
             this.setState({
                 pagina: 1,
@@ -241,7 +246,8 @@ export default class OrdemServicoServPendenteScreen extends Component {
     }
 
     onSalvarRegistro = () => {
-        const { man_grupo_servico, man_osm_veiculo, man_os_idf, man_sp_idf, man_sp_data_execucao, man_sp_obs, man_sp_servico } = this.state;
+        const { man_grupo_servico, man_osm_veiculo, man_os_idf, man_sp_idf, man_sp_data_execucao,
+            man_sp_obs, man_sp_obs_execucao, man_sp_servico } = this.state;
 
         const registro = {
             man_sp_idf,
@@ -251,10 +257,10 @@ export default class OrdemServicoServPendenteScreen extends Component {
             man_sp_obs,
             man_sp_servico,
             man_sp_data_execucao: moment(man_sp_data_execucao, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
-            man_sp_obs,
+            man_sp_obs_execucao,
         };
 
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
         // return;
 
         this.setState({ salvado: true });
@@ -285,10 +291,10 @@ export default class OrdemServicoServPendenteScreen extends Component {
 
 
     render() {
-        const { listaRegistros, refreshing, carregarRegistro, man_sp_idf, man_sp_data_execucao, man_sp_obs,
+        const { listaRegistros, refreshing, carregarRegistro, man_sp_idf, man_sp_data_execucao, man_sp_obs, man_sp_obs_execucao,
             modalBaixaVisible, loading, salvado } = this.state;
 
-        console.log('OrdemServicoServPendenteScreen: ', this.state);
+        // console.log('OrdemServicoServPendenteScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -354,6 +360,18 @@ export default class OrdemServicoServPendenteScreen extends Component {
 
                                 <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
+                                    <TextInput
+                                        label="Descrição do Serviço"
+                                        id="man_sp_obs"
+                                        ref="man_sp_obs"
+                                        value={man_sp_obs}
+                                        maxLength={150}
+                                        onChange={this.onInputChange}
+                                        multiline={true}
+                                        height={50}
+                                        enabled={!man_sp_idf}
+                                    />
+
                                     {man_sp_idf ? (
                                         <ScrollView style={{ height: 50, width: "100%", marginBottom: 10 }}>
                                             <TextInput
@@ -371,30 +389,33 @@ export default class OrdemServicoServPendenteScreen extends Component {
                                         </ScrollView>
                                     ) : null}
 
-                                    <TextInput
-                                        label="Descrição do Serviço"
-                                        id="man_sp_obs"
-                                        ref="man_sp_obs"
-                                        value={man_sp_obs}
-                                        maxLength={150}
-                                        onChange={this.onInputChange}
-                                        multiline={true}
-                                        height={50}
-                                    />
+                                    {man_sp_idf ? (
+                                        <TextInput
+                                            label="Descrição da Execução"
+                                            id="man_sp_obs_execucao"
+                                            ref="man_sp_obs_execucao"
+                                            value={man_sp_obs_execucao}
+                                            maxLength={150}
+                                            onChange={this.onInputChange}
+                                            multiline={true}
+                                            height={50}
+                                        />
+                                    ) : null}
 
 
-                                    <Button
-                                        title="GRAVAR"
-                                        onPress={() => { this.onSalvarRegistro() }}
-                                        // onPress={this.onFormSubmit}
-                                        buttonStyle={{ marginTop: 15, height: 35 }}
-                                        backgroundColor={Colors.buttonPrimary}
-                                        icon={{
-                                            name: 'filter',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
+                                    {this.state.man_os_situacao === 'A' ? (
+                                        <Button
+                                            title="GRAVAR"
+                                            onPress={() => { this.onSalvarRegistro() }}
+                                            buttonStyle={{ marginTop: 15, height: 35 }}
+                                            backgroundColor={Colors.buttonPrimary}
+                                            icon={{
+                                                name: 'filter',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    ) : null}
                                     <Button
                                         title="FECHAR"
                                         onPress={() => { this.onClosePress(!this.state.modalBaixaVisible) }}
@@ -423,7 +444,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
                 />
 
                 <ProgressDialog
-                    visible={carregarRegistro}
+                    visible={salvado}
                     title="SIGA PRO"
                     message="Aguarde..."
                 />

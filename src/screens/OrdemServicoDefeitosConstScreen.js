@@ -48,6 +48,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
         this.state = {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
             man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
+            man_os_situacao: props.navigation.state.params.man_os_situacao ? props.navigation.state.params.man_os_situacao : '',
             man_osd_defeitos: '',
 
             listaRegistros: [],
@@ -227,7 +228,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
     render() {
         const { listaRegistros, man_osd_defeitos, refreshing, carregarRegistro, loading, salvado } = this.state;
 
-        console.log('OrdemServicoDefeitosConstScreen: ', this.state);
+        // console.log('OrdemServicoDefeitosConstScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -252,22 +253,24 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
                             height={50}
                         />
 
-                        <Button
-                            title="SALVAR DEFEITO"
-                            loading={salvado}
-                            onPress={this.onFormSubmit}
-                            buttonStyle={{ height: 45 }}
-                            backgroundColor={Colors.buttonPrimary}
-                            textStyle={{
-                                fontWeight: 'bold',
-                                fontSize: 15
-                            }}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
+                        {this.state.man_os_situacao === 'A' ? (
+                            <Button
+                                title="SALVAR DEFEITO"
+                                loading={salvado}
+                                onPress={this.onFormSubmit}
+                                buttonStyle={{ height: 45 }}
+                                backgroundColor={Colors.buttonPrimary}
+                                textStyle={{
+                                    fontWeight: 'bold',
+                                    fontSize: 15
+                                }}
+                                icon={{
+                                    name: 'check',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary
+                                }}
+                            />
+                        ) : null}
 
                     </View>
 

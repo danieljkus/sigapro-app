@@ -75,6 +75,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
             man_os_idf: props.navigation.state.params.man_os_idf ? props.navigation.state.params.man_os_idf : 0,
             man_grupo_servico: props.navigation.state.params.man_grupo_servico ? props.navigation.state.params.man_grupo_servico : 0,
             man_osm_veiculo: props.navigation.state.params.man_osm_veiculo ? props.navigation.state.params.man_osm_veiculo : '',
+            man_os_situacao: props.navigation.state.params.man_os_situacao ? props.navigation.state.params.man_os_situacao : '',
             man_sos_complemento: '',
 
             servico_select: null,
@@ -279,17 +280,17 @@ export default class OrdemServicoPreventivoScreen extends Component {
 
         let axiosMethod;
         // if (man_os_idf) {
-            // axiosMethod = axios.put('/ordemServicos/updatePreventivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
+        // axiosMethod = axios.put('/ordemServicos/updatePreventivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
         // } else {
-            axiosMethod = axios.post('/ordemServicos/storePreventivas', registro);
+        axiosMethod = axios.post('/ordemServicos/storePreventivas', registro);
         // }
         axiosMethod.then(response => {
-            this.setState({ 
+            this.setState({
                 man_sos_complemento: '',
                 servico_select: null,
                 codServico: '',
-                salvado: false, 
-                refreshing: true 
+                salvado: false,
+                refreshing: true
             });
             this.getListaRegistros();
         }).catch(ex => {
@@ -327,7 +328,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
                             tipoServico={'P'}
                             onChange={this.onInputChangeServico}
                             value={servico_select}
-                            select={true}
+                            select={false}
                             grupo={this.state.man_grupo_servico}
                             veiculo={this.state.man_osm_veiculo}
                         />
@@ -343,24 +344,24 @@ export default class OrdemServicoPreventivoScreen extends Component {
                             height={50}
                         />
 
-
-                        <Button
-                            title="SALVAR SERVIÇO"
-                            loading={salvado}
-                            onPress={this.onFormSubmit}
-                            buttonStyle={{ height: 45 }}
-                            backgroundColor={Colors.buttonPrimary}
-                            // disabled={true}
-                            textStyle={{
-                                fontWeight: 'bold',
-                                fontSize: 15
-                            }}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
+                        {this.state.man_os_situacao === 'A' ? (
+                            <Button
+                                title="SALVAR SERVIÇO"
+                                loading={salvado}
+                                onPress={this.onFormSubmit}
+                                buttonStyle={{ height: 45 }}
+                                backgroundColor={Colors.buttonPrimary}
+                                textStyle={{
+                                    fontWeight: 'bold',
+                                    fontSize: 15
+                                }}
+                                icon={{
+                                    name: 'check',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary
+                                }}
+                            />
+                        ) : null}
 
                     </View>
 

@@ -121,7 +121,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
                 >
                     <TouchableOpacity
                         onPress={() => onFinalizarPress(registro)}
-                        // disabled={true}
+                    // disabled={true}
                     >
                         <View style={{ width: 150, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
                             <Icon
@@ -136,7 +136,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
 
                     <TouchableOpacity
                         onPress={() => onAbrirPress(registro)}
-                        // disabled={true}
+                    // disabled={true}
                     >
                         <View style={{ width: 150, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
                             <Icon
@@ -363,7 +363,7 @@ export default class OrdensServicosScreen extends Component {
             { text: "NÃO" },
             {
                 text: "SIM",
-                onPress: () => this.onSituacaoChange(registro.man_os_idf, 'G'),
+                onPress: () => this.onSituacaoChange(registro.man_os_idf, 'A'),
                 style: "destructive"
             }
         ])
@@ -379,7 +379,15 @@ export default class OrdensServicosScreen extends Component {
         }).then(response => {
             const listaRegistros = [...this.state.listaRegistros];
             const registro = listaRegistros.find(registro => registro.man_os_idf === controle);
-            registro.man_os_situacao_descr = sit === 'A' ? 'ABERTA' : 'FECHADA';
+            if (sit === 'A') {
+                registro.man_os_situacao = sit;
+                registro.man_os_situacao_descr = 'ABERTA';
+                registro.man_os_data_fim = '';
+            } else {
+                registro.man_os_situacao = sit;
+                registro.man_os_situacao_descr = sit === 'A' ? 'ABERTA' : 'FECHADA';
+                registro.man_os_data_fim = moment(new Date()).format('YYYY-MM-DD');
+            }
             this.setState({
                 listaRegistros,
                 refreshing: false,

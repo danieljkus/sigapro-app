@@ -372,7 +372,7 @@ export default class SaidasEstoqueScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro,
             estoq_mei_filial, dataIni, dataFim, idf, numero, filialSelect } = this.state;
 
-        console.log('SaidasEstoqueScreen: ', this.state);
+        // console.log('SaidasEstoqueScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, }}>

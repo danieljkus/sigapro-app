@@ -154,8 +154,8 @@ export default class EscalaVeiculosScreen extends Component {
             }
         }).then(response => {
 
-            console.log('getListaRegistros ATUAL: ', listaRegistros);
-            console.log('getListaRegistros DATA: ', response.data);
+            // console.log('getListaRegistros ATUAL: ', listaRegistros);
+            // console.log('getListaRegistros DATA: ', response.data);
 
             // const novosRegistros = pagina === 1
             //     ? response.data.data
@@ -191,7 +191,7 @@ export default class EscalaVeiculosScreen extends Component {
 
 
     onRefresh = () => {
-        console.log('onRefresh');
+        // console.log('onRefresh');
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -199,7 +199,7 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        console.log('onRegistroPress: ', registro);
+        // console.log('onRegistroPress: ', registro);
         this.props.navigation.navigate('EscalaVeiculoScreen', {
             registro: {
                 registro: registro,
@@ -248,7 +248,7 @@ export default class EscalaVeiculosScreen extends Component {
 
 
     onSearchPress = (visible) => {
-        console.log('onSearchPress');
+        // console.log('onSearchPress');
         this.setState({ modalFiltrosVisible: visible });
         this.setState({
             pagina: 1,
@@ -257,12 +257,12 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onClosePress = (visible) => {
-        console.log('onClosePress');
+        // console.log('onClosePress');
         this.setState({ modalFiltrosVisible: visible });
     }
 
     onClearSearchPress = () => {
-        console.log('onClearSearchPress');
+        // console.log('onClearSearchPress');
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -277,7 +277,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).subtract(1, 'days').format(DATE_FORMAT);
-        console.log('onAntPress: ', dataNova);
+        // console.log('onAntPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -289,7 +289,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).add(1, 'days').format(DATE_FORMAT);
-        console.log('onProxPress: ', dataNova);
+        // console.log('onProxPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -308,7 +308,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico } = this.state;
 
-        console.log('EscalaVeiculosScreen - this.state: ', this.state);
+        // console.log('EscalaVeiculosScreen - this.state: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

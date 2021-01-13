@@ -185,7 +185,7 @@ export default class OrdemServicoPecasScreen extends Component {
     render() {
         const { listaRegistros, refreshing, carregarRegistro, loading, salvado } = this.state;
 
-        console.log('OrdemServicoPreventivoScreen: ', this.state);
+        // console.log('OrdemServicoPreventivoScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

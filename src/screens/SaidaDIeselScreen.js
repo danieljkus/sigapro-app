@@ -228,7 +228,7 @@ export default class SaidaDieselScreen extends Component {
             carregarRegistro, loading, salvado } = this.state;
 
 
-        console.log('SaidaDieselScreen - STATE: ', this.state);
+        // console.log('SaidaDieselScreen - STATE: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

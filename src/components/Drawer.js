@@ -261,6 +261,13 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            {getTemPermissao('BOLETINSDIFERENCASCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Boletins de Diferença"
+                                    onPress={() => navigation.navigate('BoletinsDiferencaScreen')}
+                                />
+                            ) : null}
+
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
                             {getTemPermissao('TROCARFILIALSCREEN', permissoes) ? (
