@@ -29,11 +29,20 @@ export const getTemPermissao = (permissao, permissoes) => {
         // console.log('getTemPermissao: ', permissao);
         // console.log('getTemPermissao: ', permissoes);
 
+        let iIndItem = -1;
         if ((permissoes) && (permissoes.length > 0) && (permissao)) {
             // console.log('getTemPermissao: ', permissoes);
-            const iIndItem = permissoes.findIndex(registro => registro.adm_fsp_nome === permissao);
+            // const iIndItem = permissoes.findIndex(registro => (registro.adm_fsp_nome).trim().toUpperCase === (permissao).trim().toUpperCase);
+
+            for (var x in permissoes) {
+                if (permissoes[x].adm_fsp_nome === permissao) {
+                    iIndItem = x;
+                }
+            };
+    
             // console.log('getTemPermissao: ', permissao + ' - ' + (iIndItem >= 0 ? true : false));
-            return iIndItem >= 0 ? 'S' : 'N';
+            // console.log('getTemPermissao: ', permissao + ' - ' + iIndItem);
+            return iIndItem >= 0 ? 1 : 0;
         } else {
             // return false;
         }

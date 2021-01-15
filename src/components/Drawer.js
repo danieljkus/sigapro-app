@@ -46,6 +46,10 @@ class Drawer extends PureComponent {
             this.setState({ empresa });
         })
         getPermissoes().then(permissoes => {
+
+            // const per = getTemPermissao('ESCALAVEICULOSSCREEN', permissoes);
+            // console.log('refreshUsuario: ', per);
+
             this.setState({ permissoes });
         })
         getFilial().then(filial => {
@@ -224,21 +228,21 @@ class Drawer extends PureComponent {
 
                             <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
-                            {getTemPermissao('PNEUSLOCALIZARSCREEN', permissoes) ? (
+                            {empresa && getTemPermissao('PNEUSLOCALIZARSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Localizar Pneus"
                                     onPress={() => navigation.navigate('PneusLocalizarScreen')}
                                 />
                             ) : null}
 
-                            {getTemPermissao('PNEUSVEICULOSSCREEN', permissoes) ? (
+                            {empresa && getTemPermissao('PNEUSVEICULOSSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Pneus nos Veículos"
                                     onPress={() => navigation.navigate('PneusVeiculosScreen')}
                                 />
                             ) : null}
 
-                            {getTemPermissao('PNEUSVEICULOSSCREEN', permissoes) ? (
+                            {empresa && getTemPermissao('PNEUSVEICULOSSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Pneus em Estoque"
                                     onPress={() => navigation.navigate('PneusEstoqueScreen')}
