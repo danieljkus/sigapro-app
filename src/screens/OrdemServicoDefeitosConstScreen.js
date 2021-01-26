@@ -18,7 +18,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_osd_situacao === 'A' ? 'red' : '#10734a' }}>
                 <TouchableOpacity
-                    onPress={() => onRegistroPress(registro.man_osd_sequencia)}
+                    onPress={() => onRegistroPress(registro)}
                     onLongPress={() => onRegistroLongPress(registro.man_osd_sequencia)}
                 >
                     <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5, paddingTop: 5 }}>
@@ -26,7 +26,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                             Situação {': '}
                         </Text>
                         <Text>
-                            {registro.man_osd_situacao}
+                            {registro.man_osd_situacao === 'A' ? 'ABERTO' : 'FINALIZADO'}
                         </Text>
                     </View>
 
@@ -104,6 +104,34 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
                     carregando: false,
                 });
             })
+    }
+
+    onRegistroPress = (registro) => {
+        console.log('onRegistroPress: ', registro);
+
+        const reg = {
+            controle: this.state.man_os_idf,
+            seq: registro.man_osd_sequencia,
+            situacao: registro.man_osd_situacao === 'A' ? 'F' : 'A',
+        };
+
+        console.log('onRegistroPress: ', reg);
+
+        this.setState({ carregarRegistro: true });
+        axios.put('/ordemServicos/mudaSituacaoDefeitosConst', reg)
+            .then(response => {
+                this.setState({ carregarRegistro: false });
+
+                console.log('onRegistroPress: ', response.data);
+
+                this.setState({ carregarRegistro: false });
+                this.getListaRegistros();
+
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
     }
 
     onRegistroLongPress = (man_osd_sequencia) => {
@@ -228,7 +256,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
     render() {
         const { listaRegistros, man_osd_defeitos, refreshing, carregarRegistro, loading, salvado } = this.state;
 
-        // console.log('OrdemServicoDefeitosConstScreen: ', this.state);
+        console.log('OrdemServicoDefeitosConstScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

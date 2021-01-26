@@ -603,6 +603,7 @@ export default class SaidaEstoqueScreen extends Component {
                                     codFilial={codFilial}
                                     onChange={this.onInputChangeFilial}
                                     value={filial_select}
+                                    enabled={true}
                                 />
                                 <CentroCustoSelect
                                     label="Centro Custo"

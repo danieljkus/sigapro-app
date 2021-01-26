@@ -1216,6 +1216,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                                         codFilial={estoq_mei_filial}
                                         onChange={this.onInputChangeFilial}
                                         value={filialSelect}
+                                        enabled={true}
                                     />
 
                                     <View style={{ flexDirection: 'row' }}>

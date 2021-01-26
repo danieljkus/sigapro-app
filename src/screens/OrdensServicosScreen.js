@@ -527,6 +527,7 @@ export default class OrdensServicosScreen extends Component {
                                         codFilial={manu_os_filial}
                                         onChange={this.onInputChangeFilial}
                                         value={filialSelect}
+                                        enabled={true}
                                     />
 
                                     <TextInput

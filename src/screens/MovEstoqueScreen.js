@@ -449,6 +449,7 @@ export default class MovEstoqueScreen extends Component {
                                         codFilial={estoq_mei_filial}
                                         onChange={this.onInputChangeFilial}
                                         value={filialSelect}
+                                        enabled={true}
                                     />
 
                                     <ItemEstoqueSelect

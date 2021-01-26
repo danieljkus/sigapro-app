@@ -340,6 +340,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
                                 codFilial={codFilial}
                                 onChange={this.onInputChangeFilial}
                                 value={filial_select}
+                                enabled={true}
                             />
                             <CentroCustoSelect
                                 label="Centro Custo"

@@ -240,6 +240,7 @@ export default class AutorizacaoDespesaScreen extends Component {
                             codFilial={fin_ad_filial}
                             onChange={this.onInputChangeFilial}
                             value={filialSelect}
+                            enabled={true}
                         />
 
                         <CtaFinancSelect

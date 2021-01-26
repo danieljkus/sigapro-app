@@ -469,6 +469,7 @@ export default class PneusEstoqueScreen extends Component {
                                         codFilial={pneus_mov_filial}
                                         onChange={this.onInputChangeFilial}
                                         value={filialSelect}
+                                        enabled={true}
                                     />
 
                                     <TextInput
