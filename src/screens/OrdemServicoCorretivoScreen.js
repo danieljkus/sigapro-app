@@ -14,17 +14,15 @@ import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
 import ServicosOSSelect from '../components/ServicosOSSelect';
 import TextInput from '../components/TextInput';
-// import Alert from '../components/Alert';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
-
 
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinalizarPress, onAbrirPress }) => {
     return (
         <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_sos_situacao === 'A' ? 'red' : '#10734a' }}>
                 <TouchableOpacity
-                    onPress={() => onRegistroPress(registro.man_sos_servico)}
+                    onPress={() => onRegistroPress(registro)}
                     onLongPress={() => onRegistroLongPress(registro.man_sos_servico)}
                 >
 
@@ -135,29 +133,34 @@ export default class OrdemServicoCorretivoScreen extends Component {
             })
     }
 
-    // onRegistroPress = (man_sos_servico) => {
-    //     console.log('onRegistroPress: ', man_sos_servico);
+    onRegistroPress = (registro) => {
+        // console.log('onSalvarRegistro: ', registro);
 
-    //     this.setState({ carregarRegistro: true });
-    //     axios.get('/ordemServicos/show/' + this.state.man_os_idf + '/' + man_sos_servico)
-    //         .then(response => {
-    //             this.setState({ carregarRegistro: false });
+        const reg = {
+            controle: this.state.man_os_idf,
+            servico: registro.man_sos_servico,
+            situacao: registro.man_sos_situacao === 'A' ? 'F' : 'A',
+            dataFim: registro.man_sos_situacao === 'A' ? moment().format("YYYY-MM-DD") : '',
+        };
 
-    //             console.log('onRegistroPress: ', response.data);
+        // console.log('onSalvarRegistro: ', reg);
 
-    //             this.props.navigation.navigate('OrdemServicoScreen', {
-    //                 registro: {
-    //                     ...response.data,
-    //                 },
-    //                 onRefresh: this.onRefresh
-    //             });
-    //         }).catch(ex => {
-    //             this.setState({ carregarRegistro: false });
-    //             console.warn(ex);
-    //             console.warn(ex.response);
-    //         });
-    // }
+        this.setState({ carregarRegistro: true });
+        axios.put('/ordemServicos/mudaSituacaoCorretivas', reg)
+            .then(response => {
+                this.setState({ carregarRegistro: false });
 
+                // console.log('onRegistroPress: ', response.data);
+
+                this.setState({ carregarRegistro: false });
+                this.getListaRegistros();
+
+            }).catch(ex => {
+                this.setState({ carregarRegistro: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            });
+    }
 
     onRegistroLongPress = (man_sos_servico) => {
         Alert.alert("Excluir registro", `Deseja excluir este Serviço?`, [
@@ -363,7 +366,7 @@ export default class OrdemServicoCorretivoScreen extends Component {
                                 }}
                             />
                         ) : null}
-                        
+
                     </View>
 
 

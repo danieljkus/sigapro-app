@@ -449,7 +449,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
             funcionariosSelect, codFunc, nomeFunc, listaRegistrosFunc, carregandoFunc,
             man_osf_nome_funcionario, man_osf_obs } = this.state;
 
-        console.log('OrdemServicoResponsaveisScreen: ', this.state);
+        // console.log('OrdemServicoResponsaveisScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

@@ -107,7 +107,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        console.log('onRegistroPress: ', registro);
+        // console.log('onRegistroPress: ', registro);
 
         const reg = {
             controle: this.state.man_os_idf,
@@ -115,14 +115,14 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
             situacao: registro.man_osd_situacao === 'A' ? 'F' : 'A',
         };
 
-        console.log('onRegistroPress: ', reg);
+        // console.log('onRegistroPress: ', reg);
 
         this.setState({ carregarRegistro: true });
         axios.put('/ordemServicos/mudaSituacaoDefeitosConst', reg)
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onRegistroPress: ', response.data);
+                // console.log('onRegistroPress: ', response.data);
 
                 this.setState({ carregarRegistro: false });
                 this.getListaRegistros();
@@ -256,7 +256,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
     render() {
         const { listaRegistros, man_osd_defeitos, refreshing, carregarRegistro, loading, salvado } = this.state;
 
-        console.log('OrdemServicoDefeitosConstScreen: ', this.state);
+        // console.log('OrdemServicoDefeitosConstScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

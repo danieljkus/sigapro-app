@@ -155,7 +155,7 @@ export default class BoletinsDiferencaScreen extends Component {
             then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onWhatsAppEnviar: ', response.data);
+                // console.log('onWhatsAppEnviar: ', response.data);
 
                 Linking.openURL(
                     'https://api.whatsapp.com/send?' +

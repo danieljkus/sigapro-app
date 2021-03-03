@@ -24,7 +24,7 @@ const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
     return (
 
         <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
-            <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
+            <View style={{ borderLeftWidth: 5, borderLeftColor: registro.veic1 ? Colors.primary : "#d32f2f" }}>
                 <TouchableOpacity
                     onPress={() => onRegistroPress(registro)}
                 >

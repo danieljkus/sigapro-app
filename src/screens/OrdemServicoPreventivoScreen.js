@@ -153,7 +153,7 @@ export default class OrdemServicoPreventivoScreen extends Component {
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onRegistroPress: ', response.data);
+                // console.log('onRegistroPress: ', response.data);
 
                 this.setState({ carregarRegistro: false });
                 this.getListaRegistros();
