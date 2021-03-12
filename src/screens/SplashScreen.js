@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { View, Text, ImageBackground } from 'react-native';
 
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 import { isLoggedIn } from '../utils/LoginManager';
 
 export default class SplashScreen extends Component {
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.init();
     }
 
@@ -21,7 +21,7 @@ export default class SplashScreen extends Component {
             routeName = "LoginScreen";
         }
 
-        const resetAction = NavigationActions.reset({
+        const resetAction = StackActions.reset({
             index: 0,
             actions: [
                 NavigationActions.navigate({ routeName: routeName })

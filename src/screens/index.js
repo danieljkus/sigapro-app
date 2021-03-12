@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { View, Text, Platform, Image, TouchableOpacity } from 'react-native';
 
-import { StackNavigator, DrawerNavigator, withNavigation } from 'react-navigation';
+import { 
+    withNavigation, createAppContainer,
+} from 'react-navigation';
+
+import { createStackNavigator } from 'react-navigation-stack';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+
 
 import SplashScreen from './SplashScreen';
 import BemVindoScreen from './BemVindoScreen';
@@ -72,8 +78,6 @@ import Icon from '../components/Icon';
 import Drawer from '../components/Drawer';
 import Colors from '../values/Colors';
 
-import HeaderBackButton from 'react-navigation/src/views/Header/HeaderBackButton'
-
 const defaultNavigationOptions = Platform.select({
     ios: {
         headerTintColor: Colors.primary,
@@ -93,7 +97,7 @@ defaultNavigationOptions.drawerLockMode = 'locked-closed';
 const MenuButton = withNavigation((props) => {
     const { navigation } = props;
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('DrawerOpen')}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Icon family="MaterialIcons"
                 name="menu"
                 color={Colors.textOnPrimary}
@@ -102,7 +106,7 @@ const MenuButton = withNavigation((props) => {
     )
 })
 
-const HomeStackNavigator = StackNavigator({
+const HomeStackNavigator = createStackNavigator({
     SplashScreen: {
         screen: SplashScreen,
         navigationOptions: {
@@ -135,7 +139,7 @@ const HomeStackNavigator = StackNavigator({
         screen: HomeScreen,
         navigationOptions: {
             title: "Home",
-            headerLeft: <MenuButton />,
+            headerLeft: () => <MenuButton />,
             ...defaultNavigationOptions,
             drawerLockMode: 'unlocked',
         }
@@ -488,8 +492,8 @@ const HomeStackNavigator = StackNavigator({
 }, {
     headerMode: 'float',
     mode: 'modal',
-    headerLayoutPreset: 'center',
     navigationOptions: {
+        headerTitleAlign: 'center',
         headerStyle: {
             backgroundColor: Colors.primary,
         },
@@ -500,15 +504,12 @@ const HomeStackNavigator = StackNavigator({
         headerBackTitleStyle: {
             color: Colors.textOnPrimary,
         },
-        // headerLeft: (props) => {
-        //     return <HeaderBackButton {...props} tintColor={Colors.textOnPrimary} />
-        // }
     },
 });
 
 
 
-const HomeDrawerNavigator = DrawerNavigator(
+const HomeDrawerNavigator = createDrawerNavigator(
     {
         HomeStack: {
             screen: HomeStackNavigator
@@ -519,10 +520,4 @@ const HomeDrawerNavigator = DrawerNavigator(
     }
 )
 
-export default class AppNavigator extends Component {
-    render() {
-        return (
-            <HomeDrawerNavigator />
-        )
-    }
-}
+export default createAppContainer(HomeDrawerNavigator);

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
 
 import { Text, Divider } from 'react-native-elements';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 import Icon from './Icon';
 import Colors from '../values/Colors';
@@ -30,11 +30,11 @@ class Drawer extends PureComponent {
         permissoes: []
     };
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.refreshUsuario();
     }
 
-    componentWillReceiveProps() {
+    UNSAFE_componentWillReceiveProps() {
         this.refreshUsuario();
     }
 
@@ -65,7 +65,7 @@ class Drawer extends PureComponent {
 
     replaceScreen = (routeName) => {
         const { navigation } = this.props;
-        const resetAction = NavigationActions.reset({
+        const resetAction = StackActions.reset({
             index: 0,
             actions: [
                 NavigationActions.navigate({ routeName: routeName })

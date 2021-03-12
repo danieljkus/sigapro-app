@@ -10,7 +10,7 @@ export default class HomeScreen extends Component {
 
     state = {};
 
-    async componentWillMount() {
+    async UNSAFE_componentWillMount() {
         const usuario = await getUsuario();
         this.setState({ usuario });
     }

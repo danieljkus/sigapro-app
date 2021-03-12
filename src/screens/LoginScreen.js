@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { Text, Divider } from 'react-native-elements';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 import axios from 'axios';
 import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -66,7 +66,7 @@ export default class LoginScreen extends Component {
 
     goToHome = () => {
         // FECHA A TELA DE LOGIN E ABRE A TELA DE HOME
-        const resetAction = NavigationActions.reset({
+        const resetAction = StackActions.reset({
             index: 0,
             actions: [
                 NavigationActions.navigate({ routeName: "HomeScreen" })

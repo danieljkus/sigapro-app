@@ -2,7 +2,6 @@ import React, { Component, createRef } from 'react';
 import { View, StyleSheet, Keyboard } from 'react-native';
 
 import { RNCamera } from 'react-native-camera';
-// import Orientation from 'react-native-orientation';
 
 import Button from '../components/Button';
 import Colors from '../values/Colors';
