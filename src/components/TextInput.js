@@ -62,7 +62,7 @@ class TextInput extends PureComponent {
                     borderLeftWidth: borderWidth === 0 ? 0 : 1,
                     margin: 0,
                     padding: 0,
-                    borderColor: Colors.textSecondaryDark,
+                    borderColor: Colors.dividerDark,
                 }}>
                     {label ? (
                         <Text
@@ -152,7 +152,7 @@ class TextInput extends PureComponent {
                 <View style={{
                     borderBottomWidth: borderWidth === 0 ? 0 : 1,
                     borderLeftWidth: borderWidth === 0 ? 0 : 1,
-                    borderColor: Colors.textSecondaryDark,
+                    borderColor: Colors.dividerDark,
                 }}>
                     {label ? (
                         <Text
@@ -210,10 +210,11 @@ class TextInput extends PureComponent {
             const strValue = typeof value === 'number' ? String(value) : value;
             CustomInput = (
                 <View style={{
-                    borderBottomWidth: 1,
-                    borderLeftWidth: 1,
+                    borderBottomWidth: borderWidth === 0 ? 0 : 1,
+                    borderLeftWidth: borderWidth === 0 ? 0 : 1,
                     margin: 0,
                     padding: 0,
+                    borderColor: Colors.dividerDark,
                 }}>
                     {label ? (
                         <Text
