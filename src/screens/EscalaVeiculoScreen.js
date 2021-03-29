@@ -115,7 +115,6 @@ export default class EscalaVeiculoScreen extends Component {
             nomeFunc: '',
             nomeFuncFL: '',
 
-            listaHistorico: [],
             ...props.navigation.state.params.registro,
         }
     }
@@ -166,7 +165,7 @@ export default class EscalaVeiculoScreen extends Component {
                     nomeFuncFL: !response.data.codMot && response.data.nomeMot ? response.data.nomeMot : '',
                     funcionariosSelect,
 
-                    listaHistorico: response.data.listaHistorico,
+                    // listaHistorico: response.data.listaHistorico,
                 });
 
             }).catch(ex => {
@@ -325,7 +324,7 @@ export default class EscalaVeiculoScreen extends Component {
 
     onAbrirLog = () => {
         this.props.navigation.navigate('EscalaVeiculoLogScreen', {
-            man_ev_idf: this.state.registro.man_ev_idf,
+            man_ev_idf: this.state.registro.idf1,
         });
     }
 
@@ -449,7 +448,7 @@ export default class EscalaVeiculoScreen extends Component {
             codFunc, nomeFunc, nomeFuncFL, funcionariosSelect, carregandoFunc, listaRegistrosFunc,
         } = this.state;
 
-        // console.log('this.state', this.state);
+        console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -661,45 +660,19 @@ export default class EscalaVeiculoScreen extends Component {
 
 
 
-                    {this.state.listaHistorico && this.state.listaHistorico.length > 0 ? (
-                        <View>
-                            <View style={{ marginBottom: 30 }}>
-                                <Text style={{
-                                    color: Colors.textSecondaryDark,
-                                    fontWeight: 'bold',
-                                    fontSize: 20,
-                                    marginBottom: 15,
-                                    paddingLeft: 16,
-                                    borderBottomWidth: 2,
-                                    borderColor: Colors.dividerDark,
-                                }}>
-                                    Histórico das Viagens
-                                </Text>
-
-                                <FlatList
-                                    data={this.state.listaHistorico}
-                                    renderItem={this.renderItem}
-                                    contentContainerStyle={{ paddingBottom: 50 }}
-                                    keyExtractor={registro => String(registro.man_ev_idf)}
-                                    ListFooterComponent={this.renderListFooter}
-                                />
-                            </View>
-
-                            <View style={{ flexDirection: 'row', justifyContent: "center" }} >
-                                <Button
-                                    title="Log Histórico"
-                                    onPress={this.onAbrirLog}
-                                    color={Colors.textOnPrimary}
-                                    buttonStyle={{ marginBottom: 20, marginTop: 20, width: 200, height: 30, marginRight: 10 }}
-                                    icon={{
-                                        name: 'file-text-o',
-                                        type: 'font-awesome',
-                                        color: Colors.textOnPrimary
-                                    }}
-                                />
-                            </View>
-                        </View>
-                    ) : null}
+                    <View style={{ flexDirection: 'row', justifyContent: "center" }} >
+                        <Button
+                            title="Log"
+                            onPress={this.onAbrirLog}
+                            color={Colors.textOnPrimary}
+                            buttonStyle={{ marginBottom: 20, marginTop: 20, width: 200, height: 30, marginRight: 10 }}
+                            icon={{
+                                name: 'file-text-o',
+                                type: 'font-awesome',
+                                color: Colors.textOnPrimary
+                            }}
+                        />
+                    </View>
 
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 }}>
                         {idf2 ? idf2 : idf1}
