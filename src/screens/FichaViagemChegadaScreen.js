@@ -352,7 +352,7 @@ export default class FichaViagemChegadaScreen extends Component {
             return;
         }
 
-        if (vlrStringParaFloat(this.state.man_fv_qtde_comb) > 600) {
+        if (vlrStringParaFloat(this.state.man_fv_qtde_comb) > 750) {
             Alert.showAlert('Quantidade de combustível maior que o permitido');
             return;
         }
