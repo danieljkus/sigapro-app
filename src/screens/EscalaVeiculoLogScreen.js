@@ -80,7 +80,7 @@ export default class EscalaVeiculoLogScreen extends Component {
     getListaRegistros = () => {
         const { man_ev_idf, pagina, listaRegistros } = this.state;
 
-        console.log('man_ev_idf: ', man_ev_idf)
+        // console.log('man_ev_idf: ', man_ev_idf)
 
         axios.get('/escalaVeiculos/log', {
             params: {

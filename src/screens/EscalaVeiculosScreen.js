@@ -434,16 +434,6 @@ export default class EscalaVeiculosScreen extends Component {
                                         keyboardType="numeric"
                                     />
 
-                                    {/* <TextInput
-                                        label="Origem/Destino"
-                                        id="man_ev_od"
-                                        ref="man_ev_od"
-                                        value={man_ev_od}
-                                        maxLength={30}
-                                        onChange={this.onInputChange}
-                                        keyboardType="numeric"
-                                    /> */}
-
                                     <TextInput
                                         label="Serviço"
                                         id="man_ev_servico"

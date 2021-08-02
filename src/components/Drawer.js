@@ -129,6 +129,13 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            {getTemPermissao('CHECKLISTSCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Check-List dos Veículos"
+                                    onPress={() => navigation.navigate('CheckListScreen')}
+                                />
+                            ) : null}
+
                             {empresa && getTemPermissao('FICHAVIAGEMSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Ficha de Viagem"

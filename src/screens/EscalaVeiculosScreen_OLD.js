@@ -181,7 +181,7 @@ export default class EscalaVeiculosScreen extends Component {
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                // console.log('registro: ', response.data);
+                // ('registro: ', response.data);
 
                 this.props.navigation.navigate('EscalaVeiculoScreen', {
                     registro: {
@@ -270,7 +270,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).subtract(1, 'days').format(DATE_FORMAT);
-        // console.log('onAntPress: ', dataNova);
+        // ('onAntPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -282,7 +282,7 @@ export default class EscalaVeiculosScreen extends Component {
         const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).add(1, 'days').format(DATE_FORMAT);
-        // console.log('onProxPress: ', dataNova);
+        // ('onProxPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -321,9 +321,9 @@ export default class EscalaVeiculosScreen extends Component {
         const { listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico, man_ev_grupo, grupoSelect } = this.state;
 
-        // console.log('man_ev_veiculo: ', this.state.man_ev_veiculo);
-        // console.log('man_ev_data_ini: ', man_ev_data_ini);
-        // console.log('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
+        // ('man_ev_veiculo: ', this.state.man_ev_veiculo);
+        // ('man_ev_data_ini: ', man_ev_data_ini);
+        // ('man_ev_data_ini: ', moment(man_ev_data_ini).format("YYYY-MM-DD"));
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -403,7 +403,7 @@ export default class EscalaVeiculosScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
+                    onRequestClose={() => { ("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
                     transparent={true}
                 >

@@ -448,7 +448,7 @@ export default class EscalaVeiculoScreen extends Component {
             codFunc, nomeFunc, nomeFuncFL, funcionariosSelect, carregandoFunc, listaRegistrosFunc,
         } = this.state;
 
-        console.log('this.state', this.state);
+        // console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

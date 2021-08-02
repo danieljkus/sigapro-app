@@ -19,6 +19,9 @@ import EscalaVeiculoScreen from './EscalaVeiculoScreen';
 import EscalaVeiculosScreen from './EscalaVeiculosScreen';
 import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
+import CheckListScreen from './CheckListScreen';
+import CheckListItemScreen from './CheckListItemScreen';
+
 import OrdensServicosScreen from './OrdensServicosScreen';
 import OrdemServicoScreen from './OrdemServicoScreen';
 import OrdemServicoCorretivoScreen from './OrdemServicoCorretivoScreen';
@@ -166,6 +169,23 @@ const HomeStackNavigator = createStackNavigator({
         screen: EscalaVeiculoLogScreen,
         navigationOptions: {
             title: "Log das Alterações",
+            ...defaultNavigationOptions
+        }
+    },
+
+
+
+    CheckListScreen: {
+        screen: CheckListScreen,
+        navigationOptions: {
+            title: "Check-List dos Veículos",
+            ...defaultNavigationOptions
+        }
+    },
+    CheckListItemScreen: {
+        screen: CheckListItemScreen,
+        navigationOptions: {
+            title: "Check-List",
             ...defaultNavigationOptions
         }
     },
