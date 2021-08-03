@@ -25,7 +25,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                 onLongPress={() => onRegistroLongPress(registro.adm_spcl_idf)}
             >
 
-                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ paddingLeft: 10, marginBottom: 10, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
                     <View style={{ flex: 3, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Data {': '}
@@ -46,35 +46,13 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
 
                 <Divider />
 
-                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Serviço {': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_spcl_servico}
+                {registro.adm_spcl_obs ? (
+                    <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
+                        <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                            {registro.adm_spcl_obs}
                         </Text>
                     </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Extra {': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_spcl_servico_extra}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text>
-                            {registro.hora_ini + '/' + registro.hora_fim}
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
-                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        {registro.pas_via_servico_extra ? (registro.desc_sec_ini_extra + ' a ' + registro.desc_sec_fim_extra) : (registro.desc_sec_ini + ' a ' + registro.desc_sec_fim)}
-                    </Text>
-                </View>
+                ) : null}
 
             </TouchableOpacity>
 
@@ -94,7 +72,6 @@ export default class CheckListScreen extends Component {
         dataIni: moment(moment().subtract(10, 'days')).format(DATE_FORMAT),
         dataFim: moment(new Date()).format(DATE_FORMAT),
         adm_spcl_veiculo: '',
-        adm_spcl_servico: '',
 
         temFiltro: false,
         modalFiltrosVisible: false,
@@ -115,14 +92,13 @@ export default class CheckListScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { adm_spcl_veiculo, adm_spcl_servico, dataIni, dataFim, pagina, listaRegistros } = this.state;
+        const { adm_spcl_veiculo, dataIni, dataFim, pagina, listaRegistros } = this.state;
         axios.get('/checkList', {
             params: {
                 tipoDig: 2,
                 page: pagina,
                 limite: 10,
                 veic: adm_spcl_veiculo,
-                serv: adm_spcl_servico,
                 dtIni: moment(dataIni, DATE_FORMAT).format("YYYY-MM-DD"),
                 dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
             }
@@ -266,7 +242,7 @@ export default class CheckListScreen extends Component {
 
     render() {
         const { listaRegistros, refreshing, carregarRegistro,
-            adm_spcl_veiculo, adm_spcl_servico, dataIni, dataFim, idf, numero, filialSelect } = this.state;
+            adm_spcl_veiculo, dataIni, dataFim, idf, numero, filialSelect } = this.state;
 
         // console.log('CheckListScreen: ', this.state);
 
@@ -369,18 +345,6 @@ export default class CheckListScreen extends Component {
                                         onChange={this.onInputChange}
                                         keyboardType="numeric"
                                     />
-
-                                    <TextInput
-                                        label="Serviço"
-                                        id="adm_spcl_servico"
-                                        ref="adm_spcl_servico"
-                                        value={adm_spcl_servico}
-                                        maxLength={20}
-                                        onChange={this.onInputChange}
-                                        keyboardType="numeric"
-                                    />
-
-
 
                                     <Button
                                         title="FILTRAR"
