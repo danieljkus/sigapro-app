@@ -56,6 +56,13 @@ class VeiculosSelect extends PureComponent {
                     veiculo: value
                 }
             });
+        // } else if (tipo === 'escala') {
+        //     request = axios.get('/fichaViagem/buscaVeicChegada', {
+        //         params: {
+        //             ativo: 'S',
+        //             veiculo: value
+        //         }
+        //     });
         } else {
             request = axios.get('/listaVeiculos', {
                 params: {

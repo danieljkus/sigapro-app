@@ -135,6 +135,7 @@ export default class CheckListScreen extends Component {
                 this.props.navigation.navigate('CheckListItemScreen', {
                     registro: {
                         ...response.data.dados,
+                        listaRegistros: response.data.listaItens,
                     },
                     onRefresh: this.onRefresh
                 });

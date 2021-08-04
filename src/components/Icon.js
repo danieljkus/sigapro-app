@@ -43,8 +43,6 @@ const Icon = (props) => {
 
     let IconComp = requireIconByFamily(family);
 
-    console.log('Icon ---------------- ', family)
-
     return (
         <IconComp name={name} size={size} color={color} style={{ textAlignVertical: 'center', textAlign: 'center', ...style }} />
     )
