@@ -46,6 +46,17 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
 
                 <Divider />
 
+                {registro.adm_spcl_escala ? (
+                    <View style={{ paddingLeft: 10, paddingVertical: 4, flexDirection: 'row', paddingRight: 10 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Escala {': '}
+                        </Text>
+                        <Text>
+                            {registro.adm_spcl_escala}
+                        </Text>
+                    </View>
+                ) : null}
+
                 {registro.adm_spcl_obs ? (
                     <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
                         <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>

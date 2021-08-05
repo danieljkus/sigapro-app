@@ -30,12 +30,12 @@ export default class CheckListItemScreen extends Component {
 
             veiculo_select: null,
             codVeiculo: '',
-            escala: '',
 
             modalOBSVisible: false,
 
             adm_spcl_idf: props.navigation.state.params.registro.adm_spcl_idf ? props.navigation.state.params.registro.adm_spcl_idf : 0,
             adm_spcl_obs: props.navigation.state.params.registro.adm_spcl_obs ? props.navigation.state.params.registro.adm_spcl_obs : '',
+            adm_spcl_escala: props.navigation.state.params.registro.adm_spcl_escala ? props.navigation.state.params.registro.adm_spcl_escala : '',
 
             listaRegistros: props.navigation.state.params.registro.listaRegistros ? props.navigation.state.params.registro.listaRegistros : [],
 
@@ -105,9 +105,32 @@ export default class CheckListItemScreen extends Component {
         if (value) {
             this.setState({
                 codVeiculo: value.codVeic,
-            }, this.onMudaItem);
+                adm_spcli_seq: -1,
+            }, (
+                this.buscaEscala(value.codVeic),
+                this.onMudaItem('')
+            ));
         }
     }
+
+    buscaEscala = (value) => {
+        this.setState({ adm_spcl_escala: '', });
+        if ((this.state.adm_spcl_idf === 0) && (value)) {
+            this.setState({ carregandoFunc: true });
+            axios.get('/escalaVeiculos/escalaAtual', {
+                params: {
+                    veiculo: value,
+                }
+            }).then(response => {
+                this.setState({
+                    adm_spcl_escala: response.data.escala,
+                })
+            }).catch(error => {
+                console.warn(error.response);
+            })
+        }
+    }
+
 
     onGravarRegistro = () => {
         this.setState({ salvando: true });
@@ -116,6 +139,7 @@ export default class CheckListItemScreen extends Component {
             adm_spcl_idf: 0,
             adm_spcl_veiculo: this.state.codVeiculo ? this.state.codVeiculo : '',
             adm_spcl_obs: this.state.adm_spcl_obs ? this.state.adm_spcl_obs : '',
+            adm_spcl_escala: this.state.adm_spcl_escala ? this.state.adm_spcl_escala : '',
 
             listaItens: this.state.listaRegistros,
         };
@@ -229,7 +253,7 @@ export default class CheckListItemScreen extends Component {
 
 
     render() {
-        const { codVeiculo, veiculo_select, adm_spcl_obs, adm_spcl_idf, escala,
+        const { codVeiculo, veiculo_select, adm_spcl_obs, adm_spcl_idf, adm_spcl_escala,
             adm_spcli_check, adm_spcli_obs, adm_spicl_descricao, adm_spicl_obs,
             salvando, loading, refreshing, carregarRegistro } = this.state;
 
@@ -256,18 +280,19 @@ export default class CheckListItemScreen extends Component {
                                     codVeiculo={codVeiculo}
                                     onChange={this.onInputChangeVeiculo}
                                     onErro={this.onErroChange}
-                                    tipo="escala"
+                                    tipo=""
                                     enabled={!adm_spcl_idf}
                                 />
                             </View>
 
                             <View style={{ marginTop: -15 }}>
                                 <TextInput
-                                    label="Escala"
-                                    id="escala"
-                                    ref="escala"
-                                    value={escala}
+                                    label="Escala Atual"
+                                    id="adm_spcl_escala"
+                                    ref="adm_spcl_escala"
+                                    value={adm_spcl_escala}
                                     onChange={this.onInputChange}
+                                    fontSize={10}
                                     enabled={false}
                                 />
                             </View>
@@ -412,7 +437,7 @@ export default class CheckListItemScreen extends Component {
 
 
                     {/* ----------------------------- */}
-                    {/* MODAL PARA FILTROS            */}
+                    {/* MODAL PARA OBS                */}
                     {/* ----------------------------- */}
                     <Modal
                         visible={this.state.modalOBSVisible}
@@ -429,7 +454,7 @@ export default class CheckListItemScreen extends Component {
                             <View style={{
                                 flex: 1,
                                 width: "90%",
-                                paddingTop: 10,
+                                paddingTop: 30,
                             }} >
                                 <View style={{
                                     paddingVertical: 15,
@@ -459,7 +484,7 @@ export default class CheckListItemScreen extends Component {
                                             maxLength={100}
                                             onChange={this.onInputChange}
                                             multiline={true}
-                                            height={150}
+                                            height={100}
                                         />
 
                                         <Button
