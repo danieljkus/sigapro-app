@@ -134,14 +134,14 @@ export default class CheckListScreen extends Component {
     }
 
     onRegistroPress = (adm_spcl_idf) => {
-        console.log('onRegistroPress: ', adm_spcl_idf);
+        // console.log('onRegistroPress: ', adm_spcl_idf);
 
         this.setState({ carregarRegistro: true });
         axios.get('/checkList/show/' + adm_spcl_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
 
-                console.log('onRegistroPress: ', response.data);
+                // console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('CheckListItemScreen', {
                     registro: {

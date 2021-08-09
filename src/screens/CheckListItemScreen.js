@@ -51,7 +51,7 @@ export default class CheckListItemScreen extends Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount: ', this.props.navigation.state.params.registro)
+        // console.log('componentDidMount: ', this.props.navigation.state.params.registro)
 
         if (this.props.navigation.state.params.registro.adm_spcl_idf) {
             this.setState({
@@ -105,7 +105,7 @@ export default class CheckListItemScreen extends Component {
         if (value) {
             this.setState({
                 codVeiculo: value.codVeic,
-                adm_spcli_seq: -1,
+                adm_spcli_seq: 0,
             }, (
                 this.buscaEscala(value.codVeic),
                 this.onMudaItem('')
@@ -144,7 +144,7 @@ export default class CheckListItemScreen extends Component {
             listaItens: this.state.listaRegistros,
         };
 
-        console.log('onSalvarRegistro: ', registro);
+        // console.log('onSalvarRegistro: ', registro);
         // return;
 
         axios.post('/checkList/store', registro)
@@ -225,7 +225,7 @@ export default class CheckListItemScreen extends Component {
 
 
     onMudaResposta = (tipo) => {
-        console.log('onMudaResposta: ', tipo);
+        // console.log('onMudaResposta: ', tipo);
         if (this.state.adm_spcl_idf === 0) {
             this.state.listaRegistros[this.state.adm_spcli_seq].adm_spcli_check = tipo;
             if (tipo === 'NC') {
@@ -254,12 +254,12 @@ export default class CheckListItemScreen extends Component {
 
     render() {
         const { codVeiculo, veiculo_select, adm_spcl_obs, adm_spcl_idf, adm_spcl_escala,
-            adm_spcli_check, adm_spcli_obs, adm_spicl_descricao, adm_spicl_obs,
+            adm_spcli_check, adm_spcli_obs, adm_spicl_descricao, adm_spicl_obs, adm_spcli_seq,
             salvando, loading, refreshing, carregarRegistro } = this.state;
 
         let imagemHeigth = Dimensions.get('window').height;
 
-        console.log('this.state', this.state);
+        // console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -337,6 +337,9 @@ export default class CheckListItemScreen extends Component {
                                 >
                                     <View style={{ flex: 1, margin: 20, marginTop: 10, paddingBottom: 30, height: 40, alignItems: "center" }}>
                                         <Text style={{ fontSize: 25, color: Colors.textOnPrimary, fontWeight: "bold" }} >{adm_spicl_descricao}</Text>
+                                        <View style={{ flex: 1, margin: 0, marginTop: 0, paddingBottom: 0, alignItems: "flex-end", }}>
+                                            <Text style={{ fontSize: 9, color: Colors.textOnPrimary, fontWeight: "bold" }} >{(adm_spcli_seq + 1) + '/' + this.state.listaRegistros.length}</Text>
+                                        </View>
                                     </View>
                                     <View style={{ flex: 25, margin: 10, marginTop: -10 }}>
                                         <Text style={{ fontSize: 15, color: Colors.textOnPrimary }} >{adm_spicl_obs}</Text>
