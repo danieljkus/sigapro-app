@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "br.com.plenasistemas.app.sigapro"
+        applicationId "br.com.expnordeste.app.sigapro"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 12
