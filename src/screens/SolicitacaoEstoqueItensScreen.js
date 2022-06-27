@@ -14,14 +14,7 @@ import axios from 'axios';
 
 const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
     return (
-        <Card containerStyle={{
-            padding: 0,
-            margin: 0,
-            marginVertical: 1,
-            borderRadius: 0,
-            backgroundColor: Colors.textDisabledLight,
-            // opacity: 0.9
-        }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.estoq_sfi_situacao === 'S' ? 'red' : registro.estoq_sfi_situacao === 'P' ? '#fbc02d' : registro.estoq_sfi_situacao === 'A' ? '#10734a' : registro.estoq_sfi_situacao === 'C' ? Colors.accentDark : Colors.accentDark }}>
                 <TouchableOpacity
                     onPress={() => onRegistroPress(registro.estoq_sfi_seq, registro.estoq_sfi_item, registro.estoq_sfi_qtde_solicitada, registro.estoq_sfi_qtde_atendida, registro.estoq_sfi_situacao, registro.estoq_sfi_obs)}

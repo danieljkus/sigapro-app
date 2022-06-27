@@ -20,7 +20,7 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_sp_data_execucao ? '#10734a' : 'red' }}>
                 <TouchableOpacity
                     onPress={() => onRegistroPress(registro.man_sp_idf, registro.man_sp_data_execucao ? false : true, registro)}

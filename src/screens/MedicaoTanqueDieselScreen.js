@@ -209,51 +209,52 @@ export default class MedicaoTanqueDieselScreen extends Component {
         // console.log('estoq_tcm_alt_medida: ', estoq_tcm_alt_medida);
 
         return (
-            <ScrollView
-                style={{ flex: 1 }}
-                keyboardShouldPersistTaps="always"
-                refreshControl={(
-                    <RefreshControl
-                        refreshing={loading}
-                    />
-                )}
-            >
-
-                <Card containerStyle={{ padding: 0 }}>
-                    {estoq_tcm_idf !== '0' ?
-                        <View
-                            style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
-                        >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
-                                Emissão: {moment(estoq_tcm_data).format('DD/MM/YYYY [às] HH:mm')}
-                            </Text>
-
-                        </View>
-
-                        : null
-                    }
-
-                    <Divider />
-
-                    <View
-                        style={{
-                            margin: 15,
-                        }}
-                    >
-                        <TextInput
-                            label="Altura Medida (cm)"
-                            id="estoq_tcm_alt_medida"
-                            ref="estoq_tcm_alt_medida"
-                            masker={maskDigitarVlrMoeda}
-                            value={String(estoq_tcm_alt_medida)}
-                            onChange={this.onInputChange}
-                            maxLength={9}
-                            keyboardType="decimal-pad"
-                            errorMessage="A Altura é obrigatória"
-                            required={true}
+            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+                <ScrollView
+                    style={{ flex: 1 }}
+                    keyboardShouldPersistTaps="always"
+                    refreshControl={(
+                        <RefreshControl
+                            refreshing={loading}
                         />
+                    )}
+                >
 
-                        {/* <TextInput
+                    <Card containerStyle={{ padding: 0 }}>
+                        {estoq_tcm_idf !== '0' ?
+                            <View
+                                style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
+                                    Emissão: {moment(estoq_tcm_data).format('DD/MM/YYYY [às] HH:mm')}
+                                </Text>
+
+                            </View>
+
+                            : null
+                        }
+
+                        <Divider />
+
+                        <View
+                            style={{
+                                margin: 15,
+                            }}
+                        >
+                            <TextInput
+                                label="Altura Medida (cm)"
+                                id="estoq_tcm_alt_medida"
+                                ref="estoq_tcm_alt_medida"
+                                masker={maskDigitarVlrMoeda}
+                                value={String(estoq_tcm_alt_medida)}
+                                onChange={this.onInputChange}
+                                maxLength={9}
+                                keyboardType="decimal-pad"
+                                errorMessage="A Altura é obrigatória"
+                                required={true}
+                            />
+
+                            {/* <TextInput
                             label="Altura Medida (cm)"
                             id="estoq_tcm_alt_medida"
                             ref="estoq_tcm_alt_medida"
@@ -266,106 +267,106 @@ export default class MedicaoTanqueDieselScreen extends Component {
                             // validator={value => !!value}
                             errorMessage="A Altura é obrigatória."
                         /> */}
-                    </View>
+                        </View>
+
+                        <View
+                            style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+                        >
+                            <View
+                                style={{ flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Quantidade Medida: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(estoq_tcm_qtde_medida)}
+                                </Text>
+                            </View>
+
+                            <View
+                                style={{ flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Quantidade Sistema: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(estoq_tcm_qtde_sistema)}
+                                </Text>
+                            </View>
+
+                            <View
+                                style={{ flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Diferença do Estoque: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(qtde_diferenca)}
+                                </Text>
+                            </View>
+
+                        </View>
+
+                    </Card>
+
+
+
 
                     <View
-                        style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+                        style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}
                     >
-                        <View
-                            style={{ flexDirection: 'row' }}
-                        >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                Quantidade Medida: {' '}
-                            </Text>
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                {this.renderQtdeMedida(estoq_tcm_qtde_medida)}
-                            </Text>
-                        </View>
 
-                        <View
-                            style={{ flexDirection: 'row' }}
-                        >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                Quantidade Sistema: {' '}
-                            </Text>
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                {this.renderQtdeMedida(estoq_tcm_qtde_sistema)}
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{ flexDirection: 'row' }}
-                        >
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                Diferença do Estoque: {' '}
-                            </Text>
-                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                {this.renderQtdeMedida(qtde_diferenca)}
-                            </Text>
-                        </View>
+                        {estoq_tcm_idf === '0' ?
+                            <Button
+                                title="Calcular Volume"
+                                backgroundColor='#ccc'
+                                color={Colors.textOnPrimary}
+                                buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 20, marginTop: 15 }}
+                                onPress={this.onSubmitCalcular}
+                                disabled={loading}
+                                icon={{
+                                    name: 'calculator',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary
+                                }}
+                            />
+                            : null
+                        }
 
                     </View>
 
-                </Card>
+                    <ProgressDialog
+                        visible={salvado}
+                        title="App Nordeste"
+                        message="Gravando. Aguarde..."
+                    />
 
+                    <ProgressDialog
+                        visible={calculando}
+                        title="App Nordeste"
+                        message="Calculando Volume. Aguarde..."
+                    />
 
+                </ScrollView >
 
-
-                <View
-                    style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}
-                >
-
-                    {estoq_tcm_idf === '0' ?
-                        <Button
-                            title="Calcular Volume"
-                            backgroundColor='#ccc'
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 20, marginTop: 15 }}
-                            onPress={this.onSubmitCalcular}
-                            disabled={loading}
-                            icon={{
-                                name: 'calculator',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-                        : null
-                    }
-
-                    {estoq_tcm_idf === '0' ?
-                        <Button
-                            title="Salvar"
-                            backgroundColor='#4682B4'
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-                            onPress={this.onSubmitForm}
-                            disabled={loading}
-                            visible={estoq_tcm_idf}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-                        : null
-                    }
-
-
-                </View>
-
-                <ProgressDialog
-                    visible={salvado}
-                    title="App Nordeste"
-                    message="Gravando. Aguarde..."
-                />
-
-                <ProgressDialog
-                    visible={calculando}
-                    title="App Nordeste"
-                    message="Calculando Volume. Aguarde..."
-                />
-
-            </ScrollView >
+                {estoq_tcm_idf === '0' ?
+                    <Button
+                        title="Salvar"
+                        backgroundColor='#4682B4'
+                        color={Colors.textOnPrimary}
+                        buttonStyle={{ margin: 5, marginTop: 10 }}
+                        onPress={this.onSubmitForm}
+                        disabled={loading}
+                        visible={estoq_tcm_idf}
+                        icon={{
+                            name: 'check',
+                            type: 'font-awesome',
+                            color: Colors.textOnPrimary
+                        }}
+                    />
+                    : null
+                }
+            </View>
         )
     }
 }

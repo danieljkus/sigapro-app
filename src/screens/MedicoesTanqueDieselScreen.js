@@ -14,7 +14,7 @@ const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }]
 
 const CardViewItem = ({ registro, onRegistroPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 10, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.estoq_tcm_idf)}
             >

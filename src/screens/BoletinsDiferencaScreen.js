@@ -12,7 +12,7 @@ import { getUsuario } from '../utils/LoginManager';
 
 const CardViewItem = ({ registro, onWhatsAppPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 5, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
 
             <View style={{ paddingHorizontal: 8, paddingVertical: 5 }}>
                 <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
@@ -190,7 +190,7 @@ export default class BoletinsDiferencaScreen extends Component {
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 80 }}
+                    contentContainerStyle={{ paddingBottom: 100 }}
                     keyExtractor={registro => String(registro.fin_lanc_filial)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}

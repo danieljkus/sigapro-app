@@ -111,8 +111,8 @@ export default class AutorizacaoDespesaScreen extends Component {
             } else {
                 if (response) {
                     this.state.fin_ad_documento = response.data;
-                    this.setState({ 
-                        salvado: false, 
+                    this.setState({
+                        salvado: false,
                         modalZap: true,
                         fin_ad_situacao: ''
                     });
@@ -251,21 +251,6 @@ export default class AutorizacaoDespesaScreen extends Component {
                             value={ctaFinancSelect}
                         />
 
-                        {fin_ad_situacao === 'P' && !fin_ad_idf_lanc ? (
-                            <Button
-                                title="SALVAR"
-                                loading={loading}
-                                onPress={this.onFormSubmit}
-                                color={Colors.textOnPrimary}
-                                buttonStyle={{ marginBottom: 20, marginTop: 20 }}
-                                icon={{
-                                    name: 'check',
-                                    type: 'font-awesome',
-                                    color: Colors.textOnPrimary
-                                }}
-                            />
-                        ) : null}
-
                     </View>
 
                     <ProgressDialog
@@ -350,6 +335,21 @@ export default class AutorizacaoDespesaScreen extends Component {
 
 
                 </ScrollView>
+
+                {fin_ad_situacao === 'P' && !fin_ad_idf_lanc ? (
+                    <Button
+                        title="SALVAR"
+                        loading={loading}
+                        onPress={this.onFormSubmit}
+                        color={Colors.textOnPrimary}
+                        buttonStyle={{ margin: 5, marginTop: 10 }}
+                        icon={{
+                            name: 'check',
+                            type: 'font-awesome',
+                            color: Colors.textOnPrimary
+                        }}
+                    />
+                ) : null}
             </View>
         )
     }

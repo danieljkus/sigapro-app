@@ -8,10 +8,9 @@ import { getToken } from './src/utils/LoginManager';
 
 if (__DEV__) {
     // axios.defaults.baseURL = 'https://189.112.171.123/api/';
-    // axios.defaults.baseURL = 'http://189.112.171.123/api/';
     // axios.defaults.baseURL = 'http://sigapro.expnordeste.com.br/api/';
-    // axios.defaults.baseURL = 'https://sigapro.expnordeste.com.br/api/';
-    axios.defaults.baseURL = 'http://10.0.1.9/siga-web3-back/public/api';
+    axios.defaults.baseURL = 'https://sigapro.expnordeste.com.br/api/';
+    // axios.defaults.baseURL = 'http://10.0.1.9/siga-web3-back/public/api';
 } else {
     axios.defaults.baseURL = 'https://sigapro.expnordeste.com.br/api/';
 }

@@ -25,117 +25,111 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 
 const RegistroItem = ({ registro }) => {
     return (
-
-        <Card containerStyle={{ padding: 0, margin: 3, borderRadius: 5, }}>
-            <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Data{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {moment(registro.estoq_me_data).format("DD/MM/YYYY")}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            IDF{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.estoq_me_idf}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Nº{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.estoq_me_numero}
-                        </Text>
-                    </View>
-                </View>
-
-                <Divider />
-
-                <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Filial{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {registro.estoq_mei_filial}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Tipo{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.estoq_tme_abrev}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.tipo_mov}
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 3, fontSize: 20 }}>
-                    <Text>
-                        {registro.descr_origem_destino}
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+            <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                        Data{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                        {moment(registro.estoq_me_data).format("DD/MM/YYYY")}
                     </Text>
                 </View>
-
-                {/* <Divider /> */}
-
-                <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
                     <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Item {': '}
+                        IDF{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.estoq_me_idf}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Nº{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.estoq_me_numero}
+                    </Text>
+                </View>
+            </View>
+
+            <Divider />
+
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                        Filial{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                        {registro.estoq_mei_filial}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Tipo{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.estoq_tme_abrev}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.tipo_mov}
+                    </Text>
+                </View>
+            </View>
+
+            <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 3, fontSize: 20 }}>
+                <Text>
+                    {registro.descr_origem_destino}
+                </Text>
+            </View>
+
+            {/* <Divider /> */}
+
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    Item {': '}
+                </Text>
+                <Text>
+                    {registro.estoq_mei_item}
+                </Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 8, fontSize: 20, marginRight: 50 }}>
+                <Text>
+                    {registro.estoq_ie_descricao}
+                </Text>
+            </View>
+
+            <Divider />
+
+            <View style={{ paddingLeft: 10, marginBottom: 10, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                        Qtde{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                        {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        C. Médio{': '}
+                    </Text>
+                    <Text style={{ fontSize: 12, marginTop: 2 }}>
+                        {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Total{': '}
                     </Text>
                     <Text>
-                        {registro.estoq_mei_item}
+                        {maskValorMoeda(parseFloat(registro.estoq_mei_total_mov))}
                     </Text>
                 </View>
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 8, fontSize: 20, marginRight: 50 }}>
-                    <Text>
-                        {registro.estoq_ie_descricao}
-                    </Text>
-                </View>
-
-                <Divider />
-
-                <View style={{ paddingLeft: 10, marginBottom: 10, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Qtde{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            C. Médio{': '}
-                        </Text>
-                        <Text style={{ fontSize: 12, marginTop: 2 }}>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Total{': '}
-                        </Text>
-                        <Text>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_total_mov))}
-                        </Text>
-                    </View>
-                </View>
-
-                <Divider />
-
-            </View >
+            </View>
         </Card >
     )
 }

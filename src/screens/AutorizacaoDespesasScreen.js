@@ -17,7 +17,8 @@ const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }]
 
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onWhatsAppPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 10, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+            {/* <Card containerStyle={{ padding: 0, margin: 10, borderRadius: 2, }}> */}
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.fin_ad_documento)}
                 onLongPress={() => onRegistroLongPress(registro.fin_ad_documento)}
@@ -364,7 +365,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                     containerStyle={{ backgroundColor: Colors.primaryLight }}
                 />
 
-                <View style={{ alignItems: "flex-end", marginTop: -40, paddingBottom: 10, marginBottom: 20 }}>
+                <View style={{ alignItems: "flex-end", marginTop: -40, marginBottom: 15 }}>
                     <CheckBox
                         title='Pendentes'
                         key={buscaSituacao}
@@ -382,7 +383,7 @@ export default class AutorizacaoDespesasScreen extends Component {
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 80 }}
+                    contentContainerStyle={{ paddingBottom: 100 }}
                     keyExtractor={registro => String(registro.fin_ad_documento) + '_' + String(registro.fin_ad_seq)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}

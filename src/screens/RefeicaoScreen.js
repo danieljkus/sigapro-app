@@ -16,7 +16,7 @@ import { getEmpresa } from '../utils/LoginManager';
 const { OS } = Platform;
 
 
-export default class MedicaoTanqueArlaScreen extends Component {
+export default class RefeicaoScreen extends Component {
 
     constructor(props) {
         super(props);

@@ -22,6 +22,8 @@ import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 import CheckListScreen from './CheckListScreen';
 import CheckListItemScreen from './CheckListItemScreen';
 
+import RefeicoesScreen from './RefeicoesScreen';
+
 import OrdensServicosScreen from './OrdensServicosScreen';
 import OrdemServicoScreen from './OrdemServicoScreen';
 import OrdemServicoCorretivoScreen from './OrdemServicoCorretivoScreen';
@@ -186,6 +188,16 @@ const HomeStackNavigator = createStackNavigator({
         screen: CheckListItemScreen,
         navigationOptions: {
             title: "Check-List",
+            ...defaultNavigationOptions
+        }
+    },
+
+
+
+    RefeicoesScreen: {
+        screen: RefeicoesScreen,
+        navigationOptions: {
+            title: "Refeições dos Colaboradores",
             ...defaultNavigationOptions
         }
     },

@@ -19,14 +19,19 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.adm_spcl_idf)}
                 onLongPress={() => onRegistroLongPress(registro.adm_spcl_idf)}
             >
 
                 <View style={{ paddingLeft: 10, marginBottom: 10, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                            #{registro.adm_spcl_idf}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 4, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Data {': '}
                         </Text>
@@ -263,7 +268,7 @@ export default class CheckListScreen extends Component {
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 80 }}
+                    contentContainerStyle={{ paddingBottom: 100 }}
                     keyExtractor={registro => String(registro.adm_spcl_idf)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}

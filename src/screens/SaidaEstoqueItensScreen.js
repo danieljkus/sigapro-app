@@ -14,14 +14,7 @@ import axios from 'axios';
 
 const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
     return (
-        <Card containerStyle={{
-            padding: 0,
-            margin: 0,
-            marginVertical: 1,
-            borderRadius: 0,
-            backgroundColor: Colors.textDisabledLight,
-            // opacity: 0.9
-        }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.estoq_mei_seq, registro.estoq_mei_item, registro.estoq_mei_qtde_mov, registro.estoq_mei_valor_unit, registro.estoq_mei_total_mov, registro.tipo_destino, registro.cod_destino, registro.descr_destino, registro.estoq_mei_obs)}
                 onLongPress={() => onRegistroLongPress(registro.estoq_mei_seq)}

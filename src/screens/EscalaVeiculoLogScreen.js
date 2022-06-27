@@ -22,33 +22,29 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 
 const RegistroItem = ({ registro, onAtivaChange, onRegistroPress, onRegistroLongPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
-            <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-
-                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text>
-                            {moment(registro.man_evl_data).format("DD/MM/YYYY HH:mm")}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Usuário {': '}
-                        </Text>
-                        <Text>
-                            {registro.man_evl_usuario}
-                        </Text>
-                    </View>
-                </View>
-
-                <Divider />
-
-                <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
-                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        {registro.man_evl_descricao}
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+            <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text>
+                        {moment(registro.man_evl_data).format("DD/MM/YYYY HH:mm")}
                     </Text>
                 </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Usuário {': '}
+                    </Text>
+                    <Text>
+                        {registro.man_evl_usuario}
+                    </Text>
+                </View>
+            </View>
 
+            <Divider />
+
+            <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
+                <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                    {registro.man_evl_descricao}
+                </Text>
             </View>
         </Card>
     )

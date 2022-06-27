@@ -17,7 +17,7 @@ moment.locale('pt-BR');
 
 const RegistroItem = ({ registro, onBloquearTudoPress, onLiberarTudoPress, onLiberarDinPress, onLiberarReqPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.pas_csf_situacao === 'B' ? '#b71c1c' : Colors.primary }}>
                 <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
                     <View style={{ flex: 3, flexDirection: 'row' }}>

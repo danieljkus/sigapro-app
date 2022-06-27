@@ -22,8 +22,7 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 
 const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
     return (
-
-        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.veic1 ? Colors.primary : "#d32f2f" }}>
                 <TouchableOpacity
                     onPress={() => onRegistroPress(registro)}
@@ -372,7 +371,7 @@ export default class EscalaVeiculosScreen extends Component {
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 100 }}
+                    contentContainerStyle={{ paddingBottom: 150 }}
                     keyExtractor={registro => String(registro.pas_via_empresa) + '_' + String(registro.pas_via_servico) + '_' + (registro.pas_via_servico_extra ? String(registro.pas_via_servico_extra) : String(registro.pas_via_servico)) + '_' + String(registro.veic1) + '_' + String(registro.veic2)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}

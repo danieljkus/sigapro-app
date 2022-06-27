@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Alert, FlatList, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -7,43 +7,86 @@ import axios from 'axios';
 import { Card, Divider } from 'react-native-elements';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
-import { ProgressDialog } from 'react-native-simple-dialogs';
+import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
 
-const CardViewItem = ({ registro, onRegistroLongPress }) => {
+const CardViewItem = ({ registro, onRegistroPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <TouchableOpacity
-                onLongPress={() => onRegistroLongPress(registro.estoq_nfpd_chave)}
+                onPress={() => onRegistroPress(registro.estoq_tam_idf)}
             >
                 <View
-                    style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
+                    style={{ paddingHorizontal: 16, paddingTop: 8, flexDirection: 'row' }}
                 >
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
                         <Text style={{ fontWeight: 'bold' }} >
                             Data: {' '}
                         </Text>
                         <Text>
-                            {moment(registro.estoq_nfpd_data).format('DD/MM/YYYY [às] HH:mm')}
+                            {moment(registro.rhref_data).format('DD/MM/YYYY [às] HH:mm')}
+                        </Text>
+                    </Text>
+                </View>
+
+                <View style={{ paddingHorizontal: 16, paddingBottom: 8, flexDirection: 'row' }}>
+                    <Text style={{ flex: 1, color: Colors.textSecondaryDark, fontSize: 15 }} >
+                        <Text style={{ fontWeight: 'bold' }} >
+                            Refeição: {' '}
+                        </Text>
+                        <Text>
+                            {registro.rhref_tipo_refeicao}
+                        </Text>
+                    </Text>
+                    <Text style={{ flex: 1, color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
+                        <Text style={{ fontWeight: 'bold' }} >
+                            Valor: {' '}
+                        </Text>
+                        <Text>
+                            R$ {parseFloat(registro.rhref_valor).toFixed(2)}
                         </Text>
                     </Text>
                 </View>
 
                 <Divider />
 
-                <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
-                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        Chave NFe
+                <View style={{ flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 8 }}>
+                    <Text style={{ fontWeight: 'bold' }} >
+                        Colaborador: {' '}
+                    </Text>
+                    <Text>
+                        {registro.nome_func}
                     </Text>
                 </View>
 
-                <View style={{ paddingLeft: 15, paddingVertical: 1 }}>
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 12, marginBottom: 5 }}>
-                        {registro.estoq_nfpd_chave}
+                <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }} >
+                        <Text style={{ fontWeight: 'bold' }} >
+                            Restaurante: {' '}
+                        </Text>
+                        <Text>
+                            {registro.nome_rest}
+                        </Text>
+                    </Text>
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
+                        <Text>
+                            {registro.ceps_loc_descricao} - {registro.ceps_loc_uf}
+                        </Text>
                     </Text>
                 </View>
+
+                <Divider />
+
+                {registro.rhref_obs ? (
+                    <View style={{ flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 8 }}>
+                        <Text>
+                            {registro.rhref_obs}
+                        </Text>
+                    </View>
+                ) : null}
+
 
             </TouchableOpacity>
 
@@ -51,7 +94,7 @@ const CardViewItem = ({ registro, onRegistroLongPress }) => {
     )
 }
 
-export default class PreDigitacaoNotasScreen extends Component {
+export default class RefeicoesScreen extends Component {
 
     termoBusca = '';
     state = {
@@ -75,10 +118,10 @@ export default class PreDigitacaoNotasScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { pagina, listaRegistros } = this.state;
-        this.setState({ refreshing: true, });
+        const { buscaCTE, buscaRomaneio, pagina, listaRegistros } = this.state;
+        this.setState({ carregando: true });
 
-        axios.get('/preDigitacaoNotas', {
+        axios.get('/refeicoes', {
             params: {
                 page: pagina,
                 limite: 10,
@@ -103,45 +146,18 @@ export default class PreDigitacaoNotasScreen extends Component {
         })
     }
 
+    onRegistroPress = (estoq_tam_idf) => {
+        // this.props.navigation.navigate('MedicaoTanqueArlaScreen', {
+        //     estoq_tam_idf,
+        //     onRefresh: this.onRefresh
+        // });
+    }
+
     onAddPress = () => {
-        this.props.navigation.navigate('PreDigitacaoNotaScreen', {
-            estoq_nfpd_chave: '',
+        this.props.navigation.navigate('MedicaoTanqueArlaScreen', {
+            estoq_tam_idf: 0,
             onRefresh: this.onRefresh
         });
-    }
-
-
-
-    onRegistroLongPress = (estoq_nfpd_chave) => {
-        Alert.alert("Excluir registro", `Deseja excluir esta Chave?`, [
-            { text: "Cancelar" },
-            {
-                text: "Excluir",
-                onPress: () => this.onExcluirRegistro(estoq_nfpd_chave),
-                style: "destructive"
-            }
-        ])
-    }
-
-    onExcluirRegistro = (estoq_nfpd_chave) => {
-        this.setState({ refreshing: true });
-
-        axios.delete('/preDigitacaoNotas/delete/' + estoq_nfpd_chave)
-            .then(response => {
-
-                const listaRegistros = [...this.state.listaRegistros];
-                const index = listaRegistros.findIndex(registro => registro.estoq_nfpd_chave === estoq_nfpd_chave);
-                listaRegistros.splice(index, 1);
-                this.setState({
-                    listaRegistros,
-                    refreshing: false
-                });
-
-            }).catch(ex => {
-                console.warn(ex);
-                console.warn(ex.response);
-                this.setState({ refreshing: false });
-            })
     }
 
 
@@ -174,7 +190,7 @@ export default class PreDigitacaoNotasScreen extends Component {
         return (
             <CardViewItem
                 registro={item}
-                onRegistroLongPress={this.onRegistroLongPress}
+                onRegistroPress={this.onRegistroPress}
             />
         )
     }
@@ -187,7 +203,7 @@ export default class PreDigitacaoNotasScreen extends Component {
                     data={listaRegistros}
                     renderItem={this.renderItem}
                     contentContainerStyle={{ paddingBottom: 80 }}
-                    keyExtractor={registro => String(registro.estoq_nfpd_chave)}
+                    keyExtractor={registro => String(registro.estoq_tam_idf)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
                     onEndReached={this.carregarMaisRegistros}

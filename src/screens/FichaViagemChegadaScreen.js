@@ -1096,7 +1096,7 @@ export default class FichaViagemChegadaScreen extends Component {
                             loading={loading}
                             onPress={this.onFormSubmit}
                             color={Colors.textOnPrimary}
-                            buttonStyle={{ marginBottom: 20, marginTop: 20 }}
+                            buttonStyle={{ marginBottom: 5, marginTop: 20 }}
                             icon={{
                                 name: 'check',
                                 type: 'font-awesome',
@@ -1109,7 +1109,7 @@ export default class FichaViagemChegadaScreen extends Component {
                             onPress={this.onLimparTela}
                             color={Colors.textOnPrimary}
                             backgroundColor='#ccc'
-                            buttonStyle={{ marginBottom: 20, marginTop: 10 }}
+                            buttonStyle={{ marginBottom: 5, marginTop: 0 }}
                             icon={{
                                 name: 'close',
                                 type: 'font-awesome',

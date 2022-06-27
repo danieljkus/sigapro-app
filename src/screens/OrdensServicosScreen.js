@@ -21,7 +21,7 @@ const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }]
 
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinalizarPress, onAbrirPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, marginLeft: 5, marginRight: 5, marginBottom: 2, marginTop: 3, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_os_situacao === 'A' ? 'red' : '#10734a' }}>
                 <TouchableOpacity
                     onPress={() => onRegistroPress(registro.man_os_idf)}
@@ -436,7 +436,7 @@ export default class OrdensServicosScreen extends Component {
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
+                    contentContainerStyle={{ paddingBottom: 100 }}
                     keyExtractor={registro => String(registro.man_os_idf)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}

@@ -27,136 +27,133 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 
 const RegistroItem = ({ registro, onRegistroPress, onSulcagemPress }) => {
     return (
-
-        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
-            <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Pneu{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pneus_mov_pneu}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Posição{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pneus_mov_posicao}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Eixo{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.pneus_mov_eixo}
-                        </Text>
-                    </View>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+            <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                        Pneu{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.pneus_mov_pneu}
+                    </Text>
                 </View>
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
                     <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Marca{': '}
+                        Posição{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.pneus_mov_posicao}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Eixo{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.pneus_mov_eixo}
+                    </Text>
+                </View>
+            </View>
+
+            <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    Marca{': '}
+                </Text>
+                <Text>
+                    {registro.pneus_mar_descricao}
+                </Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    Modelo{': '}
+                </Text>
+                <Text>
+                    {registro.pneus_mod_descricao}
+                </Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    Dimenssão{': '}
+                </Text>
+                <Text>
+                    {registro.pneus_dim_descricao}
+                </Text>
+            </View>
+
+            <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                        Data{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                        {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Vida{': '}
+                    </Text>
+                    <Text style={{ fontSize: 12, marginTop: 2 }}>
+                        {registro.pneus_vd_vida === "0" ? 'NOVO' : registro.pneus_vd_vida + 'º VIDA'}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Km Vida{': '}
                     </Text>
                     <Text>
-                        {registro.pneus_mar_descricao}
+                        {registro.pneus_vd_km_vida}
                     </Text>
                 </View>
+            </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Modelo{': '}
-                    </Text>
-                    <Text>
-                        {registro.pneus_mod_descricao}
-                    </Text>
-                </View>
-
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                        Dimenssão{': '}
-                    </Text>
-                    <Text>
-                        {registro.pneus_dim_descricao}
-                    </Text>
-                </View>
-
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Data{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Vida{': '}
-                        </Text>
-                        <Text style={{ fontSize: 12, marginTop: 2 }}>
-                            {registro.pneus_vd_vida === "0" ? 'NOVO' : registro.pneus_vd_vida + 'º VIDA'}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Km Vida{': '}
-                        </Text>
-                        <Text>
-                            {registro.pneus_vd_km_vida}
-                        </Text>
-                    </View>
-                </View>
-
-                <View
-                    style={{
-                        flex: 1,
-                        margin: 0,
-                        marginTop: 5,
-                        height: 40,
-                        borderTopWidth: 1,
-                        borderColor: Colors.dividerDark,
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'flex-start',
-                    }}
+            <View
+                style={{
+                    flex: 1,
+                    margin: 0,
+                    marginTop: 5,
+                    height: 40,
+                    borderTopWidth: 1,
+                    borderColor: Colors.dividerDark,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                }}
+            >
+                <TouchableOpacity
+                    onPress={() => onSulcagemPress(registro.pneus_mov_pneu, registro.pneus_vd_vida, registro.pneus_mov_posicao)}
                 >
-                    <TouchableOpacity
-                        onPress={() => onSulcagemPress(registro.pneus_mov_pneu, registro.pneus_vd_vida, registro.pneus_mov_posicao)}
-                    >
-                        <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
-                            <Icon
-                                name='bars'
-                                type='font-awesome'
-                                color={Colors.primaryLight}
-                                size={17}
-                            />
-                            <Text style={{ color: Colors.primaryLight, fontSize: 13, marginLeft: 5 }} >
-                                Sulcagem
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
+                    <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                        <Icon
+                            name='bars'
+                            type='font-awesome'
+                            color={Colors.primaryLight}
+                            size={17}
+                        />
+                        <Text style={{ color: Colors.primaryLight, fontSize: 13, marginLeft: 5 }} >
+                            Sulcagem
+                        </Text>
+                    </View>
+                </TouchableOpacity>
 
-                    <TouchableOpacity
-                        onPress={() => onRegistroPress(registro.pneus_mov_idf)}
-                    >
-                        <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
-                            <Icon
-                                name='retweet'
-                                type='font-awesome'
-                                color={Colors.primaryLight}
-                                size={18}
-                            />
-                            <Text style={{ color: Colors.primaryLight, fontSize: 13, marginLeft: 5 }} >
-                                Trocar Pneu
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </View >
+                <TouchableOpacity
+                    onPress={() => onRegistroPress(registro.pneus_mov_idf)}
+                >
+                    <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                        <Icon
+                            name='retweet'
+                            type='font-awesome'
+                            color={Colors.primaryLight}
+                            size={18}
+                        />
+                        <Text style={{ color: Colors.primaryLight, fontSize: 13, marginLeft: 5 }} >
+                            Trocar Pneu
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         </Card >
     )
 }

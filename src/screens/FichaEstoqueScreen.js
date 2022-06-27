@@ -26,110 +26,106 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 
 const RegistroItem = ({ registro }) => {
     return (
-
-        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
-            <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Data{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {moment(registro.estoq_me_data).format("DD/MM/YYYY")}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            IDF{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.estoq_me_idf}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Nº{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.estoq_me_numero}
-                        </Text>
-                    </View>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+            <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                        Data{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                        {moment(registro.estoq_me_data).format("DD/MM/YYYY")}
+                    </Text>
                 </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        IDF{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.estoq_me_idf}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Nº{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        {registro.estoq_me_numero}
+                    </Text>
+                </View>
+            </View>
 
-                <Divider />
+            <Divider />
 
-                <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 8, fontSize: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 16 }} >
-                        Movimentação{': '}
+            <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 8, fontSize: 20 }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 16 }} >
+                    Movimentação{': '}
+                </Text>
+                <Text>
+                    {registro.estoq_tme_abrev}
+                </Text>
+            </View>
+
+            <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                        Qtde{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                        {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        C. Médio{': '}
+                    </Text>
+                    <Text style={{ fontSize: 12, marginTop: 2 }}>
+                        {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
+                    </Text>
+                </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Total{': '}
                     </Text>
                     <Text>
-                        {registro.estoq_tme_abrev}
+                        {maskValorMoeda(parseFloat(registro.estoq_mei_total_mov))}
                     </Text>
                 </View>
+            </View>
 
-                <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Qtde{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            C. Médio{': '}
-                        </Text>
-                        <Text style={{ fontSize: 12, marginTop: 2 }}>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Total{': '}
-                        </Text>
-                        <Text>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_total_mov))}
-                        </Text>
-                    </View>
-                </View>
+            <Divider />
 
-                <Divider />
+            <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 8 }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 16 }} >
+                    Estoque Atual
+                </Text>
+            </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 10, marginTop: 8 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 16 }} >
-                        Estoque Atual
+            <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                        Qtde{': '}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                        {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_estoque_atual))}
                     </Text>
                 </View>
-
-                <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            Qtde{': '}
-                        </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_estoque_atual))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            C. Médio{': '}
-                        </Text>
-                        <Text style={{ fontSize: 12, marginTop: 2 }}>
-                            {maskValorMoeda(parseFloat(registro.estoq_mei_custo_medio_estoque))}
-                        </Text>
-                    </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Total{': '}
-                        </Text>
-                        <Text>
-                            {maskValorMoeda(parseFloat(parseFloat(registro.estoq_mei_qtde_estoque_atual) * parseFloat(registro.estoq_mei_custo_medio_estoque)))}
-                        </Text>
-                    </View>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        C. Médio{': '}
+                    </Text>
+                    <Text style={{ fontSize: 12, marginTop: 2 }}>
+                        {maskValorMoeda(parseFloat(registro.estoq_mei_custo_medio_estoque))}
+                    </Text>
                 </View>
-
-            </View >
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        Total{': '}
+                    </Text>
+                    <Text>
+                        {maskValorMoeda(parseFloat(parseFloat(registro.estoq_mei_qtde_estoque_atual) * parseFloat(registro.estoq_mei_custo_medio_estoque)))}
+                    </Text>
+                </View>
+            </View>
         </Card >
     )
 }
