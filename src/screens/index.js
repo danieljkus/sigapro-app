@@ -23,6 +23,7 @@ import CheckListScreen from './CheckListScreen';
 import CheckListItemScreen from './CheckListItemScreen';
 
 import RefeicoesScreen from './RefeicoesScreen';
+import RefeicaoScreen from './RefeicaoScreen';
 
 import OrdensServicosScreen from './OrdensServicosScreen';
 import OrdemServicoScreen from './OrdemServicoScreen';
@@ -197,7 +198,14 @@ const HomeStackNavigator = createStackNavigator({
     RefeicoesScreen: {
         screen: RefeicoesScreen,
         navigationOptions: {
-            title: "Refeições dos Colaboradores",
+            title: "Refeições",
+            ...defaultNavigationOptions
+        }
+    },
+    RefeicaoScreen: {
+        screen: RefeicaoScreen,
+        navigationOptions: {
+            title: "Refeição",
             ...defaultNavigationOptions
         }
     },
