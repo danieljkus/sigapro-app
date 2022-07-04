@@ -17,66 +17,69 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 const CardViewItem = ({ registro, onRegistroPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
-            <View
-                style={{ paddingHorizontal: 16, paddingTop: 8, flexDirection: 'row' }}
-            >
-                <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 2 }}>
-                    <Text style={{ fontWeight: 'bold' }} >
-                        Data: {' '}
-                    </Text>
-                    <Text>
-                        {moment(registro.rhref_data).format('DD/MM/YYYY [às] HH:mm')}
-                    </Text>
-                </Text>
-                <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
-                    <Text style={{ fontWeight: 'bold' }} >
-                        {registro.rhref_situacao}
-                    </Text>
-                </Text>
-            </View>
+            <View style={{ borderLeftWidth: 5, borderLeftColor: registro.rhref_situacao === 'PEN' ? 'red' : '#10734a' }}>
 
-            <View style={{ paddingHorizontal: 16, paddingBottom: 8, flexDirection: 'row' }}>
-                <Text style={{ flex: 2, color: Colors.textSecondaryDark, fontSize: 15 }} >
-                    <Text style={{ fontWeight: 'bold' }} >
-                        Refeição: {' '}
+                <View
+                    style={{ paddingHorizontal: 16, paddingTop: 8, flexDirection: 'row' }}
+                >
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 2 }}>
+                        <Text style={{ fontWeight: 'bold' }} >
+                            Data: {' '}
+                        </Text>
+                        <Text>
+                            {moment(registro.rhref_data).format('DD/MM/YYYY [às] HH:mm')}
+                        </Text>
                     </Text>
-                    <Text>
-                        {registro.rhref_tipo_refeicao}
-                    </Text>
-                </Text>
-                <Text style={{ flex: 1, color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
-                    <Text style={{ fontWeight: 'bold' }} >
-                        Valor: {' '}
-                    </Text>
-                    <Text>
-                        R$ {parseFloat(registro.rhref_valor).toFixed(2)}
-                    </Text>
-                </Text>
-            </View>
-
-            <Divider />
-
-            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-                <Text style={{ fontWeight: 'bold' }} >
-                    Restaurante
-                </Text>
-                <Text>
-                    {registro.nome_rest}
-                </Text>
-                <Text>
-                    {registro.ceps_loc_descricao} - {registro.ceps_loc_uf}
-                </Text>
-            </View>
-
-            <Divider />
-
-            {registro.rhref_obs ? (
-                <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-                    <Text>
-                        {registro.rhref_obs}
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                        <Text style={{ fontWeight: 'bold' }} >
+                            {registro.rhref_situacao}
+                        </Text>
                     </Text>
                 </View>
-            ) : null}
+
+                <View style={{ paddingHorizontal: 16, paddingBottom: 8, flexDirection: 'row' }}>
+                    <Text style={{ flex: 2, color: Colors.textSecondaryDark, fontSize: 15 }} >
+                        <Text style={{ fontWeight: 'bold' }} >
+                            Refeição: {' '}
+                        </Text>
+                        <Text>
+                            {registro.rhref_tipo_refeicao}
+                        </Text>
+                    </Text>
+                    <Text style={{ flex: 1, color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
+                        <Text style={{ fontWeight: 'bold' }} >
+                            Valor: {' '}
+                        </Text>
+                        <Text>
+                            R$ {parseFloat(registro.rhref_valor).toFixed(2)}
+                        </Text>
+                    </Text>
+                </View>
+
+                <Divider />
+
+                <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+                    <Text style={{ fontWeight: 'bold' }} >
+                        Restaurante
+                    </Text>
+                    <Text>
+                        {registro.nome_rest}
+                    </Text>
+                    <Text>
+                        {registro.ceps_loc_descricao} - {registro.ceps_loc_uf}
+                    </Text>
+                </View>
+
+                <Divider />
+
+                {registro.rhref_obs ? (
+                    <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+                        <Text>
+                            {registro.rhref_obs}
+                        </Text>
+                    </View>
+                ) : null}
+            </View>
         </Card>
     )
 }

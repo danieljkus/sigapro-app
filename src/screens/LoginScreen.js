@@ -13,6 +13,7 @@ import Button from '../components/Button';
 import { validateSenha, checkFormIsValid, savePermissoes } from '../utils/Validator';
 import { saveToken } from '../utils/LoginManager';
 import DeviceInfo from 'react-native-device-info';
+import NetInfo from '@react-native-community/netinfo';
 
 export default class LoginScreen extends Component {
 
@@ -24,7 +25,25 @@ export default class LoginScreen extends Component {
             senha: '',
             empresa: 0,
             empresaSelect: [],
+            netStatus: 1,
         };
+
+        NetInfo.addEventListener(state => { this.onNetEvento(state) });
+    }
+
+    onNetEvento = (info) => {
+        let state = this.state;
+        if (info.isConnected) {
+            state.netStatus = 1;
+        } else {
+            state.netStatus = 0;
+        }
+        this.setState(state);
+    }
+
+
+    componentDidMount() {
+
     }
 
     onFormSubmit = (event) => {
@@ -37,31 +56,44 @@ export default class LoginScreen extends Component {
         this.setState({ loading: true });
         const { usuario, senha, empresa } = this.state;
 
-        axios.post("/usuarios/login", {
-            usuario,
-            senha,
-            empresa,
-            tipoAcesso: 'SIGAPRO'
-        }).then(async response => {
+        if (this.state.netStatus) {
+            axios.post("/usuarios/login", {
+                usuario,
+                senha,
+                empresa,
+                tipoAcesso: 'SIGAPRO'
+            }).then(async response => {
 
-            // console.log('postLogin: ', response.data);
+                // console.log('postLogin: ', response.data);
 
-            await saveToken(response.data.token);
-            AsyncStorage.setItem('SIGAPRO-permissoes', JSON.stringify(response.data.permissoes))
-            this.goToHome()
-        }).catch(error => {
-            console.warn('Erro Login: ', error);
-            this.setState({ loading: false });
-            if (error.response) {
-                if (error.response.status === 401) {
-                    alert("Usuário ou Senha Incorreto");
+                await saveToken(response.data.token);
+                AsyncStorage.setItem('SIGAPRO-permissoes', JSON.stringify(response.data.permissoes))
+                this.goToHome()
+            }).catch(error => {
+                console.warn('Erro Login: ', error);
+                this.setState({ loading: false });
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        alert("Usuário ou Senha Incorreto");
+                    } else {
+                        alert("Entre em contato com o suporte do sistema.");
+                    }
                 } else {
-                    alert("Entre em contato com o suporte do sistema.");
+                    alert('Não foi possível se comunicar com o servidor, verifique sua conexão com a Internet.');
                 }
+            })
+        } else {
+            if ((usuarioAux) && (usuarioAux.usu_cpf === usuario) && (senhaAux === senha)) {
+                getTokenAux().then(tokenAux => {
+                    saveToken(tokenAux);
+                    saveSenha(senha);
+                    this.goToHome()
+                })
             } else {
-                alert('Não foi possível se comunicar com o servidor, verifique sua conexão com a Internet.');
+                this.setState({ loading: false });
+                Alert.showAlert('Senha Incorreta');
             }
-        })
+        }
     }
 
     goToHome = () => {
@@ -154,6 +186,11 @@ export default class LoginScreen extends Component {
                         >
                             Versão: {DeviceInfo.getVersion()}
                         </Text>
+
+                        {this.state.netStatus
+                            ? null : (
+                                <Text style={{ textAlign: 'center', color: '#d50000' }}> Dispositivo sem conexão </Text>
+                            )}
                     </View>
 
 
@@ -172,6 +209,7 @@ export default class LoginScreen extends Component {
                                 required={true}
                                 errorMessage="Informe o usuário de acesso."
                                 autoCapitalize="none"
+                                enabled={this.state.netStatus ? true : false}
                                 style={{
                                     width: '90%',
                                     marginLeft: 10,
@@ -218,17 +256,20 @@ export default class LoginScreen extends Component {
 
                         <Divider />
 
-                        <Button
-                            title="ENTRAR"
-                            loading={loading}
-                            onPress={this.onFormSubmit}
-                            color={Colors.textOnPrimary}
-                            icon={{
-                                name: 'sign-in',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
+                        {(this.state.netStatus) ?
+                            (
+                                <Button
+                                    title="ENTRAR"
+                                    loading={loading}
+                                    onPress={this.onFormSubmit}
+                                    color={Colors.textOnPrimary}
+                                    icon={{
+                                        name: 'sign-in',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
+                            ) : null}
 
                     </View>
 

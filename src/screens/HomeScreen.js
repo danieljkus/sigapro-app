@@ -5,10 +5,30 @@ import Colors from '../values/Colors';
 import StatusBar from '../components/StatusBar';
 import { getUsuario } from '../utils/LoginManager';
 import DeviceInfo from 'react-native-device-info';
+import NetInfo from '@react-native-community/netinfo';
 
 export default class HomeScreen extends Component {
 
-    state = {};
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            netStatus: 1,
+        };
+
+        NetInfo.addEventListener(state => { this.onNetEvento(state) });
+    }
+
+    onNetEvento = (info) => {
+        let state = this.state;
+        // console.log('onNetEvento: ', info)
+        if (info.isConnected) {
+            state.netStatus = 1;
+        } else {
+            state.netStatus = 0;
+        }
+        this.setState(state);
+    }
 
     async UNSAFE_componentWillMount() {
         const usuario = await getUsuario();
@@ -51,6 +71,12 @@ export default class HomeScreen extends Component {
                     >
                         Versão: {DeviceInfo.getVersion()}
                     </Text>
+
+                    {this.state.netStatus ? null : (
+                        <Text style={{ textAlign: 'center', color: '#d50000', marginTop: 10 }}>
+                            Dispositivo sem conexão
+                        </Text>
+                    )}
                 </View>
 
                 {/* <Text
