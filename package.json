@@ -12,6 +12,9 @@
     "pod": "bash pod-install.sh",
     "postinstall": "run-p jetify pod"
   },
+  "resolutions": {
+    "graceful-fs": "4.2.4"
+  },
   "dependencies": {
     "@react-native-community/async-storage": "1.7.1",
     "@react-native-community/datetimepicker": "3.0.6",
