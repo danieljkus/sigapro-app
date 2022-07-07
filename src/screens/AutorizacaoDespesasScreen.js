@@ -363,7 +363,8 @@ export default class AutorizacaoDespesasScreen extends Component {
                     onChangeText={this.onBuscaDescricaoChange}
                     inputStyle={{ backgroundColor: 'white' }}
                     containerStyle={{ backgroundColor: Colors.primaryLight }}
-                />
+                    clearIcon={true}
+            />
 
                 <View style={{ alignItems: "flex-end", marginTop: -40, marginBottom: 15 }}>
                     <CheckBox

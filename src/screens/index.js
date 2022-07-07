@@ -35,6 +35,7 @@ import OrdemServicoDefeitosConstScreen from './OrdemServicoDefeitosConstScreen';
 import OrdemServicoServPendenteScreen from './OrdemServicoServPendenteScreen';
 
 import VeiculosScreen from './VeiculosScreen';
+import RestaurantesScreen from './RestaurantesScreen';
 
 import PneusLocalizarScreen from './PneusLocalizarScreen';
 import PneusTrocaScreen from './PneusTrocaScreen';
@@ -276,6 +277,15 @@ const HomeStackNavigator = createStackNavigator({
         screen: VeiculosScreen,
         navigationOptions: {
             title: "Lista dos Veículos",
+            ...defaultNavigationOptions
+        }
+    },
+
+
+    RestaurantesScreen: {
+        screen: RestaurantesScreen,
+        navigationOptions: {
+            title: "Lista dos Restaurantes",
             ...defaultNavigationOptions
         }
     },

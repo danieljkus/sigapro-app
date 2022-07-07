@@ -54,13 +54,13 @@ const stateInicial = {
 
 const RegistroFunc = ({ registro, onRegistroFuncPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 7, borderRadius: 2, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <TouchableOpacity
                 onPress={() => onRegistroFuncPress(registro.rh_func_codigo, registro.rh_func_empresa)}
             >
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
-                        #{registro.rh_func_codigo} / {registro.rh_func_empresa} 
+                        #{registro.rh_func_codigo} / {registro.rh_func_empresa}
                     </Text>
                 </View>
 
@@ -745,13 +745,14 @@ export default class FichaViagemSaidaScreen extends Component {
                             placeholder="Busca por Nome"
                             lightTheme={true}
                             onChangeText={this.onBuscaNomeChange}
+                            inputStyle={{ backgroundColor: 'white' }}
+                            containerStyle={{ backgroundColor: Colors.primaryLight }}
+                            clearIcon={true}
                         />
 
                         <View style={{
                             flex: 1,
-                            paddingVertical: 8,
-                            paddingHorizontal: 10,
-                            backgroundColor: '#ffffff',
+                            backgroundColor: Colors.background,
                         }} >
 
                             <ScrollView

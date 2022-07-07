@@ -126,21 +126,140 @@ export default class RefeicaoScreen extends Component {
         this.setState({ carregando: true });
         // console.log('RefeicaoScreen.buscaRestaurante: ', value);
 
-        axios.get('/refeicoes/buscaRestaurante/' + value)
-            .then(response => {
-                const { data } = response;
-                // console.log('RefeicaoScreen.buscaRestaurante: ', data);
-                this.setState({
-                    restaurante: data,
-                    carregando: false,
-                })
-            }).catch(error => {
-                console.warn(error);
-                console.warn(error.response);
-                this.setState({
-                    carregando: false,
-                });
+        axios.get('/buscaRestaurante', {
+            params: {
+                codRestaurante: value
+            }
+        }).then(response => {
+            const { data } = response;
+            // console.log('RefeicaoScreen.buscaRestaurante: ', response.data[0]);
+
+            let checkedCafe = true;
+            let checkedAlmoço = false;
+            let checkedJanta = false;
+            let checkedMarmita = false;
+
+            if (parseFloat(data[0].rhrest_vlr_cafe)) {
+                checkedCafe = true;
+                checkedAlmoço = false;
+                checkedJanta = false;
+                checkedMarmita = false;
+            } else if (parseFloat(data[0].rhrest_vlr_almoco)) {
+                checkedCafe = false;
+                checkedAlmoço = true;
+                checkedJanta = false;
+                checkedMarmita = false;
+            } else if (parseFloat(data[0].rhrest_vlr_janta)) {
+                checkedCafe = false;
+                checkedAlmoço = false;
+                checkedJanta = true;
+                checkedMarmita = false;
+            } else if (parseFloat(data[0].rhrest_vlr_marmita)) {
+                checkedCafe = false;
+                checkedAlmoço = false;
+                checkedJanta = false;
+                checkedMarmita = true;
+            }
+
+            this.setState({
+                checkedCafe,
+                checkedAlmoço,
+                checkedJanta,
+                checkedMarmita,
+
+                restaurante: {
+                    rhrest_codigo: data[0].rhrest_codigo,
+                    adm_pes_nome: data[0].adm_pes_nome,
+                    ceps_loc_descricao: data[0].ceps_loc_descricao,
+                    ceps_loc_uf: data[0].ceps_loc_uf,
+                    rhrest_hora_ini_cafe: parseInt(data[0].rhrest_hora_ini_cafe),
+                    rhrest_hora_fim_cafe: parseInt(data[0].rhrest_hora_fim_cafe),
+                    rhrest_hora_ini_almoco: parseInt(data[0].rhrest_hora_ini_almoco),
+                    rhrest_hora_fim_almoco: parseInt(data[0].rhrest_hora_fim_almoco),
+                    rhrest_hora_ini_janta: parseInt(data[0].rhrest_hora_ini_janta),
+                    rhrest_hora_fim_janta: parseInt(data[0].rhrest_hora_fim_janta),
+                    rhrest_hora_ini_marmita: parseInt(data[0].rhrest_hora_ini_marmita),
+                    rhrest_hora_fim_marmita: parseInt(data[0].rhrest_hora_fim_marmita),
+                    rhrest_vlr_cafe: parseFloat(data[0].rhrest_vlr_cafe),
+                    rhrest_vlr_almoco: parseFloat(data[0].rhrest_vlr_almoco),
+                    rhrest_vlr_janta: parseFloat(data[0].rhrest_vlr_janta),
+                    rhrest_vlr_marmita: parseFloat(data[0].rhrest_vlr_marmita),
+                },
+
+                carregando: false,
             })
+        }).catch(error => {
+            console.warn(error);
+            console.warn(error.response);
+            this.setState({
+                carregando: false,
+            });
+        })
+    }
+
+
+    onAbrirBuscaModal = () => {
+        this.props.navigation.navigate('RestaurantesScreen', {
+            onMostraRestaurante: this.onMostraRestaurante
+        });
+    }
+
+    onMostraRestaurante = (registro) => {
+        // console.log('onMostraRestaurante: ', registro)
+
+        let checkedCafe = true;
+        let checkedAlmoço = false;
+        let checkedJanta = false;
+        let checkedMarmita = false;
+
+        if (parseFloat(registro.rhrest_vlr_cafe)) {
+            checkedCafe = true;
+            checkedAlmoço = false;
+            checkedJanta = false;
+            checkedMarmita = false;
+        } else if (parseFloat(registro.rhrest_vlr_almoco)) {
+            checkedCafe = false;
+            checkedAlmoço = true;
+            checkedJanta = false;
+            checkedMarmita = false;
+        } else if (parseFloat(registro.rhrest_vlr_janta)) {
+            checkedCafe = false;
+            checkedAlmoço = false;
+            checkedJanta = true;
+            checkedMarmita = false;
+        } else if (parseFloat(registro.rhrest_vlr_marmita)) {
+            checkedCafe = false;
+            checkedAlmoço = false;
+            checkedJanta = false;
+            checkedMarmita = true;
+        }
+
+        this.setState({
+
+            checkedCafe,
+            checkedAlmoço,
+            checkedJanta,
+            checkedMarmita,
+
+            restaurante: {
+                rhrest_codigo: registro.rhrest_codigo,
+                adm_pes_nome: registro.adm_pes_nome,
+                ceps_loc_descricao: registro.ceps_loc_descricao,
+                ceps_loc_uf: registro.ceps_loc_uf,
+                rhrest_hora_ini_cafe: parseInt(registro.rhrest_hora_ini_cafe),
+                rhrest_hora_fim_cafe: parseInt(registro.rhrest_hora_fim_cafe),
+                rhrest_hora_ini_almoco: parseInt(registro.rhrest_hora_ini_almoco),
+                rhrest_hora_fim_almoco: parseInt(registro.rhrest_hora_fim_almoco),
+                rhrest_hora_ini_janta: parseInt(registro.rhrest_hora_ini_janta),
+                rhrest_hora_fim_janta: parseInt(registro.rhrest_hora_fim_janta),
+                rhrest_hora_ini_marmita: parseInt(registro.rhrest_hora_ini_marmita),
+                rhrest_hora_fim_marmita: parseInt(registro.rhrest_hora_fim_marmita),
+                rhrest_vlr_cafe: parseFloat(registro.rhrest_vlr_cafe),
+                rhrest_vlr_almoco: parseFloat(registro.rhrest_vlr_almoco),
+                rhrest_vlr_janta: parseFloat(registro.rhrest_vlr_janta),
+                rhrest_vlr_marmita: parseFloat(registro.rhrest_vlr_marmita),
+            }
+        });
     }
 
 
@@ -161,19 +280,6 @@ export default class RefeicaoScreen extends Component {
                     style={{ flex: 1 }}
                     keyboardShouldPersistTaps="always"
                 >
-                    <Button
-                        title="ESCANEAR"
-                        backgroundColor={Colors.primaryLight}
-                        color={Colors.textOnPrimary}
-                        buttonStyle={{ margin: 5, marginTop: 10 }}
-                        onPress={this.onEscanearPress}
-                        icon={{
-                            name: 'qrcode',
-                            type: 'font-awesome',
-                            color: Colors.textOnPrimary
-                        }}
-                    />
-
 
 
                     <Card containerStyle={{ padding: 0, paddingVertical: 5, margin: 5, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
@@ -208,10 +314,42 @@ export default class RefeicaoScreen extends Component {
                                     {restaurante.ceps_loc_descricao} - {restaurante.ceps_loc_uf}
                                 </Text>
                             </View>
-
                         </View>
 
+                        <View style={{ flexDirection: 'row', justifyContent: "center", marginHorizontal: 20 }} >
+                            <View style={{ flex: 2, marginRight: 2 }}>
+                                <Button
+                                    title="ESCANEAR"
+                                    backgroundColor={Colors.primaryLight}
+                                    color={Colors.textOnPrimary}
+                                    buttonStyle={{ margin: 5, marginTop: 10 }}
+                                    onPress={this.onEscanearPress}
+                                    icon={{
+                                        name: 'qrcode',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
+                            </View>
+                            <View style={{ flex: 2, marginLeft: 2 }}>
+                                <Button
+                                    title="BUSCAR"
+                                    backgroundColor={Colors.primaryLight}
+                                    color={Colors.textOnPrimary}
+                                    buttonStyle={{ margin: 5, marginTop: 10 }}
+                                    onPress={() => { this.onAbrirBuscaModal() }}
+                                    icon={{
+                                        name: 'search',
+                                        type: 'font-awesome',
+                                        color: Colors.textOnPrimary
+                                    }}
+                                />
+                            </View>
+                        </View>
                     </Card>
+
+
+
 
 
                     <Card containerStyle={{ padding: 0, paddingVertical: 5, margin: 5, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
@@ -227,6 +365,7 @@ export default class RefeicaoScreen extends Component {
                                 uncheckedIcon='circle-o'
                                 checked={checkedCafe}
                                 checkedColor={Colors.primaryLight}
+                                disabled={restaurante.rhrest_vlr_cafe ? false : true}
                                 onPress={() => this.setState({
                                     tipoRefeicao: 'CAF',
                                     checkedCafe: true,
@@ -243,6 +382,7 @@ export default class RefeicaoScreen extends Component {
                                 uncheckedIcon='circle-o'
                                 checked={checkedAlmoço}
                                 checkedColor={Colors.primaryLight}
+                                disabled={restaurante.rhrest_vlr_almoco ? false : true}
                                 onPress={() => this.setState({
                                     tipoRefeicao: 'ALM',
                                     checkedCafe: false,
@@ -261,6 +401,7 @@ export default class RefeicaoScreen extends Component {
                                 uncheckedIcon='circle-o'
                                 checked={checkedJanta}
                                 checkedColor={Colors.primaryLight}
+                                disabled={restaurante.rhrest_vlr_janta ? false : true}
                                 onPress={() => this.setState({
                                     tipoRefeicao: 'JAN',
                                     checkedCafe: false,
@@ -277,6 +418,7 @@ export default class RefeicaoScreen extends Component {
                                 uncheckedIcon='circle-o'
                                 checked={checkedMarmita}
                                 checkedColor={Colors.primaryLight}
+                                disabled={restaurante.rhrest_vlr_marmita ? false : true}
                                 onPress={() => this.setState({
                                     tipoRefeicao: 'MAR',
                                     checkedCafe: false,

@@ -826,13 +826,14 @@ export default class OrdemServicoScreen extends Component {
                             placeholder="Busca por Nome"
                             lightTheme={true}
                             onChangeText={this.onBuscaNomeChange}
+                            inputStyle={{ backgroundColor: 'white' }}
+                            containerStyle={{ backgroundColor: Colors.primaryLight }}
+                            clearIcon={true}
                         />
 
                         <View style={{
                             flex: 1,
-                            paddingVertical: 8,
-                            paddingHorizontal: 10,
-                            backgroundColor: '#ffffff',
+                            backgroundColor: Colors.background,
                         }} >
 
                             <ScrollView
