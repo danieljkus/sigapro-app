@@ -58,8 +58,9 @@ export default class RefeicaoScreen extends Component {
     }
 
     onSubmitForm = (event) => {
-        const { registro } = this.state;
-        if (registro.rhref_cod_rest === '0') {
+        // console.log('onSubmitForm: ', this.state.rhref_cod_rest);
+
+        if ((!this.state.rhref_cod_rest) || (this.state.rhref_cod_rest === '0') || (this.state.rhref_cod_rest === '')) {
             Alert.showAlert("Informe o Restaurante")
             return
         }
@@ -91,7 +92,7 @@ export default class RefeicaoScreen extends Component {
                 const { response } = ex;
                 this.setState({ salvado: false });
 
-                // console.log('RefeicaoScreen.onSalvar.ERROR: ', ex.response);
+                // console.log('RefeicaoScreen.onSalvar.ERROR: ', ex);
 
                 if (ex.response) {
                     // erro no servidor
@@ -166,6 +167,7 @@ export default class RefeicaoScreen extends Component {
                 checkedAlmoço,
                 checkedJanta,
                 checkedMarmita,
+                rhref_cod_rest: data[0].rhrest_codigo,
 
                 restaurante: {
                     rhrest_codigo: data[0].rhrest_codigo,
@@ -240,6 +242,7 @@ export default class RefeicaoScreen extends Component {
             checkedAlmoço,
             checkedJanta,
             checkedMarmita,
+            rhref_cod_rest: registro.rhrest_codigo,
 
             restaurante: {
                 rhrest_codigo: registro.rhrest_codigo,

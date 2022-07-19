@@ -17,7 +17,13 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 const CardViewItem = ({ registro, onRegistroPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
-            <View style={{ borderLeftWidth: 5, borderLeftColor: registro.rhref_situacao === 'PEN' ? 'red' : '#10734a' }}>
+            <View style={{
+                borderLeftWidth: 5,
+                borderLeftColor:
+                    registro.rhref_situacao === 'PEN' ? 'red'
+                        : registro.rhref_situacao === 'AUT' ? '#fdd835'
+                            : '#10734a'
+            }}>
 
                 <View
                     style={{ paddingHorizontal: 16, paddingTop: 8, flexDirection: 'row' }}

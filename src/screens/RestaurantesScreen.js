@@ -28,11 +28,8 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
             >
                 <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
                     <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                            #{': '}
-                        </Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                            {registro.rhrest_codigo}
+                            #{registro.rhrest_codigo}
                         </Text>
                     </View>
                     {/* <View style={{ flex: 3, flexDirection: 'row' }}>
