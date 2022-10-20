@@ -45,6 +45,7 @@ export default class CheckListItemScreen extends Component {
             adm_spicl_obs: '',
             adm_spcli_check: '',
             adm_spcli_obs: '',
+            adm_spcl_local_checkin: '',
 
             ...props.navigation.state.params.registro,
         }
@@ -140,6 +141,7 @@ export default class CheckListItemScreen extends Component {
             adm_spcl_veiculo: this.state.codVeiculo ? this.state.codVeiculo : '',
             adm_spcl_obs: this.state.adm_spcl_obs ? this.state.adm_spcl_obs : '',
             adm_spcl_escala: this.state.adm_spcl_escala ? this.state.adm_spcl_escala : '',
+            adm_spcl_local_checkin: this.state.adm_spcl_local_checkin ? this.state.adm_spcl_local_checkin : '',
 
             listaItens: this.state.listaRegistros,
         };
@@ -259,7 +261,7 @@ export default class CheckListItemScreen extends Component {
 
         let imagemHeigth = Dimensions.get('window').height;
 
-        // console.log('this.state', this.state);
+        console.log('this.state', this.state);
 
         return (
             <View style={{ flex: 1, backgroundColor: Colors.background }}>

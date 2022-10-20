@@ -53,7 +53,7 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                         Cidade{': '}
                     </Text>
                     <Text>
-                        {registro.ceps_loc_descricao} + ' - ' + {registro.ceps_loc_uf}
+                        {registro.ceps_loc_descricao} - {registro.ceps_loc_uf}
                     </Text>
                 </View>
 

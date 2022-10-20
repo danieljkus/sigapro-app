@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Modal } from 'react-native';
+import {
+    View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator,
+    ScrollView, Modal, PermissionsAndroid
+} from 'react-native';
 const { OS } = Platform;
 
+import Alert from '../components/Alert';
 import axios from 'axios';
-import { Card, Divider } from 'react-native-elements';
+import { Card, Divider, Icon } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { maskDate } from '../utils/Maskers';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
+import NetInfo from '@react-native-community/netinfo';
+import GetLocation from 'react-native-get-location';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -17,26 +23,27 @@ moment.locale('pt-BR');
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
+const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckOutPress, onOcorrenciaPress }) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 10, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.adm_spcl_idf)}
                 onLongPress={() => onRegistroLongPress(registro.adm_spcl_idf)}
             >
 
-                <View style={{ paddingLeft: 10, marginBottom: 10, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ paddingLeft: 10, marginTop: 20, fontSize: 13, flexDirection: 'row' }}>
                     <View style={{ flex: 1 }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                             #{registro.adm_spcl_idf}
                         </Text>
                     </View>
                     <View style={{ flex: 4, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                        {/* <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Data {': '}
-                        </Text>
+                        </Text> */}
                         <Text>
-                            {moment(registro.adm_spcl_data).format('DD/MM/YYYY [às] HH:mm')}
+                            {moment(registro.adm_spcl_data).format('DD/MM/YYYY')}
+                            {/* {moment(registro.adm_spcl_data).format('DD/MM/YYYY [às] HH:mm')} */}
                         </Text>
                     </View>
                     <View style={{ flex: 2, flexDirection: 'row' }}>
@@ -49,10 +56,8 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                     </View>
                 </View>
 
-                <Divider />
-
                 {registro.adm_spcl_escala ? (
-                    <View style={{ paddingLeft: 10, paddingVertical: 4, flexDirection: 'row', paddingRight: 10 }}>
+                    <View style={{ paddingLeft: 10, paddingVertical: 4, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Escala {': '}
                         </Text>
@@ -70,28 +75,154 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
                     </View>
                 ) : null}
 
+                {/* <Divider /> */}
+
             </TouchableOpacity>
 
+            <View
+                style={{
+                    flex: 1,
+                    margin: 0,
+                    marginLeft: 5,
+                    marginTop: 10,
+                    marginBottom: 5,
+                    paddingTop: 15,
+                    height: 60,
+                    width: "95%",
+                    borderTopWidth: 1,
+                    borderColor: Colors.dividerDark,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                }}
+            >
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ flex: 1, marginTop: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <Icon
+                            name='check-square-o'
+                            type='font-awesome'
+                            color="#10734a"
+                            marginTop={2}
+                            size={17}
+                        />
+                    </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ color: "#10734a", fontSize: 12, marginTop: 1, marginBottom: 5 }}>
+                            Check-In
+                        </Text>
+                        <Text style={{ color: "#10734a", fontSize: 10, marginTop: -5, marginBottom: 5 }}>
+                            {moment(registro.adm_spcl_data).format('DD/MM/YYYY HH:mm')}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <TouchableOpacity
+                        onPress={() => onCheckOutPress(registro.adm_spcl_idf, registro.adm_spcl_local_checkout)}
+                    >
+                        <View style={{ flex: 1, marginTop: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <Icon
+                                name='share-square-o'
+                                type='font-awesome'
+                                color={registro.adm_spcl_checkout ? "#10734a" : "#d50000"}
+                                marginTop={2}
+                                size={17}
+                            />
+                        </View>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: registro.adm_spcl_checkout ? "#10734a" : "#d50000", fontSize: 12, marginTop: 1, marginBottom: 5 }}>
+                                Check-Out
+                            </Text>
+                            {registro.adm_spcl_checkout ? (
+                                <Text style={{ color: "#10734a", fontSize: 10, marginTop: -5, marginBottom: 5 }}>
+                                    {moment(registro.adm_spcl_checkout).format('DD/MM/YYYY HH:mm')}
+                                </Text>
+                            ) : null}
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}>
+                    <TouchableOpacity
+                    // onPress={() => onOSPress(registro.adm_spcl_idf)}
+                    >
+                        <View style={{ flex: 1, marginTop: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <Icon
+                                name='wrench'
+                                type='font-awesome'
+                                color={Colors.primaryDark}
+                                marginTop={2}
+                                size={17}
+                            />
+                        </View>
+                        <Text style={{ color: Colors.primaryDark, fontSize: 11, marginTop: 5, marginBottom: 5 }}>
+                            O.S.
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}>
+                    <TouchableOpacity
+                        onPress={() => onOcorrenciaPress(registro.adm_spcl_idf, registro.adm_spcl_ocorrencia, true)}
+                    >
+                        <View style={{ flex: 1, marginTop: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <Icon
+                                name='list-alt'
+                                type='font-awesome'
+                                color={Colors.primaryDark}
+                                marginTop={2}
+                                size={17}
+                            />
+                        </View>
+                        <Text style={{ color: Colors.primaryDark, fontSize: 11, marginTop: 5, marginBottom: 5, textDecorationLine: registro.adm_spcl_ocorrencia ? 'underline' : '' }}>
+                            Ocorrência
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+            </View>
         </Card>
     )
 }
 
 export default class CheckListScreen extends Component {
 
-    state = {
-        listaRegistros: [],
-        refreshing: false,
-        carregando: false,
-        carregarMais: false,
-        pagina: 1,
+    constructor(props) {
+        super(props);
 
-        dataIni: moment(moment().subtract(10, 'days')).format(DATE_FORMAT),
-        dataFim: moment(new Date()).format(DATE_FORMAT),
-        adm_spcl_veiculo: '',
+        this.state = {
+            listaRegistros: [],
+            aguarde: false,
+            refreshing: false,
+            carregando: false,
+            carregarMais: false,
+            pagina: 1,
+            netStatus: 1,
 
-        temFiltro: false,
-        modalFiltrosVisible: false,
-    };
+            dataIni: moment(moment().subtract(10, 'days')).format(DATE_FORMAT),
+            dataFim: moment(new Date()).format(DATE_FORMAT),
+            adm_spcl_veiculo: '',
+
+            temFiltro: false,
+            modalFiltrosVisible: false,
+
+            modalOcorrenciaVisible: false,
+            adm_spcl_idf: 0,
+            adm_spcl_ocorrencia: '',
+
+        };
+        NetInfo.addEventListener(state => { this.onNetEvento(state) });
+    }
+
+    onNetEvento = (info) => {
+        let state = this.state;
+        // console.log('onNetEvento: ', info)
+        if (info.isConnected) {
+            state.netStatus = 1;
+        } else {
+            state.netStatus = 0;
+        }
+        this.setState(state);
+    }
 
     componentDidMount() {
         this.setState({
@@ -141,10 +272,10 @@ export default class CheckListScreen extends Component {
     onRegistroPress = (adm_spcl_idf) => {
         // console.log('onRegistroPress: ', adm_spcl_idf);
 
-        this.setState({ carregarRegistro: true });
+        this.setState({ aguarde: true });
         axios.get('/checkList/show/' + adm_spcl_idf)
             .then(response => {
-                this.setState({ carregarRegistro: false });
+                this.setState({ aguarde: false });
 
                 // console.log('onRegistroPress: ', response.data);
 
@@ -156,36 +287,48 @@ export default class CheckListScreen extends Component {
                     onRefresh: this.onRefresh
                 });
             }).catch(ex => {
-                this.setState({ carregarRegistro: false });
+                this.setState({ aguarde: false });
                 console.warn(ex);
                 console.warn(ex.response);
             });
     }
 
     onAddPress = () => {
-        // console.log('onAddPress');
+        console.log('onAddPress');
+        this.requestLocationPermission().then(() => {
+            GetLocation.getCurrentPosition({
+                enableHighAccuracy: true,
+                timeout: 30000,
+            })
+                .then(location => {
+                    const local = String(location.latitude) + ',' + String(location.longitude);
+                    console.log('onAddPress: ', local);
 
-        this.props.navigation.navigate('CheckListItemScreen', {
-            registro: {
-                adm_spcl_idf: 0,
-            },
-            onRefresh: this.onRefresh
-        });
+                    this.props.navigation.navigate('CheckListItemScreen', {
+                        registro: {
+                            adm_spcl_idf: 0,
+                            adm_spcl_local_checkin: local,
+                        },
+                        onRefresh: this.onRefresh
+                    });
+
+                })
+        })
     }
 
     onRegistroLongPress = (adm_spcl_idf) => {
-        Alert.alert("Excluir registro", `Deseja excluir este Registro?`, [
+        Alert.showConfirm("Deseja excluir este registro?",
             { text: "Cancelar" },
             {
                 text: "Excluir",
                 onPress: () => this.onExcluirRegistro(adm_spcl_idf),
                 style: "destructive"
             }
-        ])
+        )
     }
 
     onExcluirRegistro = (adm_spcl_idf) => {
-        this.setState({ refreshing: true });
+        this.setState({ aguarde: true });
         axios.delete('/checkList/delete/' + adm_spcl_idf)
             .then(response => {
                 const listaRegistros = [...this.state.listaRegistros];
@@ -193,12 +336,12 @@ export default class CheckListScreen extends Component {
                 listaRegistros.splice(index, 1);
                 this.setState({
                     listaRegistros,
-                    refreshing: false
+                    aguarde: false
                 });
             }).catch(ex => {
                 console.warn(ex);
                 console.warn(ex.response);
-                this.setState({ refreshing: false });
+                this.setState({ aguarde: false });
             })
     }
 
@@ -237,6 +380,8 @@ export default class CheckListScreen extends Component {
                 registro={item}
                 onRegistroPress={this.onRegistroPress}
                 onRegistroLongPress={this.onRegistroLongPress}
+                onCheckOutPress={this.onCheckOutPress}
+                onOcorrenciaPress={this.onOcorrenciaPress}
             />
         )
     }
@@ -257,14 +402,131 @@ export default class CheckListScreen extends Component {
 
 
 
+    requestLocationPermission = async () => {
+        if (OS === 'android') {
+            return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+        }
+        return;
+    }
+
+
+    onCheckOutPress = (adm_spcl_idf, adm_spcl_local_checkout) => {
+        if (!adm_spcl_local_checkout) {
+            if (!this.state.netStatus) {
+                Alert.showAlert('Não é possível fazer Check-Out. Dispositivo sem conexão');
+            } else {
+                Alert.showConfirm("Fazer o Check-Out?",
+                    {
+                        text: "Não",
+                        style: "destructive"
+                    },
+                    {
+                        text: "Sim",
+                        onPress: () => this.onGravarCheckOutPress(adm_spcl_idf),
+                        style: "destructive"
+                    }
+                )
+            }
+        }
+    }
+
+    onGravarCheckOutPress = (adm_spcl_idf) => {
+        this.setState({ aguarde: true });
+        this.requestLocationPermission().then(() => {
+            GetLocation.getCurrentPosition({
+                enableHighAccuracy: true,
+                timeout: 30000,
+            })
+                .then(location => {
+                    const local = String(location.latitude) + ',' + String(location.longitude);
+                    console.log('checkOutVerificaAPIGoogle: ', local);
+
+                    axios.put(`/checkList/checkOut/${adm_spcl_idf}/${local}`)
+                        .then(response => {
+                            this.setState({
+                                aguarde: false
+                            }, this.getListaRegistros);
+                        }).catch(ex => {
+                            console.warn(ex, ex.response);
+                            this.setState({ aguarde: false });
+                        })
+                })
+                .catch(ex => {
+                    this.setState({ aguarde: false });
+                    const { code, message } = ex;
+                    console.warn(ex, code, message);
+                    if (code === '1') {
+                        // iOS
+                        // Permission Denied or Location Disabled
+                        // Android 
+                        // Location Disabled
+                        Alert.showAlert('Serviço de localização está desabilitado', () => {
+                            GetLocation.openGpsSettings();
+                        });
+                    }
+                    if (code === '5') {
+                        // Android
+                        // Permission Denied
+                        Alert.showAlert('Você precisa autorizar o usa de localização', () => {
+                            GetLocation.openAppSettings();
+                        });
+                    }
+                    if (code === '3') {
+                        // Android and iOS
+                        // Timeout
+                        Alert.showAlert('Tempo esgotado para obter a localização');
+                    }
+                })
+        })
+    }
+
+
+
+    onOcorrenciaPress = (adm_spcl_idf, adm_spcl_ocorrencia, visible) => {
+        if ((!visible) && (adm_spcl_idf) && (adm_spcl_ocorrencia)) {
+            this.setState({ aguarde: true });
+            axios.put(`/checkList/ocorrencia/${adm_spcl_idf}/${adm_spcl_ocorrencia}`)
+                .then(response => {
+                    this.setState({
+                        aguarde: false
+                    }, this.getListaRegistros);
+                }).catch(ex => {
+                    console.warn(ex, ex.response);
+                    this.setState({ aguarde: false });
+                })
+        }
+
+        this.setState({
+            modalOcorrenciaVisible: visible,
+            adm_spcl_idf: adm_spcl_idf,
+            adm_spcl_ocorrencia: adm_spcl_ocorrencia,
+        });
+    }
+
+
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+
+
+
+
     render() {
-        const { listaRegistros, refreshing, carregarRegistro,
-            adm_spcl_veiculo, dataIni, dataFim, idf, numero, filialSelect } = this.state;
+        const { listaRegistros, refreshing, aguarde,
+            adm_spcl_veiculo, adm_spcl_idf, adm_spcl_ocorrencia,
+            dataIni, dataFim, netStatus } = this.state;
 
         // console.log('CheckListScreen: ', this.state);
 
         return (
             <View style={{ flex: 1, }}>
+
+                {netStatus ? null : (
+                    <Text style={{ textAlign: 'center', color: '#d50000', marginTop: 2 }}>
+                        Dispositivo sem conexão
+                    </Text>
+                )}
+
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
@@ -275,6 +537,89 @@ export default class CheckListScreen extends Component {
                     onEndReached={this.carregarMaisRegistros}
                     ListFooterComponent={this.renderListFooter}
                 />
+
+
+
+
+                {/* ----------------------------- */}
+                {/* MODAL PARA OCORRENCIA         */}
+                {/* ----------------------------- */}
+                <Modal
+                    visible={this.state.modalOcorrenciaVisible}
+                    onRequestClose={() => { console.log("Modal OBS FECHOU.") }}
+                    animationType={"slide"}
+                    transparent={true}
+                >
+                    <View style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            width: "90%",
+                            paddingTop: 30,
+                        }} >
+                            <View style={{
+                                paddingVertical: 15,
+                                paddingHorizontal: 15,
+                                backgroundColor: Colors.background,
+                                borderRadius: 5,
+                            }}>
+
+                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                                    <Text style={{
+                                        color: Colors.textOnPrimary,
+                                        marginTop: 15,
+                                        marginBottom: 15,
+                                        marginLeft: 16,
+                                        textAlign: 'center',
+                                        fontSize: 20,
+                                        fontWeight: 'bold',
+                                    }}>Ocorrência</Text>
+                                </View>
+
+                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
+                                    <TextInput
+                                        label="Ocorrência"
+                                        id="adm_spcl_ocorrencia"
+                                        ref="adm_spcl_ocorrencia"
+                                        value={adm_spcl_ocorrencia}
+                                        maxLength={200}
+                                        onChange={this.onInputChange}
+                                        multiline={true}
+                                        height={100}
+                                    />
+
+                                    <Button
+                                        title="OK"
+                                        onPress={() => { this.onOcorrenciaPress(adm_spcl_idf, adm_spcl_ocorrencia, false) }}
+                                        buttonStyle={{ marginTop: 15, height: 35 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'filter',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+
+                                    <Button
+                                        title="FECHAR"
+                                        onPress={() => { this.onOcorrenciaPress(0, '', false) }}
+                                        buttonStyle={{ marginTop: 15, height: 35 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'close',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
 
 
 
@@ -412,7 +757,7 @@ export default class CheckListScreen extends Component {
                 />
 
                 <ProgressDialog
-                    visible={carregarRegistro}
+                    visible={aguarde}
                     title="SIGA PRO"
                     message="Aguarde..."
                 />

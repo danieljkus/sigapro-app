@@ -105,6 +105,10 @@ export default class RefeicoesScreen extends Component {
         dataIni: moment(moment().subtract(15, 'days')).format(DATE_FORMAT),
         dataFim: moment(new Date()).format(DATE_FORMAT),
 
+        vlrCaf: 0,
+        vlrAlm: 0,
+        vlrJan: 0,
+        vlrMar: 0,
     };
 
     componentDidMount() {
@@ -143,6 +147,12 @@ export default class RefeicoesScreen extends Component {
             const total = response.data.total;
             this.setState({
                 listaRegistros: novosRegistros,
+
+                vlrCaf: 0,
+                vlrAlm: 0,
+                vlrJan: 0,
+                vlrMar: 0,
+
                 refreshing: false,
                 carregando: false,
                 carregarMais: novosRegistros.length < total
@@ -233,6 +243,22 @@ export default class RefeicoesScreen extends Component {
                     onEndReached={this.carregarMaisRegistros}
                     ListFooterComponent={this.renderListFooter}
                 />
+
+
+                <View style={{ backgroundColor: Colors.primaryLight, flexDirection: 'row', padding: 7 }}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ color: Colors.textOnPrimary }}>CAF: {parseFloat(this.state.vlrCaf).toFixed(2)}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ color: Colors.textOnPrimary }}>ALM: {parseFloat(this.state.vlrAlm).toFixed(2)}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ color: Colors.textOnPrimary }}>JAN: {parseFloat(this.state.vlrJan).toFixed(2)}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ color: Colors.textOnPrimary }}>MAR: {parseFloat(this.state.vlrMar).toFixed(2)}</Text>
+                    </View>
+                </View>
 
 
 
@@ -348,7 +374,7 @@ export default class RefeicoesScreen extends Component {
                     iconColor={Colors.textOnPrimary}
                     onPress={() => { this.onSearchPress(true) }}
                     backgroundColor={Colors.primary}
-                    marginBottom={90}
+                    marginBottom={100}
                     marginRight={10}
                 />
 
@@ -358,6 +384,7 @@ export default class RefeicoesScreen extends Component {
                     iconColor={Colors.textOnAccent}
                     onPress={this.onAddPress}
                     backgroundColor={Colors.primary}
+                    marginBottom={40}
                     marginRight={10}
                 />
 

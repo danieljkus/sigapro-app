@@ -26,7 +26,7 @@ export default class RefeicaoScreen extends Component {
             restaurante: [],
             tipoRefeicao: 'CAF',
             checkedCafe: true,
-            checkedAlmoço: false,
+            checkedAlmoco: false,
             checkedJanta: false,
             checkedMarmita: false,
 
@@ -35,7 +35,7 @@ export default class RefeicaoScreen extends Component {
                 rhref_cod_rest: 0,
                 rhref_localizacao: '',
                 rhref_obs: '',
-                rhref_tipo_refeicao: 'ALM',
+                rhref_tipo_refeicao: 'CAF',
             },
             salvado: false,
         }
@@ -82,6 +82,7 @@ export default class RefeicaoScreen extends Component {
         registro.rhref_tipo_refeicao = this.state.tipoRefeicao;
 
         // console.log('RefeicaoScreen.onSalvar: ', registro);
+        // return;
 
         return axios
             .post('/refeicoes/store', registro)
@@ -136,35 +137,42 @@ export default class RefeicaoScreen extends Component {
             // console.log('RefeicaoScreen.buscaRestaurante: ', response.data[0]);
 
             let checkedCafe = true;
-            let checkedAlmoço = false;
+            let checkedAlmoco = false;
             let checkedJanta = false;
             let checkedMarmita = false;
+            let tipoRefeicao = 'CAF';
 
             if (parseFloat(data[0].rhrest_vlr_cafe)) {
+                tipoRefeicao = 'CAF';
                 checkedCafe = true;
-                checkedAlmoço = false;
+                checkedAlmoco = false;
                 checkedJanta = false;
                 checkedMarmita = false;
             } else if (parseFloat(data[0].rhrest_vlr_almoco)) {
+                tipoRefeicao = 'ALM';
                 checkedCafe = false;
-                checkedAlmoço = true;
+                checkedAlmoco = true;
                 checkedJanta = false;
                 checkedMarmita = false;
             } else if (parseFloat(data[0].rhrest_vlr_janta)) {
+                tipoRefeicao = 'JAN';
                 checkedCafe = false;
-                checkedAlmoço = false;
+                checkedAlmoco = false;
                 checkedJanta = true;
                 checkedMarmita = false;
             } else if (parseFloat(data[0].rhrest_vlr_marmita)) {
+                tipoRefeicao = 'MAR';
                 checkedCafe = false;
-                checkedAlmoço = false;
+                checkedAlmoco = false;
                 checkedJanta = false;
                 checkedMarmita = true;
             }
 
             this.setState({
+
+                tipoRefeicao,
                 checkedCafe,
-                checkedAlmoço,
+                checkedAlmoco,
                 checkedJanta,
                 checkedMarmita,
                 rhref_cod_rest: data[0].rhrest_codigo,
@@ -210,36 +218,42 @@ export default class RefeicaoScreen extends Component {
         // console.log('onMostraRestaurante: ', registro)
 
         let checkedCafe = true;
-        let checkedAlmoço = false;
+        let checkedAlmoco = false;
         let checkedJanta = false;
         let checkedMarmita = false;
+        let tipoRefeicao = 'CAF';
 
         if (parseFloat(registro.rhrest_vlr_cafe)) {
+            tipoRefeicao = 'CAF';
             checkedCafe = true;
-            checkedAlmoço = false;
+            checkedAlmoco = false;
             checkedJanta = false;
             checkedMarmita = false;
         } else if (parseFloat(registro.rhrest_vlr_almoco)) {
+            tipoRefeicao = 'ALM';
             checkedCafe = false;
-            checkedAlmoço = true;
+            checkedAlmoco = true;
             checkedJanta = false;
             checkedMarmita = false;
         } else if (parseFloat(registro.rhrest_vlr_janta)) {
+            tipoRefeicao = 'JAN';
             checkedCafe = false;
-            checkedAlmoço = false;
+            checkedAlmoco = false;
             checkedJanta = true;
             checkedMarmita = false;
         } else if (parseFloat(registro.rhrest_vlr_marmita)) {
+            tipoRefeicao = 'MAR';
             checkedCafe = false;
-            checkedAlmoço = false;
+            checkedAlmoco = false;
             checkedJanta = false;
             checkedMarmita = true;
         }
 
         this.setState({
 
+            tipoRefeicao,
             checkedCafe,
-            checkedAlmoço,
+            checkedAlmoco,
             checkedJanta,
             checkedMarmita,
             rhref_cod_rest: registro.rhrest_codigo,
@@ -272,7 +286,7 @@ export default class RefeicaoScreen extends Component {
 
 
     render() {
-        const { registro, restaurante, checkedCafe, checkedAlmoço, checkedJanta, checkedMarmita, salvado, carregando } = this.state;
+        const { registro, restaurante, checkedCafe, checkedAlmoco, checkedJanta, checkedMarmita, salvado, carregando } = this.state;
         const { rhref_obs } = registro;
 
         // console.log('STATE: ', this.state)
@@ -372,7 +386,7 @@ export default class RefeicaoScreen extends Component {
                                 onPress={() => this.setState({
                                     tipoRefeicao: 'CAF',
                                     checkedCafe: true,
-                                    checkedAlmoço: false,
+                                    checkedAlmoco: false,
                                     checkedJanta: false,
                                     checkedMarmita: false,
                                 })}
@@ -383,13 +397,13 @@ export default class RefeicaoScreen extends Component {
                                 title='Almoço'
                                 checkedIcon='dot-circle-o'
                                 uncheckedIcon='circle-o'
-                                checked={checkedAlmoço}
+                                checked={checkedAlmoco}
                                 checkedColor={Colors.primaryLight}
                                 disabled={restaurante.rhrest_vlr_almoco ? false : true}
                                 onPress={() => this.setState({
                                     tipoRefeicao: 'ALM',
                                     checkedCafe: false,
-                                    checkedAlmoço: true,
+                                    checkedAlmoco: true,
                                     checkedJanta: false,
                                     checkedMarmita: false,
                                 })}
@@ -408,7 +422,7 @@ export default class RefeicaoScreen extends Component {
                                 onPress={() => this.setState({
                                     tipoRefeicao: 'JAN',
                                     checkedCafe: false,
-                                    checkedAlmoço: false,
+                                    checkedAlmoco: false,
                                     checkedJanta: true,
                                     checkedMarmita: false,
                                 })}
@@ -425,7 +439,7 @@ export default class RefeicaoScreen extends Component {
                                 onPress={() => this.setState({
                                     tipoRefeicao: 'MAR',
                                     checkedCafe: false,
-                                    checkedAlmoço: false,
+                                    checkedAlmoco: false,
                                     checkedJanta: false,
                                     checkedMarmita: true,
                                 })}
