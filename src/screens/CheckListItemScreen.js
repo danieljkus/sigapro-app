@@ -498,7 +498,7 @@ export default class CheckListItemScreen extends Component {
                                             buttonStyle={{ marginTop: 15, height: 35 }}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
-                                                name: 'filter',
+                                                name: 'check',
                                                 type: 'font-awesome',
                                                 color: Colors.textOnPrimary
                                             }}
