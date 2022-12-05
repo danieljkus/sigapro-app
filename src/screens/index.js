@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Platform, Image, TouchableOpacity } from 'react-native';
 
-import { 
+import {
     withNavigation, createAppContainer,
 } from 'react-navigation';
 
@@ -55,7 +55,7 @@ import SaidaEstoqueScreen from './SaidaEstoqueScreen';
 import SaidaEstoqueItensScreen from './SaidaEstoqueItensScreen';
 
 import SaidasDieselScreen from './SaidasDieselScreen';
-import SaidaDieselScreen from './SaidaDieselScreen';
+import SaidaDieselScreen from "./SaidaDIeselScreen";
 import SaidaDieselItensScreen from './SaidaDieselItensScreen';
 
 import SolicitacoesEstoqueScreen from './SolicitacoesEstoqueScreen';
