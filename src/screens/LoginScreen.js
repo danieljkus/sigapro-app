@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { View, ScrollView, Image, ActivityIndicator } from 'react-native';
-import { Text, Divider } from 'react-native-elements';
-import { NavigationActions, StackActions } from 'react-navigation';
+import React, {Component} from 'react';
+import {View, ScrollView, Image, ActivityIndicator} from 'react-native';
+import {Text, Divider} from 'react-native-elements';
+import {NavigationActions, SafeAreaView, StackActions} from 'react-navigation';
 import axios from 'axios';
 import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -10,12 +10,16 @@ import Colors from '../values/Colors';
 import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
-import { validateSenha, checkFormIsValid, savePermissoes } from '../utils/Validator';
-import { saveToken } from '../utils/LoginManager';
+import {validateSenha, checkFormIsValid, savePermissoes} from '../utils/Validator';
+import {saveToken} from '../utils/LoginManager';
 import DeviceInfo from 'react-native-device-info';
 import NetInfo from '@react-native-community/netinfo';
 
 export default class LoginScreen extends Component {
+
+    static navigationOptions = {
+        headerShown: false,
+    };
 
     constructor(props) {
         super(props);
@@ -28,7 +32,9 @@ export default class LoginScreen extends Component {
             netStatus: 1,
         };
 
-        NetInfo.addEventListener(state => { this.onNetEvento(state) });
+        NetInfo.addEventListener(state => {
+            this.onNetEvento(state)
+        });
     }
 
     onNetEvento = (info) => {
@@ -53,8 +59,8 @@ export default class LoginScreen extends Component {
     }
 
     postLogin = () => {
-        this.setState({ loading: true });
-        const { usuario, senha, empresa } = this.state;
+        this.setState({loading: true});
+        const {usuario, senha, empresa} = this.state;
 
         if (this.state.netStatus) {
             axios.post("/usuarios/login", {
@@ -71,7 +77,7 @@ export default class LoginScreen extends Component {
                 this.goToHome()
             }).catch(error => {
                 console.warn('Erro Login: ', error);
-                this.setState({ loading: false });
+                this.setState({loading: false});
                 if (error.response) {
                     if (error.response.status === 401) {
                         alert("Usuário ou Senha Incorreto");
@@ -90,7 +96,7 @@ export default class LoginScreen extends Component {
                     this.goToHome()
                 })
             } else {
-                this.setState({ loading: false });
+                this.setState({loading: false});
                 Alert.showAlert('Senha Incorreta');
             }
         }
@@ -101,7 +107,7 @@ export default class LoginScreen extends Component {
         const resetAction = StackActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: "HomeScreen" })
+                NavigationActions.navigate({routeName: "HomeScreen"})
             ]
         })
 
@@ -115,9 +121,9 @@ export default class LoginScreen extends Component {
     }
 
     buscaEmpresas = () => {
-        const { usuario } = this.state;
+        const {usuario} = this.state;
         if (usuario) {
-            this.setState({ empresaSelect: [], carregandoEmpresa: true });
+            this.setState({empresaSelect: [], carregandoEmpresa: true});
 
             axios.get('/listaEmpresasLogin', {
                 params: {
@@ -125,7 +131,7 @@ export default class LoginScreen extends Component {
                     app: 'SIGAPRO',
                 }
             }).then(response => {
-                const { data } = response;
+                const {data} = response;
                 const empresaSelect = data.map(regList => {
                     return {
                         key: regList.adm_emp_codigo,
@@ -149,20 +155,16 @@ export default class LoginScreen extends Component {
 
 
     render() {
-        const { usuario, senha, empresa, empresaSelect, loading } = this.state;
+        const {usuario, senha, empresa, empresaSelect, loading} = this.state;
         return (
-            <View style={{ flex: 1, }}>
-                <StatusBar />
-
-                <ScrollView
-                    style={{ flex: 1, }}
-                    keyboardShouldPersistTaps="handled"
-                >
+            <SafeAreaView style={{flex: 1}}>
+                <StatusBar/>
+                <View style={{backgroundColor: 'transparent', flex: 1}}>
 
 
                     <View
                         style={{
-                            flex: 1,
+                            // flex: 1,
                             alignItems: 'center',
                             justifyContent: 'flex-end',
                             paddingHorizontal: 20,
@@ -189,14 +191,15 @@ export default class LoginScreen extends Component {
 
                         {this.state.netStatus
                             ? null : (
-                                <Text style={{ textAlign: 'center', color: '#d50000' }}> Dispositivo sem conexão </Text>
+                                <Text style={{textAlign: 'center', color: '#d50000'}}> Dispositivo sem
+                                    conexão </Text>
                             )}
                     </View>
 
 
-                    <View style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16 }}>
+                    <View style={{paddingVertical: 8, paddingHorizontal: 16}}>
 
-                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <TextInput
                                 label="Usuário"
                                 id="usuario"
@@ -218,7 +221,7 @@ export default class LoginScreen extends Component {
                             />
                         </View>
 
-                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <TextInput
                                 label="Senha"
                                 id="senha"
@@ -239,7 +242,7 @@ export default class LoginScreen extends Component {
                         </View>
 
                         {empresaSelect.length > 0 ? (
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
                                 <TextInput
                                     label="Empresa"
                                     type="select"
@@ -254,7 +257,7 @@ export default class LoginScreen extends Component {
                             </View>
                         ) : null}
 
-                        <Divider />
+                        <Divider/>
 
                         {(this.state.netStatus) ?
                             (
@@ -272,9 +275,8 @@ export default class LoginScreen extends Component {
                             ) : null}
 
                     </View>
-
-                </ScrollView>
-            </View>
+                </View>
+            </SafeAreaView>
         )
     }
 }

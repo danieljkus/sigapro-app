@@ -131,6 +131,7 @@ const HomeStackNavigator = createStackNavigator({
     LoginScreen: {
         screen: LoginScreen,
         navigationOptions: {
+            // headerShown: false,
             title: "Login",
             ...defaultNavigationOptions
         }

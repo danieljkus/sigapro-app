@@ -8,7 +8,9 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "jetify": "jetify"
+    "jetify": "jetify",
+    "clearbuild:ios": "sudo watchman watch-del-all && rm -rf $TMPDIR/react-* &&rm -rf node_modules/ && npm cache clean && npm install && npm start --reset-cache",
+    "build:ios": "sudo watchman watch-del-all rm -rf $TMPDIR/react-* rm -rf build/ios yarn cache clean lsof -i :8081 kill -9 9771 kill $(lsof -t -i:8081) yarn start --reset-cache"
   },
   "resolutions": {
     "graceful-fs": "4.2.4"
