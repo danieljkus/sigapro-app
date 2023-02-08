@@ -1,24 +1,33 @@
-import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Linking } from 'react-native';
-const { OS } = Platform;
+import React, {Component} from 'react';
+import {View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Linking, SafeAreaView} from 'react-native';
+
+const {OS} = Platform;
 
 import axios from 'axios';
-import { Card, Divider, SearchBar, CheckBox, Icon } from 'react-native-elements';
+import {Card, Divider, SearchBar, CheckBox, Icon} from 'react-native-elements';
 import Colors from '../values/Colors';
 import Alert from '../components/Alert';
-import { ProgressDialog } from 'react-native-simple-dialogs';
-import { getUsuario } from '../utils/LoginManager';
+import {ProgressDialog} from 'react-native-simple-dialogs';
+import {getUsuario} from '../utils/LoginManager';
+import HeaderComponent from "../components/HeaderComponent";
 
 
-const CardViewItem = ({ registro, onWhatsAppPress }) => {
+const CardViewItem = ({registro, onWhatsAppPress}) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+        <Card containerStyle={{
+            padding: 0,
+            margin: 0,
+            marginVertical: 7,
+            borderRadius: 0,
+            backgroundColor: Colors.textDisabledLight,
+            elevation: 0,
+        }}>
 
-            <View style={{ paddingHorizontal: 8, paddingVertical: 5 }}>
-                <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
+            <View style={{paddingHorizontal: 8, paddingVertical: 5}}>
+                <Text style={{color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5,}}>
                     #{registro.fin_lanc_filial}
                 </Text>
-                <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                <Text style={{color: Colors.textPrimaryDark, fontSize: 15}}>
                     {registro.adm_fil_descricao}
                 </Text>
             </View>
@@ -39,14 +48,14 @@ const CardViewItem = ({ registro, onWhatsAppPress }) => {
                 <TouchableOpacity
                     onPress={() => onWhatsAppPress(registro)}
                 >
-                    <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                    <View style={{width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center'}}>
                         <Icon
                             name='whatsapp'
                             type='font-awesome'
                             color={Colors.primaryLight}
                             size={17}
                         />
-                        <Text style={{ color: Colors.primaryLight, fontSize: 13, marginLeft: 5 }} >
+                        <Text style={{color: Colors.primaryLight, fontSize: 13, marginLeft: 5}}>
                             WhatsApp
                         </Text>
                     </View>
@@ -69,7 +78,7 @@ export default class BoletinsDiferencaScreen extends Component {
 
     componentDidMount() {
         getUsuario().then(usuario => {
-            this.setState({ usuario });
+            this.setState({usuario});
         })
         this.getListaRegistros();
     }
@@ -82,8 +91,8 @@ export default class BoletinsDiferencaScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { buscaDescricao, buscaSituacao, pagina, listaRegistros } = this.state;
-        this.setState({ carregando: true });
+        const {buscaDescricao, buscaSituacao, pagina, listaRegistros} = this.state;
+        this.setState({carregando: true});
 
         axios.get('/boletimDeiferenca', {
             params: {
@@ -115,7 +124,7 @@ export default class BoletinsDiferencaScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        const { carregarMais, refreshing, carregando, pagina } = this.state;
+        const {carregarMais, refreshing, carregando, pagina} = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -125,18 +134,18 @@ export default class BoletinsDiferencaScreen extends Component {
     }
 
     renderListFooter = () => {
-        const { carregando } = this.state;
+        const {carregando} = this.state;
         if (carregando) {
             return (
-                <View style={{ marginTop: 8 }}>
-                    <ActivityIndicator size="large" />
+                <View style={{marginTop: 8}}>
+                    <ActivityIndicator size="large"/>
                 </View>
             )
         }
         return null;
     }
 
-    renderItem = ({ item }) => {
+    renderItem = ({item}) => {
         return (
             <CardViewItem
                 registro={item}
@@ -146,27 +155,25 @@ export default class BoletinsDiferencaScreen extends Component {
     }
 
 
-
     onWhatsAppPress = (registro) => {
 
-        this.setState({ carregarRegistro: true });
+        this.setState({carregarRegistro: true});
 
-        axios.get('/boletimDeiferenca/montarBoletim/' + registro.fin_lanc_filial).
-            then(response => {
-                this.setState({ carregarRegistro: false });
+        axios.get('/boletimDeiferenca/montarBoletim/' + registro.fin_lanc_filial).then(response => {
+            this.setState({carregarRegistro: false});
 
-                // console.log('onWhatsAppEnviar: ', response.data);
+            // console.log('onWhatsAppEnviar: ', response.data);
 
-                Linking.openURL(
-                    'https://api.whatsapp.com/send?' +
-                    // 'phone=' + telefone +
-                    '&text=' + response.data.body);
+            Linking.openURL(
+                'https://api.whatsapp.com/send?' +
+                // 'phone=' + telefone +
+                '&text=' + response.data.body);
 
-            }).catch(ex => {
-                Alert.showAlert('Não foi possível localizar o Boletin de Diferença.');
-                this.setState({ carregarRegistro: false });
-                console.warn(ex);
-            });
+        }).catch(ex => {
+            Alert.showAlert('Não foi possível localizar o Boletin de Diferença.');
+            this.setState({carregarRegistro: false});
+            console.warn(ex);
+        });
 
 
         // Linking.openURL(
@@ -177,37 +184,45 @@ export default class BoletinsDiferencaScreen extends Component {
     }
 
 
-
-
     render() {
-        const { listaRegistros, refreshing, carregarRegistro, buscaSituacao } = this.state;
+        const {listaRegistros, refreshing, carregarRegistro, buscaSituacao} = this.state;
 
         // console.log('AutorizacaoDespesasScreen: ', this.state);
 
         return (
-            <View style={{ flex: 1, }}>
-
-                <FlatList
-                    data={listaRegistros}
-                    renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    keyExtractor={registro => String(registro.fin_lanc_filial)}
-                    onRefresh={this.onRefresh}
-                    refreshing={refreshing}
-                    onEndReached={this.carregarMaisRegistros}
-                    ListFooterComponent={this.renderListFooter}
+            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Autorização de Despesa'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
                 />
+                <View style={{flex: 1,}}>
+
+                    <FlatList
+                        style={{
+                            backgroundColor: 'white'
+                        }}
+                        data={listaRegistros}
+                        renderItem={this.renderItem}
+                        contentContainerStyle={{paddingBottom: 100}}
+                        keyExtractor={registro => String(registro.fin_lanc_filial)}
+                        onRefresh={this.onRefresh}
+                        refreshing={refreshing}
+                        onEndReached={this.carregarMaisRegistros}
+                        ListFooterComponent={this.renderListFooter}
+                    />
 
 
-                <ProgressDialog
-                    visible={carregarRegistro}
-                    title="SIGA PRO"
-                    message="Aguarde..."
-                />
+                    <ProgressDialog
+                        visible={carregarRegistro}
+                        title="SIGA PRO"
+                        message="Aguarde..."
+                    />
 
 
-
-            </View>
+                </View>
+            </SafeAreaView>
         )
     }
 }

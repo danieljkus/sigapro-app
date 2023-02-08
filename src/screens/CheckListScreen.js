@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator,
-    ScrollView, Modal, PermissionsAndroid
+    ScrollView, Modal, PermissionsAndroid, SafeAreaView
 } from 'react-native';
-const { OS } = Platform;
+
+const {OS} = Platform;
 
 import Alert from '../components/Alert';
 import axios from 'axios';
-import { Card, Divider, Icon } from 'react-native-elements';
-import { ProgressDialog } from 'react-native-simple-dialogs';
+import {Card, Divider, Icon} from 'react-native-elements';
+import {ProgressDialog} from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
-import { maskDate } from '../utils/Maskers';
+import {maskDate} from '../utils/Maskers';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import NetInfo from '@react-native-community/netinfo';
@@ -19,25 +20,34 @@ import GetLocation from 'react-native-get-location';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
+
 moment.locale('pt-BR');
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckOutPress, onOSPress, onOcorrenciaPress }) => {
+const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOutPress, onOSPress, onOcorrenciaPress}) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 10, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+        <Card containerStyle={{
+            padding: 0,
+            margin: 0,
+            marginVertical: 10,
+            borderRadius: 0,
+            backgroundColor: Colors.textDisabledLight,
+            elevation: 0,
+        }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.adm_spcl_idf)}
                 onLongPress={() => onRegistroLongPress(registro.adm_spcl_idf)}
             >
 
-                <View style={{ paddingLeft: 10, marginTop: 20, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                <View style={{paddingLeft: 10, marginTop: 20, fontSize: 13, flexDirection: 'row'}}>
+                    <View style={{flex: 1}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                             #{registro.adm_spcl_idf}
                         </Text>
                     </View>
-                    <View style={{ flex: 4, flexDirection: 'row' }}>
+                    <View style={{flex: 4, flexDirection: 'row'}}>
                         {/* <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Data {': '}
                         </Text> */}
@@ -46,8 +56,8 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                             {/* {moment(registro.adm_spcl_data).format('DD/MM/YYYY [às] HH:mm')} */}
                         </Text>
                     </View>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    <View style={{flex: 2, flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                             Veículo {': '}
                         </Text>
                         <Text>
@@ -57,8 +67,8 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                 </View>
 
                 {registro.adm_spcl_escala ? (
-                    <View style={{ paddingLeft: 10, paddingVertical: 4, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    <View style={{paddingLeft: 10, paddingVertical: 4, flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                             Escala {': '}
                         </Text>
                         <Text>
@@ -68,8 +78,8 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                 ) : null}
 
                 {registro.adm_spcl_obs ? (
-                    <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
-                        <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
+                    <View style={{paddingLeft: 20, paddingVertical: 4}}>
+                        <Text style={{color: Colors.textPrimaryDark, fontSize: 15}}>
                             {registro.adm_spcl_obs}
                         </Text>
                     </View>
@@ -95,8 +105,14 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                     justifyContent: 'center',
                 }}
             >
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ flex: 1, marginTop: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{
+                        flex: 1,
+                        marginTop: 5,
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
                         <Icon
                             name='check-square-o'
                             type='font-awesome'
@@ -105,21 +121,27 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                             size={17}
                         />
                     </View>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ color: "#10734a", fontSize: 12, marginTop: 1, marginBottom: 5 }}>
+                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: "#10734a", fontSize: 12, marginTop: 1, marginBottom: 5}}>
                             Check-In
                         </Text>
-                        <Text style={{ color: "#10734a", fontSize: 10, marginTop: -5, marginBottom: 5 }}>
+                        <Text style={{color: "#10734a", fontSize: 10, marginTop: -5, marginBottom: 5}}>
                             {moment(registro.adm_spcl_data).format('DD/MM/YYYY HH:mm')}
                         </Text>
                     </View>
                 </View>
 
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <TouchableOpacity
                         onPress={() => onCheckOutPress(registro.adm_spcl_idf, registro.adm_spcl_local_checkout)}
                     >
-                        <View style={{ flex: 1, marginTop: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{
+                            flex: 1,
+                            marginTop: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
                             <Icon
                                 name='share-square-o'
                                 type='font-awesome'
@@ -128,12 +150,17 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                                 size={17}
                             />
                         </View>
-                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ color: registro.adm_spcl_checkout ? "#10734a" : "#d50000", fontSize: 12, marginTop: 1, marginBottom: 5 }}>
+                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{
+                                color: registro.adm_spcl_checkout ? "#10734a" : "#d50000",
+                                fontSize: 12,
+                                marginTop: 1,
+                                marginBottom: 5
+                            }}>
                                 Check-Out
                             </Text>
                             {registro.adm_spcl_checkout ? (
-                                <Text style={{ color: "#10734a", fontSize: 10, marginTop: -5, marginBottom: 5 }}>
+                                <Text style={{color: "#10734a", fontSize: 10, marginTop: -5, marginBottom: 5}}>
                                     {moment(registro.adm_spcl_checkout).format('DD/MM/YYYY HH:mm')}
                                 </Text>
                             ) : null}
@@ -141,11 +168,17 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{flex: 0.8, justifyContent: 'center', alignItems: 'center'}}>
                     <TouchableOpacity
                         onPress={() => onOSPress(registro.adm_spcl_idf, registro.man_sp_obs, true)}
                     >
-                        <View style={{ flex: 1, marginTop: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{
+                            flex: 1,
+                            marginTop: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
                             <Icon
                                 name='wrench'
                                 type='font-awesome'
@@ -154,17 +187,29 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                                 size={17}
                             />
                         </View>
-                        <Text style={{ color: Colors.primaryDark, fontSize: 11, marginTop: 5, marginBottom: 5, textDecorationLine: registro.man_sp_obs ? 'underline' : '' }}>
+                        <Text style={{
+                            color: Colors.primaryDark,
+                            fontSize: 11,
+                            marginTop: 5,
+                            marginBottom: 5,
+                            textDecorationLine: registro.man_sp_obs ? 'underline' : ''
+                        }}>
                             O.S.
                         </Text>
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{flex: 0.8, justifyContent: 'center', alignItems: 'center'}}>
                     <TouchableOpacity
                         onPress={() => onOcorrenciaPress(registro.adm_spcl_idf, registro.adm_spcl_ocorrencia, true)}
                     >
-                        <View style={{ flex: 1, marginTop: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{
+                            flex: 1,
+                            marginTop: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
                             <Icon
                                 name='list-alt'
                                 type='font-awesome'
@@ -173,7 +218,13 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                                 size={17}
                             />
                         </View>
-                        <Text style={{ color: Colors.primaryDark, fontSize: 11, marginTop: 5, marginBottom: 5, textDecorationLine: registro.adm_spcl_ocorrencia ? 'underline' : '' }}>
+                        <Text style={{
+                            color: Colors.primaryDark,
+                            fontSize: 11,
+                            marginTop: 5,
+                            marginBottom: 5,
+                            textDecorationLine: registro.adm_spcl_ocorrencia ? 'underline' : ''
+                        }}>
                             Ocorrência
                         </Text>
                     </TouchableOpacity>
@@ -213,7 +264,9 @@ export default class CheckListScreen extends Component {
             adm_spcl_ocorrencia: '',
 
         };
-        NetInfo.addEventListener(state => { this.onNetEvento(state) });
+        NetInfo.addEventListener(state => {
+            this.onNetEvento(state)
+        });
     }
 
     onNetEvento = (info) => {
@@ -229,8 +282,8 @@ export default class CheckListScreen extends Component {
 
     componentDidMount() {
         this.setState({
-            refreshing: true,
-        },
+                refreshing: true,
+            },
             this.getListaRegistros()
         );
     }
@@ -242,7 +295,7 @@ export default class CheckListScreen extends Component {
     }
 
     getListaRegistros = () => {
-        const { adm_spcl_veiculo, dataIni, dataFim, pagina, listaRegistros } = this.state;
+        const {adm_spcl_veiculo, dataIni, dataFim, pagina, listaRegistros} = this.state;
         axios.get('/checkList', {
             params: {
                 tipoDig: 2,
@@ -275,10 +328,10 @@ export default class CheckListScreen extends Component {
     onRegistroPress = (adm_spcl_idf) => {
         // console.log('onRegistroPress: ', adm_spcl_idf);
 
-        this.setState({ aguarde: true });
+        this.setState({aguarde: true});
         axios.get('/checkList/show/' + adm_spcl_idf)
             .then(response => {
-                this.setState({ aguarde: false });
+                this.setState({aguarde: false});
 
                 // console.log('onRegistroPress: ', response.data);
 
@@ -290,10 +343,10 @@ export default class CheckListScreen extends Component {
                     onRefresh: this.onRefresh
                 });
             }).catch(ex => {
-                this.setState({ aguarde: false });
-                console.warn(ex);
-                console.warn(ex.response);
-            });
+            this.setState({aguarde: false});
+            console.warn(ex);
+            console.warn(ex.response);
+        });
     }
 
     onAddPress = () => {
@@ -321,7 +374,7 @@ export default class CheckListScreen extends Component {
 
     onRegistroLongPress = (adm_spcl_idf) => {
         Alert.showConfirm("Deseja excluir este registro?",
-            { text: "Cancelar" },
+            {text: "Cancelar"},
             {
                 text: "Excluir",
                 onPress: () => this.onExcluirRegistro(adm_spcl_idf),
@@ -331,7 +384,7 @@ export default class CheckListScreen extends Component {
     }
 
     onExcluirRegistro = (adm_spcl_idf) => {
-        this.setState({ aguarde: true });
+        this.setState({aguarde: true});
         axios.delete('/checkList/delete/' + adm_spcl_idf)
             .then(response => {
                 const listaRegistros = [...this.state.listaRegistros];
@@ -342,10 +395,10 @@ export default class CheckListScreen extends Component {
                     aguarde: false
                 });
             }).catch(ex => {
-                console.warn(ex);
-                console.warn(ex.response);
-                this.setState({ aguarde: false });
-            })
+            console.warn(ex);
+            console.warn(ex.response);
+            this.setState({aguarde: false});
+        })
     }
 
     onRefresh = () => {
@@ -356,7 +409,7 @@ export default class CheckListScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        const { carregarMais, refreshing, carregando, pagina } = this.state;
+        const {carregarMais, refreshing, carregando, pagina} = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -366,18 +419,18 @@ export default class CheckListScreen extends Component {
     }
 
     renderListFooter = () => {
-        const { carregando } = this.state;
+        const {carregando} = this.state;
         if (carregando) {
             return (
-                <View style={{ marginTop: 8 }}>
-                    <ActivityIndicator size="large" />
+                <View style={{marginTop: 8}}>
+                    <ActivityIndicator size="large"/>
                 </View>
             )
         }
         return null;
     }
 
-    renderItem = ({ item }) => {
+    renderItem = ({item}) => {
         return (
             <CardViewItem
                 registro={item}
@@ -392,7 +445,7 @@ export default class CheckListScreen extends Component {
 
 
     onSearchPress = (visible) => {
-        this.setState({ modalFiltrosVisible: visible });
+        this.setState({modalFiltrosVisible: visible});
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -400,10 +453,8 @@ export default class CheckListScreen extends Component {
     }
 
     onClosePress = (visible) => {
-        this.setState({ modalFiltrosVisible: visible });
+        this.setState({modalFiltrosVisible: visible});
     }
-
-
 
 
     requestLocationPermission = async () => {
@@ -435,7 +486,7 @@ export default class CheckListScreen extends Component {
     }
 
     onGravarCheckOutPress = (adm_spcl_idf) => {
-        this.setState({ aguarde: true });
+        this.setState({aguarde: true});
         this.requestLocationPermission().then(() => {
             GetLocation.getCurrentPosition({
                 enableHighAccuracy: true,
@@ -451,13 +502,13 @@ export default class CheckListScreen extends Component {
                                 aguarde: false
                             }, this.getListaRegistros);
                         }).catch(ex => {
-                            console.warn(ex, ex.response);
-                            this.setState({ aguarde: false });
-                        })
+                        console.warn(ex, ex.response);
+                        this.setState({aguarde: false});
+                    })
                 })
                 .catch(ex => {
-                    this.setState({ aguarde: false });
-                    const { code, message } = ex;
+                    this.setState({aguarde: false});
+                    const {code, message} = ex;
                     console.warn(ex, code, message);
                     if (code === '1') {
                         // iOS
@@ -485,7 +536,6 @@ export default class CheckListScreen extends Component {
     }
 
 
-
     onOSPress = (adm_spcl_idf, man_sp_obs, visible) => {
         console.log('onOSPress: ', adm_spcl_idf)
         console.log('onOSPress: ', man_sp_obs)
@@ -493,16 +543,16 @@ export default class CheckListScreen extends Component {
 
         if ((!visible) && (adm_spcl_idf) && (man_sp_obs)) {
             console.log('onOSPress OK')
-            this.setState({ aguarde: true });
+            this.setState({aguarde: true});
             axios.put(`/checkList/ordemServico/${adm_spcl_idf}/${man_sp_obs}`)
                 .then(response => {
                     this.setState({
                         aguarde: false
                     }, this.getListaRegistros);
                 }).catch(ex => {
-                    console.warn(ex, ex.response);
-                    this.setState({ aguarde: false });
-                })
+                console.warn(ex, ex.response);
+                this.setState({aguarde: false});
+            })
         }
         this.setState({
             modalOSVisible: visible,
@@ -514,16 +564,16 @@ export default class CheckListScreen extends Component {
 
     onOcorrenciaPress = (adm_spcl_idf, adm_spcl_ocorrencia, visible) => {
         if ((!visible) && (adm_spcl_idf) && (adm_spcl_ocorrencia)) {
-            this.setState({ aguarde: true });
+            this.setState({aguarde: true});
             axios.put(`/checkList/ocorrencia/${adm_spcl_idf}/${adm_spcl_ocorrencia}`)
                 .then(response => {
                     this.setState({
                         aguarde: false
                     }, this.getListaRegistros);
                 }).catch(ex => {
-                    console.warn(ex, ex.response);
-                    this.setState({ aguarde: false });
-                })
+                console.warn(ex, ex.response);
+                this.setState({aguarde: false});
+            })
         }
         this.setState({
             modalOcorrenciaVisible: visible,
@@ -538,343 +588,364 @@ export default class CheckListScreen extends Component {
     // ------------------------------------------------------------------------
 
 
-
-
     render() {
-        const { listaRegistros, refreshing, aguarde,
+        const {
+            listaRegistros, refreshing, aguarde,
             adm_spcl_veiculo, adm_spcl_idf, adm_spcl_ocorrencia, man_sp_obs,
-            dataIni, dataFim, netStatus } = this.state;
+            dataIni, dataFim, netStatus
+        } = this.state;
 
-        console.log('CheckListScreen: ', this.state);
 
         return (
-            <View style={{ flex: 1, }}>
-
-                {netStatus ? null : (
-                    <Text style={{ textAlign: 'center', color: '#d50000', marginTop: 2 }}>
-                        Dispositivo sem conexão
-                    </Text>
-                )}
-
-                <FlatList
-                    data={listaRegistros}
-                    renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    keyExtractor={registro => String(registro.adm_spcl_idf)}
-                    onRefresh={this.onRefresh}
-                    refreshing={refreshing}
-                    onEndReached={this.carregarMaisRegistros}
-                    ListFooterComponent={this.renderListFooter}
+            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Check-List dos Veículos'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
                 />
+                <View style={{flex: 1, backgroundColor: 'white'}}>
+
+                    {netStatus ? null : (
+                        <Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>
+                            Dispositivo sem conexão
+                        </Text>
+                    )}
+
+                    <FlatList
+                        data={listaRegistros}
+                        renderItem={this.renderItem}
+                        contentContainerStyle={{paddingBottom: 100}}
+                        keyExtractor={registro => String(registro.adm_spcl_idf)}
+                        onRefresh={this.onRefresh}
+                        refreshing={refreshing}
+                        onEndReached={this.carregarMaisRegistros}
+                        ListFooterComponent={this.renderListFooter}
+                    />
 
 
-
-
-                {/* ----------------------------- */}
-                {/* MODAL PARA ORDEM SERVIÇO      */}
-                {/* ----------------------------- */}
-                <Modal
-                    visible={this.state.modalOSVisible}
-                    onRequestClose={() => { console.log("Modal os FECHOU.") }}
-                    animationType={"slide"}
-                    transparent={true}
-                >
-                    <View style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                    }}>
+                    {/* ----------------------------- */}
+                    {/* MODAL PARA ORDEM SERVIÇO      */}
+                    {/* ----------------------------- */}
+                    <Modal
+                        visible={this.state.modalOSVisible}
+                        onRequestClose={() => {
+                            console.log("Modal os FECHOU.")
+                        }}
+                        animationType={"slide"}
+                        transparent={true}
+                    >
                         <View style={{
                             flex: 1,
-                            width: "90%",
-                            paddingTop: 30,
-                        }} >
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                        }}>
                             <View style={{
-                                paddingVertical: 15,
-                                paddingHorizontal: 15,
-                                backgroundColor: Colors.background,
-                                borderRadius: 5,
+                                flex: 1,
+                                width: "90%",
+                                paddingTop: 30,
                             }}>
+                                <View style={{
+                                    paddingVertical: 15,
+                                    paddingHorizontal: 15,
+                                    backgroundColor: Colors.background,
+                                    borderRadius: 5,
+                                }}>
 
-                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
-                                    <Text style={{
-                                        color: Colors.textOnPrimary,
-                                        marginTop: 15,
-                                        marginBottom: 15,
-                                        marginLeft: 16,
-                                        textAlign: 'center',
-                                        fontSize: 20,
-                                        fontWeight: 'bold',
-                                    }}>Ordem de Serviço</Text>
-                                </View>
+                                    <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                        <Text style={{
+                                            color: Colors.textOnPrimary,
+                                            marginTop: 15,
+                                            marginBottom: 15,
+                                            marginLeft: 16,
+                                            textAlign: 'center',
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
+                                        }}>Ordem de Serviço</Text>
+                                    </View>
 
-                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
-                                    <TextInput
-                                        label="Descrição dos Serviços"
-                                        id="man_sp_obs"
-                                        ref="man_sp_obs"
-                                        value={man_sp_obs}
-                                        maxLength={200}
-                                        onChange={this.onInputChange}
-                                        multiline={true}
-                                        height={100}
-                                    />
+                                    <View style={{marginTop: 4, paddingVertical: 10}}>
+                                        <TextInput
+                                            label="Descrição dos Serviços"
+                                            id="man_sp_obs"
+                                            ref="man_sp_obs"
+                                            value={man_sp_obs}
+                                            maxLength={200}
+                                            onChange={this.onInputChange}
+                                            multiline={true}
+                                            height={100}
+                                        />
 
-                                    <Button
-                                        title="SALVAR"
-                                        onPress={() => { this.onOSPress(adm_spcl_idf, man_sp_obs, false) }}
-                                        buttonStyle={{ marginTop: 15, height: 35 }}
-                                        backgroundColor={Colors.buttonPrimary}
-                                        icon={{
-                                            name: 'check',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
+                                        <Button
+                                            title="SALVAR"
+                                            onPress={() => {
+                                                this.onOSPress(adm_spcl_idf, man_sp_obs, false)
+                                            }}
+                                            buttonStyle={{marginTop: 15, height: 35}}
+                                            backgroundColor={Colors.buttonPrimary}
+                                            icon={{
+                                                name: 'check',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
 
-                                    <Button
-                                        title="FECHAR"
-                                        onPress={() => { this.onOSPress(0, '', false) }}
-                                        buttonStyle={{ marginTop: 15, height: 35 }}
-                                        backgroundColor={Colors.buttonPrimary}
-                                        icon={{
-                                            name: 'close',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
+                                        <Button
+                                            title="FECHAR"
+                                            onPress={() => {
+                                                this.onOSPress(0, '', false)
+                                            }}
+                                            buttonStyle={{marginTop: 15, height: 35}}
+                                            backgroundColor={Colors.buttonPrimary}
+                                            icon={{
+                                                name: 'close',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
-                </Modal>
+                    </Modal>
 
 
-
-
-                {/* ----------------------------- */}
-                {/* MODAL PARA OCORRENCIA         */}
-                {/* ----------------------------- */}
-                <Modal
-                    visible={this.state.modalOcorrenciaVisible}
-                    onRequestClose={() => { console.log("Modal OBS FECHOU.") }}
-                    animationType={"slide"}
-                    transparent={true}
-                >
-                    <View style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                    }}>
+                    {/* ----------------------------- */}
+                    {/* MODAL PARA OCORRENCIA         */}
+                    {/* ----------------------------- */}
+                    <Modal
+                        visible={this.state.modalOcorrenciaVisible}
+                        onRequestClose={() => {
+                            console.log("Modal OBS FECHOU.")
+                        }}
+                        animationType={"slide"}
+                        transparent={true}
+                    >
                         <View style={{
                             flex: 1,
-                            width: "90%",
-                            paddingTop: 30,
-                        }} >
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                        }}>
                             <View style={{
-                                paddingVertical: 15,
-                                paddingHorizontal: 15,
-                                backgroundColor: Colors.background,
-                                borderRadius: 5,
+                                flex: 1,
+                                width: "90%",
+                                paddingTop: 30,
                             }}>
+                                <View style={{
+                                    paddingVertical: 15,
+                                    paddingHorizontal: 15,
+                                    backgroundColor: Colors.background,
+                                    borderRadius: 5,
+                                }}>
 
-                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
-                                    <Text style={{
-                                        color: Colors.textOnPrimary,
-                                        marginTop: 15,
-                                        marginBottom: 15,
-                                        marginLeft: 16,
-                                        textAlign: 'center',
-                                        fontSize: 20,
-                                        fontWeight: 'bold',
-                                    }}>Ocorrência</Text>
-                                </View>
+                                    <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                        <Text style={{
+                                            color: Colors.textOnPrimary,
+                                            marginTop: 15,
+                                            marginBottom: 15,
+                                            marginLeft: 16,
+                                            textAlign: 'center',
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
+                                        }}>Ocorrência</Text>
+                                    </View>
 
-                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
-                                    <TextInput
-                                        label="Ocorrência"
-                                        id="adm_spcl_ocorrencia"
-                                        ref="adm_spcl_ocorrencia"
-                                        value={adm_spcl_ocorrencia}
-                                        maxLength={200}
-                                        onChange={this.onInputChange}
-                                        multiline={true}
-                                        height={100}
-                                    />
+                                    <View style={{marginTop: 4, paddingVertical: 10}}>
+                                        <TextInput
+                                            label="Ocorrência"
+                                            id="adm_spcl_ocorrencia"
+                                            ref="adm_spcl_ocorrencia"
+                                            value={adm_spcl_ocorrencia}
+                                            maxLength={200}
+                                            onChange={this.onInputChange}
+                                            multiline={true}
+                                            height={100}
+                                        />
 
-                                    <Button
-                                        title="SALVAR"
-                                        onPress={() => { this.onOcorrenciaPress(adm_spcl_idf, adm_spcl_ocorrencia, false) }}
-                                        buttonStyle={{ marginTop: 15, height: 35 }}
-                                        backgroundColor={Colors.buttonPrimary}
-                                        icon={{
-                                            name: 'check',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
+                                        <Button
+                                            title="SALVAR"
+                                            onPress={() => {
+                                                this.onOcorrenciaPress(adm_spcl_idf, adm_spcl_ocorrencia, false)
+                                            }}
+                                            buttonStyle={{marginTop: 15, height: 35}}
+                                            backgroundColor={Colors.buttonPrimary}
+                                            icon={{
+                                                name: 'check',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
 
-                                    <Button
-                                        title="FECHAR"
-                                        onPress={() => { this.onOcorrenciaPress(0, '', false) }}
-                                        buttonStyle={{ marginTop: 15, height: 35 }}
-                                        backgroundColor={Colors.buttonPrimary}
-                                        icon={{
-                                            name: 'close',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
+                                        <Button
+                                            title="FECHAR"
+                                            onPress={() => {
+                                                this.onOcorrenciaPress(0, '', false)
+                                            }}
+                                            buttonStyle={{marginTop: 15, height: 35}}
+                                            backgroundColor={Colors.buttonPrimary}
+                                            icon={{
+                                                name: 'close',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
-                </Modal>
+                    </Modal>
 
 
-
-
-                {/* ----------------------------- */}
-                {/* MODAL PARA FILTROS            */}
-                {/* ----------------------------- */}
-                <Modal
-                    visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
-                    animationType={"slide"}
-                    transparent={true}
-                >
-                    <View style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                    }}>
+                    {/* ----------------------------- */}
+                    {/* MODAL PARA FILTROS            */}
+                    {/* ----------------------------- */}
+                    <Modal
+                        visible={this.state.modalFiltrosVisible}
+                        onRequestClose={() => {
+                            console.log("Modal FILTROS FECHOU.")
+                        }}
+                        animationType={"slide"}
+                        transparent={true}
+                    >
                         <View style={{
                             flex: 1,
-                            width: "90%",
-                            paddingTop: 10,
-                        }} >
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                        }}>
                             <View style={{
-                                paddingVertical: 15,
-                                paddingHorizontal: 15,
-                                backgroundColor: Colors.background,
-                                borderRadius: 5,
+                                flex: 1,
+                                width: "90%",
+                                paddingTop: 10,
                             }}>
+                                <View style={{
+                                    paddingVertical: 15,
+                                    paddingHorizontal: 15,
+                                    backgroundColor: Colors.background,
+                                    borderRadius: 5,
+                                }}>
 
-                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
-                                    <Text style={{
-                                        color: Colors.textOnPrimary,
-                                        marginTop: 15,
-                                        marginBottom: 15,
-                                        marginLeft: 16,
-                                        textAlign: 'center',
-                                        fontSize: 20,
-                                        fontWeight: 'bold',
-                                    }}>Filtrar</Text>
-                                </View>
+                                    <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                        <Text style={{
+                                            color: Colors.textOnPrimary,
+                                            marginTop: 15,
+                                            marginBottom: 15,
+                                            marginLeft: 16,
+                                            textAlign: 'center',
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
+                                        }}>Filtrar</Text>
+                                    </View>
 
-                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
+                                    <View style={{marginTop: 4, paddingVertical: 10}}>
 
-                                    <ScrollView style={{ height: 50, width: "100%", marginBottom: 10 }}>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <View style={{ width: "47%", marginRight: 20 }}>
-                                                <TextInput
-                                                    type="date"
-                                                    label="Data Início"
-                                                    id="dataIni"
-                                                    ref="dataIni"
-                                                    value={dataIni}
-                                                    masker={maskDate}
-                                                    dateFormat={DATE_FORMAT}
-                                                    onChange={this.onInputChange}
-                                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
-                                                    fontSize={12}
-                                                />
+                                        <ScrollView style={{height: 50, width: "100%", marginBottom: 10}}>
+                                            <View style={{flexDirection: 'row'}}>
+                                                <View style={{width: "47%", marginRight: 20}}>
+                                                    <TextInput
+                                                        type="date"
+                                                        label="Data Início"
+                                                        id="dataIni"
+                                                        ref="dataIni"
+                                                        value={dataIni}
+                                                        masker={maskDate}
+                                                        dateFormat={DATE_FORMAT}
+                                                        onChange={this.onInputChange}
+                                                        validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                                        fontSize={12}
+                                                    />
+                                                </View>
+                                                <View style={{width: "47%"}}>
+                                                    <TextInput
+                                                        type="date"
+                                                        label="Data Fim"
+                                                        id="dataFim"
+                                                        ref="dataFim"
+                                                        value={dataFim}
+                                                        masker={maskDate}
+                                                        dateFormat={DATE_FORMAT}
+                                                        onChange={this.onInputChange}
+                                                        validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
+                                                        fontSize={12}
+                                                    />
+                                                </View>
                                             </View>
-                                            <View style={{ width: "47%" }}>
-                                                <TextInput
-                                                    type="date"
-                                                    label="Data Fim"
-                                                    id="dataFim"
-                                                    ref="dataFim"
-                                                    value={dataFim}
-                                                    masker={maskDate}
-                                                    dateFormat={DATE_FORMAT}
-                                                    onChange={this.onInputChange}
-                                                    validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
-                                                    fontSize={12}
-                                                />
-                                            </View>
-                                        </View>
-                                    </ScrollView>
+                                        </ScrollView>
 
-                                    <TextInput
-                                        label="Veículo"
-                                        id="adm_spcl_veiculo"
-                                        ref="adm_spcl_veiculo"
-                                        value={adm_spcl_veiculo}
-                                        maxLength={9}
-                                        onChange={this.onInputChange}
-                                        keyboardType="numeric"
-                                    />
+                                        <TextInput
+                                            label="Veículo"
+                                            id="adm_spcl_veiculo"
+                                            ref="adm_spcl_veiculo"
+                                            value={adm_spcl_veiculo}
+                                            maxLength={9}
+                                            onChange={this.onInputChange}
+                                            keyboardType="numeric"
+                                        />
 
-                                    <Button
-                                        title="FILTRAR"
-                                        onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop: 15, height: 35 }}
-                                        backgroundColor={Colors.buttonPrimary}
-                                        icon={{
-                                            name: 'filter',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
-                                    <Button
-                                        title="FECHAR"
-                                        onPress={() => { this.onClosePress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop: 10, height: 35 }}
-                                        backgroundColor={Colors.buttonPrimary}
-                                        icon={{
-                                            name: 'close',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
+                                        <Button
+                                            title="FILTRAR"
+                                            onPress={() => {
+                                                this.onSearchPress(!this.state.modalFiltrosVisible)
+                                            }}
+                                            buttonStyle={{marginTop: 15, height: 35}}
+                                            backgroundColor={Colors.buttonPrimary}
+                                            icon={{
+                                                name: 'filter',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                        <Button
+                                            title="FECHAR"
+                                            onPress={() => {
+                                                this.onClosePress(!this.state.modalFiltrosVisible)
+                                            }}
+                                            buttonStyle={{marginTop: 10, height: 35}}
+                                            backgroundColor={Colors.buttonPrimary}
+                                            icon={{
+                                                name: 'close',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
-                </Modal>
+                    </Modal>
 
 
-                <FloatActionButton
-                    iconFamily="MaterialIcons"
-                    iconName="search"
-                    iconColor={Colors.textOnPrimary}
-                    onPress={() => { this.onSearchPress(true) }}
-                    backgroundColor={Colors.primary}
-                    marginBottom={90}
-                    marginRight={10}
-                />
+                    <FloatActionButton
+                        iconFamily="MaterialIcons"
+                        iconName="search"
+                        iconColor={Colors.textOnPrimary}
+                        onPress={() => {
+                            this.onSearchPress(true)
+                        }}
+                        backgroundColor={Colors.primary}
+                        marginBottom={90}
+                        marginRight={10}
+                    />
 
-                <FloatActionButton
-                    iconFamily="MaterialIcons"
-                    iconName="add"
-                    iconColor={Colors.textOnAccent}
-                    onPress={this.onAddPress}
-                    backgroundColor={Colors.primary}
-                    marginRight={10}
-                />
+                    <FloatActionButton
+                        iconFamily="MaterialIcons"
+                        iconName="add"
+                        iconColor={Colors.textOnAccent}
+                        onPress={this.onAddPress}
+                        backgroundColor={Colors.primary}
+                        marginRight={10}
+                    />
 
-                <ProgressDialog
-                    visible={aguarde}
-                    title="SIGA PRO"
-                    message="Aguarde..."
-                />
+                    <ProgressDialog
+                        visible={aguarde}
+                        title="SIGA PRO"
+                        message="Aguarde..."
+                    />
 
-            </View>
+                </View>
+            </SafeAreaView>
         )
     }
 }

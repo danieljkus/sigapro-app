@@ -14,6 +14,8 @@ import {validateSenha, checkFormIsValid, savePermissoes} from '../utils/Validato
 import {saveToken} from '../utils/LoginManager';
 import DeviceInfo from 'react-native-device-info';
 import NetInfo from '@react-native-community/netinfo';
+import HeaderComponent from "../components/HeaderComponent";
+import {maskCPF} from "../utils/Maskers";
 
 export default class LoginScreen extends Component {
 
@@ -107,12 +109,12 @@ export default class LoginScreen extends Component {
         const resetAction = StackActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({routeName: "HomeScreen"})
+                NavigationActions.navigate({routeName: "HomeScreen", props: this.props})
             ]
-        })
+        });
 
         this.props.navigation.dispatch(resetAction);
-    }
+    };
 
     onInputChange = (id, value) => {
         const state = {};
@@ -157,9 +159,9 @@ export default class LoginScreen extends Component {
     render() {
         const {usuario, senha, empresa, empresaSelect, loading} = this.state;
         return (
-            <SafeAreaView style={{flex: 1}}>
+            <SafeAreaView style={{backgroundColor: 'white', flex: 1, justifyContent: 'center'}}>
                 <StatusBar/>
-                <View style={{backgroundColor: 'transparent', flex: 1}}>
+                <View style={{backgroundColor: 'white', flex: 1, justifyContent: 'center'}}>
 
 
                     <View
@@ -204,7 +206,7 @@ export default class LoginScreen extends Component {
                                 label="Usuário"
                                 id="usuario"
                                 ref="usuario"
-                                value={usuario}
+                                value={maskCPF(usuario)}
                                 onChange={this.onInputChange}
                                 onBlur={this.buscaEmpresas}
                                 validator={text => Boolean(text)} // verifica se o campo está vazio ou válido
@@ -215,8 +217,8 @@ export default class LoginScreen extends Component {
                                 enabled={this.state.netStatus ? true : false}
                                 style={{
                                     width: '90%',
-                                    marginLeft: 10,
-                                    marginRight: 10,
+                                    // marginLeft: 10,
+                                    // marginRight: 10,
                                 }}
                             />
                         </View>
@@ -235,8 +237,8 @@ export default class LoginScreen extends Component {
                                 errorMessage="Informe a Senha de acesso."
                                 style={{
                                     width: '90%',
-                                    marginLeft: 10,
-                                    marginRight: 10,
+                                    // marginLeft: 10,
+                                    // marginRight: 10,
                                 }}
                             />
                         </View>
@@ -257,7 +259,6 @@ export default class LoginScreen extends Component {
                             </View>
                         ) : null}
 
-                        <Divider/>
 
                         {(this.state.netStatus) ?
                             (

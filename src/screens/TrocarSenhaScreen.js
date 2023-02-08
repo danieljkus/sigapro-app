@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import React, {Component} from 'react';
+import {View, ScrollView, RefreshControl, SafeAreaView} from 'react-native';
 
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
-import { validateSenha, checkFormIsValid } from '../utils/Validator';
+import {validateSenha, checkFormIsValid} from '../utils/Validator';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import Colors from '../values/Colors';
-import { ProgressDialog } from 'react-native-simple-dialogs';
+import {ProgressDialog} from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
-import { getUsuario } from '../utils/LoginManager';
+import {getUsuario} from '../utils/LoginManager';
+import HeaderComponent from "../components/HeaderComponent";
 
 export default class TrocarSenhaScreen extends Component {
 
@@ -39,7 +40,7 @@ export default class TrocarSenhaScreen extends Component {
     }
 
     onFormSubmit = (event) => {
-        const { usu_senha, usu_senha_Conf } = this.state;
+        const {usu_senha, usu_senha_Conf} = this.state;
         if (usu_senha !== usu_senha_Conf) {
             Alert.showAlert('As senhas não conferem');
             return;
@@ -53,94 +54,101 @@ export default class TrocarSenhaScreen extends Component {
     }
 
     onSalvarRegistro = () => {
-        this.setState({ salvado: true, loading: true });
-        const { adm_pes_pfj, usu_senha } = this.state;
+        this.setState({salvado: true, loading: true});
+        const {adm_pes_pfj, usu_senha} = this.state;
 
         axios.put('/usuarios/updateSenha/' + adm_pes_pfj, {
             "senha": usu_senha
         }).then(response => {
             this.props.navigation.goBack(null);
         }).catch(ex => {
-            this.setState({ salvado: false });
+            this.setState({salvado: false});
             console.warn(ex);
         })
     }
 
 
     render() {
-        const { adm_pes_pfj, usu_senha, usu_senha_Conf, loading, salvado } = this.state;
+        const {adm_pes_pfj, usu_senha, usu_senha_Conf, loading, salvado} = this.state;
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
-                <StatusBar />
+            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Trocar Senha'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
+                <View style={{flex: 1, backgroundColor: Colors.background}}>
+                    <StatusBar/>
 
-                <ScrollView
-                    style={{ flex: 1, }}
-                    keyboardShouldPersistTaps="always"
-                    refreshControl={(
-                        <RefreshControl
-                            refreshing={loading}
-                        />
-                    )}
-                >
-                    <View
-                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
+                    <ScrollView
+                        style={{flex: 1,}}
+                        keyboardShouldPersistTaps="always"
+                        refreshControl={(
+                            <RefreshControl
+                                refreshing={loading}
+                            />
+                        )}
                     >
+                        <View
+                            style={{flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20}}
+                        >
 
-                        <View>
-                            <TextInput
-                                label="Nova Senha"
-                                id="usu_senha"
-                                ref="usu_senha"
-                                value={usu_senha}
-                                maxLength={10}
-                                onChange={this.onInputChange}
-                                required={true}
-                                keyboardType="numeric"
-                                secureTextEntry={true}
-                                validator={validateSenha}
-                                errorMessage="A senha deve conter de 6 a 10 caracteres."
+                            <View>
+                                <TextInput
+                                    label="Nova Senha"
+                                    id="usu_senha"
+                                    ref="usu_senha"
+                                    value={usu_senha}
+                                    maxLength={10}
+                                    onChange={this.onInputChange}
+                                    required={true}
+                                    keyboardType="numeric"
+                                    secureTextEntry={true}
+                                    validator={validateSenha}
+                                    errorMessage="A senha deve conter de 6 a 10 caracteres."
+                                />
+
+                                <TextInput
+                                    label="Confirma a Nova Senha"
+                                    id="usu_senha_Conf"
+                                    ref="usu_senha_Conf"
+                                    value={usu_senha_Conf}
+                                    maxLength={10}
+                                    onChange={this.onInputChange}
+                                    required={true}
+                                    keyboardType="numeric"
+                                    secureTextEntry={true}
+                                    validator={validateSenha}
+                                    errorMessage="A senha deve conter de 6 a 10 caracteres."
+                                />
+                            </View>
+
+
+                            <Button
+                                title="SALVAR"
+                                loading={loading}
+                                onPress={this.onFormSubmit}
+                                color={Colors.textOnPrimary}
+                                buttonStyle={{marginBottom: 20, marginTop: 20}}
+                                icon={{
+                                    name: 'check',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary
+                                }}
                             />
 
-                            <TextInput
-                                label="Confirma a Nova Senha"
-                                id="usu_senha_Conf"
-                                ref="usu_senha_Conf"
-                                value={usu_senha_Conf}
-                                maxLength={10}
-                                onChange={this.onInputChange}
-                                required={true}
-                                keyboardType="numeric"
-                                secureTextEntry={true}
-                                validator={validateSenha}
-                                errorMessage="A senha deve conter de 6 a 10 caracteres."
-                            />
                         </View>
 
-
-
-                        <Button
-                            title="SALVAR"
-                            loading={loading}
-                            onPress={this.onFormSubmit}
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ marginBottom: 20, marginTop: 20 }}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
+                        <ProgressDialog
+                            visible={salvado}
+                            title="SIGA PRO"
+                            message="Gravando. Aguarde..."
                         />
-
-                    </View>
-
-                    <ProgressDialog
-                        visible={salvado}
-                        title="SIGA PRO"
-                        message="Gravando. Aguarde..."
-                    />
-                </ScrollView>
-            </View>
+                    </ScrollView>
+                </View>
+            </SafeAreaView>
         )
     }
 }

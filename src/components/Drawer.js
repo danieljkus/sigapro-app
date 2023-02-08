@@ -1,14 +1,22 @@
-import React, { PureComponent } from 'react';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
+import React, {PureComponent} from 'react';
+import {View, ScrollView, TouchableOpacity} from 'react-native';
 
-import { Text, Divider } from 'react-native-elements';
-import { NavigationActions, StackActions } from 'react-navigation';
+import {Text, Divider} from 'react-native-elements';
+import {NavigationActions, StackActions} from 'react-navigation';
 
 import Icon from './Icon';
 import Colors from '../values/Colors';
-import { removeToken, removePermissoes, getTemPermissao, getUsuario, getFilial, getPermissoes, getEmpresa } from '../utils/LoginManager';
+import {
+    removeToken,
+    removePermissoes,
+    getTemPermissao,
+    getUsuario,
+    getFilial,
+    getPermissoes,
+    getEmpresa
+} from '../utils/LoginManager';
 
-const DrawerItem = ({ text, onPress }) => {
+const DrawerItem = ({text, onPress}) => {
     return (
         <TouchableOpacity onPress={onPress}>
             <Text
@@ -40,20 +48,20 @@ class Drawer extends PureComponent {
 
     refreshUsuario = () => {
         getUsuario().then(usuario => {
-            this.setState({ usuario });
+            this.setState({usuario});
         })
         getEmpresa().then(empresa => {
-            this.setState({ empresa });
+            this.setState({empresa});
         })
         getPermissoes().then(permissoes => {
 
             // const per = getTemPermissao('ESCALAVEICULOSSCREEN', permissoes);
             // console.log('refreshUsuario: ', per);
 
-            this.setState({ permissoes });
+            this.setState({permissoes});
         })
         getFilial().then(filial => {
-            this.setState({ filial });
+            this.setState({filial});
         })
     }
 
@@ -64,19 +72,19 @@ class Drawer extends PureComponent {
     }
 
     replaceScreen = (routeName) => {
-        const { navigation } = this.props;
+        const {navigation} = this.props;
         const resetAction = StackActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: routeName })
+                NavigationActions.navigate({routeName: routeName})
             ]
         })
         navigation.dispatch(resetAction);
     }
 
     render() {
-        const { navigation } = this.props;
-        const { usuario, filial, empresa, permissoes } = this.state;
+        const {navigation} = this.props;
+        const {usuario, filial, empresa, permissoes} = this.state;
         if ((!usuario) || (!permissoes)) return null;
 
         // console.log('Drawer.state: ', this.state);
@@ -84,29 +92,45 @@ class Drawer extends PureComponent {
         // console.log('Drawer.getTemPermissao: ', getTemPermissao('VIAGENSTURISMOSCREEN', permissoes));
 
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{flex: 1}}>
 
                 <View
                     style={{
-                        height: 120,
-                        padding: 16,
+                        height: '15%',
+                        width: '100%',
+                        paddingBottom: 10,
                         backgroundColor: Colors.primaryLight,
                         justifyContent: 'flex-end',
-                        alignItems: 'flex-start',
+                        alignItems: 'center',
                     }}>
-                    <Icon
-                        family="MaterialIcons"
-                        name="person"
-                        size={40}
-                        color={Colors.textSecondaryLight}
-                    />
+                    <View style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: Colors.white,
+                        borderWidth: 1,
+                        borderColor: 'white',
+                        borderRadius: 50,
+                        width: 45,
+                        height: 45,
+                        margin: 6,
+                    }}>
+                        <Icon
+                            family="MaterialIcons"
+                            name="person"
+                            size={40}
+                            color={Colors.textSecondaryLight}
+                        />
+                    </View>
                     <Text
+                        numberOfLines={1}
                         style={{
+                            maxWidth: '90%',
                             fontSize: 14,
                             color: Colors.textSecondaryLight
                         }}
                     >
-                        Usuário: {usuario.adm_pes_nome}
+                        {usuario.adm_pes_nome}
+                        {/*Usuário: {usuario.adm_pes_nome}*/}
                     </Text>
                     <Text
                         style={{
@@ -114,13 +138,14 @@ class Drawer extends PureComponent {
                             color: Colors.textSecondaryLight
                         }}
                     >
-                        Filial: {filial}    {empresa ? 'Empresa: ' + String(empresa) : ''}
+                        Filial: {filial} {empresa ? ('Empresa: ' + String(empresa)) : ''}
                     </Text>
                 </View>
 
-                <View style={{ flex: 1 }}>
-                    <ScrollView style={{ flex: 1 }}>
-                        <View style={{ flex: 1 }}>
+
+                <View style={{flex: 1}}>
+                    <ScrollView style={{flex: 1}}>
+                        <View style={{flex: 1}}>
 
                             {getTemPermissao('ESCALAVEICULOSSCREEN', permissoes) ? (
                                 <DrawerItem
@@ -157,7 +182,7 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {getTemPermissao('VIAGENSTURISMOSCREEN', permissoes) ? (
                                 <DrawerItem
@@ -173,7 +198,7 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {empresa && getTemPermissao('FICHAESTOQUESCREEN', permissoes) ? (
                                 <DrawerItem
@@ -217,7 +242,7 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {empresa && getTemPermissao('MEDICOESTANQUESDIESELCREEN', permissoes) ? (
                                 <DrawerItem
@@ -240,7 +265,7 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {empresa && getTemPermissao('PNEUSLOCALIZARSCREEN', permissoes) ? (
                                 <DrawerItem
@@ -263,7 +288,7 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {getTemPermissao('SALDOSFILIAISSCREEN', permissoes) ? (
                                 <DrawerItem
@@ -286,7 +311,7 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {getTemPermissao('TROCARFILIALSCREEN', permissoes) ? (
                                 <DrawerItem
@@ -300,9 +325,9 @@ class Drawer extends PureComponent {
                                 onPress={() => navigation.navigate('TrocarSenhaScreen')}
                             />
 
-                            <Divider style={{ backgroundColor: Colors.dividerDark }} />
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
-                            <DrawerItem text="Sair" onPress={this.onSair} />
+                            <DrawerItem text="Sair" onPress={this.onSair}/>
                         </View>
                     </ScrollView>
                 </View>

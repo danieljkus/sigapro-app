@@ -84,6 +84,7 @@ import TrocarSenhaScreen from './TrocarSenhaScreen';
 import Icon from '../components/Icon';
 import Drawer from '../components/Drawer';
 import Colors from '../values/Colors';
+import {Header} from "react-native-elements";
 
 const defaultNavigationOptions = Platform.select({
     ios: {
@@ -139,6 +140,7 @@ const HomeStackNavigator = createStackNavigator({
     TrocarFilialScreen: {
         screen: TrocarFilialScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Trocar de Filial",
             ...defaultNavigationOptions
         }
@@ -147,7 +149,8 @@ const HomeStackNavigator = createStackNavigator({
         screen: HomeScreen,
         navigationOptions: {
             title: "Home",
-            headerLeft: () => <MenuButton />,
+            // headerLeft: () => <MenuButton />,
+            headerShown: false,
             ...defaultNavigationOptions,
             drawerLockMode: 'unlocked',
         }
@@ -166,6 +169,7 @@ const HomeStackNavigator = createStackNavigator({
     EscalaVeiculosScreen: {
         screen: EscalaVeiculosScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Escala dos Veículos",
             ...defaultNavigationOptions
         }
@@ -183,6 +187,7 @@ const HomeStackNavigator = createStackNavigator({
     CheckListScreen: {
         screen: CheckListScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Check-List dos Veículos",
             ...defaultNavigationOptions
         }
@@ -190,6 +195,7 @@ const HomeStackNavigator = createStackNavigator({
     CheckListItemScreen: {
         screen: CheckListItemScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Check-List",
             ...defaultNavigationOptions
         }
@@ -200,6 +206,7 @@ const HomeStackNavigator = createStackNavigator({
     RefeicoesScreen: {
         screen: RefeicoesScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Refeições",
             ...defaultNavigationOptions
         }
@@ -207,6 +214,7 @@ const HomeStackNavigator = createStackNavigator({
     RefeicaoScreen: {
         screen: RefeicaoScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Refeição",
             ...defaultNavigationOptions
         }
@@ -277,6 +285,7 @@ const HomeStackNavigator = createStackNavigator({
     VeiculosScreen: {
         screen: VeiculosScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Lista dos Veículos",
             ...defaultNavigationOptions
         }
@@ -471,6 +480,7 @@ const HomeStackNavigator = createStackNavigator({
     ViagensTurismoScreen: {
         screen: ViagensTurismoScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Viagens Turismo",
             ...defaultNavigationOptions
         }
@@ -479,6 +489,7 @@ const HomeStackNavigator = createStackNavigator({
     SaldosFiliaisScreen: {
         screen: SaldosFiliaisScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Saldo das Filiais",
             ...defaultNavigationOptions
         }
@@ -487,6 +498,7 @@ const HomeStackNavigator = createStackNavigator({
     AutorizacaoDespesasScreen: {
         screen: AutorizacaoDespesasScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Autorização de Despesas",
             ...defaultNavigationOptions
         }
@@ -495,6 +507,7 @@ const HomeStackNavigator = createStackNavigator({
     AutorizacaoDespesaScreen: {
         screen: AutorizacaoDespesaScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Autorização de Despesa",
             ...defaultNavigationOptions
         }
@@ -503,6 +516,7 @@ const HomeStackNavigator = createStackNavigator({
     BoletinsDiferencaScreen: {
         screen: BoletinsDiferencaScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Boletins de Diferença",
             ...defaultNavigationOptions
         }
@@ -511,6 +525,7 @@ const HomeStackNavigator = createStackNavigator({
     TrocarSenhaScreen: {
         screen: TrocarSenhaScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Trocar Senha",
             ...defaultNavigationOptions
         }
