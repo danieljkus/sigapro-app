@@ -42,12 +42,10 @@ class FiliaisSelect extends PureComponent {
     state = {
         codFilial: '',
         carregando: false,
-
         listaRegistros: [],
         modalBuscaVisible: false,
         refreshing: false,
         carregarRegistro: false,
-        carregando: false,
         carregarMais: false,
         pagina: 1,
     };
