@@ -486,15 +486,13 @@ export default class VeiculosScreen extends Component {
                         transparent={true}
                     >
                         <View style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
                             backgroundColor: 'rgba(0,0,0,0.5)',
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center"
                         }}>
                             <View style={{
-                                flex: 1,
                                 width: "90%",
-                                paddingTop: 10,
                             }}>
                                 <View style={{
                                     paddingVertical: 15,
@@ -577,7 +575,7 @@ export default class VeiculosScreen extends Component {
                                             onPress={() => {
                                                 this.onSearchPress(!this.state.modalFiltrosVisible)
                                             }}
-                                            buttonStyle={{marginTop: 15, height: 35}}
+                                            buttonStyle={{marginTop: 10}}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
                                                 name: 'filter',
@@ -590,7 +588,7 @@ export default class VeiculosScreen extends Component {
                                             onPress={() => {
                                                 this.onClosePress(!this.state.modalFiltrosVisible)
                                             }}
-                                            buttonStyle={{marginTop: 10, height: 35}}
+                                            buttonStyle={{marginTop: 10}}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
                                                 name: 'close',

@@ -429,16 +429,14 @@ export default class PneusEstoqueScreen extends Component {
                     transparent={true}
                 >
                     <View style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         backgroundColor: 'rgba(0,0,0,0.5)',
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center"
                     }}>
                         <View style={{
-                            flex: 1,
                             width: "90%",
-                            paddingTop: 100,
-                        }} >
+                        }}>
                             <View style={{
                                 paddingVertical: 15,
                                 paddingHorizontal: 15,
@@ -515,7 +513,7 @@ export default class PneusEstoqueScreen extends Component {
                                     <Button
                                         title="FILTRAR"
                                         onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop: 15, height: 35 }}
+                                        buttonStyle={{ marginTop: 10 }}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'filter',
@@ -526,7 +524,7 @@ export default class PneusEstoqueScreen extends Component {
                                     <Button
                                         title="FECHAR"
                                         onPress={() => { this.onClosePress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop: 10, height: 35 }}
+                                        buttonStyle={{ marginTop:10}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',

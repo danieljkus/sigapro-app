@@ -23,7 +23,7 @@ export default class HeaderComponent extends PureComponent {
                 outerContainerStyles={{
                     backgroundColor: '#1F829C',
                     width: '100%',
-                    // height: Platform.OS === 'ios' ? 56 : 56,
+                    height: 55,
                 }}
                 // backgroundColor={'white'}
                 // placement="left"

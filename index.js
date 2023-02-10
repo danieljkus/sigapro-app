@@ -1,10 +1,10 @@
-import { AppRegistry, YellowBox } from 'react-native';
+import {AppRegistry, YellowBox, LogBox} from 'react-native';
 import './LegacyReact';
 import App from './src/App';
 
 import axios from 'axios';
 
-import { getToken } from './src/utils/LoginManager';
+import {getToken} from './src/utils/LoginManager';
 
 if (__DEV__) {
     // axios.defaults.baseURL = 'https://189.112.171.123/api/';
@@ -22,5 +22,7 @@ axios.interceptors.request.use(async (request) => {
 })
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 AppRegistry.registerComponent('SIGAPRO', () => App);
