@@ -102,26 +102,31 @@ export default class RefeicaoScreen extends Component {
     }
 
     onSalvar = () => {
-        this.requestLocationPermission().then(() => {
-            GetLocation.getCurrentPosition({
-                enableHighAccuracy: true,
-                timeout: 30000,
-            })
-                .then(location => {
-                    const local = String(location.latitude) + ',' + String(location.longitude);
-                    console.log('onAddPress: ', local);
+        if (!this.state.netStatus) {
+            Alert.showAlert('Dispositivo sem conexão');
+        } else {
 
+            this.requestLocationPermission().then(() => {
+                GetLocation.getCurrentPosition({
+                    enableHighAccuracy: true,
+                    timeout: 30000,
+                })
+                    .then(location => {
+                        const local = String(location.latitude) + ',' + String(location.longitude);
+                        // console.log('onAddPress: ', local);
 
                     this.setState({salvado: true});
                     const {registro} = this.state;
 
-                    registro.rhref_cod_rest = this.state.rhref_cod_rest;
-                    registro.rhref_tipo_refeicao = this.state.tipoRefeicao;
-                    registro.rhref_localizacao = local;
+                        this.setState({ salvado: true });
+                        const { registro } = this.state;
 
-                    // console.log('RefeicaoScreen.onSalvar: ', registro);
-                    // return;
+                        registro.rhref_cod_rest = this.state.rhref_cod_rest;
+                        registro.rhref_tipo_refeicao = this.state.tipoRefeicao;
+                        registro.rhref_localizacao = local;
 
+                        // console.log('RefeicaoScreen.onSalvar: ', registro);
+                        // return;
                     return axios
                         .post('/refeicoes/store', registro)
                         .then(response => {
@@ -131,19 +136,29 @@ export default class RefeicaoScreen extends Component {
                             const {response} = ex;
                             this.setState({salvado: false});
 
-                            // console.log('RefeicaoScreen.onSalvar.ERROR: ', ex);
+                        return axios
+                            .post('/refeicoes/store', registro)
+                            .then(response => {
+                                this.props.navigation.goBack(null);
+                                this.props.navigation.state.params.onRefresh();
+                            }).catch(ex => {
+                                const { response } = ex;
+                                this.setState({ salvado: false });
 
-                            if (ex.response) {
-                                // erro no servidor
-                                Alert.showAlert('Não foi possível gravar. ' + ex.response.data);
-                            } else {
-                                // sem internet
-                                Alert.showAlert('Não foi possível gravar. Verifique sua conexão com a internet');
-                            }
-                        })
+                                // console.log('RefeicaoScreen.onSalvar.ERROR: ', ex);
 
-                })
-        })
+                                if (ex.response) {
+                                    // erro no servidor
+                                    Alert.showAlert('Não foi possível gravar. ' + ex.response.data);
+                                } else {
+                                    // sem internet
+                                    Alert.showAlert('Não foi possível gravar. Verifique sua conexão com a internet');
+                                }
+                            })
+
+                    })
+            })
+        }
     }
 
 

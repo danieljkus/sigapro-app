@@ -350,27 +350,71 @@ export default class CheckListScreen extends Component {
     }
 
     onAddPress = () => {
-        console.log('onAddPress');
-        this.requestLocationPermission().then(() => {
-            GetLocation.getCurrentPosition({
-                enableHighAccuracy: true,
-                timeout: 30000,
-            })
-                .then(location => {
-                    const local = String(location.latitude) + ',' + String(location.longitude);
-                    console.log('onAddPress: ', local);
-
-                    this.props.navigation.navigate('CheckListItemScreen', {
-                        registro: {
-                            adm_spcl_idf: 0,
-                            adm_spcl_local_checkin: local,
-                        },
-                        onRefresh: this.onRefresh
-                    });
-
+        if (!this.state.netStatus) {
+            Alert.showAlert('Dispositivo sem conexão');
+        } else {
+            // console.log('onAddPress');
+            this.requestLocationPermission().then(() => {
+                GetLocation.getCurrentPosition({
+                    enableHighAccuracy: true,
+                    timeout: 30000,
                 })
-        })
+                    .then(location => {
+                        const local = String(location.latitude) + ',' + String(location.longitude);
+                        // console.log('onAddPress: ', local);
+
+                        this.props.navigation.navigate('CheckListItemScreen', {
+                            registro: {
+                                adm_spcl_idf: 0,
+                                adm_spcl_local_checkin: local,
+                            },
+                            onRefresh: this.onRefresh
+                        });
+                    }).catch(ex => {
+                        this.setState({ aguarde: false });
+                        const { code, message } = ex;
+                        console.warn(ex, code, message);
+                        // console.log('requestLocationPermission: ', message)
+                        // console.log('requestLocationPermission: ', code)
+                        // console.log('requestLocationPermission: ', message)
+
+                        if (message === 'Location not available') {
+                            Alert.showAlert('Serviço de localização está desabilitado', () => {
+                                GetLocation.openGpsSettings();
+                            });
+                        } else {
+                            if (code === '1') {
+                                // iOS
+                                // Permission Denied or Location Disabled
+                                // Android 
+                                // Location Disabled
+                                Alert.showAlert('Serviço de localização está desabilitado', () => {
+                                    GetLocation.openGpsSettings();
+                                });
+                            }
+                            if (code === '5') {
+                                // Android
+                                // Permission Denied
+                                Alert.showAlert('Você precisa autorizar o usa de localização', () => {
+                                    GetLocation.openAppSettings();
+                                });
+                            }
+                            if (code === '3') {
+                                // Android and iOS
+                                // Timeout
+                                Alert.showAlert('Tempo esgotado para obter a localização');
+                            }
+                        }
+                    })
+            })
+        }
     }
+
+
+
+
+
+
 
     onRegistroLongPress = (adm_spcl_idf) => {
         Alert.showConfirm("Deseja excluir este registro?",
@@ -384,6 +428,25 @@ export default class CheckListScreen extends Component {
     }
 
     onExcluirRegistro = (adm_spcl_idf) => {
+        if (!this.state.netStatus) {
+            Alert.showAlert('Dispositivo sem conexão');
+        } else {
+            this.setState({ aguarde: true });
+            axios.delete('/checkList/delete/' + adm_spcl_idf)
+                .then(response => {
+                    const listaRegistros = [...this.state.listaRegistros];
+                    const index = listaRegistros.findIndex(registro => registro.adm_spcl_idf === adm_spcl_idf);
+                    listaRegistros.splice(index, 1);
+                    this.setState({
+                        listaRegistros,
+                        aguarde: false
+                    });
+                }).catch(ex => {
+                    console.warn(ex);
+                    console.warn(ex.response);
+                    this.setState({ aguarde: false });
+                })
+        }
         this.setState({aguarde: true});
         axios.delete('/checkList/delete/' + adm_spcl_idf)
             .then(response => {
@@ -486,6 +549,12 @@ export default class CheckListScreen extends Component {
     }
 
     onGravarCheckOutPress = (adm_spcl_idf) => {
+        if (!this.state.netStatus) {
+            Alert.showAlert('Não é possível salvar. Dispositivo sem conexão');
+        } else {
+            this.setState({ aguarde: true });
+            this.requestLocationPermission().then(() => {
+                // console.log('requestLocationPermission');
         this.setState({aguarde: true});
         this.requestLocationPermission().then(() => {
             GetLocation.getCurrentPosition({
@@ -496,6 +565,9 @@ export default class CheckListScreen extends Component {
                     const local = String(location.latitude) + ',' + String(location.longitude);
                     console.log('checkOutVerificaAPIGoogle: ', local);
 
+                GetLocation.getCurrentPosition({
+                    enableHighAccuracy: true,
+                    timeout: 30000,
                     axios.put(`/checkList/checkOut/${adm_spcl_idf}/${local}`)
                         .then(response => {
                             this.setState({
@@ -506,6 +578,58 @@ export default class CheckListScreen extends Component {
                         this.setState({aguarde: false});
                     })
                 })
+                    .then(location => {
+                        const local = String(location.latitude) + ',' + String(location.longitude);
+                        // console.log('checkOutVerificaAPIGoogle: ', local);
+
+                        axios.put(`/checkList/checkOut/${adm_spcl_idf}/${local}`)
+                            .then(response => {
+                                this.setState({
+                                    aguarde: false
+                                }, this.getListaRegistros);
+                            }).catch(ex => {
+                                console.warn(ex, ex.response);
+                                this.setState({ aguarde: false });
+                            })
+                    })
+                    .catch(ex => {
+                        this.setState({ aguarde: false });
+                        const { code, message } = ex;
+                        console.warn(ex, code, message);
+                        // console.log('requestLocationPermission: ', message)
+                        // console.log('requestLocationPermission: ', code)
+                        // console.log('requestLocationPermission: ', message)
+
+                        if (message === 'Location not available') {
+                            Alert.showAlert('Serviço de localização está desabilitado', () => {
+                                GetLocation.openGpsSettings();
+                            });
+                        } else {
+                            if (code === '1') {
+                                // iOS
+                                // Permission Denied or Location Disabled
+                                // Android 
+                                // Location Disabled
+                                Alert.showAlert('Serviço de localização está desabilitado', () => {
+                                    GetLocation.openGpsSettings();
+                                });
+                            }
+                            if (code === '5') {
+                                // Android
+                                // Permission Denied
+                                Alert.showAlert('Você precisa autorizar o usa de localização', () => {
+                                    GetLocation.openAppSettings();
+                                });
+                            }
+                            if (code === '3') {
+                                // Android and iOS
+                                // Timeout
+                                Alert.showAlert('Tempo esgotado para obter a localização');
+                            }
+                        }
+                    })
+            })
+        }
                 .catch(ex => {
                     this.setState({aguarde: false});
                     const {code, message} = ex;
@@ -537,6 +661,30 @@ export default class CheckListScreen extends Component {
 
 
     onOSPress = (adm_spcl_idf, man_sp_obs, visible) => {
+        // console.log('onOSPress: ', adm_spcl_idf)
+        // console.log('onOSPress: ', man_sp_obs)
+        // console.log('onOSPress: ', visible)
+        if (!this.state.netStatus) {
+            Alert.showAlert('Dispositivo sem conexão');
+        } else {
+            if ((!visible) && (adm_spcl_idf) && (man_sp_obs)) {
+                // console.log('onOSPress OK')
+                this.setState({ aguarde: true });
+                axios.put(`/checkList/ordemServico/${adm_spcl_idf}/${man_sp_obs}`)
+                    .then(response => {
+                        this.setState({
+                            aguarde: false
+                        }, this.getListaRegistros);
+                    }).catch(ex => {
+                        console.warn(ex, ex.response);
+                        this.setState({ aguarde: false });
+                    })
+            }
+            this.setState({
+                modalOSVisible: visible,
+                adm_spcl_idf: adm_spcl_idf,
+                man_sp_obs: man_sp_obs,
+            });
         console.log('onOSPress: ', adm_spcl_idf)
         console.log('onOSPress: ', man_sp_obs)
         console.log('onOSPress: ', visible)
@@ -554,15 +702,30 @@ export default class CheckListScreen extends Component {
                 this.setState({aguarde: false});
             })
         }
-        this.setState({
-            modalOSVisible: visible,
-            adm_spcl_idf: adm_spcl_idf,
-            man_sp_obs: man_sp_obs,
-        });
     }
 
 
     onOcorrenciaPress = (adm_spcl_idf, adm_spcl_ocorrencia, visible) => {
+        if (!this.state.netStatus) {
+            Alert.showAlert('Dispositivo sem conexão');
+        } else {
+            if ((!visible) && (adm_spcl_idf) && (adm_spcl_ocorrencia)) {
+                this.setState({ aguarde: true });
+                axios.put(`/checkList/ocorrencia/${adm_spcl_idf}/${adm_spcl_ocorrencia}`)
+                    .then(response => {
+                        this.setState({
+                            aguarde: false
+                        }, this.getListaRegistros);
+                    }).catch(ex => {
+                        console.warn(ex, ex.response);
+                        this.setState({ aguarde: false });
+                    })
+            }
+            this.setState({
+                modalOcorrenciaVisible: visible,
+                adm_spcl_idf: adm_spcl_idf,
+                adm_spcl_ocorrencia: adm_spcl_ocorrencia,
+            });
         if ((!visible) && (adm_spcl_idf) && (adm_spcl_ocorrencia)) {
             this.setState({aguarde: true});
             axios.put(`/checkList/ocorrencia/${adm_spcl_idf}/${adm_spcl_ocorrencia}`)
@@ -575,11 +738,6 @@ export default class CheckListScreen extends Component {
                 this.setState({aguarde: false});
             })
         }
-        this.setState({
-            modalOcorrenciaVisible: visible,
-            adm_spcl_idf: adm_spcl_idf,
-            adm_spcl_ocorrencia: adm_spcl_ocorrencia,
-        });
     }
 
 
@@ -595,6 +753,7 @@ export default class CheckListScreen extends Component {
             dataIni, dataFim, netStatus
         } = this.state;
 
+        // console.log('CheckListScreen: ', this.state.netStatus);
 
         return (
             <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>

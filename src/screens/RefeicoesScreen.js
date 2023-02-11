@@ -162,7 +162,7 @@ export default class RefeicoesScreen extends Component {
             }
         }).then(response => {
 
-            console.log('getListaRegistros: ', response.data)
+            // console.log('getListaRegistros: ', response.data)
 
 
             const novosRegistros = pagina === 1

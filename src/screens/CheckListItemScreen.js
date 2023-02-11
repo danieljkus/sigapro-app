@@ -13,6 +13,7 @@ import {ProgressDialog} from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import Icon from '../components/Icon';
 import VeiculosSelect from '../components/VeiculosSelect';
+import NetInfo from '@react-native-community/netinfo';
 import HeaderComponent from "../components/HeaderComponent";
 
 export default class CheckListItemScreen extends Component {
@@ -23,6 +24,7 @@ export default class CheckListItemScreen extends Component {
             loading: false,
             salvando: false,
             refreshing: false,
+            netStatus: 1,
 
             veiculo_select: null,
             codVeiculo: '',
@@ -45,6 +47,18 @@ export default class CheckListItemScreen extends Component {
 
             ...props.navigation.state.params.registro,
         }
+        NetInfo.addEventListener(state => { this.onNetEvento(state) });
+    }
+
+    onNetEvento = (info) => {
+        let state = this.state;
+        // console.log('onNetEvento: ', info)
+        if (info.isConnected) {
+            state.netStatus = 1;
+        } else {
+            state.netStatus = 0;
+        }
+        this.setState(state);
     }
 
     componentDidMount() {
@@ -130,21 +144,36 @@ export default class CheckListItemScreen extends Component {
 
 
     onGravarRegistro = () => {
+        if (!this.state.netStatus) {
+            Alert.showAlert('Não é possível salvar. Dispositivo sem conexão');
+        } else {
+            this.setState({ salvando: true });
         this.setState({salvando: true});
 
-        const registro = {
-            adm_spcl_idf: 0,
-            adm_spcl_veiculo: this.state.codVeiculo ? this.state.codVeiculo : '',
-            adm_spcl_obs: this.state.adm_spcl_obs ? this.state.adm_spcl_obs : '',
-            adm_spcl_escala: this.state.adm_spcl_escala ? this.state.adm_spcl_escala : '',
-            adm_spcl_local_checkin: this.state.adm_spcl_local_checkin ? this.state.adm_spcl_local_checkin : '',
+            const registro = {
+                adm_spcl_idf: 0,
+                adm_spcl_veiculo: this.state.codVeiculo ? this.state.codVeiculo : '',
+                adm_spcl_obs: this.state.adm_spcl_obs ? this.state.adm_spcl_obs : '',
+                adm_spcl_escala: this.state.adm_spcl_escala ? this.state.adm_spcl_escala : '',
+                adm_spcl_local_checkin: this.state.adm_spcl_local_checkin ? this.state.adm_spcl_local_checkin : '',
 
-            listaItens: this.state.listaRegistros,
-        };
+                listaItens: this.state.listaRegistros,
+            };
 
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
+            // console.log('onSalvarRegistro: ', registro);
+            // return;
 
+            axios.post('/checkList/store', registro)
+                .then(response => {
+                    this.props.navigation.goBack(null);
+                    if (this.props.navigation.state.params.onRefresh) {
+                        this.props.navigation.state.params.onRefresh();
+                    }
+                }).catch(ex => {
+                    this.setState({ salvado: false });
+                    console.warn(ex);
+                })
+        }
         axios.post('/checkList/store', registro)
             .then(response => {
                 this.props.navigation.goBack(null);
@@ -253,12 +282,13 @@ export default class CheckListItemScreen extends Component {
         const {
             codVeiculo, veiculo_select, adm_spcl_obs, adm_spcl_idf, adm_spcl_escala,
             adm_spcli_check, adm_spcli_obs, adm_spicl_descricao, adm_spicl_obs, adm_spcli_seq,
+            salvando, loading, refreshing, carregarRegistro, netStatus } = this.state;
             salvando, loading, refreshing, carregarRegistro
         } = this.state;
 
         let imagemHeigth = Dimensions.get('window').height;
 
-        console.log('this.state', this.state);
+        // console.log('this.state', this.state);
 
         return (
             <SafeAreaView style={{flex: 1}}>
@@ -271,6 +301,15 @@ export default class CheckListItemScreen extends Component {
                 <View style={{flex: 1, backgroundColor: Colors.background}}>
                     <StatusBar/>
 
+                <ScrollView
+                    style={{ flex: 1, }}
+                    keyboardShouldPersistTaps="always"
+                >
+                    {netStatus ? null : (
+                        <Text style={{ textAlign: 'center', color: '#d50000', marginTop: 2 }}>
+                            Dispositivo sem conexão
+                        </Text>
+                    )}
                     <ScrollView
                         style={{flex: 1,}}
                         keyboardShouldPersistTaps="always"
