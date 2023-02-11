@@ -1,269 +1,57 @@
 import React, {Component} from 'react';
 import {
-    View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator,
-    ScrollView, Modal, PermissionsAndroid, SafeAreaView
+    View,
+    Text,
+    ScrollView,
+    RefreshControl,
+    Platform,
+    Dimensions,
+    PermissionsAndroid,
+    SafeAreaView
 } from 'react-native';
+import {Card, Divider, CheckBox} from 'react-native-elements';
+import {checkFormIsValid} from '../utils/Validator';
+
+import TextInput from '../components/TextInput';
+import moment from 'moment';
+import Button from '../components/Button';
+import Colors from '../values/Colors';
+import axios from 'axios';
+import Alert from '../components/Alert';
+import {ProgressDialog} from 'react-native-simple-dialogs';
+import {maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat} from "../utils/Maskers";
+import {getEmpresa} from '../utils/LoginManager';
+import NetInfo from '@react-native-community/netinfo';
+import GetLocation from 'react-native-get-location';
+import HeaderComponent from "../components/HeaderComponent";
 
 const {OS} = Platform;
 
-import Alert from '../components/Alert';
-import axios from 'axios';
-import {Card, Divider, Icon} from 'react-native-elements';
-import {ProgressDialog} from 'react-native-simple-dialogs';
-import FloatActionButton from '../components/FloatActionButton';
-import Colors from '../values/Colors';
-import {maskDate} from '../utils/Maskers';
-import TextInput from '../components/TextInput';
-import Button from '../components/Button';
-import NetInfo from '@react-native-community/netinfo';
-import GetLocation from 'react-native-get-location';
 
-import moment from 'moment';
-import 'moment/locale/pt-br';
-import HeaderComponent from "../components/HeaderComponent";
-
-moment.locale('pt-BR');
-
-const DATE_FORMAT = 'DD/MM/YYYY';
-
-const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOutPress, onOSPress, onOcorrenciaPress}) => {
-    return (
-        <Card containerStyle={{
-            padding: 0,
-            margin: 0,
-            marginVertical: 10,
-            borderRadius: 0,
-            backgroundColor: Colors.textDisabledLight,
-            elevation: 0,
-        }}>
-            <TouchableOpacity
-                onPress={() => onRegistroPress(registro.adm_spcl_idf)}
-                onLongPress={() => onRegistroLongPress(registro.adm_spcl_idf)}
-            >
-
-                <View style={{paddingLeft: 10, marginTop: 20, fontSize: 13, flexDirection: 'row'}}>
-                    <View style={{flex: 1}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
-                            #{registro.adm_spcl_idf}
-                        </Text>
-                    </View>
-                    <View style={{flex: 4, flexDirection: 'row'}}>
-                        {/* <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                            Data {': '}
-                        </Text> */}
-                        <Text>
-                            {moment(registro.adm_spcl_data).format('DD/MM/YYYY')}
-                            {/* {moment(registro.adm_spcl_data).format('DD/MM/YYYY [às] HH:mm')} */}
-                        </Text>
-                    </View>
-                    <View style={{flex: 2, flexDirection: 'row'}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
-                            Veículo {': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_spcl_veiculo}
-                        </Text>
-                    </View>
-                </View>
-
-                {registro.adm_spcl_escala ? (
-                    <View style={{paddingLeft: 10, paddingVertical: 4, flexDirection: 'row'}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
-                            Escala {': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_spcl_escala}
-                        </Text>
-                    </View>
-                ) : null}
-
-                {registro.adm_spcl_obs ? (
-                    <View style={{paddingLeft: 20, paddingVertical: 4}}>
-                        <Text style={{color: Colors.textPrimaryDark, fontSize: 15}}>
-                            {registro.adm_spcl_obs}
-                        </Text>
-                    </View>
-                ) : null}
-
-                {/* <Divider /> */}
-
-            </TouchableOpacity>
-
-            <View
-                style={{
-                    flex: 1,
-                    margin: 0,
-                    marginLeft: 5,
-                    marginTop: 10,
-                    marginBottom: 5,
-                    paddingTop: 15,
-                    height: 60,
-                    width: "95%",
-                    borderTopWidth: 1,
-                    borderColor: Colors.dividerDark,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                }}
-            >
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <View style={{
-                        flex: 1,
-                        marginTop: 5,
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <Icon
-                            name='check-square-o'
-                            type='font-awesome'
-                            color="#10734a"
-                            marginTop={2}
-                            size={17}
-                        />
-                    </View>
-                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{color: "#10734a", fontSize: 12, marginTop: 1, marginBottom: 5}}>
-                            Check-In
-                        </Text>
-                        <Text style={{color: "#10734a", fontSize: 10, marginTop: -5, marginBottom: 5}}>
-                            {moment(registro.adm_spcl_data).format('DD/MM/YYYY HH:mm')}
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <TouchableOpacity
-                        onPress={() => onCheckOutPress(registro.adm_spcl_idf, registro.adm_spcl_local_checkout)}
-                    >
-                        <View style={{
-                            flex: 1,
-                            marginTop: 5,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <Icon
-                                name='share-square-o'
-                                type='font-awesome'
-                                color={registro.adm_spcl_checkout ? "#10734a" : "#d50000"}
-                                marginTop={2}
-                                size={17}
-                            />
-                        </View>
-                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{
-                                color: registro.adm_spcl_checkout ? "#10734a" : "#d50000",
-                                fontSize: 12,
-                                marginTop: 1,
-                                marginBottom: 5
-                            }}>
-                                Check-Out
-                            </Text>
-                            {registro.adm_spcl_checkout ? (
-                                <Text style={{color: "#10734a", fontSize: 10, marginTop: -5, marginBottom: 5}}>
-                                    {moment(registro.adm_spcl_checkout).format('DD/MM/YYYY HH:mm')}
-                                </Text>
-                            ) : null}
-                        </View>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={{flex: 0.8, justifyContent: 'center', alignItems: 'center'}}>
-                    <TouchableOpacity
-                        onPress={() => onOSPress(registro.adm_spcl_idf, registro.man_sp_obs, true)}
-                    >
-                        <View style={{
-                            flex: 1,
-                            marginTop: 5,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <Icon
-                                name='wrench'
-                                type='font-awesome'
-                                color={Colors.primaryDark}
-                                marginTop={2}
-                                size={17}
-                            />
-                        </View>
-                        <Text style={{
-                            color: Colors.primaryDark,
-                            fontSize: 11,
-                            marginTop: 5,
-                            marginBottom: 5,
-                            textDecorationLine: registro.man_sp_obs ? 'underline' : ''
-                        }}>
-                            O.S.
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={{flex: 0.8, justifyContent: 'center', alignItems: 'center'}}>
-                    <TouchableOpacity
-                        onPress={() => onOcorrenciaPress(registro.adm_spcl_idf, registro.adm_spcl_ocorrencia, true)}
-                    >
-                        <View style={{
-                            flex: 1,
-                            marginTop: 5,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <Icon
-                                name='list-alt'
-                                type='font-awesome'
-                                color={Colors.primaryDark}
-                                marginTop={2}
-                                size={17}
-                            />
-                        </View>
-                        <Text style={{
-                            color: Colors.primaryDark,
-                            fontSize: 11,
-                            marginTop: 5,
-                            marginBottom: 5,
-                            textDecorationLine: registro.adm_spcl_ocorrencia ? 'underline' : ''
-                        }}>
-                            Ocorrência
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
-        </Card>
-    )
-}
-
-export default class CheckListScreen extends Component {
+export default class RefeicaoScreen extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            listaRegistros: [],
-            aguarde: false,
-            refreshing: false,
-            carregando: false,
-            carregarMais: false,
-            pagina: 1,
+            rhref_cod_rest: 0,
+            restaurante: [],
+            tipoRefeicao: 'CAF',
+            checkedCafe: true,
+            checkedAlmoco: false,
+            checkedJanta: false,
+            checkedMarmita: false,
             netStatus: 1,
 
-            dataIni: moment(moment().subtract(10, 'days')).format(DATE_FORMAT),
-            dataFim: moment(new Date()).format(DATE_FORMAT),
-            adm_spcl_veiculo: '',
-
-            temFiltro: false,
-            modalFiltrosVisible: false,
-
-            modalOSVisible: false,
-            man_sp_obs: '',
-
-            modalOcorrenciaVisible: false,
-            adm_spcl_idf: 0,
-            adm_spcl_ocorrencia: '',
-
-        };
+            registro: {
+                rhref_idf: 0,
+                rhref_cod_rest: 0,
+                rhref_localizacao: '',
+                rhref_obs: '',
+                rhref_tipo_refeicao: 'CAF',
+            },
+            salvado: false,
+        }
         NetInfo.addEventListener(state => {
             this.onNetEvento(state)
         });
@@ -281,79 +69,43 @@ export default class CheckListScreen extends Component {
     }
 
     componentDidMount() {
-        this.setState({
-                refreshing: true,
-            },
-            this.getListaRegistros()
-        );
-    }
-
-    onInputChange = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-    }
-
-    getListaRegistros = () => {
-        const {adm_spcl_veiculo, dataIni, dataFim, pagina, listaRegistros} = this.state;
-        axios.get('/checkList', {
-            params: {
-                tipoDig: 2,
-                page: pagina,
-                limite: 10,
-                veic: adm_spcl_veiculo,
-                dtIni: moment(dataIni, DATE_FORMAT).format("YYYY-MM-DD"),
-                dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
-            }
-        }).then(response => {
-            const novosRegistros = pagina === 1
-                ? response.data.data
-                : listaRegistros.concat(response.data.data);
-            const total = response.data.total;
-            this.setState({
-                listaRegistros: novosRegistros,
-                refreshing: false,
-                carregando: false,
-                carregarMais: novosRegistros.length < total,
-            })
-        }).catch(ex => {
-            console.warn('Erro Busca:', ex);
-            this.setState({
-                refreshing: false,
-                carregando: false,
-            });
+        getEmpresa().then(empresa => {
+            this.setState({empresa});
         })
     }
 
-    onRegistroPress = (adm_spcl_idf) => {
-        // console.log('onRegistroPress: ', adm_spcl_idf);
-
-        this.setState({aguarde: true});
-        axios.get('/checkList/show/' + adm_spcl_idf)
-            .then(response => {
-                this.setState({aguarde: false});
-
-                // console.log('onRegistroPress: ', response.data);
-
-                this.props.navigation.navigate('CheckListItemScreen', {
-                    registro: {
-                        ...response.data.dados,
-                        listaRegistros: response.data.listaItens,
-                    },
-                    onRefresh: this.onRefresh
-                });
-            }).catch(ex => {
-            this.setState({aguarde: false});
-            console.warn(ex);
-            console.warn(ex.response);
+    onInputChange = (id, value) => {
+        const {registro} = this.state;
+        this.setState({
+            registro: {
+                ...registro,
+                [id]: value
+            }
         });
     }
 
-    onAddPress = () => {
+    onSubmitForm = (event) => {
+        // console.log('onSubmitForm: ', this.state.rhref_cod_rest);
+
+        if ((!this.state.rhref_cod_rest) || (this.state.rhref_cod_rest === '0') || (this.state.rhref_cod_rest === '')) {
+            Alert.showAlert("Informe o Restaurante")
+            return
+        }
+
+        Alert.showConfirm("Deseja salvar essa Refeição?", {
+                text: "Cancelar"
+            },
+            {
+                text: "OK",
+                onPress: this.onSalvar
+            })
+    }
+
+    onSalvar = () => {
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
-            // console.log('onAddPress');
+
             this.requestLocationPermission().then(() => {
                 GetLocation.getCurrentPosition({
                     enableHighAccuracy: true,
@@ -363,160 +115,224 @@ export default class CheckListScreen extends Component {
                         const local = String(location.latitude) + ',' + String(location.longitude);
                         // console.log('onAddPress: ', local);
 
-                        this.props.navigation.navigate('CheckListItemScreen', {
-                            registro: {
-                                adm_spcl_idf: 0,
-                                adm_spcl_local_checkin: local,
-                            },
-                            onRefresh: this.onRefresh
-                        });
-                    }).catch(ex => {
-                        this.setState({ aguarde: false });
-                        const { code, message } = ex;
-                        console.warn(ex, code, message);
-                        // console.log('requestLocationPermission: ', message)
-                        // console.log('requestLocationPermission: ', code)
-                        // console.log('requestLocationPermission: ', message)
+                        this.setState({salvado: true});
+                        const {registro} = this.state;
 
-                        if (message === 'Location not available') {
-                            Alert.showAlert('Serviço de localização está desabilitado', () => {
-                                GetLocation.openGpsSettings();
-                            });
-                        } else {
-                            if (code === '1') {
-                                // iOS
-                                // Permission Denied or Location Disabled
-                                // Android 
-                                // Location Disabled
-                                Alert.showAlert('Serviço de localização está desabilitado', () => {
-                                    GetLocation.openGpsSettings();
-                                });
-                            }
-                            if (code === '5') {
-                                // Android
-                                // Permission Denied
-                                Alert.showAlert('Você precisa autorizar o usa de localização', () => {
-                                    GetLocation.openAppSettings();
-                                });
-                            }
-                            if (code === '3') {
-                                // Android and iOS
-                                // Timeout
-                                Alert.showAlert('Tempo esgotado para obter a localização');
-                            }
-                        }
+                        this.setState({salvado: true});
+
+                        registro.rhref_cod_rest = this.state.rhref_cod_rest;
+                        registro.rhref_tipo_refeicao = this.state.tipoRefeicao;
+                        registro.rhref_localizacao = local;
+
+                        return axios
+                            .post('/refeicoes/store', registro)
+                            .then(response => {
+                                this.props.navigation.goBack(null);
+                                this.props.navigation.state.params.onRefresh();
+                            }).catch(ex => {
+                                const {response} = ex;
+                                this.setState({salvado: false});
+                                // console.log('RefeicaoScreen.onSalvar: ', registro);
+                                // return;
+
+                                return axios
+                                    .post('/refeicoes/store', registro)
+                                    .then(response => {
+                                        this.props.navigation.goBack(null);
+                                        this.props.navigation.state.params.onRefresh();
+                                    }).catch(ex => {
+                                        const {response} = ex;
+                                        this.setState({salvado: false});
+
+                                        // console.log('RefeicaoScreen.onSalvar.ERROR: ', ex);
+
+                                        if (ex.response) {
+                                            // erro no servidor
+                                            Alert.showAlert('Não foi possível gravar. ' + ex.response.data);
+                                        } else {
+                                            // sem internet
+                                            Alert.showAlert('Não foi possível gravar. Verifique sua conexão com a internet');
+                                        }
+                                    })
+
+                            })
                     })
             })
         }
     }
 
 
-
-
-
-
-
-    onRegistroLongPress = (adm_spcl_idf) => {
-        Alert.showConfirm("Deseja excluir este registro?",
-            {text: "Cancelar"},
-            {
-                text: "Excluir",
-                onPress: () => this.onExcluirRegistro(adm_spcl_idf),
-                style: "destructive"
-            }
-        )
-    }
-
-    onExcluirRegistro = (adm_spcl_idf) => {
-        if (!this.state.netStatus) {
-            Alert.showAlert('Dispositivo sem conexão');
-        } else {
-            this.setState({ aguarde: true });
-            axios.delete('/checkList/delete/' + adm_spcl_idf)
-                .then(response => {
-                    const listaRegistros = [...this.state.listaRegistros];
-                    const index = listaRegistros.findIndex(registro => registro.adm_spcl_idf === adm_spcl_idf);
-                    listaRegistros.splice(index, 1);
-                    this.setState({
-                        listaRegistros,
-                        aguarde: false
-                    });
-                }).catch(ex => {
-                    console.warn(ex);
-                    console.warn(ex.response);
-                    this.setState({ aguarde: false });
-                })
-        }
-        this.setState({aguarde: true});
-        axios.delete('/checkList/delete/' + adm_spcl_idf)
-            .then(response => {
-                const listaRegistros = [...this.state.listaRegistros];
-                const index = listaRegistros.findIndex(registro => registro.adm_spcl_idf === adm_spcl_idf);
-                listaRegistros.splice(index, 1);
-                this.setState({
-                    listaRegistros,
-                    aguarde: false
-                });
-            }).catch(ex => {
-            console.warn(ex);
-            console.warn(ex.response);
-            this.setState({aguarde: false});
+    onEscanearPress = () => {
+        this.props.navigation.push('BarCodeScreen', {
+            onBarCodeRead: this.onBarCodeRead
         })
     }
 
-    onRefresh = () => {
+    onBarCodeRead = event => {
+        const {data, rawData, type} = event;
+        // console.log('RefeicaoScreen.onBarCodeRead: ', data);
+
         this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
+                rhref_cod_rest: data,
+                restaurante: [],
+            },
+            this.buscaRestaurante(data)
+        );
     }
 
-    carregarMaisRegistros = () => {
-        const {carregarMais, refreshing, carregando, pagina} = this.state;
-        if (carregarMais && !refreshing && !carregando) {
+    buscaRestaurante = (value) => {
+        this.setState({carregando: true});
+        // console.log('RefeicaoScreen.buscaRestaurante: ', value);
+
+        axios.get('/buscaRestaurante', {
+            params: {
+                codRestaurante: value
+            }
+        }).then(response => {
+            const {data} = response;
+            // console.log('RefeicaoScreen.buscaRestaurante: ', response.data[0]);
+
+            let checkedCafe = true;
+            let checkedAlmoco = false;
+            let checkedJanta = false;
+            let checkedMarmita = false;
+            let tipoRefeicao = 'CAF';
+
+            if (parseFloat(data[0].rhrest_vlr_cafe)) {
+                tipoRefeicao = 'CAF';
+                checkedCafe = true;
+                checkedAlmoco = false;
+                checkedJanta = false;
+                checkedMarmita = false;
+            } else if (parseFloat(data[0].rhrest_vlr_almoco)) {
+                tipoRefeicao = 'ALM';
+                checkedCafe = false;
+                checkedAlmoco = true;
+                checkedJanta = false;
+                checkedMarmita = false;
+            } else if (parseFloat(data[0].rhrest_vlr_janta)) {
+                tipoRefeicao = 'JAN';
+                checkedCafe = false;
+                checkedAlmoco = false;
+                checkedJanta = true;
+                checkedMarmita = false;
+            } else if (parseFloat(data[0].rhrest_vlr_marmita)) {
+                tipoRefeicao = 'MAR';
+                checkedCafe = false;
+                checkedAlmoco = false;
+                checkedJanta = false;
+                checkedMarmita = true;
+            }
+
             this.setState({
-                carregando: true,
-                pagina: pagina + 1,
-            }, this.getListaRegistros);
+
+                tipoRefeicao,
+                checkedCafe,
+                checkedAlmoco,
+                checkedJanta,
+                checkedMarmita,
+                rhref_cod_rest: data[0].rhrest_codigo,
+
+                restaurante: {
+                    rhrest_codigo: data[0].rhrest_codigo,
+                    adm_pes_nome: data[0].adm_pes_nome,
+                    ceps_loc_descricao: data[0].ceps_loc_descricao,
+                    ceps_loc_uf: data[0].ceps_loc_uf,
+                    rhrest_hora_ini_cafe: parseInt(data[0].rhrest_hora_ini_cafe),
+                    rhrest_hora_fim_cafe: parseInt(data[0].rhrest_hora_fim_cafe),
+                    rhrest_hora_ini_almoco: parseInt(data[0].rhrest_hora_ini_almoco),
+                    rhrest_hora_fim_almoco: parseInt(data[0].rhrest_hora_fim_almoco),
+                    rhrest_hora_ini_janta: parseInt(data[0].rhrest_hora_ini_janta),
+                    rhrest_hora_fim_janta: parseInt(data[0].rhrest_hora_fim_janta),
+                    rhrest_hora_ini_marmita: parseInt(data[0].rhrest_hora_ini_marmita),
+                    rhrest_hora_fim_marmita: parseInt(data[0].rhrest_hora_fim_marmita),
+                    rhrest_vlr_cafe: parseFloat(data[0].rhrest_vlr_cafe),
+                    rhrest_vlr_almoco: parseFloat(data[0].rhrest_vlr_almoco),
+                    rhrest_vlr_janta: parseFloat(data[0].rhrest_vlr_janta),
+                    rhrest_vlr_marmita: parseFloat(data[0].rhrest_vlr_marmita),
+                },
+
+                carregando: false,
+            })
+        }).catch(error => {
+            console.warn(error);
+            console.warn(error.response);
+            this.setState({
+                carregando: false,
+            });
+        })
+    }
+
+
+    onAbrirBuscaModal = () => {
+        this.props.navigation.navigate('RestaurantesScreen', {
+            onMostraRestaurante: this.onMostraRestaurante
+        });
+    }
+
+    onMostraRestaurante = (registro) => {
+        // console.log('onMostraRestaurante: ', registro)
+
+        let checkedCafe = true;
+        let checkedAlmoco = false;
+        let checkedJanta = false;
+        let checkedMarmita = false;
+        let tipoRefeicao = 'CAF';
+
+        if (parseFloat(registro.rhrest_vlr_cafe)) {
+            tipoRefeicao = 'CAF';
+            checkedCafe = true;
+            checkedAlmoco = false;
+            checkedJanta = false;
+            checkedMarmita = false;
+        } else if (parseFloat(registro.rhrest_vlr_almoco)) {
+            tipoRefeicao = 'ALM';
+            checkedCafe = false;
+            checkedAlmoco = true;
+            checkedJanta = false;
+            checkedMarmita = false;
+        } else if (parseFloat(registro.rhrest_vlr_janta)) {
+            tipoRefeicao = 'JAN';
+            checkedCafe = false;
+            checkedAlmoco = false;
+            checkedJanta = true;
+            checkedMarmita = false;
+        } else if (parseFloat(registro.rhrest_vlr_marmita)) {
+            tipoRefeicao = 'MAR';
+            checkedCafe = false;
+            checkedAlmoco = false;
+            checkedJanta = false;
+            checkedMarmita = true;
         }
-    }
 
-    renderListFooter = () => {
-        const {carregando} = this.state;
-        if (carregando) {
-            return (
-                <View style={{marginTop: 8}}>
-                    <ActivityIndicator size="large"/>
-                </View>
-            )
-        }
-        return null;
-    }
-
-    renderItem = ({item}) => {
-        return (
-            <CardViewItem
-                registro={item}
-                onRegistroPress={this.onRegistroPress}
-                onRegistroLongPress={this.onRegistroLongPress}
-                onCheckOutPress={this.onCheckOutPress}
-                onOSPress={this.onOSPress}
-                onOcorrenciaPress={this.onOcorrenciaPress}
-            />
-        )
-    }
-
-
-    onSearchPress = (visible) => {
-        this.setState({modalFiltrosVisible: visible});
         this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
-    }
 
-    onClosePress = (visible) => {
-        this.setState({modalFiltrosVisible: visible});
+            tipoRefeicao,
+            checkedCafe,
+            checkedAlmoco,
+            checkedJanta,
+            checkedMarmita,
+            rhref_cod_rest: registro.rhrest_codigo,
+
+            restaurante: {
+                rhrest_codigo: registro.rhrest_codigo,
+                adm_pes_nome: registro.adm_pes_nome,
+                ceps_loc_descricao: registro.ceps_loc_descricao,
+                ceps_loc_uf: registro.ceps_loc_uf,
+                rhrest_hora_ini_cafe: parseInt(registro.rhrest_hora_ini_cafe),
+                rhrest_hora_fim_cafe: parseInt(registro.rhrest_hora_fim_cafe),
+                rhrest_hora_ini_almoco: parseInt(registro.rhrest_hora_ini_almoco),
+                rhrest_hora_fim_almoco: parseInt(registro.rhrest_hora_fim_almoco),
+                rhrest_hora_ini_janta: parseInt(registro.rhrest_hora_ini_janta),
+                rhrest_hora_fim_janta: parseInt(registro.rhrest_hora_fim_janta),
+                rhrest_hora_ini_marmita: parseInt(registro.rhrest_hora_ini_marmita),
+                rhrest_hora_fim_marmita: parseInt(registro.rhrest_hora_fim_marmita),
+                rhrest_vlr_cafe: parseFloat(registro.rhrest_vlr_cafe),
+                rhrest_vlr_almoco: parseFloat(registro.rhrest_vlr_almoco),
+                rhrest_vlr_janta: parseFloat(registro.rhrest_vlr_janta),
+                rhrest_vlr_marmita: parseFloat(registro.rhrest_vlr_marmita),
+            }
+        });
     }
 
 
@@ -528,577 +344,294 @@ export default class CheckListScreen extends Component {
     }
 
 
-    onCheckOutPress = (adm_spcl_idf, adm_spcl_local_checkout) => {
-        if (!adm_spcl_local_checkout) {
-            if (!this.state.netStatus) {
-                Alert.showAlert('Não é possível fazer Check-Out. Dispositivo sem conexão');
-            } else {
-                Alert.showConfirm("Fazer o Check-Out?",
-                    {
-                        text: "Não",
-                        style: "destructive"
-                    },
-                    {
-                        text: "Sim",
-                        onPress: () => this.onGravarCheckOutPress(adm_spcl_idf),
-                        style: "destructive"
-                    }
-                )
-            }
-        }
-    }
-
-    onGravarCheckOutPress = (adm_spcl_idf) => {
-        if (!this.state.netStatus) {
-            Alert.showAlert('Não é possível salvar. Dispositivo sem conexão');
-        } else {
-            this.setState({ aguarde: true });
-            this.requestLocationPermission().then(() => {
-                // console.log('requestLocationPermission');
-        this.setState({aguarde: true});
-        this.requestLocationPermission().then(() => {
-            GetLocation.getCurrentPosition({
-                enableHighAccuracy: true,
-                timeout: 30000,
-            })
-                .then(location => {
-                    const local = String(location.latitude) + ',' + String(location.longitude);
-                    console.log('checkOutVerificaAPIGoogle: ', local);
-
-                GetLocation.getCurrentPosition({
-                    enableHighAccuracy: true,
-                    timeout: 30000,
-                    axios.put(`/checkList/checkOut/${adm_spcl_idf}/${local}`)
-                        .then(response => {
-                            this.setState({
-                                aguarde: false
-                            }, this.getListaRegistros);
-                        }).catch(ex => {
-                        console.warn(ex, ex.response);
-                        this.setState({aguarde: false});
-                    })
-                })
-                    .then(location => {
-                        const local = String(location.latitude) + ',' + String(location.longitude);
-                        // console.log('checkOutVerificaAPIGoogle: ', local);
-
-                        axios.put(`/checkList/checkOut/${adm_spcl_idf}/${local}`)
-                            .then(response => {
-                                this.setState({
-                                    aguarde: false
-                                }, this.getListaRegistros);
-                            }).catch(ex => {
-                                console.warn(ex, ex.response);
-                                this.setState({ aguarde: false });
-                            })
-                    })
-                    .catch(ex => {
-                        this.setState({ aguarde: false });
-                        const { code, message } = ex;
-                        console.warn(ex, code, message);
-                        // console.log('requestLocationPermission: ', message)
-                        // console.log('requestLocationPermission: ', code)
-                        // console.log('requestLocationPermission: ', message)
-
-                        if (message === 'Location not available') {
-                            Alert.showAlert('Serviço de localização está desabilitado', () => {
-                                GetLocation.openGpsSettings();
-                            });
-                        } else {
-                            if (code === '1') {
-                                // iOS
-                                // Permission Denied or Location Disabled
-                                // Android 
-                                // Location Disabled
-                                Alert.showAlert('Serviço de localização está desabilitado', () => {
-                                    GetLocation.openGpsSettings();
-                                });
-                            }
-                            if (code === '5') {
-                                // Android
-                                // Permission Denied
-                                Alert.showAlert('Você precisa autorizar o usa de localização', () => {
-                                    GetLocation.openAppSettings();
-                                });
-                            }
-                            if (code === '3') {
-                                // Android and iOS
-                                // Timeout
-                                Alert.showAlert('Tempo esgotado para obter a localização');
-                            }
-                        }
-                    })
-            })
-        }
-                .catch(ex => {
-                    this.setState({aguarde: false});
-                    const {code, message} = ex;
-                    console.warn(ex, code, message);
-                    if (code === '1') {
-                        // iOS
-                        // Permission Denied or Location Disabled
-                        // Android 
-                        // Location Disabled
-                        Alert.showAlert('Serviço de localização está desabilitado', () => {
-                            GetLocation.openGpsSettings();
-                        });
-                    }
-                    if (code === '5') {
-                        // Android
-                        // Permission Denied
-                        Alert.showAlert('Você precisa autorizar o usa de localização', () => {
-                            GetLocation.openAppSettings();
-                        });
-                    }
-                    if (code === '3') {
-                        // Android and iOS
-                        // Timeout
-                        Alert.showAlert('Tempo esgotado para obter a localização');
-                    }
-                })
-        })
-    }
-
-
-    onOSPress = (adm_spcl_idf, man_sp_obs, visible) => {
-        // console.log('onOSPress: ', adm_spcl_idf)
-        // console.log('onOSPress: ', man_sp_obs)
-        // console.log('onOSPress: ', visible)
-        if (!this.state.netStatus) {
-            Alert.showAlert('Dispositivo sem conexão');
-        } else {
-            if ((!visible) && (adm_spcl_idf) && (man_sp_obs)) {
-                // console.log('onOSPress OK')
-                this.setState({ aguarde: true });
-                axios.put(`/checkList/ordemServico/${adm_spcl_idf}/${man_sp_obs}`)
-                    .then(response => {
-                        this.setState({
-                            aguarde: false
-                        }, this.getListaRegistros);
-                    }).catch(ex => {
-                        console.warn(ex, ex.response);
-                        this.setState({ aguarde: false });
-                    })
-            }
-            this.setState({
-                modalOSVisible: visible,
-                adm_spcl_idf: adm_spcl_idf,
-                man_sp_obs: man_sp_obs,
-            });
-        console.log('onOSPress: ', adm_spcl_idf)
-        console.log('onOSPress: ', man_sp_obs)
-        console.log('onOSPress: ', visible)
-
-        if ((!visible) && (adm_spcl_idf) && (man_sp_obs)) {
-            console.log('onOSPress OK')
-            this.setState({aguarde: true});
-            axios.put(`/checkList/ordemServico/${adm_spcl_idf}/${man_sp_obs}`)
-                .then(response => {
-                    this.setState({
-                        aguarde: false
-                    }, this.getListaRegistros);
-                }).catch(ex => {
-                console.warn(ex, ex.response);
-                this.setState({aguarde: false});
-            })
-        }
-    }
-
-
-    onOcorrenciaPress = (adm_spcl_idf, adm_spcl_ocorrencia, visible) => {
-        if (!this.state.netStatus) {
-            Alert.showAlert('Dispositivo sem conexão');
-        } else {
-            if ((!visible) && (adm_spcl_idf) && (adm_spcl_ocorrencia)) {
-                this.setState({ aguarde: true });
-                axios.put(`/checkList/ocorrencia/${adm_spcl_idf}/${adm_spcl_ocorrencia}`)
-                    .then(response => {
-                        this.setState({
-                            aguarde: false
-                        }, this.getListaRegistros);
-                    }).catch(ex => {
-                        console.warn(ex, ex.response);
-                        this.setState({ aguarde: false });
-                    })
-            }
-            this.setState({
-                modalOcorrenciaVisible: visible,
-                adm_spcl_idf: adm_spcl_idf,
-                adm_spcl_ocorrencia: adm_spcl_ocorrencia,
-            });
-        if ((!visible) && (adm_spcl_idf) && (adm_spcl_ocorrencia)) {
-            this.setState({aguarde: true});
-            axios.put(`/checkList/ocorrencia/${adm_spcl_idf}/${adm_spcl_ocorrencia}`)
-                .then(response => {
-                    this.setState({
-                        aguarde: false
-                    }, this.getListaRegistros);
-                }).catch(ex => {
-                console.warn(ex, ex.response);
-                this.setState({aguarde: false});
-            })
-        }
-    }
-
-
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
-
-
     render() {
         const {
-            listaRegistros, refreshing, aguarde,
-            adm_spcl_veiculo, adm_spcl_idf, adm_spcl_ocorrencia, man_sp_obs,
-            dataIni, dataFim, netStatus
+            registro, restaurante, checkedCafe, checkedAlmoco, checkedJanta, checkedMarmita,
+            salvado, carregando, netStatus
         } = this.state;
+        const {rhref_obs} = registro;
 
-        // console.log('CheckListScreen: ', this.state.netStatus);
+        // console.log('STATE: ', this.state)
 
         return (
             <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
                 <HeaderComponent
                     color={'white'}
-                    titleCenterComponent={'Check-List dos Veículos'}
+                    titleCenterComponent={'Refeições'}
                     pressLeftComponen={() => this?.props?.navigation?.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />
-                <View style={{flex: 1, backgroundColor: 'white'}}>
-
-                    {netStatus ? null : (
-                        <Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>
-                            Dispositivo sem conexão
-                        </Text>
-                    )}
-
-                    <FlatList
-                        data={listaRegistros}
-                        renderItem={this.renderItem}
-                        contentContainerStyle={{paddingBottom: 100}}
-                        keyExtractor={registro => String(registro.adm_spcl_idf)}
-                        onRefresh={this.onRefresh}
-                        refreshing={refreshing}
-                        onEndReached={this.carregarMaisRegistros}
-                        ListFooterComponent={this.renderListFooter}
-                    />
-
-
-                    {/* ----------------------------- */}
-                    {/* MODAL PARA ORDEM SERVIÇO      */}
-                    {/* ----------------------------- */}
-                    <Modal
-                        visible={this.state.modalOSVisible}
-                        onRequestClose={() => {
-                            console.log("Modal os FECHOU.")
-                        }}
-                        animationType={"slide"}
-                        transparent={true}
+                <View style={{flex: 1, backgroundColor: Colors.background}}>
+                    <ScrollView
+                        style={{flex: 1}}
+                        keyboardShouldPersistTaps="always"
                     >
-                        <View style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: 'rgba(0,0,0,0.5)',
+
+                        {netStatus ? null : (
+                            <Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>
+                                Dispositivo sem conexão
+                            </Text>
+                        )}
+
+                        <Card containerStyle={{
+                            padding: 0,
+                            paddingVertical: 5,
+                            margin: 5,
+                            marginVertical: 7,
+                            borderRadius: 0,
+                            backgroundColor: Colors.textDisabledLight,
+                            elevation: 0,
                         }}>
-                            <View style={{
+                            <Text style={{
+                                // color: Colors.textSecondaryDark,
+                                fontSize: 25,
                                 flex: 1,
-                                width: "90%",
-                                paddingTop: 30,
+                                fontWeight: 'bold',
+                                marginLeft: 5,
+                                color: Colors.primary
                             }}>
-                                <View style={{
-                                    paddingVertical: 15,
-                                    paddingHorizontal: 15,
-                                    backgroundColor: Colors.background,
-                                    borderRadius: 5,
-                                }}>
+                                Restaurante
+                            </Text>
 
-                                    <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
-                                        <Text style={{
-                                            color: Colors.textOnPrimary,
-                                            marginTop: 15,
-                                            marginBottom: 15,
-                                            marginLeft: 16,
-                                            textAlign: 'center',
-                                            fontSize: 20,
-                                            fontWeight: 'bold',
-                                        }}>Ordem de Serviço</Text>
-                                    </View>
+                            <View style={{paddingHorizontal: 16, paddingVertical: 8}}>
+                                <View style={{flexDirection: 'row', marginVertical: 2}}>
+                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold'}}>
+                                        Código: {' '}
+                                    </Text>
+                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18}}>
+                                        {restaurante.rhrest_codigo}
+                                    </Text>
+                                </View>
 
-                                    <View style={{marginTop: 4, paddingVertical: 10}}>
-                                        <TextInput
-                                            label="Descrição dos Serviços"
-                                            id="man_sp_obs"
-                                            ref="man_sp_obs"
-                                            value={man_sp_obs}
-                                            maxLength={200}
-                                            onChange={this.onInputChange}
-                                            multiline={true}
-                                            height={100}
-                                        />
+                                <View style={{flexDirection: 'row', marginVertical: 2}}>
+                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold'}}>
+                                        Nome: {' '}
+                                    </Text>
+                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18}}>
+                                        {restaurante.adm_pes_nome}
+                                    </Text>
+                                </View>
 
-                                        <Button
-                                            title="SALVAR"
-                                            onPress={() => {
-                                                this.onOSPress(adm_spcl_idf, man_sp_obs, false)
-                                            }}
-                                            buttonStyle={{marginTop: 15, height: 35}}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'check',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-
-                                        <Button
-                                            title="FECHAR"
-                                            onPress={() => {
-                                                this.onOSPress(0, '', false)
-                                            }}
-                                            buttonStyle={{marginTop: 15, height: 35}}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'close',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    </View>
+                                <View style={{flexDirection: 'row', marginVertical: 2}}>
+                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold'}}>
+                                        Cidade: {' '}
+                                    </Text>
+                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18}}>
+                                        {restaurante.ceps_loc_descricao} - {restaurante.ceps_loc_uf}
+                                    </Text>
                                 </View>
                             </View>
-                        </View>
-                    </Modal>
+
+                            <View style={{flexDirection: 'row', justifyContent: "center", marginHorizontal: 20}}>
+                                <View style={{flex: 2, marginRight: 2}}>
+                                    <Button
+                                        title="ESCANEAR"
+                                        backgroundColor={Colors.primaryLight}
+                                        color={Colors.textOnPrimary}
+                                        buttonStyle={{margin: 5, marginTop: 10}}
+                                        onPress={this.onEscanearPress}
+                                        icon={{
+                                            name: 'qrcode',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
+                                <View style={{flex: 2, marginLeft: 2}}>
+                                    <Button
+                                        title="BUSCAR"
+                                        backgroundColor={Colors.primaryLight}
+                                        color={Colors.textOnPrimary}
+                                        buttonStyle={{margin: 5, marginTop: 10}}
+                                        onPress={() => {
+                                            this.onAbrirBuscaModal()
+                                        }}
+                                        icon={{
+                                            name: 'search',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </Card>
 
 
-                    {/* ----------------------------- */}
-                    {/* MODAL PARA OCORRENCIA         */}
-                    {/* ----------------------------- */}
-                    <Modal
-                        visible={this.state.modalOcorrenciaVisible}
-                        onRequestClose={() => {
-                            console.log("Modal OBS FECHOU.")
-                        }}
-                        animationType={"slide"}
-                        transparent={true}
-                    >
-                        <View style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: 'rgba(0,0,0,0.5)',
+                        <Card containerStyle={{
+                            padding: 0,
+                            paddingVertical: 5,
+                            margin: 5,
+                            marginVertical: 7,
+                            borderRadius: 0,
+                            backgroundColor: Colors.textDisabledLight,
+                            elevation: 0,
                         }}>
-                            <View style={{
+                            <Text style={{
+                                fontSize: 25,
                                 flex: 1,
-                                width: "90%",
-                                paddingTop: 30,
+                                fontWeight: 'bold',
+                                marginLeft: 5,
+                                color: Colors.primary
                             }}>
-                                <View style={{
-                                    paddingVertical: 15,
-                                    paddingHorizontal: 15,
-                                    backgroundColor: Colors.background,
-                                    borderRadius: 5,
-                                }}>
+                                Refeição
+                            </Text>
 
-                                    <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
-                                        <Text style={{
-                                            color: Colors.textOnPrimary,
-                                            marginTop: 15,
-                                            marginBottom: 15,
-                                            marginLeft: 16,
-                                            textAlign: 'center',
-                                            fontSize: 20,
-                                            fontWeight: 'bold',
-                                        }}>Ocorrência</Text>
-                                    </View>
-
-                                    <View style={{marginTop: 4, paddingVertical: 10}}>
-                                        <TextInput
-                                            label="Ocorrência"
-                                            id="adm_spcl_ocorrencia"
-                                            ref="adm_spcl_ocorrencia"
-                                            value={adm_spcl_ocorrencia}
-                                            maxLength={200}
-                                            onChange={this.onInputChange}
-                                            multiline={true}
-                                            height={100}
-                                        />
-
-                                        <Button
-                                            title="SALVAR"
-                                            onPress={() => {
-                                                this.onOcorrenciaPress(adm_spcl_idf, adm_spcl_ocorrencia, false)
-                                            }}
-                                            buttonStyle={{marginTop: 15, height: 35}}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'check',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-
-                                        <Button
-                                            title="FECHAR"
-                                            onPress={() => {
-                                                this.onOcorrenciaPress(0, '', false)
-                                            }}
-                                            buttonStyle={{marginTop: 15, height: 35}}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'close',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    </View>
-                                </View>
+                            <View style={{paddingHorizontal: 10, paddingVertical: 8, flexDirection: 'row'}}>
+                                <CheckBox
+                                    center
+                                    title='Café'
+                                    checkedIcon='dot-circle-o'
+                                    uncheckedIcon='circle-o'
+                                    checked={checkedCafe}
+                                    checkedColor={Colors.primaryLight}
+                                    disabled={restaurante.rhrest_vlr_cafe ? false : true}
+                                    onPress={() => this.setState({
+                                        tipoRefeicao: 'CAF',
+                                        checkedCafe: true,
+                                        checkedAlmoco: false,
+                                        checkedJanta: false,
+                                        checkedMarmita: false,
+                                    })}
+                                    containerStyle={{
+                                        padding: 0,
+                                        margin: 0,
+                                        flex: 1,
+                                        alignItems: 'flex-start',
+                                        backgroundColor: 'transparent'
+                                    }}
+                                />
+                                <CheckBox
+                                    center
+                                    title='Almoço'
+                                    checkedIcon='dot-circle-o'
+                                    uncheckedIcon='circle-o'
+                                    checked={checkedAlmoco}
+                                    checkedColor={Colors.primaryLight}
+                                    disabled={restaurante.rhrest_vlr_almoco ? false : true}
+                                    onPress={() => this.setState({
+                                        tipoRefeicao: 'ALM',
+                                        checkedCafe: false,
+                                        checkedAlmoco: true,
+                                        checkedJanta: false,
+                                        checkedMarmita: false,
+                                    })}
+                                    containerStyle={{
+                                        padding: 0,
+                                        margin: 0,
+                                        flex: 1,
+                                        alignItems: 'flex-start',
+                                        backgroundColor: 'transparent'
+                                    }}
+                                />
                             </View>
-                        </View>
-                    </Modal>
+                            <View style={{paddingHorizontal: 10, paddingVertical: 8, flexDirection: 'row'}}>
+                                <CheckBox
+                                    center
+                                    title='Jantar'
+                                    checkedIcon='dot-circle-o'
+                                    uncheckedIcon='circle-o'
+                                    checked={checkedJanta}
+                                    checkedColor={Colors.primaryLight}
+                                    disabled={restaurante.rhrest_vlr_janta ? false : true}
+                                    onPress={() => this.setState({
+                                        tipoRefeicao: 'JAN',
+                                        checkedCafe: false,
+                                        checkedAlmoco: false,
+                                        checkedJanta: true,
+                                        checkedMarmita: false,
+                                    })}
+                                    containerStyle={{
+                                        padding: 0,
+                                        margin: 0,
+                                        flex: 1,
+                                        alignItems: 'flex-start',
+                                        backgroundColor: 'transparent'
+                                    }}
+                                />
+                                <CheckBox
+                                    center
+                                    title='Marmita'
+                                    checkedIcon='dot-circle-o'
+                                    uncheckedIcon='circle-o'
+                                    checked={checkedMarmita}
+                                    checkedColor={Colors.primaryLight}
+                                    disabled={restaurante.rhrest_vlr_marmita ? false : true}
+                                    onPress={() => this.setState({
+                                        tipoRefeicao: 'MAR',
+                                        checkedCafe: false,
+                                        checkedAlmoco: false,
+                                        checkedJanta: false,
+                                        checkedMarmita: true,
+                                    })}
+                                    containerStyle={{
+                                        padding: 0,
+                                        margin: 0,
+                                        flex: 1,
+                                        alignItems: 'flex-start',
+                                        backgroundColor: 'transparent'
+                                    }}
+                                />
+                            </View>
 
-
-                    {/* ----------------------------- */}
-                    {/* MODAL PARA FILTROS            */}
-                    {/* ----------------------------- */}
-                    <Modal
-                        visible={this.state.modalFiltrosVisible}
-                        onRequestClose={() => {
-                            console.log("Modal FILTROS FECHOU.")
-                        }}
-                        animationType={"slide"}
-                        transparent={true}
-                    >
-                        <View style={{
-                            backgroundColor: 'rgba(0,0,0,0.5)',
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center"
+                        </Card>
+                        <Card containerStyle={{
+                            padding: 0,
+                            paddingVertical: 5,
+                            margin: 5,
+                            marginVertical: 7,
+                            borderRadius: 0,
+                            backgroundColor: Colors.textDisabledLight,
+                            elevation: 0,
                         }}>
-                            <View style={{
-                                width: "90%",
+                            <Text style={{
+                                // color: Colors.textSecondaryDark,
+                                fontSize: 25,
+                                flex: 1,
+                                fontWeight: 'bold',
+                                marginLeft: 5,
+                                color: Colors.primary
                             }}>
-                                <View style={{
-                                    paddingVertical: 15,
-                                    paddingHorizontal: 15,
-                                    backgroundColor: Colors.background,
-                                    borderRadius: 5,
-                                }}>
-
-                                    <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
-                                        <Text style={{
-                                            color: Colors.textOnPrimary,
-                                            marginTop: 15,
-                                            marginBottom: 15,
-                                            marginLeft: 16,
-                                            textAlign: 'center',
-                                            fontSize: 20,
-                                            fontWeight: 'bold',
-                                        }}>Filtrar</Text>
-                                    </View>
-
-                                    <View style={{marginTop: 4, paddingVertical: 10}}>
-
-                                        <ScrollView style={{height: 50, width: "100%", marginBottom: 10}}>
-                                            <View style={{flexDirection: 'row'}}>
-                                                <View style={{width: "47%", marginRight: 20}}>
-                                                    <TextInput
-                                                        type="date"
-                                                        label="Data Início"
-                                                        id="dataIni"
-                                                        ref="dataIni"
-                                                        value={dataIni}
-                                                        masker={maskDate}
-                                                        dateFormat={DATE_FORMAT}
-                                                        onChange={this.onInputChange}
-                                                        validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
-                                                        fontSize={12}
-                                                    />
-                                                </View>
-                                                <View style={{width: "47%"}}>
-                                                    <TextInput
-                                                        type="date"
-                                                        label="Data Fim"
-                                                        id="dataFim"
-                                                        ref="dataFim"
-                                                        value={dataFim}
-                                                        masker={maskDate}
-                                                        dateFormat={DATE_FORMAT}
-                                                        onChange={this.onInputChange}
-                                                        validator={data => moment(data, "DD/MM/YYYY", true).isValid()}
-                                                        fontSize={12}
-                                                    />
-                                                </View>
-                                            </View>
-                                        </ScrollView>
-
-                                        <TextInput
-                                            label="Veículo"
-                                            id="adm_spcl_veiculo"
-                                            ref="adm_spcl_veiculo"
-                                            value={adm_spcl_veiculo}
-                                            maxLength={9}
-                                            onChange={this.onInputChange}
-                                            keyboardType="numeric"
-                                        />
-
-                                        <Button
-                                            title="FILTRAR"
-                                            onPress={() => {
-                                                this.onSearchPress(!this.state.modalFiltrosVisible)
-                                            }}
-                                            buttonStyle={{marginTop: 10}}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'filter',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                        <Button
-                                            title="FECHAR"
-                                            onPress={() => {
-                                                this.onClosePress(!this.state.modalFiltrosVisible)
-                                            }}
-                                            buttonStyle={{marginTop: 10}}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'close',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    </View>
-                                </View>
+                                Observação
+                            </Text>
+                            <View style={{paddingHorizontal: 10, marginTop: 10}}>
+                                <TextInput
+                                    label=""
+                                    id="rhref_obs"
+                                    ref="rhref_obs"
+                                    value={rhref_obs}
+                                    onChange={this.onInputChange}
+                                    multiline={true}
+                                    style={{height: 70,}}
+                                />
                             </View>
-                        </View>
-                    </Modal>
+                        </Card>
 
 
-                    <FloatActionButton
-                        iconFamily="MaterialIcons"
-                        iconName="search"
-                        iconColor={Colors.textOnPrimary}
-                        onPress={() => {
-                            this.onSearchPress(true)
+                    </ScrollView>
+
+                    <Button
+                        title="Salvar"
+                        backgroundColor='#4682B4'
+                        color={Colors.textOnPrimary}
+                        buttonStyle={{margin: 5, marginTop: 10}}
+                        onPress={this.onSubmitForm}
+                        icon={{
+                            name: 'check',
+                            type: 'font-awesome',
+                            color: Colors.textOnPrimary
                         }}
-                        backgroundColor={Colors.primary}
-                        marginBottom={90}
-                        marginRight={10}
-                    />
-
-                    <FloatActionButton
-                        iconFamily="MaterialIcons"
-                        iconName="add"
-                        iconColor={Colors.textOnAccent}
-                        onPress={this.onAddPress}
-                        backgroundColor={Colors.primary}
-                        marginRight={10}
                     />
 
                     <ProgressDialog
-                        visible={aguarde}
+                        visible={salvado}
                         title="SIGA PRO"
-                        message="Aguarde..."
+                        message="Gravando. Aguarde..."
+                    />
+
+                    <ProgressDialog
+                        visible={carregando}
+                        title="SIGA PRO"
+                        message="Carregando..."
                     />
 
                 </View>

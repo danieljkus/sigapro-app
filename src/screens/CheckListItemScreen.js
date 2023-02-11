@@ -47,7 +47,9 @@ export default class CheckListItemScreen extends Component {
 
             ...props.navigation.state.params.registro,
         }
-        NetInfo.addEventListener(state => { this.onNetEvento(state) });
+        NetInfo.addEventListener(state => {
+            this.onNetEvento(state)
+        });
     }
 
     onNetEvento = (info) => {
@@ -147,8 +149,8 @@ export default class CheckListItemScreen extends Component {
         if (!this.state.netStatus) {
             Alert.showAlert('Não é possível salvar. Dispositivo sem conexão');
         } else {
-            this.setState({ salvando: true });
-        this.setState({salvando: true});
+            this.setState({salvando: true});
+            this.setState({salvando: true});
 
             const registro = {
                 adm_spcl_idf: 0,
@@ -170,9 +172,9 @@ export default class CheckListItemScreen extends Component {
                         this.props.navigation.state.params.onRefresh();
                     }
                 }).catch(ex => {
-                    this.setState({ salvado: false });
-                    console.warn(ex);
-                })
+                this.setState({salvado: false});
+                console.warn(ex);
+            })
         }
         axios.post('/checkList/store', registro)
             .then(response => {
@@ -282,15 +284,12 @@ export default class CheckListItemScreen extends Component {
         const {
             codVeiculo, veiculo_select, adm_spcl_obs, adm_spcl_idf, adm_spcl_escala,
             adm_spcli_check, adm_spcli_obs, adm_spicl_descricao, adm_spicl_obs, adm_spcli_seq,
-            salvando, loading, refreshing, carregarRegistro, netStatus } = this.state;
             salvando, loading, refreshing, carregarRegistro
         } = this.state;
-
         let imagemHeigth = Dimensions.get('window').height;
 
-        // console.log('this.state', this.state);
-
         return (
+
             <SafeAreaView style={{flex: 1}}>
                 <HeaderComponent
                     color={'white'}
@@ -301,383 +300,395 @@ export default class CheckListItemScreen extends Component {
                 <View style={{flex: 1, backgroundColor: Colors.background}}>
                     <StatusBar/>
 
-                <ScrollView
-                    style={{ flex: 1, }}
-                    keyboardShouldPersistTaps="always"
-                >
-                    {netStatus ? null : (
-                        <Text style={{ textAlign: 'center', color: '#d50000', marginTop: 2 }}>
-                            Dispositivo sem conexão
-                        </Text>
-                    )}
                     <ScrollView
                         style={{flex: 1,}}
                         keyboardShouldPersistTaps="always"
                     >
-
-                        <View>
-                            <View style={{margin: 15, marginBottom: -10}}>
-                                <View style={{marginTop: -5}}>
-                                    <VeiculosSelect
-                                        label="Veículo"
-                                        id="veiculo_select"
-                                        value={veiculo_select}
-                                        codVeiculo={codVeiculo}
-                                        onChange={this.onInputChangeVeiculo}
-                                        onErro={this.onErroChange}
-                                        tipo=""
-                                        enabled={!adm_spcl_idf}
-                                    />
-                                </View>
-
-                                <View style={{marginTop: -15}}>
-                                    <TextInput
-                                        label="Escala Atual"
-                                        id="adm_spcl_escala"
-                                        ref="adm_spcl_escala"
-                                        value={adm_spcl_escala}
-                                        onChange={this.onInputChange}
-                                        fontSize={10}
-                                        enabled={false}
-                                    />
-                                </View>
-
-                                <View style={{marginTop: -15}}>
-                                    <TextInput
-                                        label="Observação Geral"
-                                        id="adm_spcl_obs"
-                                        ref="adm_spcl_obs"
-                                        value={adm_spcl_obs}
-                                        maxLength={200}
-                                        onChange={this.onInputChange}
-                                        multiline={true}
-                                        height={40}
-                                    />
-                                </View>
-                            </View>
+                        {netStatus ? null : (
+                            <Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>
+                                Dispositivo sem conexão
+                            </Text>
+                        )}
+                        <ScrollView
+                            style={{flex: 1,}}
+                            keyboardShouldPersistTaps="always"
+                        >
 
                             <View>
-                                {!codVeiculo ? (
-
-                                    <View
-                                        style={{
-                                            height: imagemHeigth - 270,
-                                            backgroundColor: Colors.primaryLight,
-                                            margin: 10, marginTop: 0
-                                        }}
-                                    >
-                                        <View style={{
-                                            flex: 1,
-                                            margin: 20,
-                                            marginTop: 10,
-                                            paddingBottom: 30,
-                                            height: 40,
-                                            alignItems: "center"
-                                        }}>
-                                            <Text style={{
-                                                fontSize: 25,
-                                                color: Colors.textOnPrimary,
-                                                fontWeight: "bold"
-                                            }}>CHECK-LIST</Text>
-                                        </View>
+                                <View style={{margin: 15, marginBottom: -10}}>
+                                    <View style={{marginTop: -5}}>
+                                        <VeiculosSelect
+                                            label="Veículo"
+                                            id="veiculo_select"
+                                            value={veiculo_select}
+                                            codVeiculo={codVeiculo}
+                                            onChange={this.onInputChangeVeiculo}
+                                            onErro={this.onErroChange}
+                                            tipo=""
+                                            enabled={!adm_spcl_idf}
+                                        />
                                     </View>
 
-                                ) : (
+                                    <View style={{marginTop: -15}}>
+                                        <TextInput
+                                            label="Escala Atual"
+                                            id="adm_spcl_escala"
+                                            ref="adm_spcl_escala"
+                                            value={adm_spcl_escala}
+                                            onChange={this.onInputChange}
+                                            fontSize={10}
+                                            enabled={false}
+                                        />
+                                    </View>
 
-                                    <View
-                                        style={{
-                                            height: imagemHeigth - 270,
-                                            backgroundColor: Colors.primaryLight,
-                                            margin: 10, marginTop: 0
-                                        }}
-                                    >
-                                        <View style={{
-                                            flex: 1,
-                                            margin: 20,
-                                            marginTop: 10,
-                                            paddingBottom: 30,
-                                            height: 40,
-                                            alignItems: "center"
-                                        }}>
-                                            <Text style={{
-                                                fontSize: 25,
-                                                color: Colors.textOnPrimary,
-                                                fontWeight: "bold"
-                                            }}>{adm_spicl_descricao}</Text>
+                                    <View style={{marginTop: -15}}>
+                                        <TextInput
+                                            label="Observação Geral"
+                                            id="adm_spcl_obs"
+                                            ref="adm_spcl_obs"
+                                            value={adm_spcl_obs}
+                                            maxLength={200}
+                                            onChange={this.onInputChange}
+                                            multiline={true}
+                                            height={40}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View>
+                                    {!codVeiculo ? (
+
+                                        <View
+                                            style={{
+                                                height: imagemHeigth - 270,
+                                                backgroundColor: Colors.primaryLight,
+                                                margin: 10, marginTop: 0
+                                            }}
+                                        >
                                             <View style={{
                                                 flex: 1,
-                                                margin: 0,
-                                                marginTop: 0,
-                                                paddingBottom: 0,
-                                                alignItems: "flex-end",
+                                                margin: 20,
+                                                marginTop: 10,
+                                                paddingBottom: 30,
+                                                height: 40,
+                                                alignItems: "center"
                                             }}>
                                                 <Text style={{
-                                                    fontSize: 9,
+                                                    fontSize: 25,
                                                     color: Colors.textOnPrimary,
                                                     fontWeight: "bold"
-                                                }}>{(adm_spcli_seq + 1) + '/' + this.state.listaRegistros.length}</Text>
+                                                }}>CHECK-LIST</Text>
                                             </View>
                                         </View>
-                                        <View style={{flex: 25, margin: 10, marginTop: -10}}>
-                                            <Text style={{
-                                                fontSize: 15,
-                                                color: Colors.textOnPrimary
-                                            }}>{adm_spicl_obs}</Text>
-                                        </View>
 
+                                    ) : (
 
-                                        <View style={{
-                                            height: 30,
-                                            flexDirection: 'row',
-                                            margin: 10,
-                                            marginBottom: 0,
-                                            alignItems: "center",
-                                            justifyContent: 'center'
-                                        }}>
+                                        <View
+                                            style={{
+                                                height: imagemHeigth - 270,
+                                                backgroundColor: Colors.primaryLight,
+                                                margin: 10, marginTop: 0
+                                            }}
+                                        >
                                             <View style={{
-                                                height: 30,
-                                                width: "20%",
-                                                flexDirection: 'row',
-                                                margin: 5,
-                                                justifyContent: "flex-start"
-                                            }}>
-                                                <TouchableOpacity
-                                                    onPress={() => this.onMudaItem('A')}
-                                                    style={{alignItems: "center", justifyContent: 'center'}}
-                                                >
-                                                    <View style={{
-                                                        width: "50%",
-                                                        marginTop: 5,
-                                                        flexDirection: 'row',
-                                                        justifyContent: 'center'
-                                                    }}>
-                                                        <Icon
-                                                            name='chevron-left'
-                                                            family='FontAwesome'
-                                                            color={Colors.textOnPrimary}
-                                                            size={20}
-                                                        />
-                                                    </View>
-                                                    <Text style={{
-                                                        fontSize: 8,
-                                                        color: Colors.textOnPrimary
-                                                    }}>Anterior</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                            <View style={{
-                                                height: 30,
-                                                width: "55%",
-                                                flexDirection: 'row',
-                                                margin: 5,
-                                                justifyContent: "flex-start"
+                                                flex: 1,
+                                                margin: 20,
+                                                marginTop: 10,
+                                                paddingBottom: 30,
+                                                height: 40,
+                                                alignItems: "center"
                                             }}>
                                                 <Text style={{
-                                                    fontSize: 12,
-                                                    color: Colors.textHintLight
-                                                }}>{adm_spcli_check === 'NC' ? adm_spcli_obs : ''}</Text>
-                                            </View>
-                                            <View style={{
-                                                height: 30,
-                                                width: "20%",
-                                                flexDirection: 'row',
-                                                margin: 5,
-                                                justifyContent: "flex-end"
-                                            }}>
-                                                <TouchableOpacity
-                                                    onPress={() => this.onMudaItem('P')}
-                                                    style={{alignItems: "center", justifyContent: 'center'}}
-                                                >
-                                                    <View style={{
-                                                        width: "50%",
-                                                        marginTop: 5,
-                                                        flexDirection: 'row',
-                                                        justifyContent: 'center'
-                                                    }}>
-                                                        <Icon
-                                                            name='chevron-right'
-                                                            family='FontAwesome'
-                                                            color={Colors.textOnPrimary}
-                                                            size={20}
-                                                        />
-                                                    </View>
-                                                    <Text style={{
-                                                        fontSize: 8,
-                                                        color: Colors.textOnPrimary
-                                                    }}>Próximo</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-
-
-                                        <View style={{
-                                            height: 50,
-                                            flexDirection: 'row',
-                                            margin: 5,
-                                            alignItems: "center",
-                                            justifyContent: 'center',
-                                            backgroundColor: Colors.dividerDark
-                                        }}>
-                                            <TouchableOpacity
-                                                onPress={() => this.onMudaResposta('CO')}
-                                                style={{alignItems: "center", justifyContent: 'center'}}
-                                            >
+                                                    fontSize: 25,
+                                                    color: Colors.textOnPrimary,
+                                                    fontWeight: "bold"
+                                                }}>{adm_spicl_descricao}</Text>
                                                 <View style={{
-                                                    width: 100,
+                                                    flex: 1,
+                                                    margin: 0,
                                                     marginTop: 0,
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'center'
+                                                    paddingBottom: 0,
+                                                    alignItems: "flex-end",
                                                 }}>
-                                                    <Icon
-                                                        name='like'
-                                                        family='Foundation'
-                                                        color={adm_spcli_check === 'CO' ? Colors.primaryDark : Colors.textOnPrimary}
-                                                        size={40}
-                                                    />
+                                                    <Text style={{
+                                                        fontSize: 9,
+                                                        color: Colors.textOnPrimary,
+                                                        fontWeight: "bold"
+                                                    }}>{(adm_spcli_seq + 1) + '/' + this.state.listaRegistros.length}</Text>
                                                 </View>
+                                            </View>
+                                            <View style={{flex: 25, margin: 10, marginTop: -10}}>
                                                 <Text style={{
-                                                    marginTop: -5,
-                                                    fontSize: 10,
+                                                    fontSize: 15,
                                                     color: Colors.textOnPrimary
-                                                }}>Conforme</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                onPress={() => this.onMudaResposta('NC')}
-                                                onLongPress={() => this.onOBSPress(true)}
-                                                style={{alignItems: "center", justifyContent: 'center'}}
-                                            >
+                                                }}>{adm_spicl_obs}</Text>
+                                            </View>
+
+
+                                            <View style={{
+                                                height: 30,
+                                                flexDirection: 'row',
+                                                margin: 10,
+                                                marginBottom: 0,
+                                                alignItems: "center",
+                                                justifyContent: 'center'
+                                            }}>
                                                 <View style={{
-                                                    width: 100,
-                                                    marginTop: 0,
+                                                    height: 30,
+                                                    width: "20%",
                                                     flexDirection: 'row',
-                                                    justifyContent: 'center'
+                                                    margin: 5,
+                                                    justifyContent: "flex-start"
                                                 }}>
-                                                    <Icon
-                                                        name='dislike'
-                                                        family='Foundation'
-                                                        color={adm_spcli_check === 'NC' ? Colors.primaryDark : Colors.textOnPrimary}
-                                                        size={40}
-                                                    />
+                                                    <TouchableOpacity
+                                                        onPress={() => this.onMudaItem('A')}
+                                                        style={{alignItems: "center", justifyContent: 'center'}}
+                                                    >
+                                                        <View style={{
+                                                            width: "50%",
+                                                            marginTop: 5,
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'center'
+                                                        }}>
+                                                            <Icon
+                                                                name='chevron-left'
+                                                                family='FontAwesome'
+                                                                color={Colors.textOnPrimary}
+                                                                size={20}
+                                                            />
+                                                        </View>
+                                                        <Text style={{
+                                                            fontSize: 8,
+                                                            color: Colors.textOnPrimary
+                                                        }}>Anterior</Text>
+                                                    </TouchableOpacity>
                                                 </View>
-                                                <Text
-                                                    style={{marginTop: -5, fontSize: 10, color: Colors.textOnPrimary}}>Não
-                                                    Conforme</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                onPress={() => this.onMudaResposta('NA')}
-                                                style={{alignItems: "center", justifyContent: 'center'}}
-                                            >
                                                 <View style={{
-                                                    width: 100,
-                                                    marginTop: 0,
+                                                    height: 30,
+                                                    width: "55%",
                                                     flexDirection: 'row',
-                                                    justifyContent: 'center'
+                                                    margin: 5,
+                                                    justifyContent: "flex-start"
                                                 }}>
-                                                    <Icon
-                                                        name='close'
-                                                        type='Foundation'
-                                                        color={adm_spcli_check === 'NA' ? Colors.primaryDark : Colors.textOnPrimary}
-                                                        size={40}
-                                                    />
+                                                    <Text style={{
+                                                        fontSize: 12,
+                                                        color: Colors.textHintLight
+                                                    }}>{adm_spcli_check === 'NC' ? adm_spcli_obs : ''}</Text>
                                                 </View>
-                                                <Text
-                                                    style={{marginTop: -5, fontSize: 10, color: Colors.textOnPrimary}}>Não
-                                                    se Aplica</Text>
-                                            </TouchableOpacity>
+                                                <View style={{
+                                                    height: 30,
+                                                    width: "20%",
+                                                    flexDirection: 'row',
+                                                    margin: 5,
+                                                    justifyContent: "flex-end"
+                                                }}>
+                                                    <TouchableOpacity
+                                                        onPress={() => this.onMudaItem('P')}
+                                                        style={{alignItems: "center", justifyContent: 'center'}}
+                                                    >
+                                                        <View style={{
+                                                            width: "50%",
+                                                            marginTop: 5,
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'center'
+                                                        }}>
+                                                            <Icon
+                                                                name='chevron-right'
+                                                                family='FontAwesome'
+                                                                color={Colors.textOnPrimary}
+                                                                size={20}
+                                                            />
+                                                        </View>
+                                                        <Text style={{
+                                                            fontSize: 8,
+                                                            color: Colors.textOnPrimary
+                                                        }}>Próximo</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+
+
+                                            <View style={{
+                                                height: 50,
+                                                flexDirection: 'row',
+                                                margin: 5,
+                                                alignItems: "center",
+                                                justifyContent: 'center',
+                                                backgroundColor: Colors.dividerDark
+                                            }}>
+                                                <TouchableOpacity
+                                                    onPress={() => this.onMudaResposta('CO')}
+                                                    style={{alignItems: "center", justifyContent: 'center'}}
+                                                >
+                                                    <View style={{
+                                                        width: 100,
+                                                        marginTop: 0,
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center'
+                                                    }}>
+                                                        <Icon
+                                                            name='like'
+                                                            family='Foundation'
+                                                            color={adm_spcli_check === 'CO' ? Colors.primaryDark : Colors.textOnPrimary}
+                                                            size={40}
+                                                        />
+                                                    </View>
+                                                    <Text style={{
+                                                        marginTop: -5,
+                                                        fontSize: 10,
+                                                        color: Colors.textOnPrimary
+                                                    }}>Conforme</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    onPress={() => this.onMudaResposta('NC')}
+                                                    onLongPress={() => this.onOBSPress(true)}
+                                                    style={{alignItems: "center", justifyContent: 'center'}}
+                                                >
+                                                    <View style={{
+                                                        width: 100,
+                                                        marginTop: 0,
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center'
+                                                    }}>
+                                                        <Icon
+                                                            name='dislike'
+                                                            family='Foundation'
+                                                            color={adm_spcli_check === 'NC' ? Colors.primaryDark : Colors.textOnPrimary}
+                                                            size={40}
+                                                        />
+                                                    </View>
+                                                    <Text
+                                                        style={{
+                                                            marginTop: -5,
+                                                            fontSize: 10,
+                                                            color: Colors.textOnPrimary
+                                                        }}>Não
+                                                        Conforme</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    onPress={() => this.onMudaResposta('NA')}
+                                                    style={{alignItems: "center", justifyContent: 'center'}}
+                                                >
+                                                    <View style={{
+                                                        width: 100,
+                                                        marginTop: 0,
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center'
+                                                    }}>
+                                                        <Icon
+                                                            name='close'
+                                                            type='Foundation'
+                                                            color={adm_spcli_check === 'NA' ? Colors.primaryDark : Colors.textOnPrimary}
+                                                            size={40}
+                                                        />
+                                                    </View>
+                                                    <Text
+                                                        style={{
+                                                            marginTop: -5,
+                                                            fontSize: 10,
+                                                            color: Colors.textOnPrimary
+                                                        }}>Não
+                                                        se Aplica</Text>
+                                                </TouchableOpacity>
+                                            </View>
+
                                         </View>
-
-                                    </View>
-                                )}
+                                    )}
+                                </View>
                             </View>
-                        </View>
 
 
-                        {/* ----------------------------- */}
-                        {/* MODAL PARA OBS                */}
-                        {/* ----------------------------- */}
-                        <Modal
-                            visible={this.state.modalOBSVisible}
-                            onRequestClose={() => {
-                                console.log("Modal OBS FECHOU.")
-                            }}
-                            animationType={"slide"}
-                            transparent={true}
-                        >
-                            <View style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: 'rgba(0,0,0,0.5)',
-                            }}>
+                            {/* ----------------------------- */}
+                            {/* MODAL PARA OBS                */}
+                            {/* ----------------------------- */}
+                            <Modal
+                                visible={this.state.modalOBSVisible}
+                                onRequestClose={() => {
+                                    console.log("Modal OBS FECHOU.")
+                                }}
+                                animationType={"slide"}
+                                transparent={true}
+                            >
                                 <View style={{
                                     flex: 1,
-                                    width: "90%",
-                                    paddingTop: 30,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: 'rgba(0,0,0,0.5)',
                                 }}>
                                     <View style={{
-                                        paddingVertical: 15,
-                                        paddingHorizontal: 15,
-                                        backgroundColor: Colors.background,
-                                        borderRadius: 5,
+                                        flex: 1,
+                                        width: "90%",
+                                        paddingTop: 30,
                                     }}>
+                                        <View style={{
+                                            paddingVertical: 15,
+                                            paddingHorizontal: 15,
+                                            backgroundColor: Colors.background,
+                                            borderRadius: 5,
+                                        }}>
 
-                                        <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
-                                            <Text style={{
-                                                color: Colors.textOnPrimary,
-                                                marginTop: 15,
-                                                marginBottom: 15,
-                                                marginLeft: 16,
-                                                textAlign: 'center',
-                                                fontSize: 20,
-                                                fontWeight: 'bold',
-                                            }}>Observação</Text>
-                                        </View>
+                                            <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                                <Text style={{
+                                                    color: Colors.textOnPrimary,
+                                                    marginTop: 15,
+                                                    marginBottom: 15,
+                                                    marginLeft: 16,
+                                                    textAlign: 'center',
+                                                    fontSize: 20,
+                                                    fontWeight: 'bold',
+                                                }}>Observação</Text>
+                                            </View>
 
-                                        <View style={{marginTop: 4, paddingVertical: 10}}>
-                                            <TextInput
-                                                label="Observação"
-                                                id="adm_spcli_obs"
-                                                ref="adm_spcli_obs"
-                                                value={adm_spcli_obs}
-                                                maxLength={100}
-                                                onChange={this.onInputChange}
-                                                multiline={true}
-                                                height={100}
-                                            />
+                                            <View style={{marginTop: 4, paddingVertical: 10}}>
+                                                <TextInput
+                                                    label="Observação"
+                                                    id="adm_spcli_obs"
+                                                    ref="adm_spcli_obs"
+                                                    value={adm_spcli_obs}
+                                                    maxLength={100}
+                                                    onChange={this.onInputChange}
+                                                    multiline={true}
+                                                    height={100}
+                                                />
 
-                                            <Button
-                                                title="OK"
-                                                onPress={() => {
-                                                    this.onOBSPress(!this.state.modalOBSVisible)
-                                                }}
-                                                buttonStyle={{marginTop: 15, height: 35}}
-                                                backgroundColor={Colors.buttonPrimary}
-                                                icon={{
-                                                    name: 'check',
-                                                    type: 'font-awesome',
-                                                    color: Colors.textOnPrimary
-                                                }}
-                                            />
+                                                <Button
+                                                    title="OK"
+                                                    onPress={() => {
+                                                        this.onOBSPress(!this.state.modalOBSVisible)
+                                                    }}
+                                                    buttonStyle={{marginTop: 15, height: 35}}
+                                                    backgroundColor={Colors.buttonPrimary}
+                                                    icon={{
+                                                        name: 'check',
+                                                        type: 'font-awesome',
+                                                        color: Colors.textOnPrimary
+                                                    }}
+                                                />
+                                            </View>
                                         </View>
                                     </View>
                                 </View>
-                            </View>
-                        </Modal>
+                            </Modal>
 
 
-                        <ProgressDialog
-                            visible={carregarRegistro}
-                            title="SIGA PRO"
-                            message="Carregando. Aguarde..."
-                        />
-                        <ProgressDialog
-                            visible={salvando}
-                            title="SIGA PRO"
-                            message="Salvando. Aguarde..."
-                        />
+                            <ProgressDialog
+                                visible={carregarRegistro}
+                                title="SIGA PRO"
+                                message="Carregando. Aguarde..."
+                            />
+                            <ProgressDialog
+                                visible={salvando}
+                                title="SIGA PRO"
+                                message="Salvando. Aguarde..."
+                            />
+                        </ScrollView>
                     </ScrollView>
                 </View>
             </SafeAreaView>
 
+
         )
+
     }
 }
+

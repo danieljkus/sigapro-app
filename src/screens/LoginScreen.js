@@ -206,7 +206,7 @@ export default class LoginScreen extends Component {
                                 label="Usuário"
                                 id="usuario"
                                 ref="usuario"
-                                value={maskCPF(usuario)}
+                                value={usuario}
                                 onChange={this.onInputChange}
                                 onBlur={this.buscaEmpresas}
                                 validator={text => Boolean(text)} // verifica se o campo está vazio ou válido
