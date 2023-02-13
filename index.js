@@ -15,11 +15,18 @@ if (__DEV__) {
     axios.defaults.baseURL = 'https://sigapro.expnordeste.com.br/api/';
 }
 
-axios.interceptors.request.use(async (request) => {
-    const token = await getToken();
-    request.headers.Authorization = `Bearer ${token}`;
-    return request;
-})
+axios.interceptors.response.use(async (request) => {
+        const token = await getToken();
+        request.headers.Authorization = `Bearer ${token}`;
+        return request;
+    }, error => {
+        console.log('Interceptors Error: ', error)
+        if (typeof error.response === "undefined") {
+            // do somthing
+        }
+        return Promise.reject(error);
+    }
+);
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message

@@ -19,7 +19,6 @@ import {
 const DrawerItem = ({text, onPress}) => {
     return (
         <TouchableOpacity onPress={onPress}>
-            <Divider style={{backgroundColor: Colors.dividerDark}}/>
             <Text
                 style={{
                     fontSize: 16,
@@ -183,6 +182,8 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
+
                             {getTemPermissao('VIAGENSTURISMOSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Viagens Turismo"
@@ -196,6 +197,8 @@ class Drawer extends PureComponent {
                                     onPress={() => navigation.navigate('VeiculosScreen')}
                                 />
                             ) : null}
+
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {empresa && getTemPermissao('FICHAESTOQUESCREEN', permissoes) ? (
                                 <DrawerItem
@@ -239,6 +242,8 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
+
                             {empresa && getTemPermissao('MEDICOESTANQUESDIESELCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Medir Tanque Diesel"
@@ -259,6 +264,8 @@ class Drawer extends PureComponent {
                                     onPress={() => navigation.navigate('PreDigitacaoNotasScreen')}
                                 />
                             ) : null}
+
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {empresa && getTemPermissao('PNEUSLOCALIZARSCREEN', permissoes) ? (
                                 <DrawerItem
@@ -281,6 +288,8 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
+
                             {getTemPermissao('SALDOSFILIAISSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Saldo das Filiais"
@@ -301,6 +310,8 @@ class Drawer extends PureComponent {
                                     onPress={() => navigation.navigate('BoletinsDiferencaScreen')}
                                 />
                             ) : null}
+
+                            <Divider style={{backgroundColor: Colors.dividerDark}}/>
 
                             {getTemPermissao('TROCARFILIALSCREEN', permissoes) ? (
                                 <DrawerItem

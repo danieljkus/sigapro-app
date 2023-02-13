@@ -50,7 +50,7 @@ class ErrorBoundary extends Component {
             info: "",
             error: "",
         });
-        // RNRestart.Restart();
+        return this.props.children;
     };
 
     render() {
@@ -65,24 +65,20 @@ class ErrorBoundary extends Component {
                         resizeMode="contain"
                         source={require('./../drawables/logo_pequeno.png')}
                     />
-                    <View style={styles.contentView}>
-
-                        {/*{Svgs.iconeAlert({color: Colors.unavaliable, size: 130})}*/}
+                    <View style={{top: 15}}>
                         <Text style={styles.text}>{'"O aplicativo parou de funcionar"'}</Text>
-                        {/*<Text style={styles.text}>{' "Infelizmente o aplicativo parou de funcionar".'}</Text>*/}
-
-                        <View style={styles.viewPressable}>
-                            <Pressable onPress={() => this.shareError(`${this.state.error}`)}
-                                       style={styles.pressable}>
-                                <Text style={styles.textPressable}>{'compartilhr erro'}</Text>
-                            </Pressable>
-                            <Pressable onPress={() => this.viewError()} style={styles.pressable}>
-                                <Text style={styles.textPressable}>{'visualizar erro'}</Text>
-                            </Pressable>
-                            <Pressable onPress={() => this.restart()} style={styles.pressable}>
-                                <Text style={styles.textPressable}>{'voltar'}</Text>
-                            </Pressable>
-                        </View>
+                    </View>
+                    <View style={styles.contentView}>
+                        <Pressable onPress={() => this.shareError(`${this.state.error}`)}
+                                   style={styles.pressable}>
+                            <Text style={styles.textPressable}>{'Compartilhar error'}</Text>
+                        </Pressable>
+                        <Pressable onPress={() => this.viewError()} style={styles.pressable}>
+                            <Text style={styles.textPressable}>{'Visualizar erro'}</Text>
+                        </Pressable>
+                        <Pressable onPress={() => this.restart()} style={styles.pressable}>
+                            <Text style={styles.textPressable}>{'Voltar'}</Text>
+                        </Pressable>
                     </View>
                 </SafeAreaView>
             )
@@ -104,7 +100,6 @@ const styles = StyleSheet.create({
     },
     contentView: {
         margin: 30,
-        backgroundColor: Colors.transparent,
     },
     pressable: {
         backgroundColor: Colors.yellow,

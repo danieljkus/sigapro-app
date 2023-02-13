@@ -244,7 +244,7 @@ export default class LoginScreen extends Component {
                         </View>
 
                         {empresaSelect.length > 0 ? (
-                            <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                 <TextInput
                                     label="Empresa"
                                     type="select"
