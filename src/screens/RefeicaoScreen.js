@@ -367,11 +367,11 @@ export default class RefeicaoScreen extends Component {
                         keyboardShouldPersistTaps="always"
                     >
 
-                        {netStatus ? null : (
-                            <Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>
-                                Dispositivo sem conexão
-                            </Text>
-                        )}
+                        {/*{netStatus ? null : (*/}
+                            {/*<Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>*/}
+                                {/*Dispositivo sem conexão*/}
+                            {/*</Text>*/}
+                        {/*)}*/}
 
                         <Card containerStyle={{
                             padding: 0,

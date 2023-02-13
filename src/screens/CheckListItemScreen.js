@@ -304,11 +304,11 @@ export default class CheckListItemScreen extends Component {
                         style={{flex: 1,}}
                         keyboardShouldPersistTaps="always"
                     >
-                        {netStatus ? null : (
-                            <Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>
-                                Dispositivo sem conexão
-                            </Text>
-                        )}
+                        {/*{this?.state?.netStatus ? null : (*/}
+                            {/*<Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>*/}
+                                {/*Dispositivo sem conexão*/}
+                            {/*</Text>*/}
+                        {/*)}*/}
                         <ScrollView
                             style={{flex: 1,}}
                             keyboardShouldPersistTaps="always"

@@ -89,11 +89,11 @@ export default class HomeScreen extends Component {
                             Versão: {DeviceInfo.getVersion()}
                         </Text>
 
-                        {this.state.netStatus ? null : (
-                            <Text style={{textAlign: 'center', color: '#d50000', marginTop: 10}}>
-                                Dispositivo sem conexão
-                            </Text>
-                        )}
+                        {/*{this.state.netStatus ? null : (*/}
+                            {/*<Text style={{textAlign: 'center', color: '#d50000', marginTop: 10}}>*/}
+                                {/*Dispositivo sem conexão*/}
+                            {/*</Text>*/}
+                        {/*)}*/}
                     </View>
 
                     {/* <Text
