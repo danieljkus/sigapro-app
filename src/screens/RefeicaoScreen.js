@@ -160,7 +160,7 @@ export default class RefeicaoScreen extends Component {
 
 
     oncancellQRbuscar = (status) => {
-        this.setState({QRbuscar: status})
+        this.setState({loadingAdd: status})
     }
 
     onEscanearPress = async () => {

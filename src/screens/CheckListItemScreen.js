@@ -36,7 +36,7 @@ export default class CheckListItemScreen extends Component {
             adm_spcl_escala: props.navigation.state.params.registro.adm_spcl_escala ? props.navigation.state.params.registro.adm_spcl_escala : '',
 
             listaRegistros: props.navigation.state.params.registro.listaRegistros ? props.navigation.state.params.registro.listaRegistros : [],
-
+            registro: props?.navigation?.state?.params?.registro,
             adm_spcli_seq: 0,
             adm_spcli_item: 0,
             adm_spicl_descricao: '',
@@ -149,44 +149,33 @@ export default class CheckListItemScreen extends Component {
         if (!this.state.netStatus) {
             Alert.showAlert('Não é possível salvar. Dispositivo sem conexão');
         } else {
-            this.setState({salvando: true});
-            this.setState({salvando: true});
-
             const registro = {
                 adm_spcl_idf: 0,
-                adm_spcl_veiculo: this.state.codVeiculo ? this.state.codVeiculo : '',
-                adm_spcl_obs: this.state.adm_spcl_obs ? this.state.adm_spcl_obs : '',
-                adm_spcl_escala: this.state.adm_spcl_escala ? this.state.adm_spcl_escala : '',
-                adm_spcl_local_checkin: this.state.adm_spcl_local_checkin ? this.state.adm_spcl_local_checkin : '',
-
-                listaItens: this.state.listaRegistros,
+                adm_spcl_veiculo: this?.state?.codVeiculo ? this.state.codVeiculo : '',
+                adm_spcl_obs: this?.state?.adm_spcl_obs ? this.state.adm_spcl_obs : '',
+                adm_spcl_escala: this?.state?.adm_spcl_escala ? this.state.adm_spcl_escala : '',
+                adm_spcl_local_checkin: this?.state?.adm_spcl_local_checkin ? this.state.adm_spcl_local_checkin : '',
+                listaItens: this?.state?.listaRegistros,
             };
 
-            // console.log('onSalvarRegistro: ', registro);
-            // return;
-
-            axios.post('/checkList/store', registro)
+            this.setState({salvando: true});
+            return axios.post('/checkList/store', registro)
                 .then(response => {
-                    this.props.navigation.goBack(null);
-                    if (this.props.navigation.state.params.onRefresh) {
+                    console.log(response)
+
+                    if (response?.status === 200) {
+                        Alert.showAlert('Check-List salvo com sucesso');
+                    }
+                    this.props.navigation.goBack();
+                    if (this?.props?.navigation?.state?.params?.onRefresh) {
                         this.props.navigation.state.params.onRefresh();
                     }
                 }).catch(ex => {
-                this.setState({salvado: false});
-                console.warn(ex);
-            })
+                    this.setState({salvado: false});
+                    console.warn(ex);
+                })
         }
-        axios.post('/checkList/store', registro)
-            .then(response => {
-                this.props.navigation.goBack(null);
-                if (this.props.navigation.state.params.onRefresh) {
-                    this.props.navigation.state.params.onRefresh();
-                }
-            }).catch(ex => {
-            this.setState({salvado: false});
-            console.warn(ex);
-        })
-    }
+    };
 
 
     onMudaItem = (tipo) => {
@@ -305,9 +294,9 @@ export default class CheckListItemScreen extends Component {
                         keyboardShouldPersistTaps="always"
                     >
                         {/*{this?.state?.netStatus ? null : (*/}
-                            {/*<Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>*/}
-                                {/*Dispositivo sem conexão*/}
-                            {/*</Text>*/}
+                        {/*<Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>*/}
+                        {/*Dispositivo sem conexão*/}
+                        {/*</Text>*/}
                         {/*)}*/}
                         <ScrollView
                             style={{flex: 1,}}

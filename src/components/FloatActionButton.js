@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import {View, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -28,14 +28,15 @@ const FloatActionButton = (props) => {
         <View
             style={[
                 styles.fab,
-                { bottom: marginBottom },
-                { right: marginRight },
-                { backgroundColor }
+                {bottom: marginBottom},
+                {right: marginRight},
+                {backgroundColor}
             ]}
         >
-            <TouchableOpacity onPress={onPress} style={styles.content}>
+            <TouchableOpacity onPress={onPress} style={styles.content} disabled={props?.disabled}>
                 <View style={styles.content}>
-                    <Icon family={iconFamily} name={iconName} color={iconColor} size={24} />
+                    {props?.loading && props?.iconName === 'add' ? <ActivityIndicator size="large" color={'white'}/> :
+                        <Icon family={iconFamily} name={iconName} color={iconColor} size={24}/>}
                 </View>
             </TouchableOpacity>
         </View>

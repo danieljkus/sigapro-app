@@ -21,6 +21,7 @@ import GetLocation from 'react-native-get-location';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import HeaderComponent from "../components/HeaderComponent";
+import {verifyGeolocationActive, verifyLocationPermission} from "../components/getGeolocation";
 
 moment.locale('pt-BR');
 
@@ -258,7 +259,8 @@ export default class CheckListScreen extends Component {
             modalOcorrenciaVisible: false,
             adm_spcl_idf: 0,
             adm_spcl_ocorrencia: '',
-
+            loadingAdd: false,
+            debounce: 0,
         };
         NetInfo.addEventListener(state => {
             this.onNetEvento(state)
@@ -345,7 +347,25 @@ export default class CheckListScreen extends Component {
         });
     }
 
-    onAddPress = () => {
+    onAddPress = async () => {
+
+        this.setState({loadingAdd: true});
+
+        // VERIFICA SE A PERMISAO DE GEOLOCATION ESTA ATIVADA OU NEGADA
+        if (await verifyLocationPermission()) {
+            Alert.showAlert("Acesso a geolocalização foi negada!");
+            this.setState({loadingAdd: false});
+            return;
+        }
+
+
+        if (await verifyGeolocationActive()) {
+            Alert.showAlert("Geolocalização desativada!")
+            this.setState({loadingAdd: false});
+            return;
+        }
+
+
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
@@ -358,7 +378,7 @@ export default class CheckListScreen extends Component {
                     .then(location => {
                         const local = String(location.latitude) + ',' + String(location.longitude);
                         // console.log('onAddPress: ', local);
-
+                        this.setState({aguarde: false, loadingAdd: false});
                         this.props.navigation.navigate('CheckListItemScreen', {
                             registro: {
                                 adm_spcl_idf: 0,
@@ -367,7 +387,7 @@ export default class CheckListScreen extends Component {
                             onRefresh: this.onRefresh
                         });
                     }).catch(ex => {
-                    this.setState({aguarde: false});
+                    this.setState({aguarde: false, loadingAdd: false});
                     const {code, message} = ex;
                     console.warn(ex, code, message);
                     // console.log('requestLocationPermission: ', message)
@@ -993,6 +1013,8 @@ export default class CheckListScreen extends Component {
                 />
 
                 <FloatActionButton
+                    loading={this?.state?.loadingAdd}
+                    disabled={this?.state?.loadingAdd}
                     iconFamily="MaterialIcons"
                     iconName="add"
                     iconColor={Colors.textOnAccent}
