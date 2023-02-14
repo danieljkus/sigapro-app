@@ -660,7 +660,7 @@ export default class CheckListScreen extends Component {
         // console.log('CheckListScreen: ', this.state.netStatus);
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Check-List dos Veículos'}

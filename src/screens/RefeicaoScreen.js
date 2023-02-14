@@ -20,7 +20,7 @@ import axios from 'axios';
 import Alert from '../components/Alert';
 import {ProgressDialog} from 'react-native-simple-dialogs';
 import {maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat} from "../utils/Maskers";
-import {getEmpresa} from '../utils/LoginManager';
+import {getEmpresa, getToken} from '../utils/LoginManager';
 import NetInfo from '@react-native-community/netinfo';
 import GetLocation from 'react-native-get-location';
 import HeaderComponent from "../components/HeaderComponent";
@@ -42,7 +42,6 @@ export default class RefeicaoScreen extends Component {
             checkedJanta: false,
             checkedMarmita: false,
             netStatus: 1,
-
             registro: {
                 rhref_idf: 0,
                 rhref_cod_rest: 0,
@@ -51,6 +50,7 @@ export default class RefeicaoScreen extends Component {
                 rhref_tipo_refeicao: 'CAF',
             },
             salvado: false,
+            salvando: false,
         }
         NetInfo.addEventListener(state => {
             this.onNetEvento(state)
@@ -97,66 +97,60 @@ export default class RefeicaoScreen extends Component {
             },
             {
                 text: "OK",
-                onPress: this.onSalvar
+                onPress: this.onSalvar,
             })
     }
 
-    onSalvar = () => {
+    onSalvar = async () => {
+
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
 
-            this.requestLocationPermission().then(() => {
+            return this.requestLocationPermission().then(() => {
                 GetLocation.getCurrentPosition({
                     enableHighAccuracy: true,
                     timeout: 30000,
+                }).then(location => {
+                    const local = String(location.latitude) + ',' + String(location.longitude);
+                    // console.log('onAddPress: ', local);
+                    const {registro} = this.state;
+                    this.setState({salvado: true, salvando: true});
+                    registro.rhref_cod_rest = this.state.rhref_cod_rest;
+                    registro.rhref_tipo_refeicao = this.state.tipoRefeicao;
+                    registro.rhref_localizacao = local;
+
+                    return axios
+                        .post('/refeicoes/store', registro)
+                        .then(response => {
+                            this.props.navigation.goBack(null);
+                            this.props.navigation.state.params.onRefresh();
+                        }).catch(ex => {
+                            const {response} = ex;
+                            this.setState({salvado: false, salvando: false});
+
+                            return axios
+                                .post('/refeicoes/store', registro)
+                                .then(response => {
+                                    this.props.navigation.goBack(null);
+                                    this.props.navigation.state.params.onRefresh();
+                                }).catch(ex => {
+                                    const {response} = ex;
+                                    this.setState({salvado: false, salvando: false});
+
+                                    // console.log('RefeicaoScreen.onSalvar.ERROR: ', ex);
+
+                                    if (ex.response) {
+                                        // erro no servidor
+                                        alert('Não foi possível gravar. ' + ex.response.data);
+                                    } else {
+                                        // sem internet
+                                        alert('Não foi possível gravar. Verifique sua conexão com a internet');
+                                    }
+                                })
+
+                        })
                 })
-                    .then(location => {
-                        const local = String(location.latitude) + ',' + String(location.longitude);
-                        // console.log('onAddPress: ', local);
-
-                        this.setState({salvado: true});
-                        const {registro} = this.state;
-
-                        this.setState({salvado: true});
-
-                        registro.rhref_cod_rest = this.state.rhref_cod_rest;
-                        registro.rhref_tipo_refeicao = this.state.tipoRefeicao;
-                        registro.rhref_localizacao = local;
-
-                        // console.log('RefeicaoScreen.onSalvar: ', registro);
-                        // return;
-                        return axios
-                            .post('/refeicoes/store', registro)
-                            .then(response => {
-                                this.props.navigation.goBack(null);
-                                this.props.navigation.state.params.onRefresh();
-                            }).catch(ex => {
-                                const {response} = ex;
-                                this.setState({salvado: false});
-
-                                return axios
-                                    .post('/refeicoes/store', registro)
-                                    .then(response => {
-                                        this.props.navigation.goBack(null);
-                                        this.props.navigation.state.params.onRefresh();
-                                    }).catch(ex => {
-                                        const {response} = ex;
-                                        this.setState({salvado: false});
-
-                                        // console.log('RefeicaoScreen.onSalvar.ERROR: ', ex);
-
-                                        if (ex.response) {
-                                            // erro no servidor
-                                            Alert.showAlert('Não foi possível gravar. ' + ex.response.data);
-                                        } else {
-                                            // sem internet
-                                            Alert.showAlert('Não foi possível gravar. Verifique sua conexão com a internet');
-                                        }
-                                    })
-
-                            })
-                    })
             })
         }
     }
@@ -368,9 +362,9 @@ export default class RefeicaoScreen extends Component {
                     >
 
                         {/*{netStatus ? null : (*/}
-                            {/*<Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>*/}
-                                {/*Dispositivo sem conexão*/}
-                            {/*</Text>*/}
+                        {/*<Text style={{textAlign: 'center', color: '#d50000', marginTop: 2}}>*/}
+                        {/*Dispositivo sem conexão*/}
+                        {/*</Text>*/}
                         {/*)}*/}
 
                         <Card containerStyle={{
@@ -613,6 +607,7 @@ export default class RefeicaoScreen extends Component {
                     </ScrollView>
 
                     <Button
+                        disabled={this?.state?.salvando}
                         title="Salvar"
                         backgroundColor='#4682B4'
                         color={Colors.textOnPrimary}

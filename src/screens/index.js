@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { View, Text, Platform, Image, TouchableOpacity } from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, Platform, Image, TouchableOpacity} from 'react-native';
 
 import {
     withNavigation, createAppContainer,
 } from 'react-navigation';
 
-import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import {createStackNavigator} from 'react-navigation-stack';
+import {createDrawerNavigator} from 'react-navigation-drawer';
 
 
 import SplashScreen from './SplashScreen';
@@ -103,13 +103,13 @@ defaultNavigationOptions.headerBackTitle = "Voltar";
 defaultNavigationOptions.drawerLockMode = 'locked-closed';
 
 const MenuButton = withNavigation((props) => {
-    const { navigation } = props;
+    const {navigation} = props;
     return (
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Icon family="MaterialIcons"
-                name="menu"
-                color={Colors.textOnPrimary}
-                style={{ padding: 16 }} />
+                  name="menu"
+                  color={Colors.textOnPrimary}
+                  style={{padding: 16}}/>
         </TouchableOpacity>
     )
 })
@@ -157,11 +157,10 @@ const HomeStackNavigator = createStackNavigator({
     },
 
 
-
-
     EscalaVeiculoScreen: {
         screen: EscalaVeiculoScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Detalhes da Escala",
             ...defaultNavigationOptions,
         }
@@ -177,11 +176,11 @@ const HomeStackNavigator = createStackNavigator({
     EscalaVeiculoLogScreen: {
         screen: EscalaVeiculoLogScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Log das Alterações",
             ...defaultNavigationOptions
         }
     },
-
 
 
     CheckListScreen: {
@@ -202,7 +201,6 @@ const HomeStackNavigator = createStackNavigator({
     },
 
 
-
     RefeicoesScreen: {
         screen: RefeicoesScreen,
         navigationOptions: {
@@ -221,10 +219,10 @@ const HomeStackNavigator = createStackNavigator({
     },
 
 
-
     OrdensServicosScreen: {
         screen: OrdensServicosScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Ordens de Serviços",
             ...defaultNavigationOptions
         }
@@ -232,6 +230,7 @@ const HomeStackNavigator = createStackNavigator({
     OrdemServicoScreen: {
         screen: OrdemServicoScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Ordem Serviço",
             ...defaultNavigationOptions
         }
@@ -239,6 +238,7 @@ const HomeStackNavigator = createStackNavigator({
     OrdemServicoCorretivoScreen: {
         screen: OrdemServicoCorretivoScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Serviços Corretivos",
             ...defaultNavigationOptions
         }
@@ -246,6 +246,7 @@ const HomeStackNavigator = createStackNavigator({
     OrdemServicoPreventivoScreen: {
         screen: OrdemServicoPreventivoScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Serviços Preventivos",
             ...defaultNavigationOptions
         }
@@ -253,6 +254,7 @@ const HomeStackNavigator = createStackNavigator({
     OrdemServicoPecasScreen: {
         screen: OrdemServicoPecasScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Peças Utilizadas",
             ...defaultNavigationOptions
         }
@@ -260,6 +262,7 @@ const HomeStackNavigator = createStackNavigator({
     OrdemServicoResponsaveisScreen: {
         screen: OrdemServicoResponsaveisScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Responsáveis",
             ...defaultNavigationOptions
         }
@@ -267,6 +270,7 @@ const HomeStackNavigator = createStackNavigator({
     OrdemServicoDefeitosConstScreen: {
         screen: OrdemServicoDefeitosConstScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Defeitos Constatados",
             ...defaultNavigationOptions
         }
@@ -274,12 +278,11 @@ const HomeStackNavigator = createStackNavigator({
     OrdemServicoServPendenteScreen: {
         screen: OrdemServicoServPendenteScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Serviços Pendentes",
             ...defaultNavigationOptions
         }
     },
-
-
 
 
     VeiculosScreen: {
@@ -295,16 +298,17 @@ const HomeStackNavigator = createStackNavigator({
     RestaurantesScreen: {
         screen: RestaurantesScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Lista dos Restaurantes",
             ...defaultNavigationOptions
         }
     },
 
 
-
     PneusLocalizarScreen: {
         screen: PneusLocalizarScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Localizar Pneu",
             ...defaultNavigationOptions
         }
@@ -313,6 +317,7 @@ const HomeStackNavigator = createStackNavigator({
     PneusTrocaScreen: {
         screen: PneusTrocaScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Trocar Pneu",
             ...defaultNavigationOptions
         }
@@ -321,6 +326,7 @@ const HomeStackNavigator = createStackNavigator({
     PneusVeiculosScreen: {
         screen: PneusVeiculosScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Pneus nos Veículos",
             ...defaultNavigationOptions
         }
@@ -329,6 +335,7 @@ const HomeStackNavigator = createStackNavigator({
     PneusEstoqueScreen: {
         screen: PneusEstoqueScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Pneus em Estoque",
             ...defaultNavigationOptions
         }
@@ -337,16 +344,17 @@ const HomeStackNavigator = createStackNavigator({
     PneusSulcagemScreen: {
         screen: PneusSulcagemScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Sulcagem",
             ...defaultNavigationOptions
         }
     },
 
 
-
     FichaEstoqueScreen: {
         screen: FichaEstoqueScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Ficha do Estoque",
             ...defaultNavigationOptions,
         }
@@ -355,6 +363,7 @@ const HomeStackNavigator = createStackNavigator({
     ConsultaItensEstoqueScreen: {
         screen: ConsultaItensEstoqueScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Consultar Produto",
             ...defaultNavigationOptions,
         }
@@ -363,16 +372,17 @@ const HomeStackNavigator = createStackNavigator({
     MovEstoqueScreen: {
         screen: MovEstoqueScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Consulta Mov. Estoque",
             ...defaultNavigationOptions,
         }
     },
 
 
-
     SaidasEstoqueScreen: {
         screen: SaidasEstoqueScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Baixas do Estoque",
             ...defaultNavigationOptions,
         }
@@ -380,6 +390,7 @@ const HomeStackNavigator = createStackNavigator({
     SaidaEstoqueScreen: {
         screen: SaidaEstoqueScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Baixa do Estoque",
             ...defaultNavigationOptions,
         }
@@ -387,6 +398,7 @@ const HomeStackNavigator = createStackNavigator({
     SaidaEstoqueItensScreen: {
         screen: SaidaEstoqueItensScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Itens da Baixa",
             ...defaultNavigationOptions,
         }
@@ -396,6 +408,7 @@ const HomeStackNavigator = createStackNavigator({
     SaidasDieselScreen: {
         screen: SaidasDieselScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Baixas de Diesel/Arla",
             ...defaultNavigationOptions,
         }
@@ -403,6 +416,7 @@ const HomeStackNavigator = createStackNavigator({
     SaidaDieselScreen: {
         screen: SaidaDieselScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Baixa de Diesel/Arla",
             ...defaultNavigationOptions,
         }
@@ -410,6 +424,7 @@ const HomeStackNavigator = createStackNavigator({
     SaidaDieselItensScreen: {
         screen: SaidaDieselItensScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Diesel/Arla",
             ...defaultNavigationOptions,
         }
@@ -419,6 +434,7 @@ const HomeStackNavigator = createStackNavigator({
     SolicitacoesEstoqueScreen: {
         screen: SolicitacoesEstoqueScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Solicitações Filiais",
             ...defaultNavigationOptions,
         }
@@ -426,6 +442,7 @@ const HomeStackNavigator = createStackNavigator({
     SolicitacaoEstoqueScreen: {
         screen: SolicitacaoEstoqueScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Solicitação de Estoque",
             ...defaultNavigationOptions,
         }
@@ -433,6 +450,7 @@ const HomeStackNavigator = createStackNavigator({
     SolicitacaoEstoqueItensScreen: {
         screen: SolicitacaoEstoqueItensScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Itens da Solicitação",
             ...defaultNavigationOptions,
         }
@@ -442,6 +460,7 @@ const HomeStackNavigator = createStackNavigator({
     MedicoesTanqueDieselScreen: {
         screen: MedicoesTanqueDieselScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Medições do Tanque Diesel",
             ...defaultNavigationOptions,
         }
@@ -449,6 +468,7 @@ const HomeStackNavigator = createStackNavigator({
     MedicaoTanqueDieselScreen: {
         screen: MedicaoTanqueDieselScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Medir Tanque Diesel",
             ...defaultNavigationOptions
         }
@@ -457,6 +477,7 @@ const HomeStackNavigator = createStackNavigator({
     MedicoesTanqueArlaScreen: {
         screen: MedicoesTanqueArlaScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Medições do Tanque Arla",
             ...defaultNavigationOptions,
         }
@@ -464,6 +485,7 @@ const HomeStackNavigator = createStackNavigator({
     MedicaoTanqueArlaScreen: {
         screen: MedicaoTanqueArlaScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Medir Tanque Arla",
             ...defaultNavigationOptions
         }
@@ -472,6 +494,7 @@ const HomeStackNavigator = createStackNavigator({
     FichaViagemScreen: {
         screen: FichaViagemScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Ficha de Viagem",
             ...defaultNavigationOptions
         }
@@ -534,6 +557,7 @@ const HomeStackNavigator = createStackNavigator({
     PreDigitacaoNotasScreen: {
         screen: PreDigitacaoNotasScreen,
         navigationOptions: {
+            headerShown: false,
             title: "NFEs Pré-Digitadas",
             ...defaultNavigationOptions
         }
@@ -541,6 +565,7 @@ const HomeStackNavigator = createStackNavigator({
     PreDigitacaoNotaScreen: {
         screen: PreDigitacaoNotaScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Pré-Digitação de NFEs",
             ...defaultNavigationOptions
         }
@@ -548,6 +573,7 @@ const HomeStackNavigator = createStackNavigator({
     BarCodeScreen: {
         screen: BarCodeScreen,
         navigationOptions: {
+            headerShown: false,
             title: "Escanear código de barras",
             header: () => null,
             ...defaultNavigationOptions
@@ -572,7 +598,6 @@ const HomeStackNavigator = createStackNavigator({
         },
     },
 });
-
 
 
 const HomeDrawerNavigator = createDrawerNavigator(

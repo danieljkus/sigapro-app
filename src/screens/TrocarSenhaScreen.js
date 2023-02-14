@@ -72,7 +72,7 @@ export default class TrocarSenhaScreen extends Component {
         const {adm_pes_pfj, usu_senha, usu_senha_Conf, loading, salvado} = this.state;
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Trocar Senha'}

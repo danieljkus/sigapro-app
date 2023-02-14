@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     View, Text, FlatList, Modal,
-    Platform, ActivityIndicator, ScrollView
+    Platform, ActivityIndicator, ScrollView, SafeAreaView
 } from 'react-native';
 import { Icon, Card, Divider } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
@@ -19,6 +19,7 @@ import FiliaisSelect from '../components/FiliaisSelect';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
 moment.locale('pt-BR');
 
 const { OS } = Platform;
@@ -974,7 +975,13 @@ export default class ConsultaItensEstoqueScreen extends Component {
         // console.log('FichaEstoqueScreen.this.state: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Consultar Produto'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
 
                 <View style={{ margin: 10, marginBottom: -10, padding: 0 }}>
 
@@ -1281,7 +1288,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView >
 
         )
     }

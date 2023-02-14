@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, SafeAreaView} from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -8,6 +8,7 @@ import { Card, Divider } from 'react-native-elements';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
+import HeaderComponent from "../components/HeaderComponent";
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -168,7 +169,13 @@ export default class MedicoesTanqueDieselScreen extends Component {
     render() {
         const { listaRegistros, refreshing, carregando } = this.state;
         return (
-            <View style={{ flex: 1, }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Medições do Tanque Diesel'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
@@ -187,7 +194,7 @@ export default class MedicoesTanqueDieselScreen extends Component {
                     onPress={this.onAddPress}
                     backgroundColor={Colors.primary}
                 />
-            </View>
+            </SafeAreaView>
         )
     }
 }

@@ -41,8 +41,6 @@ class LinhasSelect extends PureComponent {
 
     state = {
         codLinha: '',
-        carregando: false,
-
         listaRegistros: [],
         modalBuscaVisible: false,
         refreshing: false,

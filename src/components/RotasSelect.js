@@ -39,8 +39,6 @@ const Registro = ({ registro, onRegistroPress }) => {
 class RotasSelect extends PureComponent {
     state = {
         codRota: '',
-        carregando: false,
-
         listaRegistros: [],
         modalBuscaVisible: false,
         refreshing: false,

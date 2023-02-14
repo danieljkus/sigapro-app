@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import {View, Text, ScrollView, SafeAreaView} from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -12,6 +12,7 @@ import Alert from '../components/Alert';
 import moment from 'moment';
 import { maskDate, maskValorMoeda } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
+import HeaderComponent from "../components/HeaderComponent";
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
@@ -231,8 +232,13 @@ export default class SaidaDieselScreen extends Component {
         // console.log('SaidaDieselScreen - STATE: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
-                <StatusBar />
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Baixa de Diesel/Arla'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
 
                 <ScrollView
                     style={{ flex: 1, }}
@@ -406,7 +412,7 @@ export default class SaidaDieselScreen extends Component {
                     />
 
                 </ScrollView>
-            </View >
+            </SafeAreaView >
         )
     }
 }

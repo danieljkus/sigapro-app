@@ -41,8 +41,6 @@ class TipoSolicitacaoSelect extends PureComponent {
 
     state = {
         codTipoSol: '',
-        carregando: false,
-
         listaRegistros: [],
         modalBuscaVisible: false,
         refreshing: false,

@@ -43,8 +43,6 @@ class ItemEstoqueSelect extends PureComponent {
         codItem: '',
         enabled: true,
         // buscaEstoque: 1,
-        carregando: false,
-
         listaRegistros: [],
         modalBuscaVisible: false,
         refreshing: false,

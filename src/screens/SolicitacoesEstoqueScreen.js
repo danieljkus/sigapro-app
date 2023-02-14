@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import {View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, SafeAreaView} from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -8,7 +8,7 @@ import { Card, Divider, Icon } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
-import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
+import HeaderComponent from "../components/HeaderComponent";
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -354,7 +354,13 @@ export default class SolicitacoesEstoqueScreen extends Component {
     render() {
         const { listaRegistros, refreshing, carregarRegistro } = this.state;
         return (
-            <View style={{ flex: 1, }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Solicitações Filiais'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
@@ -380,7 +386,7 @@ export default class SolicitacoesEstoqueScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View>
+            </SafeAreaView>
         )
     }
 }

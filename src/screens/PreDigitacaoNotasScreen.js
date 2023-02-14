@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Alert, FlatList, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {View, Text, Alert, FlatList, Platform, TouchableOpacity, ActivityIndicator, SafeAreaView} from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -8,6 +8,7 @@ import { Card, Divider } from 'react-native-elements';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
+import HeaderComponent from "../components/HeaderComponent";
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -182,7 +183,13 @@ export default class PreDigitacaoNotasScreen extends Component {
     render() {
         const { listaRegistros, refreshing, carregando } = this.state;
         return (
-            <View style={{ flex: 1, }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'NFEs Pré-Digitadas'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
@@ -201,7 +208,7 @@ export default class PreDigitacaoNotasScreen extends Component {
                     onPress={this.onAddPress}
                     backgroundColor={Colors.primary}
                 />
-            </View>
+            </SafeAreaView>
         )
     }
 }

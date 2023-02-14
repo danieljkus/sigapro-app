@@ -71,7 +71,7 @@ const CardViewItem = ({registro, onRegistroPress}) => {
                             {registro.rhref_tipo_refeicao}
                         </Text>
                     </Text>
-                    <Text style={{flex: 1, color: Colors.textSecondaryDark, fontSize: 15, flex: 1}}>
+                    <Text style={{flex: 1, color: Colors.textSecondaryDark, fontSize: 15}}>
                         <Text style={{fontWeight: 'bold'}}>
                             Valor: {' '}
                         </Text>

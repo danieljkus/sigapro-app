@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, RefreshControl, Platform, Dimensions } from 'react-native';
+import {View, Text, ScrollView, RefreshControl, Platform, Dimensions, SafeAreaView} from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 import { checkFormIsValid } from '../utils/Validator';
 
@@ -12,6 +12,7 @@ import Alert from '../components/Alert';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import { maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat } from "../utils/Maskers";
 import { getEmpresa } from '../utils/LoginManager';
+import HeaderComponent from "../components/HeaderComponent";
 
 const { OS } = Platform;
 
@@ -209,7 +210,13 @@ export default class MedicaoTanqueDieselScreen extends Component {
         // console.log('estoq_tcm_alt_medida: ', estoq_tcm_alt_medida);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Medir Tanque Diesel'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <ScrollView
                     style={{ flex: 1 }}
                     keyboardShouldPersistTaps="always"
@@ -366,7 +373,7 @@ export default class MedicaoTanqueDieselScreen extends Component {
                     />
                     : null
                 }
-            </View>
+            </SafeAreaView>
         )
     }
 }

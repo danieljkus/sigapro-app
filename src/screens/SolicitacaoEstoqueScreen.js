@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import {View, Text, ScrollView, SafeAreaView} from 'react-native';
 import { CheckBox, Divider } from 'react-native-elements';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
@@ -14,6 +14,7 @@ import { getFilial, getUsuario } from '../utils/LoginManager';
 import TipoSolicitacaoSelect from '../components/TipoSolicitacaoSelect';
 import FiliaisSelect from '../components/FiliaisSelect';
 import CentroCustoSelect from '../components/CentroCustoSelect';
+import HeaderComponent from "../components/HeaderComponent";
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
@@ -239,7 +240,13 @@ export default class SolicitacaoEstoqueScreen extends Component {
         // console.log('SolicitacaoEstoqueScreen - STATE: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Solicitação de Estoque'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <StatusBar />
 
                 <ScrollView
@@ -408,7 +415,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
                     />
 
                 </ScrollView>
-            </View >
+            </SafeAreaView >
         )
     }
 }

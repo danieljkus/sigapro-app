@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, RefreshControl, Platform, Dimensions } from 'react-native';
+import {View, Text, ScrollView, RefreshControl, Platform, Dimensions, SafeAreaView} from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 import { checkFormIsValid } from '../utils/Validator';
 
@@ -12,6 +12,7 @@ import Alert from '../components/Alert';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import { maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat } from "../utils/Maskers";
 import { getEmpresa } from '../utils/LoginManager';
+import HeaderComponent from "../components/HeaderComponent";
 
 const { OS } = Platform;
 
@@ -205,7 +206,13 @@ export default class MedicaoTanqueArlaScreen extends Component {
             estoq_tam_qtde_sistema, qtde_diferenca } = registro;
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Medir Tanque Arla'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <ScrollView
                     style={{ flex: 1 }}
                     keyboardShouldPersistTaps="always"
@@ -326,7 +333,7 @@ export default class MedicaoTanqueArlaScreen extends Component {
                         />
                         : null
                 }
-            </View>
+            </SafeAreaView>
         )
     }
 }

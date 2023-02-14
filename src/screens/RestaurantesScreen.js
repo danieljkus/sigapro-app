@@ -1,34 +1,45 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     View, Text, FlatList, Modal,
     Platform, TouchableOpacity,
-    Alert, ActivityIndicator, ScrollView
+    Alert, ActivityIndicator, ScrollView, SafeAreaView
 } from 'react-native';
-import { SearchBar, Icon, Card, Divider, CheckBox } from 'react-native-elements';
-import { ProgressDialog } from 'react-native-simple-dialogs';
+import {SearchBar, Icon, Card, Divider, CheckBox} from 'react-native-elements';
+import {ProgressDialog} from 'react-native-simple-dialogs';
 import axios from 'axios';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import { maskDate } from '../utils/Maskers';
+import {maskDate} from '../utils/Maskers';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
+import {getListaRestaurantes} from "../api";
+import {getToken} from "../utils/LoginManager";
+
 moment.locale('pt-BR');
 
-const { OS } = Platform;
+const {OS} = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const RegistroItem = ({ registro, onRegistroPress }) => {
+const RegistroItem = ({registro, onRegistroPress}) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+        <Card containerStyle={{
+            padding: 0,
+            margin: 0,
+            marginVertical: 7,
+            borderRadius: 0,
+            backgroundColor: Colors.textDisabledLight,
+            elevation: 0,
+        }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro)}
             >
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                <View style={{paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row'}}>
+                    <View style={{flex: 3, flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', fontSize: 15}}>
                             #{registro.rhrest_codigo}
                         </Text>
                     </View>
@@ -39,8 +50,8 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                         </View> */}
                 </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 13 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                <View style={{flexDirection: 'row', paddingLeft: 13}}>
+                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                         Nome{': '}
                     </Text>
                     <Text>
@@ -48,8 +59,8 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                     </Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 13, marginBottom: 7 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                <View style={{flexDirection: 'row', paddingLeft: 13, marginBottom: 7}}>
+                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                         Cidade{': '}
                     </Text>
                     <Text>
@@ -58,29 +69,32 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                 </View>
 
             </TouchableOpacity>
-        </Card >
+        </Card>
     )
 }
 
 
-
 export default class RestaurantesScreen extends Component {
 
-    state = {
-        listaRegistros: [],
-        refreshing: false,
-        carregarRegistro: false,
-        carregando: false,
-        carregarMais: false,
-        pagina: 1,
 
-        busca_nome: '',
-        onClick: false,
+    constructor(props) {
+        super(props)
+        this.state = {
+            listaRegistros: [],
+            refreshing: false,
+            carregarRegistro: false,
+            carregando: false,
+            carregarMais: false,
+            pagina: 1,
+            busca_nome: '',
+            onClick: false,
+            token: '',
+        };
+    }
 
-    };
 
     componentDidMount() {
-        this.setState({ refreshing: true });
+        this.setState({refreshing: true});
         this.getListaRegistros();
     }
 
@@ -96,20 +110,22 @@ export default class RestaurantesScreen extends Component {
         state[id] = value;
         this.setState(state);
         this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
+                pagina: 1,
+                refreshing: true,
+            }, this.getListaRegistros()
+        );
     }
 
 
+    getListaRegistros = async () => {
 
-    getListaRegistros = () => {
-        const { buscaNome, pagina, listaRegistros } = this.state;
-        this.setState({ refreshing: true, onClick: false });
+        const {buscaNome, pagina, listaRegistros} = this.state;
+        this.setState({refreshing: true, onClick: false});
 
         // console.log('getListaRegistros')
 
-        axios.get('/listaRestaurantes', {
+        await axios.get('/listaRestaurantes', {
+
             params: {
                 page: pagina,
                 limite: 10,
@@ -129,8 +145,7 @@ export default class RestaurantesScreen extends Component {
                 carregarMais: novosRegistros.length < total,
             })
         }).catch(ex => {
-            console.warn(ex);
-            console.warn(ex.response);
+            console.log(ex.response);
             this.setState({
                 refreshing: false,
                 carregando: false,
@@ -148,7 +163,7 @@ export default class RestaurantesScreen extends Component {
 
     carregarMaisRegistros = () => {
         // console.log('carregarMaisRegistros')
-        const { carregarMais, refreshing, carregando, pagina } = this.state;
+        const {carregarMais, refreshing, carregando, pagina} = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -159,12 +174,12 @@ export default class RestaurantesScreen extends Component {
 
 
     renderListFooter = () => {
-        const { carregando } = this.state;
+        const {carregando} = this.state;
 
         if (carregando) {
             return (
-                <View style={{ marginTop: 8 }}>
-                    <ActivityIndicator size="large" />
+                <View style={{marginTop: 8}}>
+                    <ActivityIndicator size="large"/>
                 </View>
             )
         }
@@ -172,7 +187,7 @@ export default class RestaurantesScreen extends Component {
         return null;
     }
 
-    renderItem = ({ item, index }) => {
+    renderItem = ({item, index}) => {
         return (
             <RegistroItem
                 registro={item}
@@ -204,7 +219,7 @@ export default class RestaurantesScreen extends Component {
 
     onRegistroPress = async (registro) => {
         if (!this.state.onClick) {
-            this.setState({ onClick: true });
+            this.setState({onClick: true});
             this.props.navigation.goBack(null);
             if (this.props.navigation.state.params.onMostraRestaurante) {
                 this.props.navigation.state.params.onMostraRestaurante(
@@ -232,29 +247,33 @@ export default class RestaurantesScreen extends Component {
     }
 
 
-
-
     render() {
-        const { listaRegistros, refreshing, carregarRegistro } = this.state;
+        const {listaRegistros, refreshing, carregarRegistro} = this.state;
 
         // console.log('rhrest_codigo: ', this.state.rhrest_codigo);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Lista dos Restaurantes'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
 
                 <SearchBar
                     placeholder="Pesquisar"
                     lightTheme={true}
                     onChangeText={this.onBuscaNomeChange}
-                    inputStyle={{ backgroundColor: 'white' }}
-                    containerStyle={{ backgroundColor: Colors.primaryLight }}
+                    inputStyle={{backgroundColor: 'white'}}
+                    containerStyle={{backgroundColor: Colors.primaryLight}}
                     clearIcon={true}
                 />
 
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 100 }}
+                    contentContainerStyle={{paddingBottom: 100}}
                     keyExtractor={registro => String(registro.rhrest_codigo)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
@@ -268,7 +287,7 @@ export default class RestaurantesScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView>
         )
     }
 }

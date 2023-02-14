@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Modal } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    Platform,
+    TouchableOpacity,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    Modal,
+    SafeAreaView
+} from 'react-native';
 const { OS } = Platform;
 
 import axios from 'axios';
@@ -15,6 +26,7 @@ import { getFilial } from '../utils/LoginManager';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
 moment.locale('pt-BR');
 
 const DATE_FORMAT = 'DD/MM/YYYY';
@@ -375,7 +387,13 @@ export default class SaidasEstoqueScreen extends Component {
         // console.log('SaidasEstoqueScreen: ', this.state);
 
         return (
-            <View style={{ flex: 1, }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Baixas do Estoque'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
@@ -406,9 +424,7 @@ export default class SaidasEstoqueScreen extends Component {
                         backgroundColor: 'rgba(0,0,0,0.5)',
                     }}>
                         <View style={{
-                            flex: 1,
                             width: "90%",
-                            paddingTop: 10,
                         }} >
                             <View style={{
                                 paddingVertical: 15,
@@ -554,7 +570,7 @@ export default class SaidasEstoqueScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View>
+            </SafeAreaView>
         )
     }
 }

@@ -44,7 +44,7 @@ export default class HomeScreen extends Component {
         if (!usuario) return null;
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Home'}

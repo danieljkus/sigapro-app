@@ -3,22 +3,19 @@ import {
     View, Text, FlatList, Modal,
     Platform, TouchableOpacity,
     ActivityIndicator, ScrollView,
-    PermissionsAndroid
+    PermissionsAndroid, SafeAreaView
 } from 'react-native';
 import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
-import GetLocation from 'react-native-get-location';
-import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
-import TextInput from '../components/TextInput';
 import { maskValorMoeda } from '../utils/Maskers';
-import Alert from '../components/Alert';
 
 import ItemEstoqueSelect from '../components/ItemEstoqueSelect';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
 moment.locale('pt-BR');
 
 const { OS } = Platform;
@@ -352,7 +349,13 @@ export default class FichaEstoqueScreen extends Component {
         // console.log('FichaEstoqueScreen.this.state: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Ficha do Estoque'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
 
                 <View style={{ margin: 10, marginBottom: -10, padding: 0 }}>
 
@@ -414,6 +417,9 @@ export default class FichaEstoqueScreen extends Component {
 
 
                 <FlatList
+                    style={{
+                        backgroundColor: 'white'
+                    }}
                     data={listaRegistros}
                     renderItem={this.renderItem}
                     contentContainerStyle={{ paddingBottom: 80 }}
@@ -431,7 +437,7 @@ export default class FichaEstoqueScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView >
 
         )
     }

@@ -9,6 +9,7 @@ import Colors from '../values/Colors';
 const Button = ({ title, textStyle, ...props }) => {
     return (
         <Btn
+            disabled={props?.disabled}
             title={ OS === 'android' ? title.toUpperCase() : title }
             textStyle={{
                 fontSize: 18,

@@ -41,8 +41,6 @@ class CentroCustoSelect extends PureComponent {
 
     state = {
         codCC: '',
-        carregando: false,
-
         listaRegistros: [],
         modalBuscaVisible: false,
         refreshing: false,

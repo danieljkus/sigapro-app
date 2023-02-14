@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     View, Text, FlatList, Modal,
     Platform, TouchableOpacity,
-    Alert, ActivityIndicator, ScrollView
+    Alert, ActivityIndicator, ScrollView, SafeAreaView
 } from 'react-native';
 import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
@@ -18,6 +18,7 @@ import ItemEstoqueSelect from '../components/ItemEstoqueSelect';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
 moment.locale('pt-BR');
 
 const { OS } = Platform;
@@ -346,7 +347,13 @@ export default class MovEstoqueScreen extends Component {
         // console.log('MovEstoqueScreen.this.state: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Consulta Mov. Estoque'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
 
 
                 <FlatList
@@ -537,7 +544,7 @@ export default class MovEstoqueScreen extends Component {
                 />
 
 
-            </View >
+            </SafeAreaView >
 
         )
     }

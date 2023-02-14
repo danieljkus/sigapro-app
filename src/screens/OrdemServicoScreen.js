@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     View, Text, ScrollView, ActivityIndicator,
-    FlatList, Modal, TouchableOpacity
+    FlatList, Modal, TouchableOpacity, SafeAreaView
 } from 'react-native';
 import { CheckBox, Divider, SearchBar } from 'react-native-elements';
 import axios from 'axios';
@@ -18,6 +18,7 @@ import { getFilial } from '../utils/LoginManager';
 import FiliaisSelect from '../components/FiliaisSelect';
 import VeiculosSelect from '../components/VeiculosSelect';
 import RotasSelect from '../components/RotasSelect';
+import HeaderComponent from "../components/HeaderComponent";
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
@@ -440,9 +441,13 @@ export default class OrdemServicoScreen extends Component {
         // console.log('OrdemServicoScreen - STATE: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
-                <StatusBar />
-
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Ordem Serviço'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <ScrollView
                     style={{ flex: 1, }}
                     keyboardShouldPersistTaps="always"
@@ -871,7 +876,7 @@ export default class OrdemServicoScreen extends Component {
                     />
 
                 </ScrollView>
-            </View >
+            </SafeAreaView >
         )
     }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import {View, Text, ScrollView, SafeAreaView} from 'react-native';
 import { CheckBox, Divider } from 'react-native-elements';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
@@ -14,6 +14,7 @@ import { getFilial } from '../utils/LoginManager';
 import VeiculosSelect from '../components/VeiculosSelect';
 import FiliaisSelect from '../components/FiliaisSelect';
 import CentroCustoSelect from '../components/CentroCustoSelect';
+import HeaderComponent from "../components/HeaderComponent";
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
@@ -462,9 +463,13 @@ export default class SaidaEstoqueScreen extends Component {
         // console.log('SaidaEstoqueScreen - STATE: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
-                <StatusBar />
-
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Baixa do Estoque'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <ScrollView
                     style={{ flex: 1, }}
                     keyboardShouldPersistTaps="always"
@@ -735,7 +740,7 @@ export default class SaidaEstoqueScreen extends Component {
                     />
 
                 </ScrollView>
-            </View >
+            </SafeAreaView >
         )
     }
 }

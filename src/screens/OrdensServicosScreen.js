@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Modal } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    Platform,
+    TouchableOpacity,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    Modal,
+    SafeAreaView
+} from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -13,6 +24,7 @@ import { getFilial } from '../utils/LoginManager';
 import FiliaisSelect from '../components/FiliaisSelect';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
+import HeaderComponent from "../components/HeaderComponent";
 
 const DATE_FORMAT = 'DD/MM/YYYY';
 
@@ -432,11 +444,20 @@ export default class OrdensServicosScreen extends Component {
         // console.log('OrdensServicosScreen: ', this.state)
 
         return (
-            <View style={{ flex: 1, }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Ordens de Serviços'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <FlatList
+                    style={{
+                        backgroundColor: 'white'
+                    }}
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 100 }}
+                    contentContainerStyle={{paddingBottom: 100}}
                     keyExtractor={registro => String(registro.man_os_idf)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
@@ -594,7 +615,7 @@ export default class OrdensServicosScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View>
+            </SafeAreaView>
         )
     }
 }

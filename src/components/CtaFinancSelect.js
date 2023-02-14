@@ -41,8 +41,6 @@ class CtaFinancSelect extends PureComponent {
 
     state = {
         codCta: '',
-        carregando: false,
-
         listaRegistros: [],
         modalBuscaVisible: false,
         refreshing: false,
