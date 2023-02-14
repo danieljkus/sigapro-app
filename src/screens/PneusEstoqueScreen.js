@@ -1,54 +1,63 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     View, Text, FlatList, Modal,
     Platform, TouchableOpacity,
-    Alert, ActivityIndicator, ScrollView
+    Alert, ActivityIndicator, ScrollView, SafeAreaView
 } from 'react-native';
-import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
-import { ProgressDialog } from 'react-native-simple-dialogs';
+import {Icon, Card, Divider, CheckBox} from 'react-native-elements';
+import {ProgressDialog} from 'react-native-simple-dialogs';
 import axios from 'axios';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import { maskDate } from '../utils/Maskers';
-import { getFilial } from '../utils/LoginManager';
+import {maskDate} from '../utils/Maskers';
+import {getFilial} from '../utils/LoginManager';
 import FiliaisSelect from '../components/FiliaisSelect';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
+
 moment.locale('pt-BR');
 
-const { OS } = Platform;
+const {OS} = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const RegistroItem = ({ registro, onRegistroPress }) => {
+const RegistroItem = ({registro, onRegistroPress}) => {
     return (
-        <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
+        <Card containerStyle={{
+            padding: 0,
+            margin: 0,
+            marginVertical: 7,
+            borderRadius: 0,
+            backgroundColor: Colors.textDisabledLight,
+            elevation: 0,
+        }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.pneus_mov_idf)}
             >
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                <View style={{paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row'}}>
+                    <View style={{flex: 2, flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
                             Pneu{': '}
                         </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        <Text style={{fontWeight: 'bold', fontSize: 15}}>
                             {registro.pneus_mov_pneu}
                         </Text>
                     </View>
-                    <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                    <View style={{flex: 2, flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
                             Filial{': '}
                         </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                        <Text style={{fontWeight: 'bold', fontSize: 15}}>
                             {registro.pneus_mov_filial}
                         </Text>
                     </View>
                 </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                <View style={{flexDirection: 'row', paddingLeft: 20}}>
+                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                         Marca{': '}
                     </Text>
                     <Text>
@@ -56,8 +65,8 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                     </Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                <View style={{flexDirection: 'row', paddingLeft: 20}}>
+                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                         Modelo{': '}
                     </Text>
                     <Text>
@@ -65,8 +74,8 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                     </Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                <View style={{flexDirection: 'row', paddingLeft: 20}}>
+                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                         Dimenssão{': '}
                     </Text>
                     <Text>
@@ -74,25 +83,25 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                     </Text>
                 </View>
 
-                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                <View style={{paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row'}}>
+                    <View style={{flex: 3, flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
                             Data{': '}
                         </Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }} >
+                        <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
                             {moment(registro.pneus_mov_data).format("DD/MM/YYYY")}
                         </Text>
                     </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    <View style={{flex: 3, flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                             Vida{': '}
                         </Text>
-                        <Text style={{ fontSize: 12, marginTop: 2 }}>
+                        <Text style={{fontSize: 12, marginTop: 2}}>
                             {registro.pneus_mov_vida === "0" ? 'NOVO' : registro.pneus_mov_vida + 'º VIDA'}
                         </Text>
                     </View>
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                    <View style={{flex: 3, flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                             Km Vida{': '}
                         </Text>
                         <Text>
@@ -101,7 +110,7 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
                     </View>
                 </View>
             </TouchableOpacity>
-        </Card >
+        </Card>
     )
 }
 
@@ -144,14 +153,14 @@ export default class PneusEstoqueScreen extends Component {
                         codFilial: filial
                     }
                 }).then(response => {
-                    const { data } = response;
+                    const {data} = response;
                     // console.log('FiliaisSelect.componentDidMount: ', data);
                     this.setState({
-                        filialSelect: {
-                            adm_fil_codigo: filial,
-                            adm_fil_descricao: data[0].adm_fil_descricao
+                            filialSelect: {
+                                adm_fil_codigo: filial,
+                                adm_fil_descricao: data[0].adm_fil_descricao
+                            },
                         },
-                    },
                         this.getListaRegistros()
                     );
                 });
@@ -186,8 +195,10 @@ export default class PneusEstoqueScreen extends Component {
 
 
     getListaRegistros = () => {
-        const { pneus_mov_pneu, pneus_mov_filial, pneus_cp_marca, pneus_cp_modelo, pneus_cp_dimenssao,
-            pagina, listaRegistros } = this.state;
+        const {
+            pneus_mov_pneu, pneus_mov_filial, pneus_cp_marca, pneus_cp_modelo, pneus_cp_dimenssao,
+            pagina, listaRegistros
+        } = this.state;
 
         const temFiltro = pneus_mov_pneu !== '' || pneus_mov_filial !== '' || pneus_cp_marca !== '' || pneus_cp_modelo !== '' || pneus_cp_dimenssao !== '';
 
@@ -225,11 +236,11 @@ export default class PneusEstoqueScreen extends Component {
     }
 
     onRegistroPress = (pneus_mov_idf) => {
-        this.setState({ carregarRegistro: true });
+        this.setState({carregarRegistro: true});
 
         axios.get('/pneus/showMovPneu/' + pneus_mov_idf)
             .then(response => {
-                this.setState({ carregarRegistro: false });
+                this.setState({carregarRegistro: false});
                 response.data.tipoTela = 'EST';
                 this.props.navigation.navigate('PneusTrocaScreen', {
                     registro: {
@@ -238,10 +249,10 @@ export default class PneusEstoqueScreen extends Component {
                     onRefresh: this.onRefresh,
                 });
             }).catch(ex => {
-                this.setState({ carregarRegistro: false });
-                console.warn(ex);
-                console.warn(ex.response);
-            });
+            this.setState({carregarRegistro: false});
+            console.warn(ex);
+            console.warn(ex.response);
+        });
     }
 
     onRefresh = () => {
@@ -252,7 +263,7 @@ export default class PneusEstoqueScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        const { carregarMais, refreshing, carregando, pagina } = this.state;
+        const {carregarMais, refreshing, carregando, pagina} = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -263,12 +274,12 @@ export default class PneusEstoqueScreen extends Component {
 
 
     renderListFooter = () => {
-        const { carregando } = this.state;
+        const {carregando} = this.state;
 
         if (carregando) {
             return (
-                <View style={{ marginTop: 8 }}>
-                    <ActivityIndicator size="large" />
+                <View style={{marginTop: 8}}>
+                    <ActivityIndicator size="large"/>
                 </View>
             )
         }
@@ -276,7 +287,7 @@ export default class PneusEstoqueScreen extends Component {
         return null;
     }
 
-    renderItem = ({ item, index }) => {
+    renderItem = ({item, index}) => {
         return (
             <RegistroItem
                 registro={item}
@@ -293,7 +304,7 @@ export default class PneusEstoqueScreen extends Component {
     }
 
     onSearchPress = (visible) => {
-        this.setState({ modalFiltrosVisible: visible });
+        this.setState({modalFiltrosVisible: visible});
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -301,7 +312,7 @@ export default class PneusEstoqueScreen extends Component {
     }
 
     onClosePress = (visible) => {
-        this.setState({ modalFiltrosVisible: visible });
+        this.setState({modalFiltrosVisible: visible});
     }
 
     onClearSearchPress = () => {
@@ -319,96 +330,98 @@ export default class PneusEstoqueScreen extends Component {
     }
 
 
-
     buscaMarca = () => {
-        this.setState({ marcaSelect: [], pneus_cp_marca: '' });
-        axios.get('/pneus/listaMarcas', {
-        }).then(response => {
-            const { data } = response;
+        this.setState({marcaSelect: [], pneus_cp_marca: ''});
+        axios.get('/pneus/listaMarcas', {}).then(response => {
+            const {data} = response;
             const marcaSelect = data.map(regList => {
                 return {
                     key: regList.pneus_mar_codigo,
                     label: regList.pneus_mar_descricao
                 }
             });
-            marcaSelect.unshift({ key: 0, label: "Selecione uma Marca" });
+            marcaSelect.unshift({key: 0, label: "Selecione uma Marca"});
             this.setState({
                 marcaSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                marcaSelect: [{ label: "Marca não encontrda", key: 0 }],
+                marcaSelect: [{label: "Marca não encontrda", key: 0}],
             });
         })
 
     }
 
     buscaModelo = () => {
-        this.setState({ modeloSelect: [], pneus_cp_modelo: '' });
-        axios.get('/pneus/listaModelos', {
-        }).then(response => {
-            const { data } = response;
+        this.setState({modeloSelect: [], pneus_cp_modelo: ''});
+        axios.get('/pneus/listaModelos', {}).then(response => {
+            const {data} = response;
             const modeloSelect = data.map(regList => {
                 return {
                     key: regList.pneus_mod_codigo,
                     label: regList.pneus_mod_descricao
                 }
             });
-            modeloSelect.unshift({ key: 0, label: "Selecione um Modelo" });
+            modeloSelect.unshift({key: 0, label: "Selecione um Modelo"});
             this.setState({
                 modeloSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                modeloSelect: [{ label: "Modelo não encontrdo", key: 0 }],
+                modeloSelect: [{label: "Modelo não encontrdo", key: 0}],
             });
         })
 
     }
 
     buscaDimenssoes = () => {
-        this.setState({ dimenssaoSelect: [], pneus_cp_dimenssao: '' });
-        axios.get('/pneus/listaDimenssoes', {
-        }).then(response => {
-            const { data } = response;
+        this.setState({dimenssaoSelect: [], pneus_cp_dimenssao: ''});
+        axios.get('/pneus/listaDimenssoes', {}).then(response => {
+            const {data} = response;
             const dimenssaoSelect = data.map(regList => {
                 return {
                     key: regList.pneus_dim_codigo,
                     label: regList.pneus_dim_descricao
                 }
             });
-            dimenssaoSelect.unshift({ key: 0, label: "Selecione uma Dimenssão" });
+            dimenssaoSelect.unshift({key: 0, label: "Selecione uma Dimenssão"});
             this.setState({
                 dimenssaoSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                dimenssaoSelect: [{ label: "Dimenssão não encontrda", key: 0 }],
+                dimenssaoSelect: [{label: "Dimenssão não encontrda", key: 0}],
             });
         })
 
     }
 
 
-
     render() {
-        const { listaRegistros, refreshing, carregarRegistro, temFiltro,
+        const {
+            listaRegistros, refreshing, carregarRegistro, temFiltro,
             pneus_mov_pneu, pneus_mov_filial, pneus_cp_marca, pneus_cp_modelo, pneus_cp_dimenssao,
-            filialSelect, marcaSelect, modeloSelect, dimenssaoSelect } = this.state;
+            filialSelect, marcaSelect, modeloSelect, dimenssaoSelect
+        } = this.state;
 
         // console.log('PneusEstoqueScreen.this.state: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
-
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Pneus em Estoque'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
 
                 <FlatList
                     data={listaRegistros}
                     renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 100 }}
+                    contentContainerStyle={{paddingBottom: 100}}
                     keyExtractor={registro => String(registro.pneus_mov_pneu)}
                     onRefresh={this.onRefresh}
                     refreshing={refreshing}
@@ -417,14 +430,14 @@ export default class PneusEstoqueScreen extends Component {
                 />
 
 
-
-
                 {/* ----------------------------- */}
                 {/* MODAL PARA FILTROS            */}
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
+                    onRequestClose={() => {
+                        console.log("Modal FILTROS FECHOU.")
+                    }}
                     animationType={"slide"}
                     transparent={true}
                 >
@@ -444,7 +457,7 @@ export default class PneusEstoqueScreen extends Component {
                                 borderRadius: 5,
                             }}>
 
-                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                                <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
                                     <Text style={{
                                         color: Colors.textOnPrimary,
                                         marginTop: 15,
@@ -456,7 +469,7 @@ export default class PneusEstoqueScreen extends Component {
                                     }}>Filtrar Estoque</Text>
                                 </View>
 
-                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
+                                <View style={{marginTop: 4, paddingVertical: 10}}>
 
                                     <FiliaisSelect
                                         label="Filial"
@@ -512,8 +525,10 @@ export default class PneusEstoqueScreen extends Component {
 
                                     <Button
                                         title="FILTRAR"
-                                        onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop: 10 }}
+                                        onPress={() => {
+                                            this.onSearchPress(!this.state.modalFiltrosVisible)
+                                        }}
+                                        buttonStyle={{marginTop: 10}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'filter',
@@ -523,8 +538,10 @@ export default class PneusEstoqueScreen extends Component {
                                     />
                                     <Button
                                         title="FECHAR"
-                                        onPress={() => { this.onClosePress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop:10}}
+                                        onPress={() => {
+                                            this.onClosePress(!this.state.modalFiltrosVisible)
+                                        }}
+                                        buttonStyle={{marginTop: 10}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',
@@ -543,7 +560,9 @@ export default class PneusEstoqueScreen extends Component {
                     iconFamily="MaterialIcons"
                     iconName="search"
                     iconColor={Colors.textOnPrimary}
-                    onPress={() => { this.onSearchPress(true) }}
+                    onPress={() => {
+                        this.onSearchPress(true)
+                    }}
                     backgroundColor={Colors.primary}
                     marginRight={10}
                 />
@@ -569,7 +588,7 @@ export default class PneusEstoqueScreen extends Component {
                 />
 
 
-            </View >
+            </SafeAreaView>
 
         )
     }

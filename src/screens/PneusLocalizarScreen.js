@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Platform, TouchableOpacity } from 'react-native';
+import {View, Text, Platform, TouchableOpacity, SafeAreaView} from 'react-native';
 import { Icon, Card } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import TextInput from '../components/TextInput';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
 moment.locale('pt-BR');
 
 const { OS } = Platform;
@@ -224,7 +225,13 @@ export default class PneusLocalizarScreen extends Component {
         // console.log('PneusLocalizarScreen.this.state: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Localizar Pneu'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
 
                 <View style={{ margin: 10, marginBottom: -10, padding: 0 }}>
                     <TextInput
@@ -346,7 +353,7 @@ export default class PneusLocalizarScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView >
 
         )
     }

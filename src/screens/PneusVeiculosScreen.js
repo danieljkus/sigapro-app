@@ -3,7 +3,7 @@ import {
     View, Text, FlatList, Modal,
     Platform, TouchableOpacity,
     ActivityIndicator, ScrollView,
-    PermissionsAndroid
+    PermissionsAndroid, SafeAreaView
 } from 'react-native';
 import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
@@ -20,6 +20,7 @@ import { getFilial } from '../utils/LoginManager';
 import VeiculosSelect from '../components/VeiculosSelect';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import HeaderComponent from "../components/HeaderComponent";
 moment.locale('pt-BR');
 
 const { OS } = Platform;
@@ -362,7 +363,7 @@ export default class PneusVeiculosScreen extends Component {
                     if (code === '1') {
                         // iOS
                         // Permission Denied or Location Disabled
-                        // Android 
+                        // Android
                         // Location Disabled
                         Alert.showAlert('Serviço de localização está desabilitado', () => {
                             GetLocation.openGpsSettings();
@@ -460,7 +461,13 @@ export default class PneusVeiculosScreen extends Component {
         // console.log('PneusVeiculosScreen.this.state: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Pneus nos Veículos'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
 
                 <View style={{ margin: 10, marginBottom: -10, padding: 0 }}>
                     <VeiculosSelect
@@ -527,7 +534,7 @@ export default class PneusVeiculosScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView >
 
         )
     }
