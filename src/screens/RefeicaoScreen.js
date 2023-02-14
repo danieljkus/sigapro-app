@@ -3,11 +3,10 @@ import {
     View,
     Text,
     ScrollView,
-    RefreshControl,
     Platform,
-    Dimensions,
     PermissionsAndroid,
-    SafeAreaView
+    SafeAreaView,
+    ActivityIndicator
 } from 'react-native';
 import {Card, Divider, CheckBox} from 'react-native-elements';
 import {checkFormIsValid} from '../utils/Validator';
@@ -24,6 +23,7 @@ import {getEmpresa, getToken} from '../utils/LoginManager';
 import NetInfo from '@react-native-community/netinfo';
 import GetLocation from 'react-native-get-location';
 import HeaderComponent from "../components/HeaderComponent";
+import {verifyGeolocationActive, verifyLocationPermission} from "../components/getGeolocation";
 
 const {OS} = Platform;
 
@@ -51,6 +51,8 @@ export default class RefeicaoScreen extends Component {
             },
             salvado: false,
             salvando: false,
+            buscar: false,
+            QRbuscar: false,
         }
         NetInfo.addEventListener(state => {
             this.onNetEvento(state)
@@ -84,9 +86,9 @@ export default class RefeicaoScreen extends Component {
         });
     }
 
-    onSubmitForm = (event) => {
-        // console.log('onSubmitForm: ', this.state.rhref_cod_rest);
+    onSubmitForm = async (event) => {
 
+        // VERIFICA SE RESTAURANTE FOI PREENCHIDO
         if ((!this.state.rhref_cod_rest) || (this.state.rhref_cod_rest === '0') || (this.state.rhref_cod_rest === '')) {
             Alert.showAlert("Informe o Restaurante")
             return
@@ -106,6 +108,7 @@ export default class RefeicaoScreen extends Component {
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
+            this.setState({salvado: true});
 
             return this.requestLocationPermission().then(() => {
                 GetLocation.getCurrentPosition({
@@ -156,7 +159,29 @@ export default class RefeicaoScreen extends Component {
     }
 
 
-    onEscanearPress = () => {
+    oncancellQRbuscar = (status) => {
+        this.setState({QRbuscar: status})
+    }
+
+    onEscanearPress = async () => {
+        this.oncancellQRbuscar(true);
+
+        // VERIFICA SE A PERMISAO DE GEOLOCATION ESTA ATIVADA OU NEGADA
+        if (await verifyLocationPermission()) {
+            Alert.showAlert("Acesso a geolocalização foi negada!");
+            this.oncancellQRbuscar(false);
+            return;
+        }
+
+
+        if (await verifyGeolocationActive()) {
+            console.log('ta caindo aqui verifyGeolocationActive');
+            Alert.showAlert("Geolocalização desativada!")
+            this.oncancellQRbuscar(false);
+            return;
+        }
+        this.oncancellQRbuscar(false);
+
         this.props.navigation.push('BarCodeScreen', {
             onBarCodeRead: this.onBarCodeRead
         })
@@ -258,8 +283,29 @@ export default class RefeicaoScreen extends Component {
     }
 
 
-    onAbrirBuscaModal = () => {
-        this.props.navigation.navigate('RestaurantesScreen', {
+    cancelSearch = (status) => {
+        this.setState({buscar: status})
+    };
+
+    onAbrirBuscaModal = async () => {
+        this.cancelSearch(true);
+
+        // VERIFICA SE A PERMISAO DE GEOLOCATION ESTA ATIVADA OU NEGADA
+        if (await verifyLocationPermission()) {
+            Alert.showAlert("Acesso a geolocalização foi negada!");
+            this.cancelSearch(false);
+            return;
+        }
+
+
+        if (await verifyGeolocationActive()) {
+            console.log('ta caindo aqui verifyGeolocationActive');
+            Alert.showAlert("Geolocalização desativada!")
+            this.cancelSearch(false);
+            return;
+        }
+        this.cancelSearch(false);
+        return this.props.navigation.navigate('RestaurantesScreen', {
             onMostraRestaurante: this.onMostraRestaurante
         });
     }
@@ -421,34 +467,63 @@ export default class RefeicaoScreen extends Component {
 
                             <View style={{flexDirection: 'row', justifyContent: "center", marginHorizontal: 20}}>
                                 <View style={{flex: 2, marginRight: 2}}>
-                                    <Button
-                                        title="ESCANEAR"
-                                        backgroundColor={Colors.primaryLight}
-                                        color={Colors.textOnPrimary}
-                                        buttonStyle={{margin: 5, marginTop: 10}}
-                                        onPress={this.onEscanearPress}
-                                        icon={{
-                                            name: 'qrcode',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
+                                    {this?.state?.QRbuscar ?
+
+                                        <View style={{
+                                            margin: 5, marginTop: 10,
+                                            backgroundColor: Colors.primaryLight,
+                                            height: 48,
+                                            borderRadius: 2,
+                                            justifyContent: 'center'
+                                        }}>
+                                            <ActivityIndicator size="small" color="white"/>
+                                        </View>
+                                        :
+                                        <Button
+                                            title="ESCANEAR"
+                                            backgroundColor={Colors.primaryLight}
+                                            color={Colors.textOnPrimary}
+                                            buttonStyle={{margin: 5, marginTop: 10}}
+                                            onPress={this.onEscanearPress}
+                                            icon={{
+                                                name: 'qrcode',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    }
                                 </View>
                                 <View style={{flex: 2, marginLeft: 2}}>
-                                    <Button
-                                        title="BUSCAR"
-                                        backgroundColor={Colors.primaryLight}
-                                        color={Colors.textOnPrimary}
-                                        buttonStyle={{margin: 5, marginTop: 10}}
-                                        onPress={() => {
-                                            this.onAbrirBuscaModal()
-                                        }}
-                                        icon={{
-                                            name: 'search',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary
-                                        }}
-                                    />
+
+                                    {this?.state?.buscar ?
+
+                                        <View style={{
+                                            margin: 5, marginTop: 10,
+                                            backgroundColor: Colors.primaryLight,
+                                            height: 48,
+                                            borderRadius: 2,
+                                            justifyContent: 'center'
+                                        }}>
+                                            <ActivityIndicator size="small" color="white"/>
+                                        </View>
+
+                                        :
+
+                                        <Button
+                                            title="BUSCAR"
+                                            backgroundColor={Colors.primaryLight}
+                                            color={Colors.textOnPrimary}
+                                            buttonStyle={{margin: 5, marginTop: 10}}
+                                            onPress={() => {
+                                                this.onAbrirBuscaModal()
+                                            }}
+                                            icon={{
+                                                name: 'search',
+                                                type: 'font-awesome',
+                                                color: Colors.textOnPrimary
+                                            }}
+                                        />
+                                    }
                                 </View>
                             </View>
                         </Card>
@@ -606,8 +681,9 @@ export default class RefeicaoScreen extends Component {
 
                     </ScrollView>
 
+
                     <Button
-                        disabled={this?.state?.salvando}
+                        disabled={!this?.state?.restaurante?.adm_pes_nome || this?.state?.salvado}
                         title="Salvar"
                         backgroundColor='#4682B4'
                         color={Colors.textOnPrimary}
@@ -619,6 +695,7 @@ export default class RefeicaoScreen extends Component {
                             color: Colors.textOnPrimary
                         }}
                     />
+
 
                     <ProgressDialog
                         visible={salvado}

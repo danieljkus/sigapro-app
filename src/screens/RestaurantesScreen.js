@@ -7,17 +7,10 @@ import {
 import {SearchBar, Icon, Card, Divider, CheckBox} from 'react-native-elements';
 import {ProgressDialog} from 'react-native-simple-dialogs';
 import axios from 'axios';
-import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
-import Button from '../components/Button';
-import TextInput from '../components/TextInput';
-import {maskDate} from '../utils/Maskers';
-
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import HeaderComponent from "../components/HeaderComponent";
-import {getListaRestaurantes} from "../api";
-import {getToken} from "../utils/LoginManager";
 
 moment.locale('pt-BR');
 

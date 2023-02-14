@@ -111,24 +111,25 @@ const CardViewItem = ({registro, onRegistroPress}) => {
 
 export default class RefeicoesScreen extends Component {
 
-    termoBusca = '';
-    state = {
-        listaRegistros: [],
-        refreshing: false,
-        carregando: false,
-        carregarMais: false,
-        pagina: 1,
+    constructor(props) {
+        super(props)
+        this.state = {
+            listaRegistros: [],
+            refreshing: false,
+            carregando: false,
+            carregarMais: false,
+            pagina: 1,
+            modalFiltrosVisible: false,
+            dataIni: moment(moment().subtract(15, 'days')).format(DATE_FORMAT),
+            dataFim: moment(new Date()).format(DATE_FORMAT),
+            vlrCaf: 0,
+            vlrAlm: 0,
+            vlrJan: 0,
+            vlrMar: 0,
+        };
 
-        modalFiltrosVisible: false,
+    }
 
-        dataIni: moment(moment().subtract(15, 'days')).format(DATE_FORMAT),
-        dataFim: moment(new Date()).format(DATE_FORMAT),
-
-        vlrCaf: 0,
-        vlrAlm: 0,
-        vlrJan: 0,
-        vlrMar: 0,
-    };
 
     componentDidMount() {
         this.setState({refreshing: false});
@@ -154,7 +155,6 @@ export default class RefeicoesScreen extends Component {
             params: {
                 page: pagina,
                 limite: 10,
-
                 usuario: 'OK',
                 versaoApp: '1.14',
                 dtIni: moment(dataIni, DATE_FORMAT).format("YYYY-MM-DD"),

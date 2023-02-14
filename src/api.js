@@ -1,21 +1,18 @@
+// CREATED BY MAYK FELIX 14/02/2023
 import axios from 'axios';
-import AsyncStorage from "@react-native-community/async-storage";
-import {getToken} from "./utils/LoginManager";
 
-
-const request = {
-    app: 'https://sigapro.expnordeste.com.br/api/',
+export const getListaRestaurantes = async (params = {}) => {
+    return axios.get('/listaRestaurantes', {
+        params: {
+            ...params,
+        },
+    });
 };
-const api = axios.create({
-    baseURL: request.app,
-});
 
-
-export const getListaRestaurantes = async (params) => {
-    const token = await getToken();
-
-    console.log('token', token)
-    return api.get('/listaRestaurantes', {
-        params: {},
+export const getListaRefeicoes = async (params = {}) => {
+    return axios.get('/refeicoes', {
+        params: {
+            ...params,
+        },
     });
 };
