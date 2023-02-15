@@ -88,6 +88,24 @@ export default class RefeicaoScreen extends Component {
 
     onSubmitForm = async (event) => {
 
+        this.oncancellQRbuscar(true);
+
+        // VERIFICA SE A PERMISAO DE GEOLOCATION ESTA ATIVADA OU NEGADA
+        if (await verifyLocationPermission()) {
+            Alert.showAlert("Acesso a geolocalização foi negada!");
+            this.oncancellQRbuscar(false);
+            return;
+        }
+
+
+        if (await verifyGeolocationActive()) {
+            console.log('ta caindo aqui verifyGeolocationActive');
+            Alert.showAlert("Geolocalização desativada!")
+            this.oncancellQRbuscar(false);
+            return;
+        }
+        this.oncancellQRbuscar(false);
+
         // VERIFICA SE RESTAURANTE FOI PREENCHIDO
         if ((!this.state.rhref_cod_rest) || (this.state.rhref_cod_rest === '0') || (this.state.rhref_cod_rest === '')) {
             Alert.showAlert("Informe o Restaurante")
