@@ -15,6 +15,7 @@ import Icon from '../components/Icon';
 import VeiculosSelect from '../components/VeiculosSelect';
 import NetInfo from '@react-native-community/netinfo';
 import HeaderComponent from "../components/HeaderComponent";
+import {verifyGeolocationActive, verifyLocationPermission} from "../components/getGeolocation";
 
 export default class CheckListItemScreen extends Component {
 
@@ -117,10 +118,10 @@ export default class CheckListItemScreen extends Component {
         this.setState(state);
         if (value) {
             this.setState({
-                codVeiculo: value.codVeic,
+                codVeiculo: value?.codVeic,
                 adm_spcli_seq: 0,
             }, (
-                this.buscaEscala(value.codVeic),
+                this.buscaEscala(value?.codVeic),
                     this.onMudaItem('')
             ));
         }
@@ -145,7 +146,19 @@ export default class CheckListItemScreen extends Component {
     }
 
 
-    onGravarRegistro = () => {
+    onGravarRegistro = async () => {
+        // VERIFICA SE A PERMISAO DE GEOLOCATION ESTA ATIVADA OU NEGADA
+        if (await verifyLocationPermission()) {
+            Alert.showAlert("Acesso a geolocalização foi negada!");
+            return;
+        }
+
+
+        if (await verifyGeolocationActive()) {
+            Alert.showAlert("Geolocalização desativada!")
+            return;
+        }
+
         if (!this.state.netStatus) {
             Alert.showAlert('Não é possível salvar. Dispositivo sem conexão');
         } else {
@@ -214,6 +227,7 @@ export default class CheckListItemScreen extends Component {
                 ;
 
                 if (ok) {
+
                     Alert.showConfirm("Check-List Concluído. Deseja salvar?",
                         {text: "Não"},
                         {

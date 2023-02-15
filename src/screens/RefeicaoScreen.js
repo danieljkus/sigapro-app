@@ -99,7 +99,6 @@ export default class RefeicaoScreen extends Component {
 
 
         if (await verifyGeolocationActive()) {
-            console.log('ta caindo aqui verifyGeolocationActive');
             Alert.showAlert("Geolocalização desativada!")
             this.oncancellQRbuscar(false);
             return;
@@ -193,7 +192,6 @@ export default class RefeicaoScreen extends Component {
 
 
         if (await verifyGeolocationActive()) {
-            console.log('ta caindo aqui verifyGeolocationActive');
             Alert.showAlert("Geolocalização desativada!")
             this.oncancellQRbuscar(false);
             return;
@@ -317,7 +315,6 @@ export default class RefeicaoScreen extends Component {
 
 
         if (await verifyGeolocationActive()) {
-            console.log('ta caindo aqui verifyGeolocationActive');
             Alert.showAlert("Geolocalização desativada!")
             this.cancelSearch(false);
             return;
