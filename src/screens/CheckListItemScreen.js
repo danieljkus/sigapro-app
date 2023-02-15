@@ -26,7 +26,7 @@ export default class CheckListItemScreen extends Component {
             salvando: false,
             refreshing: false,
             netStatus: 1,
-
+            carregandoEscala: false,
             veiculo_select: null,
             codVeiculo: '',
 
@@ -125,25 +125,31 @@ export default class CheckListItemScreen extends Component {
                     this.onMudaItem('')
             ));
         }
-    }
+    };
 
     buscaEscala = (value) => {
-        this.setState({adm_spcl_escala: '',});
-        if ((this.state.adm_spcl_idf === 0) && (value)) {
-            this.setState({carregandoFunc: true});
-            axios.get('/escalaVeiculos/escalaAtual', {
-                params: {
-                    veiculo: value,
-                }
-            }).then(response => {
-                this.setState({
-                    adm_spcl_escala: response.data.escala,
+        try {
+            this.setState({adm_spcl_escala: '', carregandoEscala: true});
+            if ((this.state.adm_spcl_idf === 0) && (value)) {
+                axios.get('/escalaVeiculos/escalaAtual', {
+                    params: {
+                        veiculo: value,
+                    }
+                }).then(response => {
+                    this.setState({
+                        adm_spcl_escala: response?.data?.escala,
+                        carregandoEscala: false,
+                    })
+                }).catch(error => {
+                    console.warn(error.response);
+                    this.setState({adm_spcl_escala: '', carregandoEscala: false});
                 })
-            }).catch(error => {
-                console.warn(error.response);
-            })
+            }
+        } catch (e) {
+            console.log(e)
+            this.setState({adm_spcl_escala: '', carregandoEscala: false, codVeiculo: ''});
         }
-    }
+    };
 
 
     onGravarRegistro = async () => {
@@ -164,10 +170,10 @@ export default class CheckListItemScreen extends Component {
         } else {
             const registro = {
                 adm_spcl_idf: 0,
-                adm_spcl_veiculo: this?.state?.codVeiculo ? this.state.codVeiculo : '',
-                adm_spcl_obs: this?.state?.adm_spcl_obs ? this.state.adm_spcl_obs : '',
-                adm_spcl_escala: this?.state?.adm_spcl_escala ? this.state.adm_spcl_escala : '',
-                adm_spcl_local_checkin: this?.state?.adm_spcl_local_checkin ? this.state.adm_spcl_local_checkin : '',
+                adm_spcl_veiculo: this?.state?.codVeiculo ? this?.state?.codVeiculo : '',
+                adm_spcl_obs: this?.state?.adm_spcl_obs ? this?.state?.adm_spcl_obs : '',
+                adm_spcl_escala: this?.state?.adm_spcl_escala ? this?.state?.adm_spcl_escala : '',
+                adm_spcl_local_checkin: this?.state?.adm_spcl_local_checkin ? this?.state?.adm_spcl_local_checkin : '',
                 listaItens: this?.state?.listaRegistros,
             };
 
@@ -287,7 +293,7 @@ export default class CheckListItemScreen extends Component {
         const {
             codVeiculo, veiculo_select, adm_spcl_obs, adm_spcl_idf, adm_spcl_escala,
             adm_spcli_check, adm_spcli_obs, adm_spicl_descricao, adm_spicl_obs, adm_spcli_seq,
-            salvando, loading, refreshing, carregarRegistro
+            salvando, carregandoEscala, refreshing, carregarRegistro
         } = this.state;
         let imagemHeigth = Dimensions.get('window').height;
 
@@ -333,11 +339,28 @@ export default class CheckListItemScreen extends Component {
                                     </View>
 
                                     <View style={{marginTop: -15}}>
+
+                                        {carregandoEscala ?
+                                            <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                                position: 'absolute',
+                                                // backgroundColor: 'white',
+                                                width: '100%',
+                                                maxWidth: 280,
+                                                top: 10,
+                                                paddingLeft: 10
+                                            }}>
+                                                <ActivityIndicator style={{margin: 10}} color={Colors.mediumGray}/>
+                                                {/*<Text> Buscando... </Text>*/}
+                                            </View>
+                                            : null}
+
                                         <TextInput
                                             label="Escala Atual"
                                             id="adm_spcl_escala"
                                             ref="adm_spcl_escala"
-                                            value={adm_spcl_escala}
+                                            value={carregandoEscala ? '' : adm_spcl_escala}
                                             onChange={this.onInputChange}
                                             fontSize={10}
                                             enabled={false}

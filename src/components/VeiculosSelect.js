@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import React, {PureComponent} from 'react';
+import {View, Text, ActivityIndicator} from 'react-native';
 import axios from 'axios';
 import TextInput from '../components/TextInput';
 import Colors from "../values/Colors";
+import Alert from "./Alert";
 
 
 class VeiculosSelect extends PureComponent {
@@ -14,7 +15,7 @@ class VeiculosSelect extends PureComponent {
     };
 
     componentDidUpdate(propsAnterior, stateAnterior) {
-        const { codVeiculo, onChange, id } = this.props;
+        const {codVeiculo, onChange, id} = this.props;
 
         if (codVeiculo !== propsAnterior.codVeiculo) {
             this.setState({
@@ -28,79 +29,90 @@ class VeiculosSelect extends PureComponent {
     }
 
     onChange = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-
-        clearTimeout(this.buscaRegistrosId);
-        this.buscaRegistrosId = setTimeout(() => {
-            this.buscaRegistros(value);
-        }, 1000);
-    }
+        try {
+            const state = {};
+            state[id] = value;
+            this.setState(state);
+            clearTimeout(this.buscaRegistrosId);
+            this.buscaRegistrosId = setTimeout(() => {
+                this.buscaRegistros(value);
+            }, 1000);
+        } catch (e) {
+            Alert.showAlert("Error catch onChange buscaRegistrosId")
+        }
+    };
 
     buscaRegistros = (value) => {
-        this.setState({ carregando: true });
-        const { id, tipo, onChange, onErro } = this.props;
+        try {
+            this.setState({carregando: true});
+            const {id, tipo, onChange, onErro} = this.props;
 
-        let request;
-        if (tipo === 'fichaSaida') {
-            request = axios.get('/fichaViagem/buscaVeicSaida', {
-                params: {
-                    ativo: 'S',
-                    veiculo: value
-                }
-            });
-        } else if (tipo === 'fichaChegada') {
-            request = axios.get('/fichaViagem/buscaVeicChegada', {
-                params: {
-                    ativo: 'S',
-                    veiculo: value
-                }
-            });
-        } else {
-            request = axios.get('/listaVeiculos', {
-                params: {
-                    ativo: 'S',
-                    veiculo: value
-                }
-            });
-        }
-
-        request.then(response => {
-            const { data } = response;
-
-            // console.log('VEICULO: ', data);
-            
-            if (data.msgErro === 'OK') {
-                this.setState({
-                    msgErro: '',
-                })
-                onChange(id, data)
-                onErro('');
+            let request;
+            if (tipo === 'fichaSaida') {
+                request = axios.get('/fichaViagem/buscaVeicSaida', {
+                    params: {
+                        ativo: 'S',
+                        veiculo: value
+                    }
+                });
+            } else if (tipo === 'fichaChegada') {
+                request = axios.get('/fichaViagem/buscaVeicChegada', {
+                    params: {
+                        ativo: 'S',
+                        veiculo: value
+                    }
+                });
             } else {
-                this.setState({
-                    msgErro: data.msgErro,
-                })
-                onChange(id, null);
-                onErro(data.msgErro);
+                request = axios.get('/listaVeiculos', {
+                    params: {
+                        ativo: 'S',
+                        veiculo: value
+                    }
+                });
             }
 
-            this.setState({
-                carregando: false,
+            request.then(response => {
+                const {data} = response;
+
+                // console.log('VEICULO: ', data);
+
+                if (data.msgErro === 'OK') {
+                    this.setState({
+                        msgErro: '',
+                    })
+                    onChange(id, data)
+                    onErro('');
+                } else {
+                    this.setState({
+                        msgErro: data.msgErro,
+                    })
+                    onChange(id, null);
+                    onErro(data.msgErro);
+                }
+
+                this.setState({
+                    carregando: false,
+                })
+            }).catch(error => {
+                console.warn(error.response);
+                this.setState({
+                    carregando: false,
+                });
             })
-        }).catch(error => {
-            console.warn(error.response);
+
+        } catch (e) {
+            console.log(error.response);
             this.setState({
                 carregando: false,
             });
-        })
-
-    }
+            Alert.showAlert("Error :" + error.response)
+        }
+    };
 
 
     render() {
-        const { label, value, enabled } = this.props;
-        const { codVeiculo, msgErro, carregando } = this.state;
+        const {label, value, enabled} = this.props;
+        const {codVeiculo, msgErro, carregando} = this.state;
 
         let descricao;
         if (msgErro) {
@@ -110,8 +122,8 @@ class VeiculosSelect extends PureComponent {
         }
 
         return (
-            <View style={{ flexDirection: 'row' }}>
-                <View style={{ width: "25%" }}>
+            <View style={{flexDirection: 'row'}}>
+                <View style={{width: "25%"}}>
                     <TextInput
                         label={label}
                         id="codVeiculo"
@@ -124,20 +136,28 @@ class VeiculosSelect extends PureComponent {
                     />
                 </View>
 
-                <View style={{ width: "75%" }}>
-                    {carregando
-                        ? (
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                <ActivityIndicator style={{ margin: 10 }}  color={Colors.mediumGray}/>
-                                <Text> Buscando... </Text>
-                            </View>
-                        ) : (<TextInput
-                            label=" "
-                            value={descricao}
-                            enabled={false}
-                        />
-                        )
-                    }
+                <View style={{width: "75%"}}>
+
+                    {carregando ?
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            position: 'absolute',
+                            // backgroundColor: 'white',
+                            width: '100%',
+                            maxWidth: 280
+                        }}>
+                            <ActivityIndicator style={{margin: 10}} color={Colors.mediumGray}/>
+                            <Text> Buscando... </Text>
+                        </View>
+                        : null}
+
+                    <TextInput
+                        label=" "
+                        value={carregando ? '' : descricao}
+                        enabled={false}
+                    />
+
 
                 </View>
             </View>
