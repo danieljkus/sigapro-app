@@ -183,9 +183,9 @@ export default class LoginScreen extends Component {
 
                         <Text
                             style={{
-                                color: Colors.textSecondaryDark,
+                                color: Colors.mediumGray,
                                 fontSize: 14,
-                                flex: 1,
+                                // flex: 1,
                             }}
                         >
                             Versão: {DeviceInfo.getVersion()}
