@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import TextInput from '../components/TextInput';
+import Colors from "../values/Colors";
 
 
 class VeiculosSelect extends PureComponent {
@@ -127,7 +128,7 @@ class VeiculosSelect extends PureComponent {
                     {carregando
                         ? (
                             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                <ActivityIndicator style={{ margin: 10 }} />
+                                <ActivityIndicator style={{ margin: 10 }}  color={Colors.mediumGray}/>
                                 <Text> Buscando... </Text>
                             </View>
                         ) : (<TextInput

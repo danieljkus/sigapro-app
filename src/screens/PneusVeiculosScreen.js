@@ -176,7 +176,6 @@ export default class PneusVeiculosScreen extends Component {
         filialUsuario: '',
         pneus_os_data: '',
         pneus_os_longitude: '',
-        pneus_os_longitude: '',
     };
 
     componentDidMount() {

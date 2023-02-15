@@ -32,11 +32,11 @@ export default class CheckListItemScreen extends Component {
 
             modalOBSVisible: false,
 
-            adm_spcl_idf: props.navigation.state.params.registro.adm_spcl_idf ? props.navigation.state.params.registro.adm_spcl_idf : 0,
-            adm_spcl_obs: props.navigation.state.params.registro.adm_spcl_obs ? props.navigation.state.params.registro.adm_spcl_obs : '',
-            adm_spcl_escala: props.navigation.state.params.registro.adm_spcl_escala ? props.navigation.state.params.registro.adm_spcl_escala : '',
+            adm_spcl_idf: props?.navigation?.state?.params?.registro?.adm_spcl_idf ? props?.navigation?.state?.params?.registro?.adm_spcl_idf : 0,
+            adm_spcl_obs: props?.navigation?.state?.params?.registro?.adm_spcl_obs ? props?.navigation?.state?.params?.registro?.adm_spcl_obs : '',
+            adm_spcl_escala: props?.navigation?.state?.params?.registro?.adm_spcl_escala ? props?.navigation?.state?.params?.registro?.adm_spcl_escala : '',
 
-            listaRegistros: props.navigation.state.params.registro.listaRegistros ? props.navigation.state.params.registro.listaRegistros : [],
+            listaRegistros: props?.navigation?.state?.params?.registro?.listaRegistros ? props?.navigation?.state?.params?.registro?.listaRegistros : [],
             registro: props?.navigation?.state?.params?.registro,
             adm_spcli_seq: 0,
             adm_spcli_item: 0,
@@ -67,9 +67,9 @@ export default class CheckListItemScreen extends Component {
     componentDidMount() {
         // console.log('componentDidMount: ', this.props.navigation.state.params.registro)
 
-        if (this.props.navigation.state.params.registro.adm_spcl_idf) {
+        if (this?.props?.navigation?.state?.params?.registro?.adm_spcl_idf) {
             this.setState({
-                codVeiculo: this.props.navigation.state.params.registro.adm_spcl_veiculo ? this.props.navigation.state.params.registro.adm_spcl_veiculo : '',
+                codVeiculo: this?.props?.navigation?.state?.params?.registro?.adm_spcl_veiculo ? this?.props?.navigation?.state?.params?.registro?.adm_spcl_veiculo : '',
             });
         } else {
             this.setState({
@@ -213,18 +213,18 @@ export default class CheckListItemScreen extends Component {
 
             let ok = true;
             if ((this.state.adm_spcl_idf === 0) && (seq === total - 1)) {
-                for (var x in this.state.listaRegistros) {
+                let x;
+                for (x in this.state.listaRegistros) {
                     if (this.state.listaRegistros[x].adm_spcli_check === '') {
                         ok = false;
                     }
                 }
-                ;
-                for (var x in this.state.listaRegistros) {
+
+                for (x in this.state.listaRegistros) {
                     if ((this.state.listaRegistros[x].adm_spcli_check === 'NC') && (this.state.listaRegistros[x].adm_spcli_obs === '')) {
                         ok = false;
                     }
                 }
-                ;
 
                 if (ok) {
 
@@ -326,7 +326,7 @@ export default class CheckListItemScreen extends Component {
                                             value={veiculo_select}
                                             codVeiculo={codVeiculo}
                                             onChange={this.onInputChangeVeiculo}
-                                            onErro={this.onErroChange}
+                                            // onErro={this.onErroChange}
                                             tipo=""
                                             enabled={!adm_spcl_idf}
                                         />
@@ -619,9 +619,9 @@ export default class CheckListItemScreen extends Component {
                                     backgroundColor: 'rgba(0,0,0,0.5)',
                                 }}>
                                     <View style={{
-                                        flex: 1,
+                                        // flex: 1,
                                         width: "90%",
-                                        paddingTop: 30,
+                                        // paddingTop: 30,
                                     }}>
                                         <View style={{
                                             paddingVertical: 15,

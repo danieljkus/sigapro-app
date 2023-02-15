@@ -5,9 +5,8 @@ import {
 } from 'react-native';
 
 const {OS} = Platform;
-
-import Alert from '../components/Alert';
 import axios from 'axios';
+import Alert from '../components/Alert';
 import {Card, Divider, Icon} from 'react-native-elements';
 import {ProgressDialog} from 'react-native-simple-dialogs';
 import FloatActionButton from '../components/FloatActionButton';
@@ -611,58 +610,78 @@ export default class CheckListScreen extends Component {
     }
 
 
+    // SETA AS VARIAVES NO MODAL ORDEM DE SERVICO
     onOSPress = (adm_spcl_idf, man_sp_obs, visible) => {
-        // console.log('onOSPress: ', adm_spcl_idf)
-        // console.log('onOSPress: ', man_sp_obs)
-        // console.log('onOSPress: ', visible)
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
-            if ((!visible) && (adm_spcl_idf) && (man_sp_obs)) {
-                // console.log('onOSPress OK')
-                this.setState({aguarde: true});
-                axios.put(`/checkList/ordemServico/${adm_spcl_idf}/${man_sp_obs}`)
-                    .then(response => {
-                        this.setState({
-                            aguarde: false
-                        }, this.getListaRegistros);
-                    }).catch(ex => {
-                    console.warn(ex, ex.response);
-                    this.setState({aguarde: false});
-                })
-            }
             this.setState({
                 modalOSVisible: visible,
                 adm_spcl_idf: adm_spcl_idf,
                 man_sp_obs: man_sp_obs,
             });
         }
-    }
+    };
 
+    // SETA O UPDATE DA ORDEM DE SERVICO
+    onOSPressPut = async (adm_spcl_idf, man_sp_obs, visible) => {
+        try {
+            if ((!visible) && (adm_spcl_idf) && (man_sp_obs)) {
+                this.setState({aguarde: true});
+                axios.put(`${"/checkList/ordemServico/" + adm_spcl_idf + "/" + man_sp_obs}`).then(response => {
+                    this.setState({
+                        aguarde: false,
+                        modalOSVisible: false
+                    }, this.getListaRegistros);
 
+                }).catch(ex => {
+                    Alert.showAlert(`${'ERROR ' + ex?.response?.status + ' ' + ex?.response?.data?.message?.slice(0, 50) + '...'} `)
+                    console.log('ex response', ex.response);
+                    this.setState({aguarde: false, modalOSVisible: false});
+                })
+            }
+        } catch (error) {
+            console.log('catch error', error);
+        }
+    };
+
+    // SETA AS VARIAVES NO MODAL OCORRENCIA
     onOcorrenciaPress = (adm_spcl_idf, adm_spcl_ocorrencia, visible) => {
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
-            if ((!visible) && (adm_spcl_idf) && (adm_spcl_ocorrencia)) {
-                this.setState({aguarde: true});
-                axios.put(`/checkList/ocorrencia/${adm_spcl_idf}/${adm_spcl_ocorrencia}`)
-                    .then(response => {
-                        this.setState({
-                            aguarde: false
-                        }, this.getListaRegistros);
-                    }).catch(ex => {
-                    console.warn(ex, ex.response);
-                    this.setState({aguarde: false});
-                })
-            }
             this.setState({
                 modalOcorrenciaVisible: visible,
                 adm_spcl_idf: adm_spcl_idf,
                 adm_spcl_ocorrencia: adm_spcl_ocorrencia,
             });
         }
-    }
+    };
+
+    // SETA O UPDATE DA OCORRENCIA
+    onOcorrenciaPressPut = (adm_spcl_idf, adm_spcl_ocorrencia, visible) => {
+        try {
+            if (!this.state.netStatus) {
+                Alert.showAlert('Dispositivo sem conexão');
+            } else {
+                if ((!visible) && (adm_spcl_idf) && (adm_spcl_ocorrencia)) {
+                    this.setState({aguarde: true});
+                    axios.put(`/checkList/ocorrencia/${adm_spcl_idf}/${adm_spcl_ocorrencia}`).then(response => {
+                        this.setState({
+                            aguarde: false,
+                            modalOcorrenciaVisible: false,
+                        }, this.getListaRegistros);
+                    }).catch(ex => {
+                        Alert.showAlert(`${'ERROR ' + ex?.response?.status + ' ' + ex?.response?.data?.message?.slice(0, 50) + '...'} `)
+                        console.log('ex response', ex.response);
+                        this.setState({aguarde: false, modalOcorrenciaVisible: false});
+                    })
+                }
+            }
+        } catch (error) {
+            console.log('catch error', error);
+        }
+    };
 
 
     // ------------------------------------------------------------------------
@@ -717,7 +736,7 @@ export default class CheckListScreen extends Component {
                     onRequestClose={() => {
                         console.log("Modal os FECHOU.")
                     }}
-                    animationType={"slide"}
+                    animationType={"fade"}
                     transparent={true}
                 >
                     <View style={{
@@ -727,9 +746,9 @@ export default class CheckListScreen extends Component {
                         backgroundColor: 'rgba(0,0,0,0.5)',
                     }}>
                         <View style={{
-                            flex: 1,
+                            // flex: 1,
                             width: "90%",
-                            paddingTop: 30,
+                            // paddingTop: 30,
                         }}>
                             <View style={{
                                 paddingVertical: 15,
@@ -764,9 +783,7 @@ export default class CheckListScreen extends Component {
 
                                     <Button
                                         title="SALVAR"
-                                        onPress={() => {
-                                            this.onOSPress(adm_spcl_idf, man_sp_obs, false)
-                                        }}
+                                        onPress={() => this.onOSPressPut(adm_spcl_idf, man_sp_obs, false)}
                                         buttonStyle={{marginTop: 15, height: 35}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
@@ -778,9 +795,7 @@ export default class CheckListScreen extends Component {
 
                                     <Button
                                         title="FECHAR"
-                                        onPress={() => {
-                                            this.onOSPress(0, '', false)
-                                        }}
+                                        onPress={() => this.setState({modalOSVisible: false})}
                                         buttonStyle={{marginTop: 15, height: 35}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
@@ -804,7 +819,7 @@ export default class CheckListScreen extends Component {
                     onRequestClose={() => {
                         console.log("Modal OBS FECHOU.")
                     }}
-                    animationType={"slide"}
+                    animationType={"fade"}
                     transparent={true}
                 >
                     <View style={{
@@ -814,9 +829,9 @@ export default class CheckListScreen extends Component {
                         backgroundColor: 'rgba(0,0,0,0.5)',
                     }}>
                         <View style={{
-                            flex: 1,
+                            // flex: 1,
                             width: "90%",
-                            paddingTop: 30,
+                            // paddingTop: 30,
                         }}>
                             <View style={{
                                 paddingVertical: 15,
@@ -852,7 +867,7 @@ export default class CheckListScreen extends Component {
                                     <Button
                                         title="SALVAR"
                                         onPress={() => {
-                                            this.onOcorrenciaPress(adm_spcl_idf, adm_spcl_ocorrencia, false)
+                                            this.onOcorrenciaPressPut(adm_spcl_idf, adm_spcl_ocorrencia, false)
                                         }}
                                         buttonStyle={{marginTop: 15, height: 35}}
                                         backgroundColor={Colors.buttonPrimary}
@@ -865,9 +880,7 @@ export default class CheckListScreen extends Component {
 
                                     <Button
                                         title="FECHAR"
-                                        onPress={() => {
-                                            this.onOcorrenciaPress(0, '', false)
-                                        }}
+                                        onPress={() => this.setState({modalOcorrenciaVisible: false})}
                                         buttonStyle={{marginTop: 15, height: 35}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
@@ -891,7 +904,7 @@ export default class CheckListScreen extends Component {
                     onRequestClose={() => {
                         console.log("Modal FILTROS FECHOU.")
                     }}
-                    animationType={"slide"}
+                    animationType={"fade"}
                     transparent={true}
                 >
                     <View style={{
