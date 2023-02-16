@@ -83,28 +83,37 @@ export default class CheckListItemScreen extends Component {
     getListaRegistros = () => {
         axios.get('/checkList/listaItens')
             .then(response => {
-                const lista = response.data.map(regList => {
-                    return {
-                        adm_spcli_item: regList.adm_spicl_codigo,
-                        adm_spcli_check: '',
-                        adm_spcli_obs: '',
-                        adm_spicl_descricao: regList.adm_spicl_descricao,
-                        adm_spicl_obs: regList.adm_spicl_obs,
-                    }
-                });
-                this.setState({
-                    listaRegistros: lista,
-                    refreshing: false,
-                    carregando: false,
-                })
+                let lista = [];
+                if (response?.data.length > 0) {
+                    lista = response?.data?.map(regList => {
+                        return {
+                            adm_spcli_item: regList.adm_spicl_codigo,
+                            adm_spcli_check: '',
+                            adm_spcli_obs: '',
+                            adm_spicl_descricao: regList.adm_spicl_descricao,
+                            adm_spicl_obs: regList.adm_spicl_obs,
+                        }
+                    });
+                    this.setState({
+                        listaRegistros: lista,
+                        refreshing: false,
+                        carregando: false,
+                    })
+                } else {
+                    this.setState({
+                        listaRegistros: [],
+                        refreshing: false,
+                        carregando: false,
+                    })
+                }
             }).catch(ex => {
-            console.warn('Erro Busca:', ex);
+            console.warn('Erro checkList/listaItens:');
             this.setState({
                 refreshing: false,
                 carregando: false,
             });
         })
-    }
+    };
 
     onInputChange = (id, value) => {
         const state = {};
@@ -113,17 +122,23 @@ export default class CheckListItemScreen extends Component {
     }
 
     onInputChangeVeiculo = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-        if (value) {
-            this.setState({
-                codVeiculo: value?.codVeic,
-                adm_spcli_seq: 0,
-            }, (
-                this.buscaEscala(value?.codVeic),
-                    this.onMudaItem('')
-            ));
+        try {
+            const state = {};
+            state[id] = value;
+            this.setState(state);
+            if (value) {
+                this.setState({
+                    codVeiculo: value?.codVeic,
+                    adm_spcli_seq: 0,
+                }, (
+                    this.buscaEscala(value?.codVeic),
+                        this.onMudaItem('')
+                ));
+            }
+        } catch (e) {
+            const response = e;
+            console.warn(response);
+            Alert.showAlert("Error :" + response.message)
         }
     };
 
@@ -198,83 +213,97 @@ export default class CheckListItemScreen extends Component {
 
 
     onMudaItem = (tipo) => {
-        if (this.state.codVeiculo) {
-            // console.log('onMudaItem: ', tipo);
-            // console.log('onMudaItem total: ', this.state.listaRegistros.length);
-            // console.log('onMudaItem atual: ', this.state.adm_spcli_seq);
+        try {
 
-            let total = this.state.listaRegistros.length;
-            let seq = this.state.adm_spcli_seq;
-            if (tipo === 'P') {
-                if (this.state.adm_spcli_seq < total - 1) {
-                    seq = this.state.adm_spcli_seq + 1;
-                }
-            } else if (tipo === 'A') {
-                if (this.state.adm_spcli_seq > 0) {
-                    seq = this.state.adm_spcli_seq - 1;
-                }
-            }
 
-            // console.log('onMudaItem novo: ', seq);
+            if (this.state.codVeiculo) {
+                // console.log('onMudaItem: ', tipo);
+                // console.log('onMudaItem total: ', this.state.listaRegistros.length);
+                // console.log('onMudaItem atual: ', this.state.adm_spcli_seq);
 
-            let ok = true;
-            if ((this.state.adm_spcl_idf === 0) && (seq === total - 1)) {
-                let x;
-                for (x in this.state.listaRegistros) {
-                    if (this.state.listaRegistros[x].adm_spcli_check === '') {
-                        ok = false;
+                let total = this.state.listaRegistros.length;
+                let seq = this.state.adm_spcli_seq;
+
+                if (tipo === 'P') {
+                    if (this.state.adm_spcli_seq < total - 1) {
+                        seq = this.state.adm_spcli_seq + 1;
+                    }
+                } else if (tipo === 'A') {
+                    if (this.state.adm_spcli_seq > 0) {
+                        seq = this.state.adm_spcli_seq - 1;
                     }
                 }
 
-                for (x in this.state.listaRegistros) {
-                    if ((this.state.listaRegistros[x].adm_spcli_check === 'NC') && (this.state.listaRegistros[x].adm_spcli_obs === '')) {
-                        ok = false;
-                    }
-                }
+                // console.log('onMudaItem novo: ', seq);
 
-                if (ok) {
-
-                    Alert.showConfirm("Check-List Concluído. Deseja salvar?",
-                        {text: "Não"},
-                        {
-                            text: "Sim",
-                            onPress: () => this.onGravarRegistro(),
-                            style: "destructive"
+                let ok = true;
+                if ((this.state.adm_spcl_idf === 0) && (seq === total - 1)) {
+                    let x;
+                    for (x in this?.state?.listaRegistros) {
+                        if (this?.state?.listaRegistros[x]?.adm_spcli_check === '') {
+                            ok = false;
                         }
-                    )
+                    }
+
+                    for (x in this?.state?.listaRegistros) {
+                        if ((this?.state?.listaRegistros[x]?.adm_spcli_check === 'NC') && (this?.state?.listaRegistros[x]?.adm_spcli_obs === '')) {
+                            ok = false;
+                        }
+                    }
+
+                    if (ok) {
+
+
+                        Alert.showConfirm("Check-List Concluído. Deseja salvar?",
+                            {text: "Não"},
+                            {
+                                text: "Sim",
+                                onPress: () => this.onGravarRegistro(),
+                                style: "destructive"
+                            }
+                        )
+                    }
                 }
+
+
+                const codigoItem = seq >= 0 && seq < 9999 ? this?.state?.listaRegistros[seq]?.adm_spcli_item : 0;
+                const descrItem = seq >= 0 && seq < 9999 ? this?.state?.listaRegistros[seq]?.adm_spicl_descricao : '';
+                const obsItem = seq >= 0 && seq < 9999 ? this?.state?.listaRegistros[seq]?.adm_spicl_obs : '';
+                const check = seq >= 0 && seq < 9999 ? this?.state?.listaRegistros[seq]?.adm_spcli_check : '';
+                const obs = seq >= 0 && seq < 9999 ? this?.state?.listaRegistros[seq]?.adm_spcli_obs : '';
+
+                this.setState({
+                    adm_spcli_seq: seq,
+                    adm_spcli_item: codigoItem,
+                    adm_spicl_descricao: descrItem,
+                    adm_spicl_obs: obsItem,
+                    adm_spcli_check: check,
+                    adm_spcli_obs: obs,
+                });
             }
 
-
-            const codigoItem = seq >= 0 && seq < 9999 ? this.state.listaRegistros[seq].adm_spcli_item : 0;
-            const descrItem = seq >= 0 && seq < 9999 ? this.state.listaRegistros[seq].adm_spicl_descricao : '';
-            const obsItem = seq >= 0 && seq < 9999 ? this.state.listaRegistros[seq].adm_spicl_obs : '';
-            const check = seq >= 0 && seq < 9999 ? this.state.listaRegistros[seq].adm_spcli_check : '';
-            const obs = seq >= 0 && seq < 9999 ? this.state.listaRegistros[seq].adm_spcli_obs : '';
-
-            this.setState({
-                adm_spcli_seq: seq,
-                adm_spcli_item: codigoItem,
-                adm_spicl_descricao: descrItem,
-                adm_spicl_obs: obsItem,
-                adm_spcli_check: check,
-                adm_spcli_obs: obs,
-            });
+        } catch (e) {
+            const response = e;
+            console.warn(response);
+            Alert.showAlert("Error onMudaItem :" + response.message)
         }
-    }
+    };
 
 
     onMudaResposta = (tipo) => {
-        // console.log('onMudaResposta: ', tipo);
-        if (this.state.adm_spcl_idf === 0) {
-            this.state.listaRegistros[this.state.adm_spcli_seq].adm_spcli_check = tipo;
-            if (tipo === 'NC') {
-                this.setState({modalOBSVisible: true});
-            } else {
-                this.onMudaItem('P');
+        try {
+            if (this.state.adm_spcl_idf === 0) {
+                this.state.listaRegistros[this.state.adm_spcli_seq].adm_spcli_check = tipo;
+                if (tipo === 'NC') {
+                    this.setState({modalOBSVisible: true});
+                } else {
+                    this.onMudaItem('P');
+                }
             }
+        } catch (e) {
+            Alert.showAlert("Nenhum registro foi encontrado!");
         }
-    }
+    };
 
     onOBSPress = (visible) => {
         // console.log('onOBSPress: ', visible);

@@ -192,7 +192,7 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
                             fontSize: 11,
                             marginTop: 5,
                             marginBottom: 5,
-                            textDecorationLine: registro.man_sp_obs ? 'underline' : ''
+                            textDecorationLine: registro?.man_sp_obs ? 'underline' : 'none'
                         }}>
                             O.S.
                         </Text>
@@ -223,7 +223,7 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
                             fontSize: 11,
                             marginTop: 5,
                             marginBottom: 5,
-                            textDecorationLine: registro.adm_spcl_ocorrencia ? 'underline' : ''
+                            textDecorationLine: registro?.adm_spcl_ocorrencia ? 'underline' : 'none'
                         }}>
                             Ocorrência
                         </Text>

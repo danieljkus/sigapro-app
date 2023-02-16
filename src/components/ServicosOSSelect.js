@@ -45,8 +45,6 @@ class ServicosOSSelect extends PureComponent {
         tipoServico: '',
         servicoSelect: [],
         servicoSelectCombo: [],
-        carregando: false,
-
         listaRegistros: [],
         modalBuscaVisible: false,
         refreshing: false,

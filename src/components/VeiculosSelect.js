@@ -45,7 +45,7 @@ class VeiculosSelect extends PureComponent {
     buscaRegistros = (value) => {
         try {
             this.setState({carregando: true});
-            const {id, tipo, onChange, onErro} = this.props;
+            const {id, tipo, onChange} = this.props;
 
             let request;
             if (tipo === 'fichaSaida') {
@@ -81,26 +81,27 @@ class VeiculosSelect extends PureComponent {
                         msgErro: '',
                     })
                     onChange(id, data)
-                    onErro('');
+                    // onErro('');
                 } else {
                     this.setState({
                         msgErro: data.msgErro,
                     })
                     onChange(id, null);
-                    onErro(data.msgErro);
+                    // onErro(data.msgErro);
                 }
 
                 this.setState({
                     carregando: false,
                 })
             }).catch(error => {
-                console.warn(error.response);
+                const response = error;
+                console.warn(response);
                 this.setState({
                     carregando: false,
                 });
             })
 
-        } catch (e) {
+        } catch (error) {
             console.log(error.response);
             this.setState({
                 carregando: false,
