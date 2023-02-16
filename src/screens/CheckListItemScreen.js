@@ -301,7 +301,7 @@ export default class CheckListItemScreen extends Component {
                 }
             }
         } catch (e) {
-            Alert.showAlert("Nenhum registro foi encontrado!");
+            Alert.showAlert("Seu perfil não está habilitado para gerar check-list!");
         }
     };
 
