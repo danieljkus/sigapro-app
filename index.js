@@ -19,7 +19,7 @@ axios.interceptors.request.use(async (request) => {
     const token = await getToken();
     request.headers.Authorization = `Bearer ${token}`;
     return request;
-})
+});
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
