@@ -193,7 +193,7 @@ export default class BoletinsDiferencaScreen extends Component {
             <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
                 <HeaderComponent
                     color={'white'}
-                    titleCenterComponent={'Autorização de Despesa'}
+                    titleCenterComponent={'Boletins de Diferença'}
                     pressLeftComponen={() => this.props.navigation.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />

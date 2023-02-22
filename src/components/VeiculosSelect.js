@@ -94,12 +94,9 @@ class VeiculosSelect extends PureComponent {
                         msgErro: data.msgErro,
                     })
                     onChange(id, null);
-
                     if (this?.props?.onErro) {
                         this?.props?.onErro(data.msgErro);
                     }
-
-                    // onErro(data.msgErro);
                 }
 
                 this.setState({

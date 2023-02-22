@@ -319,7 +319,6 @@ export default class CheckListItemScreen extends Component {
 
     onErroChange = msgErro => {
         this.setState({
-            listaRegistros: [],
             msgErroVeiculo: msgErro,
         })
     };

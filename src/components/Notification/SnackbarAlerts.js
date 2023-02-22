@@ -1,26 +1,23 @@
 // CREATED BY MAYK FELIX 17/02/2023
 import React, {useEffect} from 'react';
 import {connect, useDispatch} from 'react-redux';
-import {Button, Snackbar} from 'react-native-paper';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Icon} from "react-native-elements";
+import {Snackbar} from 'react-native-paper';
+import {StyleSheet, Text} from "react-native";
 import Colors from "../../values/Colors";
 
 const SnackbarAlerts = ({message, isVisible}) => {
     const dispatch = useDispatch();
 
+    if (!isVisible) {
+        return null;
+    }
 
     useEffect(() => {
         setTimeout(() => {
-            console.log('CLOSE_SNACKBAR');
             dispatch({type: 'CLOSE_SNACKBAR', isVisible: false})
         }, 7000)
     }, []);
 
-
-    if (!isVisible) {
-        return null;
-    }
 
     // return (
     //     <View style={styles.container}>
