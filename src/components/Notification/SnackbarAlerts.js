@@ -39,17 +39,22 @@ const SnackbarAlerts = ({message, isVisible}) => {
 
     return (
         <Snackbar
+            style={{
+                backgroundColor: Colors.dark,
+            }}
             // elevation={5}
             duration={7000}
             visible={isVisible}
             onDismiss={() => dispatch({type: 'CLOSE_SNACKBAR', isVisible: false})}
             icon={require('react-native-vector-icons/EvilIcons')}
-            action={{
-                label: 'OK',
-                onPress: () => dispatch({type: 'CLOSE_SNACKBAR', isVisible: false}),
-            }}
+            // action={{
+            //     label: 'OK',
+            //     onPress: () => dispatch({type: 'CLOSE_SNACKBAR', isVisible: false}),
+            // }}
         >
-            {message}
+            <Text style={{color: 'white', fontWeight: 'bold'}}>
+                {message}
+            </Text>
         </Snackbar>
     );
 };

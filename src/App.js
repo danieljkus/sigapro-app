@@ -7,7 +7,6 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import store from "./components/Notification/store";
 import {AppOffline} from "./components/Offline";
 import SnackbarAlerts from "./components/Notification/SnackbarAlerts";
-import {Interceptors} from "./components/Interceptors";
 
 const App = () => {
     return (
@@ -15,7 +14,7 @@ const App = () => {
             <PaperProvider>
                 <Provider store={store}>
                     <AppOffline/>
-                    <Interceptors/>
+                    {/*<Interceptors/>*/}
                     <SnackbarAlerts/>
                     <AppNavigator/>
                 </Provider>
