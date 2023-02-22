@@ -45,9 +45,9 @@ export default class CheckListItemScreen extends Component {
             adm_spcli_check: '',
             adm_spcli_obs: '',
             adm_spcl_local_checkin: '',
-
+            msgErroVeiculo: 'Informe o Veículo',
             ...props.navigation.state.params.registro,
-        }
+        };
         NetInfo.addEventListener(state => {
             this.onNetEvento(state)
         });
@@ -315,8 +315,14 @@ export default class CheckListItemScreen extends Component {
                 this.onMudaItem('P');
             }
         }
-    }
+    };
 
+    onErroChange = msgErro => {
+        this.setState({
+            listaRegistros: [],
+            msgErroVeiculo: msgErro,
+        })
+    };
 
     render() {
         const {
@@ -361,7 +367,7 @@ export default class CheckListItemScreen extends Component {
                                             value={veiculo_select}
                                             codVeiculo={codVeiculo}
                                             onChange={this.onInputChangeVeiculo}
-                                            // onErro={this.onErroChange}
+                                            onErro={this.onErroChange}
                                             tipo=""
                                             enabled={!adm_spcl_idf}
                                         />

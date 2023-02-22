@@ -8,6 +8,11 @@ import Alert from "./Alert";
 
 class VeiculosSelect extends PureComponent {
 
+    constructor(props){
+        super(props)
+        // console.log('onErro',props?.onErro)
+    }
+
     state = {
         carregando: false,
         codVeiculo: '',
@@ -81,12 +86,19 @@ class VeiculosSelect extends PureComponent {
                         msgErro: '',
                     })
                     onChange(id, data)
-                    // onErro('');
+                    if(this?.props?.onErro){
+                        this?.props?.onErro('');
+                    }
                 } else {
                     this.setState({
                         msgErro: data.msgErro,
                     })
                     onChange(id, null);
+
+                    if (this?.props?.onErro) {
+                        this?.props?.onErro(data.msgErro);
+                    }
+
                     // onErro(data.msgErro);
                 }
 
