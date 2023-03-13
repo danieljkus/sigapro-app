@@ -15,7 +15,7 @@
 		69BAEF71298B010600D3CE18 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		69BAEF72298B010600D3CE18 /* main.m in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		69BAEF73298B010600D3CE18 /* Empty.swift in Resources */ = {isa = PBXBuildFile; fileRef = F3DE598425FBB1DA009D317B /* Empty.swift */; };
-		C4DE189053B998CBAF1FA40B /* libPods-CargasNordeste.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A15DAB266C5141FF51275D6 /* libPods-CargasNordeste.a */; };
+		D4FEAA4949ECA0B8E0B5D391 /* libPods-SIGAPRO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54F4175F810AFC816F637441 /* libPods-SIGAPRO.a */; };
 		F3DE598525FBB1DA009D317B /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DE598425FBB1DA009D317B /* Empty.swift */; };
 		F3DE59F925FBB332009D317B /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3DE59F825FBB332009D317B /* JavaScriptCore.framework */; };
 /* End PBXBuildFile section */
@@ -34,10 +34,12 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CargasNordeste/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CargasNordeste/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CargasNordeste/main.m; sourceTree = "<group>"; };
-		1A15DAB266C5141FF51275D6 /* libPods-CargasNordeste.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CargasNordeste.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2383342B049147429EEF616E /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		2A995248151EE89D6FE19A02 /* Pods-SIGAPRO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SIGAPRO.release.xcconfig"; path = "Target Support Files/Pods-SIGAPRO/Pods-SIGAPRO.release.xcconfig"; sourceTree = "<group>"; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		37C9124A3A83829D8032AF9D /* Pods-SIGAPRO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SIGAPRO.debug.xcconfig"; path = "Target Support Files/Pods-SIGAPRO/Pods-SIGAPRO.debug.xcconfig"; sourceTree = "<group>"; };
 		469EAB8A9B6345F2987604DF /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		54F4175F810AFC816F637441 /* libPods-SIGAPRO.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SIGAPRO.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		64D2104D03F2437E8801FC68 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		68CB631B87764319B3ABEFFE /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		69BAEF3B298AF70400D3CE18 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = Fonts/FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
@@ -81,7 +83,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3DE59F925FBB332009D317B /* JavaScriptCore.framework in Frameworks */,
-				C4DE189053B998CBAF1FA40B /* libPods-CargasNordeste.a in Frameworks */,
+				D4FEAA4949ECA0B8E0B5D391 /* libPods-SIGAPRO.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,7 +131,7 @@
 			children = (
 				F3DE59F825FBB332009D317B /* JavaScriptCore.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
-				1A15DAB266C5141FF51275D6 /* libPods-CargasNordeste.a */,
+				54F4175F810AFC816F637441 /* libPods-SIGAPRO.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -139,6 +141,8 @@
 			children = (
 				D1A59D0D181129347C6F4AB4 /* Pods-CargasNordeste.debug.xcconfig */,
 				03CE11DCCC19EDBA0D6C6B00 /* Pods-CargasNordeste.release.xcconfig */,
+				37C9124A3A83829D8032AF9D /* Pods-SIGAPRO.debug.xcconfig */,
+				2A995248151EE89D6FE19A02 /* Pods-SIGAPRO.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -224,9 +228,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* CargasNordeste */ = {
+		13B07F861A680F5B00A75B9A /* SIGAPRO */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CargasNordeste" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SIGAPRO" */;
 			buildPhases = (
 				632BE85ECC870A60840739FF /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
@@ -239,7 +243,7 @@
 			);
 			dependencies = (
 			);
-			name = CargasNordeste;
+			name = SIGAPRO;
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* CargasNordeste.app */;
 			productType = "com.apple.product-type.application";
@@ -272,7 +276,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* CargasNordeste */,
+				13B07F861A680F5B00A75B9A /* SIGAPRO */,
 			);
 		};
 /* End PBXProject section */
@@ -323,7 +327,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CargasNordeste-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-SIGAPRO-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -336,7 +340,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CargasNordeste/Pods-CargasNordeste-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-SIGAPRO/Pods-SIGAPRO-resources.sh",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -377,7 +381,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CargasNordeste/Pods-CargasNordeste-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SIGAPRO/Pods-SIGAPRO-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -410,16 +414,16 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D1A59D0D181129347C6F4AB4 /* Pods-CargasNordeste.debug.xcconfig */;
+			baseConfigurationReference = 37C9124A3A83829D8032AF9D /* Pods-SIGAPRO.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 378U5DW34R;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = CargasNordeste/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SigaPro;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.16;
 				OTHER_LDFLAGS = (
@@ -442,16 +446,16 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 03CE11DCCC19EDBA0D6C6B00 /* Pods-CargasNordeste.release.xcconfig */;
+			baseConfigurationReference = 2A995248151EE89D6FE19A02 /* Pods-SIGAPRO.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 378U5DW34R;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = CargasNordeste/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SigaPro;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.16;
 				OTHER_LDFLAGS = (
@@ -576,7 +580,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CargasNordeste" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SIGAPRO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,

@@ -30,7 +30,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "CargasNordeste.app"
-               BlueprintName = "CargasNordeste"
+               BlueprintName = "SIGAPRO"
                ReferencedContainer = "container:CargasNordeste.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -60,7 +60,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "CargasNordeste.app"
-            BlueprintName = "CargasNordeste"
+            BlueprintName = "SIGAPRO"
             ReferencedContainer = "container:CargasNordeste.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -93,7 +93,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "CargasNordeste.app"
-            BlueprintName = "CargasNordeste"
+            BlueprintName = "SIGAPRO"
             ReferencedContainer = "container:CargasNordeste.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -110,7 +110,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "CargasNordeste.app"
-            BlueprintName = "CargasNordeste"
+            BlueprintName = "SIGAPRO"
             ReferencedContainer = "container:CargasNordeste.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
