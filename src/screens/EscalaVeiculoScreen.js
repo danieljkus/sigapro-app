@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { View, ScrollView, RefreshControl, Text, FlatList, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
+import {
+    View,
+    ScrollView,
+    RefreshControl,
+    Text,
+    FlatList,
+    ActivityIndicator,
+    Modal,
+    TouchableOpacity,
+    SafeAreaView
+} from 'react-native';
 import { Card, Divider, SearchBar } from 'react-native-elements';
 
 import axios from 'axios';
@@ -14,6 +24,7 @@ import { getTemPermissao, getPermissoes } from '../utils/LoginManager';
 import { maskValorMoeda } from '../utils/Maskers';
 import moment from 'moment';
 import Icon from '../components/Icon';
+import HeaderComponent from "../components/HeaderComponent";
 
 const RegistroItem = ({ registro }) => {
     return (
@@ -451,7 +462,13 @@ export default class EscalaVeiculoScreen extends Component {
         // console.log('this.state', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Detalhes da Escala'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <StatusBar />
 
                 <ScrollView
@@ -492,7 +509,7 @@ export default class EscalaVeiculoScreen extends Component {
                                             title=""
                                             loading={loading}
                                             onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                            buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                            buttonStyle={{width: 30, padding: 0, paddingTop: 20, marginLeft: -18}}
                                             backgroundColor={Colors.transparent}
                                             icon={{
                                                 name: 'search',
@@ -658,14 +675,17 @@ export default class EscalaVeiculoScreen extends Component {
 
                     </View>
 
+                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 , textAlign : 'center'}}>
+                        {idf2 ? idf2 : idf1}
+                    </Text>
 
 
-                    <View style={{ flexDirection: 'row', justifyContent: "center" }} >
+                    <View style={{flexDirection: 'row', justifyContent: "center"}}>
                         <Button
                             title="Log"
                             onPress={this.onAbrirLog}
                             color={Colors.textOnPrimary}
-                            buttonStyle={{ marginBottom: 20, marginTop: 20, width: 200, height: 30, marginRight: 10 }}
+                            buttonStyle={{marginBottom: 20, marginTop: 20, width: 200, marginRight: 10}}
                             icon={{
                                 name: 'file-text-o',
                                 type: 'font-awesome',
@@ -674,9 +694,6 @@ export default class EscalaVeiculoScreen extends Component {
                         />
                     </View>
 
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 }}>
-                        {idf2 ? idf2 : idf1}
-                    </Text>
 
 
 
@@ -684,31 +701,23 @@ export default class EscalaVeiculoScreen extends Component {
                     {/* MODAL PARA BUSCA DO FUNCIONÁRIOS */}
                     {/* -------------------------------- */}
                     <Modal
+                        style={{
+                            flex: 1,
+                        }}
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
                         onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
                         animationType={"slide"}
                     >
-                        <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
-                            <TouchableOpacity
-                                onPress={() => { this.onAbrirFuncBuscaModal(!this.state.modalFuncBuscaVisible) }}
-                            >
-                                <Icon family="MaterialIcons"
-                                    name="arrow-back"
-                                    color={Colors.textOnPrimary}
-                                    style={{ padding: 16 }} />
-                            </TouchableOpacity>
+                        <SafeAreaView style={{backgroundColor: Colors.white, flex: 0, flexDirection: 'row'}}/>
 
-                            <Text style={{
-                                color: Colors.textPrimaryLight,
-                                marginTop: 15,
-                                marginBottom: 15,
-                                marginLeft: 16,
-                                textAlign: 'center',
-                                fontSize: 20,
-                                fontWeight: 'bold',
-                            }}>Buscar Funcionário</Text>
-                        </View>
+                        <HeaderComponent
+                            color={'white'}
+                            titleCenterComponent={'Buscar Funcionário'}
+                            pressLeftComponen={() => this.onAbrirFuncBuscaModal(!this.state.modalFuncBuscaVisible)}
+                            iconLeftComponen={'chevron-left'}
+                        />
+
 
                         <SearchBar
                             placeholder="Busca por Nome"
@@ -751,7 +760,7 @@ export default class EscalaVeiculoScreen extends Component {
                         message="Carregando. Aguarde..."
                     />
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         )
     }
 }

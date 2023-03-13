@@ -2,19 +2,43 @@
 import {PermissionsAndroid} from "react-native";
 import GetLocation from "react-native-get-location";
 
+const PermissionsMyAndroid = async () => {
+    const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('permissão concedida');
+        return false
+    } else {
+        console.log('a permissão de geolocalizacao foi negada');
+        return true
+    }
+};
+
+const PermissionsMyIos = async () => {
+    const granted = await Permissions.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('permissão concedida');
+        return false
+    } else {
+        console.log('a permissão de geolocalizacao foi negada');
+        return true
+    }
+};
+
+
 // VERIFICA SE A PERMISAO DE GEOLOCATION TA ATIVADA OU NEGADA
 export async function verifyLocationPermission() {
     try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('permissão concedida');
-            return false
+
+        if (Platform.OS === 'android') {
+            PermissionsMyAndroid();
         } else {
-            console.log('a permissão de geolocalizacao foi negada');
-            return true
+            PermissionsMyIos();
         }
+
     } catch (err) {
         return false
     }
