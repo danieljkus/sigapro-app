@@ -354,6 +354,22 @@ export default class OrdemServicoScreen extends Component {
         this.buscaFuncionários(rh_func_codigo);
     }
 
+    onAbrirFuncBuscaModal = (visible) => {
+        if (visible) {
+            this.setState({modalFuncBuscaVisible: visible});
+        } else {
+            this.setState({
+                buscaNome: '',
+                refreshing: false,
+                carregarRegistro: false,
+                carregando: false,
+                carregarMais: false,
+                pagina: 1,
+                modalFuncBuscaVisible: visible
+            });
+        }
+    }
+
     carregarMaisRegistrosFunc = () => {
         const { carregarMais, refreshing, carregando, pagina } = this.state;
         if (carregarMais && !refreshing && !carregando) {
@@ -595,7 +611,7 @@ export default class OrdemServicoScreen extends Component {
                                     title=""
                                     loading={loading}
                                     onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                    buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                    buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                                     backgroundColor={Colors.transparent}
                                     icon={{
                                         name: 'search',
@@ -803,62 +819,53 @@ export default class OrdemServicoScreen extends Component {
                     <Modal
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
+                        onRequestClose={() => {
+                            console.log("Modal FUNCIONARIO FECHOU.")
+                        }}
                         animationType={"slide"}
                     >
-                        <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
-                            <TouchableOpacity
-                                onPress={() => { this.onAbrirFuncBuscaModal(!this.state.modalFuncBuscaVisible) }}
-                            >
-                                <Icon family="MaterialIcons"
-                                    name="arrow-back"
-                                    color={Colors.textOnPrimary}
-                                    style={{ padding: 16 }} />
-                            </TouchableOpacity>
+                        <SafeAreaView style={{backgroundColor: Colors.primary, flex: 1}}>
 
-                            <Text style={{
-                                color: Colors.textPrimaryLight,
-                                marginTop: 15,
-                                marginBottom: 15,
-                                marginLeft: 16,
-                                textAlign: 'center',
-                                fontSize: 20,
-                                fontWeight: 'bold',
-                            }}>Buscar Funcionário</Text>
-                        </View>
+                            <HeaderComponent
+                                color={'white'}
+                                titleCenterComponent={'Buscar Funcionário'}
+                                pressLeftComponen={() => this.onAbrirFuncBuscaModal(!this.state.modalFuncBuscaVisible)}
+                                iconLeftComponen={'chevron-left'}
+                            />
 
-                        <SearchBar
-                            placeholder="Busca por Nome"
-                            lightTheme={true}
-                            onChangeText={this.onBuscaNomeChange}
-                            inputStyle={{ backgroundColor: 'white' }}
-                            containerStyle={{ backgroundColor: Colors.primaryLight }}
-                            clearIcon={true}
-                        />
+                            <SearchBar
+                                placeholder="Busca por Nome"
+                                lightTheme={true}
+                                onChangeText={this.onBuscaNomeChange}
+                                inputStyle={{backgroundColor: 'white'}}
+                                containerStyle={{backgroundColor: Colors.primaryLight}}
+                                clearIcon={true}
+                            />
 
-                        <View style={{
-                            flex: 1,
-                            backgroundColor: Colors.background,
-                        }} >
+                            <View style={{
+                                flex: 1,
+                                backgroundColor: Colors.background,
+                            }}>
 
-                            <ScrollView
-                                style={{ flex: 1, }}
-                                keyboardShouldPersistTaps="always"
-                            >
-                                <View style={{ marginTop: 4 }}>
-                                    <FlatList
-                                        data={listaRegistrosFunc}
-                                        renderItem={this.renderItemFunc}
-                                        contentContainerStyle={{ paddingBottom: 100 }}
-                                        keyExtractor={registro => String(registro.rh_func_codigo) + String(registro.rh_func_empresa)}
-                                        onRefresh={this.onRefreshFunc}
-                                        refreshing={refreshing}
-                                        onEndReached={this.carregarMaisRegistrosFunc}
-                                        ListFooterComponent={this.renderListFooter}
-                                    />
-                                </View>
-                            </ScrollView>
-                        </View>
+                                <ScrollView
+                                    style={{flex: 1,}}
+                                    keyboardShouldPersistTaps="always"
+                                >
+                                    <View style={{marginTop: 4}}>
+                                        <FlatList
+                                            data={listaRegistrosFunc}
+                                            renderItem={this.renderItemFunc}
+                                            contentContainerStyle={{paddingBottom: 100}}
+                                            keyExtractor={registro => String(registro.rh_func_codigo) + String(registro.rh_func_empresa)}
+                                            onRefresh={this.onRefreshFunc}
+                                            refreshing={refreshing}
+                                            onEndReached={this.carregarMaisRegistrosFunc}
+                                            ListFooterComponent={this.renderListFooter}
+                                        />
+                                    </View>
+                                </ScrollView>
+                            </View>
+                        </SafeAreaView>
                     </Modal>
 
 

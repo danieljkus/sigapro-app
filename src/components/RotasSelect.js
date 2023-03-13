@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import {
     View, Text, ActivityIndicator, Modal, TouchableOpacity,
-    ScrollView, FlatList
+    ScrollView, FlatList, SafeAreaView
 } from 'react-native';
 import axios from 'axios';
 import TextInput from '../components/TextInput';
@@ -9,6 +9,7 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import Icon from '../components/Icon';
 import { Card, Divider, SearchBar } from 'react-native-elements';
+import HeaderComponent from "./HeaderComponent";
 
 
 const Registro = ({ registro, onRegistroPress }) => {
@@ -243,7 +244,7 @@ class RotasSelect extends PureComponent {
                         title=""
                         loading={loading}
                         onPress={() => { this.onAbrirBuscaModal(true) }}
-                        buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                        buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                         backgroundColor={Colors.transparent}
                         icon={{
                             name: 'search',
@@ -279,62 +280,56 @@ class RotasSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => { console.log("Modal FECHOU.") }}
+                    onRequestClose={() => {
+                        console.log("Modal FECHOU.")
+                    }}
                     animationType={"slide"}
                 >
-                    <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
-                        <TouchableOpacity
-                            onPress={() => { this.onAbrirBuscaModal(!this.state.modalBuscaVisible) }}
-                        >
-                            <Icon family="MaterialIcons"
-                                name="arrow-back"
-                                color={Colors.textOnPrimary}
-                                style={{ padding: 16 }} />
-                        </TouchableOpacity>
 
-                        <Text style={{
-                            color: Colors.textPrimaryLight,
-                            marginTop: 15,
-                            marginBottom: 15,
-                            marginLeft: 16,
-                            textAlign: 'center',
-                            fontSize: 20,
-                            fontWeight: 'bold',
-                        }}>Buscar Rota</Text>
-                    </View>
+                    <SafeAreaView style={{backgroundColor: Colors.primary, flex: 1}}>
 
-                    <SearchBar
-                        placeholder="Pesquisar"
-                        lightTheme={true}
-                        onChangeText={this.onBuscaNomeChange}
-                        inputStyle={{ backgroundColor: 'white' }}
-                        containerStyle={{ backgroundColor: Colors.primaryLight }}
-                        clearIcon={true}
-                    />
+                        <HeaderComponent
+                            color={'white'}
+                            titleCenterComponent={'Buscar Rota'}
+                            pressLeftComponen={() => this.onAbrirBuscaModal(!this.state.modalBuscaVisible)}
+                            iconLeftComponen={'chevron-left'}
+                        />
 
-                    <View style={{
-                        flex: 1,
-                        backgroundColor: Colors.background,
-                    }} >
 
-                        <ScrollView
-                            style={{ flex: 1, }}
-                            keyboardShouldPersistTaps="always"
-                        >
-                            <View style={{ marginTop: 4 }}>
-                                <FlatList
-                                    data={listaRegistros}
-                                    renderItem={this.renderItem}
-                                    contentContainerStyle={{ paddingBottom: 100 }}
-                                    keyExtractor={registro => registro.man_rt_codigo}
-                                    onRefresh={this.onRefresh}
-                                    refreshing={refreshing}
-                                    onEndReached={this.carregarMaisRegistros}
-                                    ListFooterComponent={this.renderListFooter}
-                                />
-                            </View>
-                        </ScrollView>
-                    </View>
+                        <SearchBar
+                            placeholder="Pesquisar"
+                            lightTheme={true}
+                            onChangeText={this.onBuscaNomeChange}
+                            inputStyle={{backgroundColor: 'white'}}
+                            containerStyle={{backgroundColor: Colors.primaryLight}}
+                            clearIcon={true}
+                        />
+
+                        <View style={{
+                            flex: 1,
+                            backgroundColor: Colors.background,
+                        }}>
+
+                            <ScrollView
+                                style={{flex: 1,}}
+                                keyboardShouldPersistTaps="always"
+                            >
+                                <View style={{marginTop: 4}}>
+                                    <FlatList
+                                        data={listaRegistros}
+                                        renderItem={this.renderItem}
+                                        contentContainerStyle={{paddingBottom: 100}}
+                                        keyExtractor={registro => registro.man_rt_codigo}
+                                        onRefresh={this.onRefresh}
+                                        refreshing={refreshing}
+                                        onEndReached={this.carregarMaisRegistros}
+                                        ListFooterComponent={this.renderListFooter}
+                                    />
+                                </View>
+                            </ScrollView>
+                        </View>
+
+                    </SafeAreaView>
                 </Modal>
 
 

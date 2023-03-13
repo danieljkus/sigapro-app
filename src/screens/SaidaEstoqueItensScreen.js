@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { View, ScrollView, Text, FlatList, TouchableOpacity, Modal, Keyboard } from 'react-native';
+import {View, ScrollView, Text, FlatList, TouchableOpacity, Modal, Keyboard, SafeAreaView} from 'react-native';
 import { Card, Divider, CheckBox } from 'react-native-elements';
 import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
@@ -10,6 +10,7 @@ import Alert from '../components/Alert';
 import { maskDigitarVlrMoeda, maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 import ItemEstoqueSelect from '../components/ItemEstoqueSelect';
 import axios from 'axios';
+import HeaderComponent from "../components/HeaderComponent";
 
 
 const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
@@ -420,7 +421,13 @@ export default class SaidaEstoqueItensScreen extends Component {
         // console.log('SaidaEstoqueItensScreen STATE: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background, paddingBottom: 8, paddingTop: 5 }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Itens da Baixa'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <StatusBar />
 
                 <ScrollView
@@ -633,7 +640,7 @@ export default class SaidaEstoqueItensScreen extends Component {
                         message="Gravando. Aguarde..."
                     />
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         )
     }
 }

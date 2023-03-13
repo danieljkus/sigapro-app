@@ -38,7 +38,13 @@
 	<key>NSCameraUsageDescription</key>
 	<string>O aplicativo precisa acessar a câmera para permitir ao usuário tirar fotos para postar em suas redes sociais</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow the app to access your location.</string>
+	<string>Garantimos que a localização do usuário será usada apenas para fins de melhorar a experiência do usuário no aplicativo e que a privacidade do usuário será protegida. Não compartilhamos informações de localização com terceiros sem o consentimento do usuário.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>authorization allows your app to access user's location when the app is in foreground or active while “Always” authorization allows your app to access user's location even when it's in the background.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>aplicativo permite que o usuário adicione fotos a um álbum específico</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>aplicativo permite que os usuários compartilhem fotos em redes sociais, à biblioteca de fotos é necessário para permitir que os usuários adicionem fotos ao álbum.</string>
 	<key>Privacy – Location When In Use Usage Description</key>
 	<string>Allow the app to access your location while you are using it.</string>
 	<key>UIAppFonts</key>

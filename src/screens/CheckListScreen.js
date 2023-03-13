@@ -932,6 +932,7 @@ export default class CheckListScreen extends Component {
                                         textAlign: 'center',
                                         fontSize: 20,
                                         fontWeight: 'bold',
+                                        height: 30,
                                     }}>Filtrar</Text>
                                 </View>
 
@@ -985,7 +986,7 @@ export default class CheckListScreen extends Component {
                                         onPress={() => {
                                             this.onSearchPress(!this.state.modalFiltrosVisible)
                                         }}
-                                        buttonStyle={{marginTop: 15, height: 35}}
+                                        buttonStyle={{marginTop: 15}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'filter',
@@ -998,7 +999,7 @@ export default class CheckListScreen extends Component {
                                         onPress={() => {
                                             this.onClosePress(!this.state.modalFiltrosVisible)
                                         }}
-                                        buttonStyle={{marginTop: 10, height: 35}}
+                                        buttonStyle={{marginTop: 15}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',

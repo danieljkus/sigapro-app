@@ -270,7 +270,7 @@ class TipoSolicitacaoSelect extends PureComponent {
                         title=""
                         loading={loading}
                         onPress={() => { this.onAbrirBuscaModal(true) }}
-                        buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                        buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                         backgroundColor={Colors.transparent}
                         icon={{
                             name: 'search',

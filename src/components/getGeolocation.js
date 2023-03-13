@@ -1,5 +1,5 @@
 // CREATED BY MAYK FELIX 14/02/2023
-import {PermissionsAndroid} from "react-native";
+import {PermissionsAndroid, Permissions} from "react-native";
 import GetLocation from "react-native-get-location";
 
 const PermissionsMyAndroid = async () => {
@@ -16,14 +16,18 @@ const PermissionsMyAndroid = async () => {
 };
 
 const PermissionsMyIos = async () => {
-    const granted = await Permissions.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('permissão concedida');
+    const granted = await Permissions.request('location', {
+        title: 'Permissão de Localização',
+        message: 'O aplicativo precisa acessar sua localização.',
+        buttonNeutral: 'Pergunte-me depois',
+        buttonNegative: 'Cancelar',
+        buttonPositive: 'OK',
+    });
+    if (granted === 'authorized') {
+        console.log('Permissão concedida');
         return false
     } else {
-        console.log('a permissão de geolocalizacao foi negada');
+        console.log('Permissão negada');
         return true
     }
 };
@@ -32,13 +36,11 @@ const PermissionsMyIos = async () => {
 // VERIFICA SE A PERMISAO DE GEOLOCATION TA ATIVADA OU NEGADA
 export async function verifyLocationPermission() {
     try {
-
         if (Platform.OS === 'android') {
             PermissionsMyAndroid();
         } else {
             PermissionsMyIos();
         }
-
     } catch (err) {
         return false
     }

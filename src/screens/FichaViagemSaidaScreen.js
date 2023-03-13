@@ -77,7 +77,7 @@ const RegistroFunc = ({ registro, onRegistroFuncPress }) => {
 }
 
 
-export default class FichaViagemSaidaScreen extends Component {
+export default class zFichaViagemSaidaScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -548,7 +548,7 @@ export default class FichaViagemSaidaScreen extends Component {
                                     title=""
                                     loading={loading}
                                     onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                    buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                    buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                                     backgroundColor={Colors.transparent}
                                     icon={{
                                         name: 'search',

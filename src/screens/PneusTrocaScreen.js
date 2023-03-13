@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, RefreshControl, Text, FlatList } from 'react-native';
+import {View, ScrollView, RefreshControl, Text, FlatList, SafeAreaView} from 'react-native';
 import { Card, Divider, CheckBox } from 'react-native-elements';
 
 import axios from 'axios';
@@ -13,6 +13,7 @@ import Alert from '../components/Alert';
 import { getTemPermissao, getPermissoes } from '../utils/LoginManager';
 import FiliaisSelect from '../components/FiliaisSelect';
 import moment from 'moment';
+import HeaderComponent from "../components/HeaderComponent";
 
 
 export default class PneusTrocaScreen extends Component {
@@ -427,7 +428,13 @@ export default class PneusTrocaScreen extends Component {
         // console.log('PneusTrocaScreen.this.state', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Trocar Pneu'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <StatusBar />
 
                 <ScrollView
@@ -907,7 +914,7 @@ export default class PneusTrocaScreen extends Component {
                         message="Aguarde..."
                     />
                 </ScrollView>
-            </View >
+            </SafeAreaView >
         )
     }
 }

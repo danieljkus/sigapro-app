@@ -47,7 +47,7 @@ class TextInput extends PureComponent {
         const { label, id, errorMessage, type, dateFormat, validator, value, data,
             required, onChange, editable, secureTextEntry, keyboardType, autoCapitalize,
             style, itemStyle, itemTextStyle, multiline, numberOfLines, onBlur, enabled,
-            options = [], iniciarVazio, placeholder, minDate, maxDate, fontSize, 
+            options = [], iniciarVazio, placeholder, minDate, maxDate, fontSize,
             maxLength, height, borderWidth, textAlign, ...others } = this.props;
         const { valid } = this.state;
 
@@ -190,8 +190,9 @@ class TextInput extends PureComponent {
                             }}
 
                             itemStyle={{
-
-                                ...itemStyle
+                                height: 50,
+                                bottom: 20,
+                                ...itemStyle,
                             }}
 
                             itemTextStyle={{
@@ -232,7 +233,7 @@ class TextInput extends PureComponent {
                         underlineColorAndroid={Colors.transparent}
                         placeholder={placeholder}
                         placeholderTextColor={Colors.textHintDark}
-                        value={strValue} 
+                        value={strValue}
                         editable={editable}
                         onChangeText={this.onChange}
                         autoCapitalize={autoCapitalize}

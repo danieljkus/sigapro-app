@@ -519,7 +519,7 @@ export default class SaidasEstoqueScreen extends Component {
                                     <Button
                                         title="FILTRAR"
                                         onPress={() => { this.onSearchPress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop: 15, height: 35 }}
+                                        buttonStyle={{ marginTop: 15}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'filter',
@@ -530,7 +530,7 @@ export default class SaidasEstoqueScreen extends Component {
                                     <Button
                                         title="FECHAR"
                                         onPress={() => { this.onClosePress(!this.state.modalFiltrosVisible) }}
-                                        buttonStyle={{ marginTop: 10, height: 35 }}
+                                        buttonStyle={{ marginTop: 10}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',
