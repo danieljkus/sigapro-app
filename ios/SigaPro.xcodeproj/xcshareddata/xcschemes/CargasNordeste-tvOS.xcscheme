@@ -31,7 +31,7 @@
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
                BuildableName = "CargasNordeste-tvOS.app"
                BlueprintName = "CargasNordeste-tvOS"
-               ReferencedContainer = "container:CargasNordeste.xcodeproj">
+               ReferencedContainer = "container:SigaPro.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -45,7 +45,7 @@
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
                BuildableName = "CargasNordeste-tvOSTests.xctest"
                BlueprintName = "CargasNordeste-tvOSTests"
-               ReferencedContainer = "container:CargasNordeste.xcodeproj">
+               ReferencedContainer = "container:SigaPro.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,7 +61,7 @@
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
             BuildableName = "CargasNordeste-tvOS.app"
             BlueprintName = "CargasNordeste-tvOS"
-            ReferencedContainer = "container:CargasNordeste.xcodeproj">
+            ReferencedContainer = "container:SigaPro.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -72,7 +72,7 @@
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
                BuildableName = "CargasNordeste-tvOSTests.xctest"
                BlueprintName = "CargasNordeste-tvOSTests"
-               ReferencedContainer = "container:CargasNordeste.xcodeproj">
+               ReferencedContainer = "container:SigaPro.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -94,7 +94,7 @@
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
             BuildableName = "CargasNordeste-tvOS.app"
             BlueprintName = "CargasNordeste-tvOS"
-            ReferencedContainer = "container:CargasNordeste.xcodeproj">
+            ReferencedContainer = "container:SigaPro.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -111,7 +111,7 @@
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
             BuildableName = "CargasNordeste-tvOS.app"
             BlueprintName = "CargasNordeste-tvOS"
-            ReferencedContainer = "container:CargasNordeste.xcodeproj">
+            ReferencedContainer = "container:SigaPro.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

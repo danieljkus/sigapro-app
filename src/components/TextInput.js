@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import {
     View,
     TextInput as TI,
-    Picker
+    Picker, Platform, ActionSheetIOS
 } from 'react-native';
 
 import {
@@ -11,18 +11,24 @@ import {
 import DatePicker from 'react-native-datepicker';
 
 import Colors from '../values/Colors';
+// import IOSPicker from "./IOSPicker";
+import {TouchableOpacity} from "react-native-gesture-handler";
 
 class TextInput extends PureComponent {
 
-    state = { valid: null };
+    state = {
+        valid: null,
+        selected: null,
+    };
 
     onChange = (text) => {
-        const { validator, masker, id, onChange } = this.props;
+        console.log('text', text)
+        const {validator, masker, id, onChange} = this.props;
         if (masker) {
             text = masker(text);
         }
         if (validator) {
-            this.setState({ valid: !!validator(text) });
+            this.setState({valid: !!validator(text)});
         }
         onChange(id, text);
     }
@@ -31,25 +37,27 @@ class TextInput extends PureComponent {
         if (!this.props.required)
             return true;
 
-        const { validator, value } = this.props;
+        const {validator, value} = this.props;
         let valid = false;
         if (validator) {
             valid = !!validator(value);
         } else {
             valid = !!value;
         }
-        this.setState({ valid });
+        this.setState({valid});
 
         return valid;
     }
 
     render() {
-        const { label, id, errorMessage, type, dateFormat, validator, value, data,
+        const {
+            label, id, errorMessage, type, dateFormat, validator, value, data,
             required, onChange, editable, secureTextEntry, keyboardType, autoCapitalize,
             style, itemStyle, itemTextStyle, multiline, numberOfLines, onBlur, enabled,
             options = [], iniciarVazio, placeholder, minDate, maxDate, fontSize,
-            maxLength, height, borderWidth, textAlign, ...others } = this.props;
-        const { valid } = this.state;
+            maxLength, height, borderWidth, textAlign, ...others
+        } = this.props;
+        const {valid} = this.state;
 
         const borderColor = valid === false ? 'red' : Colors.accent;
 
@@ -143,10 +151,10 @@ class TextInput extends PureComponent {
         } else if (type === "select") {
             const pickerItems = [];
             if (iniciarVazio) {
-                pickerItems.push(<Picker.Item key={0} label="Todos" value={0} />);
+                pickerItems.push(<Picker.Item key={0} label="Todos" value={0}/>);
             }
             options.forEach((i, index) => (
-                pickerItems.push(<Picker.Item key={index + 1} label={i.label} value={i.key} />)
+                pickerItems.push(<Picker.Item key={index + 1} label={i.label} value={i.key}/>)
             ))
             CustomInput = (
                 <View style={{
@@ -170,39 +178,85 @@ class TextInput extends PureComponent {
                         paddingBottom: 2,
                         paddingLeft: 10,
                     }}>
-                        <Picker
-                            note
-                            mode="dialog"
-                            selectedValue={value}
-                            onValueChange={this.onChange}
-                            enabled={enabled}
 
-                            style={{
-                                width: '100%',
-                                color: Colors.textPrimaryDark,
-                                height: height ? height : 25,
-                                minHeight: 25,
-                                ...style
-                            }}
 
-                            textStyle={{
+                        {!Platform.OS === 'ios' ?
 
-                            }}
+                            <Picker
+                                note
+                                mode="dialog"
+                                selectedValue={value}
+                                onValueChange={this.onChange}
+                                enabled={enabled}
+                                style={{
+                                    width: '100%',
+                                    color: Colors.textPrimaryDark,
+                                    height: height ? height : 25,
+                                    minHeight: 25,
+                                    ...style
+                                }}
 
-                            itemStyle={{
-                                height: 50,
-                                bottom: 20,
-                                ...itemStyle,
-                            }}
+                                textStyle={{}}
+                                itemStyle={{
+                                    height: 50,
+                                    bottom: 20,
+                                    ...itemStyle,
+                                }}
 
-                            itemTextStyle={{
+                                itemTextStyle={{
+                                    ...itemTextStyle
+                                }}
 
-                                ...itemTextStyle
-                            }}
+                            >
+                                {pickerItems}
+                            </Picker>
 
-                        >
-                            {pickerItems}
-                        </Picker>
+                            :
+
+                            <TouchableOpacity
+                                editable={enabled}
+                                onPress={() => {
+                                    let optionsItems = ['Cancelar'];
+                                    optionsItems = optionsItems.concat(
+                                        pickerItems?.map(({props}) => {
+                                            if (props?.label) {
+                                                return props?.label;
+                                            }
+                                        }),
+                                    );
+                                    ActionSheetIOS.showActionSheetWithOptions(
+                                        {
+                                            options: optionsItems,
+                                            //destructiveButtonIndex: 2,
+                                            title: 'Selecione',
+                                            cancelButtonIndex: 0,
+                                            // message: 'Please choose an option from the list below'
+                                        },
+                                        (buttonIndex) => {
+                                            if (buttonIndex !== 0) {
+                                                this.onChange(`${buttonIndex}`)
+                                                this.setState({selected: optionsItems[buttonIndex]})
+                                            }
+
+                                        },
+                                    );
+                                }}>
+                                <View
+                                    numberOfLines={1}
+                                    style={{
+                                        height: height ? height : 25,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}>
+                                    <Text>
+                                        {this?.state?.selected || pickerItems[0]?.props?.label || 'Selecione'}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+
+                        }
+
+
                     </View>
                 </View>
             )
@@ -243,6 +297,7 @@ class TextInput extends PureComponent {
                         onBlur={onBlur}
                         editable={enabled}
                         maxLength={maxLength}
+                        returnKeyType={(keyboardType === 'numeric' && Platform.OS === 'ios') ? 'done' : 'default'}
                         style={{
                             width: '100%',
                             height: height ? height : 27,
@@ -255,17 +310,17 @@ class TextInput extends PureComponent {
                             borderWidth: 0,
                             borderRadius: 2,
                             ...style
-                        }} />
+                        }}/>
                 </View>
             )
         }
 
         return (
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
 
                 {CustomInput}
 
-                <Text style={{ color: 'red' }}>{valid === false ? errorMessage : ''}</Text>
+                <Text style={{color: 'red'}}>{valid === false ? errorMessage : ''}</Text>
             </View>
         )
     }
