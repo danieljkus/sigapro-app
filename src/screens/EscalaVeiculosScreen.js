@@ -370,6 +370,9 @@ export default class EscalaVeiculosScreen extends Component {
                                             onChange={this.onInputChangeData}
                                             borderWidth={0}
                                             fontSize={20}
+                                            style={{
+                                                right: 30,
+                                            }}
                                         />
                                     </View>
 

@@ -65,3 +65,35 @@ export const maskValorMoeda = numero => {
 export const moedaParaNumero = (valor) => {
     return isNaN(valor) == false ? parseFloat(valor) : parseFloat(valor.replace("R$", "").replace(".", "").replace(",", "."));
 }
+
+
+// FORMATA A DATA PARA O DIA/MES/ANO
+export function formatDate(dataLimite = new Date()) {
+    if (dataLimite) {
+        let dataToday;
+        let data = new Date(dataLimite);
+        let dia = data.getDate();
+        let mes = data.getMonth() + 1;
+        let ano = data.getFullYear();
+        if (dia < 10) {
+            dia = '0' + dia;
+        }
+        if (mes < 10) {
+            mes = '0' + mes;
+        }
+        dataToday = dia + '-' + mes + '-' + ano + '00:00 UTC';
+        return dataToday;
+    }
+}
+
+
+// TRATA O FORMATO DA DATA DO RNDateTimePicker PARA DIA July ANO 00:00 UTC``
+export function formatDateValue(value) {
+    const dataString = value;
+    const horaString = "00:00";
+    const [dia, mes, ano] = dataString.split('/');
+    const [hora, minuto] = horaString.split(':');
+    const data = new Date(ano, mes - 1, dia, hora, minuto);
+    const dataFormatada = data.toString();
+    return new Date(dataFormatada) // FORMATO (DIA July ANO 00:00 UTC)
+};

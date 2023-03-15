@@ -2,23 +2,26 @@ import React, {PureComponent} from 'react';
 import {
     View,
     TextInput as TI,
-    Picker, Platform, ActionSheetIOS
+    Picker, Platform, ActionSheetIOS, StyleSheet
 } from 'react-native';
 
 import {
+    Icon,
     Text
 } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
-
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Colors from '../values/Colors';
-// import IOSPicker from "./IOSPicker";
 import {TouchableOpacity} from "react-native-gesture-handler";
+import Button from "./Button";
+import {formatDate, formatDateValue} from "../utils/Maskers";
 
 class TextInput extends PureComponent {
 
     state = {
         valid: null,
         selected: null,
+        showPicker: false,
     };
 
     onChange = (text) => {
@@ -32,6 +35,18 @@ class TextInput extends PureComponent {
         }
         onChange(id, text);
     }
+
+    onChangeDate = (event, date) => {
+        let selectedDate = formatDate(date);
+        const {validator, masker, id, onChange} = this.props;
+        if (masker) {
+            selectedDate = masker(selectedDate);
+        }
+        if (validator) {
+            this.setState({valid: !!validator(selectedDate)});
+        }
+        onChange(id, selectedDate);
+    };
 
     isValid = () => {
         if (!this.props.required)
@@ -84,67 +99,113 @@ class TextInput extends PureComponent {
                         </Text>
                     ) : null}
 
-                    <View style={{
-                        paddingBottom: 2,
-                        paddingLeft: 16,
-                    }}>
 
-                        <DatePicker
-                            ref="TextInput"
-                            mode={type}
-                            date={value}
-                            onDateChange={this.onChange}
-                            format={dateFormat}
-                            minDate={minDate}
-                            maxDate={maxDate}
-                            confirmBtnText="Confirmar"
-                            cancelBtnText="Cancelar"
-                            showIcon={true}
-                            is24Hour={true}
-                            style={{
-                                width: '100%',
-                            }}
-                            disabled={editable === false}
-                            customStyles={{
-                                dateInput: {
+                    {Platform.OS === 'android' ?
+
+                        <View style={{
+                            paddingBottom: 2,
+                            paddingLeft: 16,
+                        }}>
+                            <DatePicker
+                                ref="TextInput"
+                                mode={type}
+                                date={value}
+                                onDateChange={this.onChange}
+                                // format={dateFormat}
+                                minDate={minDate}
+                                maxDate={maxDate}
+                                confirmBtnText="Confirmar"
+                                cancelBtnText="Cancelar"
+                                showIcon={true}
+                                is24Hour={true}
+                                style={{
                                     width: '100%',
-                                    alignItems: "flex-start",
-                                    fontSize: 18,
+                                }}
+                                disabled={editable === false}
+                                customStyles={{
+                                    dateInput: {
+                                        width: '100%',
+                                        alignItems: "flex-start",
+                                        fontSize: 18,
+                                        height: 25,
+                                        backgroundColor: "transparent",
+                                        borderColor: borderColor,
+                                        borderTopWidth: 0,
+                                        borderBottomWidth: 0,
+                                        borderLeftWidth: 0,
+                                        borderRightWidth: 0,
+                                        ...style
+                                    },
+                                    disabled: {
+                                        backgroundColor: "transparent",
+                                        height: 25,
+                                        borderRadius: 2,
+                                    },
+                                    dateText: {
+                                        fontSize: fontSize,
+                                        color: Colors.textPrimaryDark,
+                                    },
+                                    dateTouchBody: {
+                                        flex: 1, width: '100%', height: 25,
+                                    },
+                                    placeholderText: {
+                                        color: Colors.textHintDark,
+                                        fontSize: 14,
+                                    },
+                                    btnTextConfirm: {
+                                        color: Colors.accent,
+                                        fontWeight: 'bold',
+                                    },
+                                    btnTextCancel: {
+                                        color: Colors.accentLight,
+                                    }
+                                }}
+                            />
+                        </View>
+                        :
+
+                        <View style={{
+                            flex: 1,
+                            // // right: 30,
+                            flexDirection: 'row',
+                            justifyContent: 'space-around',
+                        }}>
+
+                            <RNDateTimePicker
+                                ref="TextInput"
+                                display={'default'}
+                                mode={type}
+                                value={formatDateValue(value)}
+                                format={dateFormat}
+                                minDate={minDate}
+                                maxDate={maxDate}
+                                showIcon={true}
+                                is24Hour={true}
+                                onChange={this.onChangeDate}
+                                disabled={editable === false}
+                                style={{
+                                    width: '100%',
+                                    backgroundColor: Colors.transparent,
+                                    justifyContent: 'center',
+                                    alignItems: 'flex-start',
                                     height: 25,
-                                    backgroundColor: "transparent",
-                                    borderColor: borderColor,
-                                    borderTopWidth: 0,
-                                    borderBottomWidth: 0,
-                                    borderLeftWidth: 0,
-                                    borderRightWidth: 0,
-                                    ...style
-                                },
-                                disabled: {
-                                    backgroundColor: "transparent",
-                                    height: 25,
-                                    borderRadius: 2,
-                                },
-                                dateText: {
-                                    fontSize: fontSize,
-                                    color: Colors.textPrimaryDark,
-                                },
-                                dateTouchBody: {
-                                    flex: 1, width: '100%', height: 25,
-                                },
-                                placeholderText: {
-                                    color: Colors.textHintDark,
-                                    fontSize: 14,
-                                },
-                                btnTextConfirm: {
-                                    color: Colors.accent,
-                                    fontWeight: 'bold',
-                                },
-                                btnTextCancel: {
-                                    color: Colors.accentLight,
-                                }
-                            }}
-                        />
-                    </View>
+                                    display: 'flex',
+                                    ...style,
+                                }}
+
+                            />
+
+                            {/*<Icon*/}
+                                {/*containerStyle={{bottom: 5}}*/}
+                                {/*name='calendar'*/}
+                                {/*type='font-awesome'*/}
+                                {/*color={Colors.primaryLight}*/}
+                                {/*size={30}*/}
+                            {/*/>*/}
+                        </View>
+                    }
+
+
                 </View>
             )
 

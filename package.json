@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "postinstall": "react-native setup-ios-permissions && pod-install",
+    "postinstall": "react-native setup-ios-permissions",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "1.7.1",
-    "@react-native-community/datetimepicker": "3.0.6",
+    "@react-native-community/datetimepicker": "6.5.2",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/netinfo": "4.7.0",
     "@react-native-picker/picker": "1.9.12",
@@ -36,7 +36,7 @@
     "react-native-get-location": "2.0.0",
     "react-native-pager-view": "5.1.0",
     "react-native-paper": "^5.2.0",
-    "react-native-permissions": "^3.7.3",
+    "react-native-permissions": "3.8.0",
     "react-native-reanimated": "1.13.2",
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "2.18.1",
@@ -59,8 +59,8 @@
     "jest": "25.1.0",
     "metro-react-native-babel-preset": "0.59.0",
     "npm-run-all": "4.1.5",
-    "react-test-renderer": "16.13.1",
-    "pod-install": "0.1.38"
+    "pod-install": "0.1.38",
+    "react-test-renderer": "16.13.1"
   },
   "jest": {
     "preset": "react-native"
