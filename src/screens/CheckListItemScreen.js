@@ -16,6 +16,7 @@ import VeiculosSelect from '../components/VeiculosSelect';
 import NetInfo from '@react-native-community/netinfo';
 import HeaderComponent from "../components/HeaderComponent";
 import {verifyGeolocationActive, verifyLocationPermission} from "../components/getGeolocation";
+import * as Platfom from "react-native";
 
 export default class CheckListItemScreen extends Component {
 
@@ -445,7 +446,7 @@ export default class CheckListItemScreen extends Component {
 
                                         <View
                                             style={{
-                                                height: imagemHeigth - 270,
+                                                height: imagemHeigth - (Platfom.OS === 'android' ? 270 : 300),
                                                 backgroundColor: Colors.primaryLight,
                                                 margin: 10, marginTop: 0
                                             }}
@@ -456,12 +457,14 @@ export default class CheckListItemScreen extends Component {
                                                 marginTop: 10,
                                                 paddingBottom: 30,
                                                 height: 40,
-                                                alignItems: "center"
+                                                alignItems: "center",
+                                                zIndex: 100,
                                             }}>
                                                 <Text style={{
                                                     fontSize: 25,
                                                     color: Colors.textOnPrimary,
-                                                    fontWeight: "bold"
+                                                    fontWeight: "bold",
+                                                    height: 40,
                                                 }}>{adm_spicl_descricao}</Text>
                                                 <View style={{
                                                     flex: 1,

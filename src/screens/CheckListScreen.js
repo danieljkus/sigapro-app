@@ -784,7 +784,7 @@ export default class CheckListScreen extends Component {
                                     <Button
                                         title="SALVAR"
                                         onPress={() => this.onOSPressPut(adm_spcl_idf, man_sp_obs, false)}
-                                        buttonStyle={{marginTop: 15, height: 35}}
+                                        buttonStyle={{marginTop: 15}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'check',
@@ -796,7 +796,7 @@ export default class CheckListScreen extends Component {
                                     <Button
                                         title="FECHAR"
                                         onPress={() => this.setState({modalOSVisible: false})}
-                                        buttonStyle={{marginTop: 15, height: 35}}
+                                        buttonStyle={{marginTop: 15}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',
@@ -869,7 +869,7 @@ export default class CheckListScreen extends Component {
                                         onPress={() => {
                                             this.onOcorrenciaPressPut(adm_spcl_idf, adm_spcl_ocorrencia, false)
                                         }}
-                                        buttonStyle={{marginTop: 15, height: 35}}
+                                        buttonStyle={{marginTop: 15}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'check',
@@ -881,7 +881,7 @@ export default class CheckListScreen extends Component {
                                     <Button
                                         title="FECHAR"
                                         onPress={() => this.setState({modalOcorrenciaVisible: false})}
-                                        buttonStyle={{marginTop: 15, height: 35}}
+                                        buttonStyle={{marginTop: 15}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',

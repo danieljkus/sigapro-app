@@ -851,7 +851,7 @@ export default class FichaViagemChegadaScreen extends Component {
                                     label="Hora Início Tacóg."
                                     id="man_fvm_data_hora_ini"
                                     ref="man_fvm_data_hora_ini"
-                                    value={man_fvm_data_hora_ini}
+                                    value={man_fvm_data_hora_ini || new Date()}
                                     dateFormat="HH:mm"
                                     onChange={this.onInputChange}
                                     validator={data => moment(data, "H:mm", true).isValid()}
@@ -866,7 +866,7 @@ export default class FichaViagemChegadaScreen extends Component {
                                     label="Hora Fim Tacóg."
                                     id="man_fvm_data_hora_fim"
                                     ref="man_fvm_data_hora_fim"
-                                    value={man_fvm_data_hora_fim}
+                                    value={man_fvm_data_hora_fim || new Date()}
                                     dateFormat="H:mm"
                                     onChange={this.onInputChange}
                                     validator={data => moment(data, "H:mm", true).isValid()}

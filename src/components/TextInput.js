@@ -9,12 +9,15 @@ import {
     Icon,
     Text
 } from 'react-native-elements';
-import DatePicker from 'react-native-datepicker';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+// import DatePicker from 'react-native-datepicker';
+import DatePicker from 'react-native-date-picker'
+// import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Colors from '../values/Colors';
 import {TouchableOpacity} from "react-native-gesture-handler";
-import Button from "./Button";
+// import Button from "./Button";
 import {formatDate, formatDateValue} from "../utils/Maskers";
+import Button from "./Button";
+import DatePickerComponent from "./DatePiker";
 
 class TextInput extends PureComponent {
 
@@ -165,43 +168,25 @@ class TextInput extends PureComponent {
                         :
 
                         <View style={{
-                            flex: 1,
-                            // // right: 30,
-                            flexDirection: 'row',
-                            justifyContent: 'space-around',
+                            paddingBottom: 2,
+                            paddingLeft: 16,
                         }}>
-
-                            <RNDateTimePicker
+                            <DatePickerComponent
                                 ref="TextInput"
-                                display={'default'}
                                 mode={type}
-                                value={formatDateValue(value)}
+                                value={value}
+                                onChange={this.onChange}
                                 format={dateFormat}
                                 minDate={minDate}
                                 maxDate={maxDate}
+                                confirmBtnText="Confirmar"
+                                cancelBtnText="Cancelar"
                                 showIcon={true}
                                 is24Hour={true}
-                                onChange={this.onChangeDate}
-                                disabled={editable === false}
                                 style={{
                                     width: '100%',
-                                    backgroundColor: Colors.transparent,
-                                    justifyContent: 'center',
-                                    alignItems: 'flex-start',
-                                    height: 25,
-                                    display: 'flex',
-                                    ...style,
                                 }}
-
                             />
-
-                            {/*<Icon*/}
-                                {/*containerStyle={{bottom: 5}}*/}
-                                {/*name='calendar'*/}
-                                {/*type='font-awesome'*/}
-                                {/*color={Colors.primaryLight}*/}
-                                {/*size={30}*/}
-                            {/*/>*/}
                         </View>
                     }
 
@@ -303,16 +288,15 @@ class TextInput extends PureComponent {
                                     );
                                 }}>
                                 <View
-                                    numberOfLines={1}
-                                    style={{
-                                        height: height ? height : 25,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}>
-                                    <Text>
-                                        {this?.state?.selected || pickerItems[0]?.props?.label || 'Selecione'}
-                                    </Text>
-                                </View>
+                                numberOfLines={1}
+                                style={{
+                                    height: height ? height : 25,
+                                    justifyContent: 'center',
+                                }}>
+                                <Text style={{textAlign: 'left', fontSize}}>
+                                    {this?.state?.selected || pickerItems[0]?.props?.label || 'Selecione'}
+                                </Text>
+                            </View>
                             </TouchableOpacity>
 
                         }

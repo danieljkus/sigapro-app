@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {
     View, Text, FlatList, Modal,
     Platform, TouchableOpacity,
-    Alert, ActivityIndicator, ScrollView, SafeAreaView
+    Alert, ActivityIndicator, ScrollView, SafeAreaView, DatePickerIOS
 } from 'react-native';
 import {Icon, Card, Divider, CheckBox} from 'react-native-elements';
 import {ProgressDialog} from 'react-native-simple-dialogs';
@@ -311,8 +311,6 @@ export default class EscalaVeiculosScreen extends Component {
             listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
             man_ev_data_ini, man_ev_veiculo, man_ev_servico
         } = this.state;
-
-        // console.log('EscalaVeiculosScreen - this.state: ', this.state);
 
         return (
             <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>

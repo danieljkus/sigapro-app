@@ -231,6 +231,8 @@ PODS:
     - React-Core
   - react-native-camera/RN (3.43.0):
     - React-Core
+  - react-native-date-picker (4.2.9):
+    - React-Core
   - react-native-netinfo (4.7.0):
     - React
   - react-native-pager-view (5.1.0):
@@ -359,6 +361,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -460,6 +463,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-pager-view:
@@ -548,6 +553,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
   react-native-camera: f432fcf1b32b528bbf7c3543d3e3b1deb0c5b72a
+  react-native-date-picker: c063a8967058c58a02d7d0e1d655f0453576fb0d
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
   react-native-pager-view: 2ea12e75c1bca5f3345041a012b2e5014ee9dad3
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94

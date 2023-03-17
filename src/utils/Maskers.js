@@ -22,11 +22,11 @@ export const vlrMoedaDigitado = (newText, oldText) => {
 }
 
 export const maskDigitarVlrMoeda = (numero) => {
-    var v = numero.replace(/\D/g,'');
-	v = (v/100).toFixed(2) + '';
-	v = v.replace(".", ",");
-	v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
-	v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
+    var v = numero.replace(/\D/g, '');
+    v = (v / 100).toFixed(2) + '';
+    v = v.replace(".", ",");
+    v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+    v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
     return v;
 }
 
@@ -86,14 +86,46 @@ export function formatDate(dataLimite = new Date()) {
     }
 }
 
+export function formatDateBasic(dataLimite = new Date()) {
+    if (dataLimite) {
+        let dataToday;
+        let data = new Date(dataLimite);
+        let dia = data.getDate();
+        let mes = data.getMonth() + 1;
+        let ano = data.getFullYear();
+        if (dia < 10) {
+            dia = '0' + dia;
+        }
+        if (mes < 10) {
+            mes = '0' + mes;
+        }
+        dataToday = dia + '-' + mes + '-' + ano;
+        return dataToday;
+    }
+}
+
+export function formatHourBasic(dataLimite = new Date()) {
+    if (dataLimite) {
+        let hourToday;
+        let data = new Date(dataLimite);
+        let minitos = data.getTime();
+        let horas = data.getHours() + 1;
+        hourToday = minitos + ':' + horas;
+        return hourToday;
+    }
+}
 
 // TRATA O FORMATO DA DATA DO RNDateTimePicker PARA DIA July ANO 00:00 UTC``
-export function formatDateValue(value) {
-    const dataString = value;
-    const horaString = "00:00";
-    const [dia, mes, ano] = dataString.split('/');
-    const [hora, minuto] = horaString.split(':');
-    const data = new Date(ano, mes - 1, dia, hora, minuto);
-    const dataFormatada = data.toString();
-    return new Date(dataFormatada) // FORMATO (DIA July ANO 00:00 UTC)
+export function formatDateValue(value = new Date() , hour = "00:00") {
+    try {
+        const dataString = value;
+        const horaString = hour;
+        const [dia, mes, ano] = dataString.split('/');
+        const [hora, minuto] = horaString.split(':');
+        const data = new Date(ano, mes - 1, dia, hora, minuto);
+        const dataFormatada = data.toString();
+        return new Date(dataFormatada) // FORMATO (DIA July ANO 00:00 UTC)
+    } catch (e) {
+        return new Date()
+    }
 };
