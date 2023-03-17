@@ -9,7 +9,7 @@ import {AppOffline} from "./components/Offline";
 import SnackbarAlerts from "./components/Notification/SnackbarAlerts";
 import {verifyGeolocationActive, verifyLocationPermission} from "./components/getGeolocation";
 
-// import {request, PERMISSIONS} from 'react-native-permissions';
+import {request, PERMISSIONS} from 'react-native-permissions';
 
 
 const App = () => {
@@ -18,10 +18,10 @@ const App = () => {
         (async () => {
             await verifyLocationPermission();
             await verifyGeolocationActive();
-            // request(Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA).then((result) => {
-            //     // setPermissionResult(result)
-            //     console.log(result)
-            // });
+            request(Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA).then((result) => {
+                // setPermissionResult(result)
+                console.log(result)
+            });
             // request(Platform.OS === 'ios' ? PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY : PERMISSIONS.ANDROID.CAMERA).then((result) => {
             //     // setPermissionResult(result)
             //     console.log(result)
