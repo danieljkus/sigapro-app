@@ -359,6 +359,7 @@ export default class EscalaVeiculosScreen extends Component {
                                             {moment(moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD")).format("dddd")}
                                         </Text>
                                         <TextInput
+                                            dateText={man_ev_data_ini || null}
                                             type="date"
                                             label=" "
                                             id="man_ev_data_ini"

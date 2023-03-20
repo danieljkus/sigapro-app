@@ -69,7 +69,7 @@ class TextInput extends PureComponent {
 
     render() {
         const {
-            label, id, errorMessage, type, dateFormat, validator, value, data,
+            label, id, errorMessage, type, dateFormat, dateText, value, data,
             required, onChange, editable, secureTextEntry, keyboardType, autoCapitalize,
             style, itemStyle, itemTextStyle, multiline, numberOfLines, onBlur, enabled,
             options = [], iniciarVazio, placeholder, minDate, maxDate, fontSize,
@@ -176,6 +176,7 @@ class TextInput extends PureComponent {
                             // backgroundColor: 'red',
                         }}>
                             <DatePickerComponent
+                                dateText={dateText || null}
                                 ref="TextInput"
                                 mode={type}
                                 value={value}

@@ -476,7 +476,8 @@ export default class CheckListItemScreen extends Component {
                                                     <Text style={{
                                                         fontSize: 9,
                                                         color: Colors.textOnPrimary,
-                                                        fontWeight: "bold"
+                                                        fontWeight: "bold",
+                                                        height: 20,
                                                     }}>{(adm_spcli_seq + 1) + '/' + this.state.listaRegistros.length}</Text>
                                                 </View>
                                             </View>

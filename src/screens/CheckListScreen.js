@@ -41,13 +41,13 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
                 onLongPress={() => onRegistroLongPress(registro.adm_spcl_idf)}
             >
 
-                <View style={{paddingLeft: 10, marginTop: 20, fontSize: 13, flexDirection: 'row'}}>
+                <View style={{paddingLeft: 10, marginTop: 20, fontSize: 13, flexDirection: 'row', display: 'flex'}}>
                     <View style={{flex: 1}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark, width: 65}} numberOfLines={1}>
                             #{registro.adm_spcl_idf}
                         </Text>
                     </View>
-                    <View style={{flex: 4, flexDirection: 'row'}}>
+                    <View style={{flex: 4, flexDirection: 'row', paddingLeft: '5%'}}>
                         {/* <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Data {': '}
                         </Text> */}
@@ -56,7 +56,7 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
                             {/* {moment(registro.adm_spcl_data).format('DD/MM/YYYY [às] HH:mm')} */}
                         </Text>
                     </View>
-                    <View style={{flex: 2, flexDirection: 'row'}}>
+                    <View style={{flex: 2, flexDirection: 'row', paddingRight : '5%'}}>
                         <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
                             Veículo {': '}
                         </Text>
@@ -119,6 +119,9 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
                             color="#10734a"
                             marginTop={2}
                             size={17}
+                            containerStyle={{
+                                height: 40
+                            }}
                         />
                     </View>
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -148,6 +151,9 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
                                 color={registro.adm_spcl_checkout ? "#10734a" : "#d50000"}
                                 marginTop={2}
                                 size={17}
+                                containerStyle={{
+                                    height: 40
+                                }}
                             />
                         </View>
                         <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -185,6 +191,9 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
                                 color={Colors.primaryDark}
                                 marginTop={2}
                                 size={17}
+                                containerStyle={{
+                                    height: 40
+                                }}
                             />
                         </View>
                         <Text style={{
@@ -216,6 +225,9 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
                                 color={Colors.primaryDark}
                                 marginTop={2}
                                 size={17}
+                                containerStyle={{
+                                    height: 40
+                                }}
                             />
                         </View>
                         <Text style={{

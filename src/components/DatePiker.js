@@ -18,7 +18,7 @@ const DatePickerComponent = (props) => {
                 <Text style={{
                     fontSize: 18,
                 }}>
-                    {props?.mode === 'date' && moment(date).format("DD/MM/YYYY")}
+                    {props?.mode === 'date' && ((props && props?.dateText) || moment(date).format("DD/MM/YYYY"))}
                     {props?.mode === 'datetime' && moment(date).format("DD/MM/YYYY")}
                     {props?.mode === 'time' && moment(date).format("HH:mm")}
                 </Text>
