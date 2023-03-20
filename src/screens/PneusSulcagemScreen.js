@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     View, ScrollView, RefreshControl, Text,
-    FlatList, TouchableOpacity
+    FlatList, TouchableOpacity, SafeAreaView
 } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 
@@ -14,6 +14,7 @@ import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import moment from 'moment';
+import HeaderComponent from "../components/HeaderComponent";
 
 const RegistroItem = ({ registro, onRegistroLongPress }) => {
     return (
@@ -224,7 +225,13 @@ export default class PneusSulcagemScreen extends Component {
         // console.log('PneusSulcagemScreen.this.state', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Sulcagem'}
+                    pressLeftComponen={() => this?.props?.navigation?.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <StatusBar />
 
                 <ScrollView
@@ -477,7 +484,7 @@ export default class PneusSulcagemScreen extends Component {
                         message="Carregando. Aguarde..."
                     />
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         )
     }
 }

@@ -711,7 +711,7 @@ export default class CheckListItemScreen extends Component {
                                                     value={adm_spcli_obs}
                                                     maxLength={100}
                                                     onChange={this.onInputChange}
-                                                    multiline={true}
+                                                    multiline={false}
                                                     height={100}
                                                 />
 
@@ -720,7 +720,7 @@ export default class CheckListItemScreen extends Component {
                                                     onPress={() => {
                                                         this.onOBSPress(!this.state.modalOBSVisible)
                                                     }}
-                                                    buttonStyle={{marginTop: 15, height: 35}}
+                                                    buttonStyle={{marginTop: 15}}
                                                     backgroundColor={Colors.buttonPrimary}
                                                     icon={{
                                                         name: 'check',

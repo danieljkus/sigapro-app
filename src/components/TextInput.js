@@ -28,7 +28,6 @@ class TextInput extends PureComponent {
     };
 
     onChange = (text) => {
-        console.log('text', text)
         const {validator, masker, id, onChange} = this.props;
         if (masker) {
             text = masker(text);
@@ -37,7 +36,7 @@ class TextInput extends PureComponent {
             this.setState({valid: !!validator(text)});
         }
         onChange(id, text);
-    }
+    };
 
     onChangeDate = (event, date) => {
         let selectedDate = formatDate(date);
@@ -73,7 +72,7 @@ class TextInput extends PureComponent {
             required, onChange, editable, secureTextEntry, keyboardType, autoCapitalize,
             style, itemStyle, itemTextStyle, multiline, numberOfLines, onBlur, enabled,
             options = [], iniciarVazio, placeholder, minDate, maxDate, fontSize,
-            maxLength, height, borderWidth, textAlign, ...others
+            maxLength, height, borderWidth, pickerItemsFefault, ...others
         } = this.props;
         const {valid} = this.state;
 
@@ -268,6 +267,7 @@ class TextInput extends PureComponent {
                             :
 
                             <TouchableOpacity
+
                                 editable={enabled}
                                 onPress={() => {
                                     let optionsItems = ['Cancelar'];
@@ -302,7 +302,7 @@ class TextInput extends PureComponent {
                                     justifyContent: 'center',
                                 }}>
                                 <Text style={{textAlign: 'left', fontSize}}>
-                                    {this?.state?.selected || pickerItems[0]?.props?.label || 'Selecione'}
+                                    {this?.state?.selected || pickerItems[pickerItemsFefault || 0]?.props?.label || 'Selecione'}
                                 </Text>
                             </View>
                             </TouchableOpacity>

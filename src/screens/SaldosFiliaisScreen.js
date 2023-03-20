@@ -399,9 +399,10 @@ export default class SaldosFiliaisScreen extends Component {
                     />
 
                     <FlatList
+
                         data={listaRegistros}
                         renderItem={this.renderItem}
-                        contentContainerStyle={{paddingBottom: 100}}
+                        contentContainerStyle={{paddingBottom: 100, backgroundColor: Colors.background}}
                         keyExtractor={registro => String(registro.pas_csf_filial)}
                         onRefresh={this.onRefresh}
                         refreshing={refreshing}

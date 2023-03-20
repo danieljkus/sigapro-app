@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {
     View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator,
-    ScrollView, Modal, PermissionsAndroid, SafeAreaView
+    ScrollView, Modal, PermissionsAndroid, SafeAreaView, Pressable, KeyboardAvoidingView
 } from 'react-native';
 
 const {OS} = Platform;
@@ -38,7 +38,7 @@ const CardViewItem = ({registro, onRegistroPress, onRegistroLongPress, onCheckOu
         }}>
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.adm_spcl_idf)}
-                onLongPress={() => onRegistroLongPress(registro.adm_spcl_idf)}
+                // onLongPress={() => onRegistroLongPress(registro.adm_spcl_idf)}
             >
 
                 <View style={{paddingLeft: 10, marginTop: 20, fontSize: 13, flexDirection: 'row', display: 'flex'}}>
@@ -701,6 +701,18 @@ export default class CheckListScreen extends Component {
     // ------------------------------------------------------------------------
 
 
+    onFocus() {
+        this.setState({
+            borderColor: '#000',
+        });
+    }
+
+    onBlur() {
+        this.setState({
+            borderColor: '#fff',
+        });
+    }
+
     render() {
         const {
             listaRegistros, refreshing, aguarde,
@@ -748,14 +760,18 @@ export default class CheckListScreen extends Component {
                     onRequestClose={() => {
                         console.log("Modal os FECHOU.")
                     }}
+                    // onShow={()=> this.setState({modalOSVisible: false})}
                     animationType={"fade"}
                     transparent={true}
+
                 >
-                    <View style={{
+                    <Pressable onPress={()=> this.setState({modalOSVisible: false})} style={{
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
                         backgroundColor: 'rgba(0,0,0,0.5)',
+                        display : 'flex',
+                        top : 30
                     }}>
                         <View style={{
                             // flex: 1,
@@ -789,7 +805,7 @@ export default class CheckListScreen extends Component {
                                         value={man_sp_obs}
                                         maxLength={200}
                                         onChange={this.onInputChange}
-                                        multiline={true}
+                                        multiline={false}
                                         height={100}
                                     />
 
@@ -819,7 +835,7 @@ export default class CheckListScreen extends Component {
                                 </View>
                             </View>
                         </View>
-                    </View>
+                    </Pressable>
                 </Modal>
 
 
@@ -872,7 +888,7 @@ export default class CheckListScreen extends Component {
                                         value={adm_spcl_ocorrencia}
                                         maxLength={200}
                                         onChange={this.onInputChange}
-                                        multiline={true}
+                                        multiline={false}
                                         height={100}
                                     />
 

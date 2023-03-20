@@ -107,7 +107,7 @@ export default class FichaViagemChegadaScreen extends Component {
             carregandoFunc: false,
             carregandoServico: false,
             ocorrenciaSelect: [],
-            man_fv_ocorrencia: '0',
+            man_fv_ocorrencia: '4',
             ...stateInicial,
         }
     }
@@ -877,6 +877,7 @@ export default class FichaViagemChegadaScreen extends Component {
                         </View>
 
                         <TextInput
+                            pickerItemsFefault={4}
                             type="select"
                             label="Ocorrência da Viagem"
                             id="man_fv_ocorrencia"

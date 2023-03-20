@@ -186,23 +186,26 @@ export default class OrdemServicoScreen extends Component {
 
 
     onFormSubmit = (event) => {
-        if ((!this.state.filial_select) || (!this.state.filial_select.adm_fil_codigo)) {
+
+
+        if ((!this?.state?.filial_select) || (!this?.state?.filial_select?.adm_fil_codigo)) {
             Alert.showAlert('Informe uma Filial');
             return;
         }
 
-        if (this.state.msgErroVeiculo.trim() !== '') {
-            Alert.showAlert(this.state.msgErroVeiculo);
-            return;
-        }
-
-        if ((this.state.veiculo_select === undefined) || (!this.state.veiculo_select) || (!this.state.veiculo_select.codVeic)) {
+        if ((this?.state?.veiculo_select === undefined) || (!this?.state?.veiculo_select) || (!this?.state?.veiculo_select?.codVeic)) {
             Alert.showAlert('Informe o Veículo');
             return;
         }
 
+        if (this?.state?.msgErroVeiculo?.trim() !== '') {
+            Alert.showAlert(this?.state?.msgErroVeiculo);
+            return;
+        }
+
+
         this.onSalvarRegistro();
-    }
+    };
 
     onSalvarRegistro = () => {
         const { man_os_idf, man_os_valor, man_os_data_prevista, man_osm_km_acumulado, man_osm_oficina,
