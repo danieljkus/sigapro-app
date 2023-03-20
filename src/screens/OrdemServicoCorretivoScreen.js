@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    Platform,
+    TouchableOpacity,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    SafeAreaView
+} from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -14,6 +24,7 @@ import { maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
 import ServicosOSSelect from '../components/ServicosOSSelect';
 import TextInput from '../components/TextInput';
+import HeaderComponent from "../components/HeaderComponent";
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -313,7 +324,14 @@ export default class OrdemServicoCorretivoScreen extends Component {
         // console.log('OrdemServicoCorretivoScreen: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Serviços Corretivos'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
+
                 <StatusBar />
 
                 <ScrollView
@@ -389,7 +407,7 @@ export default class OrdemServicoCorretivoScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView >
         )
     }
 }

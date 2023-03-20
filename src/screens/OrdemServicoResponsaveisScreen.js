@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    Platform,
+    TouchableOpacity,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    SafeAreaView
+} from 'react-native';
 const { OS } = Platform;
 
 import axios from 'axios';
@@ -11,6 +21,7 @@ import Colors from '../values/Colors';
 import { vlrStringParaFloat } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
 import TextInput from '../components/TextInput';
+import HeaderComponent from "../components/HeaderComponent";
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
@@ -452,7 +463,13 @@ export default class OrdemServicoResponsaveisScreen extends Component {
         // console.log('OrdemServicoResponsaveisScreen: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Responsáveis'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <StatusBar />
 
                 <ScrollView
@@ -480,7 +497,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
                                     title=""
                                     loading={loading}
                                     onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                    buttonStyle={{ width: 30, height: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                    buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                                     backgroundColor={Colors.transparent}
                                     icon={{
                                         name: 'search',
@@ -577,7 +594,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView >
         )
     }
 }

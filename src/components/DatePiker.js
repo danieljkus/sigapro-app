@@ -1,5 +1,6 @@
+// CREATED BY MAYK FELIX 17/03/2023
 import React, {useEffect, useState} from 'react'
-import {View, Pressable, Text, Modal} from 'react-native'
+import {View, Pressable, Text, Modal, DatePickerIOS} from 'react-native'
 import DatePicker from 'react-native-date-picker';
 import Colors from '../values/Colors';
 import Button from "./Button";
@@ -13,14 +14,14 @@ const DatePickerComponent = (props) => {
     return (
         <View style={{}}>
 
-            <Pressable onPress={() => setOpen(true)} style={{justifyContent: 'center'}}>
-
-                <Text>
+            <Pressable onPress={() => setOpen(true)} style={{justifyContent: 'center'}} style={props?.style}>
+                <Text style={{
+                    fontSize: 18,
+                }}>
                     {props?.mode === 'date' && moment(date).format("DD/MM/YYYY")}
                     {props?.mode === 'datetime' && moment(date).format("DD/MM/YYYY")}
                     {props?.mode === 'time' && moment(date).format("HH:mm")}
                 </Text>
-
             </Pressable>
 
 
@@ -49,6 +50,7 @@ const DatePickerComponent = (props) => {
 
 
                         <DatePicker
+                            type={'default'}
                             date={date}
                             maximumDate={props?.maxDate}
                             minimumDate={props?.minDate}

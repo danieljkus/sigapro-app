@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Modal } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    Platform,
+    TouchableOpacity,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    Modal,
+    SafeAreaView
+} from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -14,6 +25,7 @@ import { getFilial } from '../utils/LoginManager';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import FloatActionButton from '../components/FloatActionButton';
+import HeaderComponent from "../components/HeaderComponent";
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 const DATE_FORMAT = 'DD/MM/YYYY';
@@ -297,7 +309,13 @@ export default class OrdemServicoServPendenteScreen extends Component {
         // console.log('OrdemServicoServPendenteScreen: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Serviços Pendentes'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <StatusBar />
 
                 <ScrollView
@@ -335,9 +353,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
                         backgroundColor: 'rgba(0,0,0,0.5)',
                     }}>
                         <View style={{
-                            flex: 1,
                             width: "90%",
-                            paddingTop: 10,
                         }} >
                             <View style={{
                                 paddingVertical: 15,
@@ -419,7 +435,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
                                     <Button
                                         title="FECHAR"
                                         onPress={() => { this.onClosePress(!this.state.modalBaixaVisible) }}
-                                        buttonStyle={{ marginTop: 10, height: 35 }}
+                                        buttonStyle={{ marginTop: 10}}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',
@@ -449,7 +465,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView >
         )
     }
 }

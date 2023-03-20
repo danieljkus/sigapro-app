@@ -326,7 +326,7 @@ export default class EscalaVeiculosScreen extends Component {
                     {this.state.man_ev_veiculo !== '' ? null : (
                         <View style={{marginBottom: 3}}>
                             <ScrollView
-                                style={{height: 50, width: "100%", borderWidth: 1, borderColor: Colors.dividerDark}}>
+                                style={{height: 45, width: "100%", borderWidth: 1, borderColor: Colors.dividerDark}}>
                                 <View style={{flex: 1, flexDirection: 'row', marginBottom: 2}}>
                                     <View style={{flex: 2, padding: 0}}>
                                         <Button
@@ -348,7 +348,8 @@ export default class EscalaVeiculosScreen extends Component {
                                         padding: 0,
                                         paddingHorizontal: 20,
                                         borderWidth: 1,
-                                        borderColor: Colors.dividerDark
+                                        borderColor: Colors.dividerDark,
+                                        alignItems: 'center'
                                     }}>
                                         <Text style={{
                                             position: 'absolute',
@@ -369,7 +370,11 @@ export default class EscalaVeiculosScreen extends Component {
                                             borderWidth={0}
                                             fontSize={20}
                                             style={{
-                                                right: 30,
+                                                alignContent: 'center',
+                                                alignItems: "center",
+                                                justifyContent: 'center',
+                                                height: 25,
+                                                right: 5,
                                             }}
                                         />
                                     </View>

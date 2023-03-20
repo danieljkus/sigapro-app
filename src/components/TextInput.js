@@ -170,6 +170,10 @@ class TextInput extends PureComponent {
                         <View style={{
                             paddingBottom: 2,
                             paddingLeft: 16,
+                            // alignItems: 'center',
+                            // justifyContent: 'center',
+                            height: 20,
+                            // backgroundColor: 'red',
                         }}>
                             <DatePickerComponent
                                 ref="TextInput"
@@ -185,8 +189,11 @@ class TextInput extends PureComponent {
                                 is24Hour={true}
                                 style={{
                                     width: '100%',
+                                    ...style
                                 }}
                             />
+
+
                         </View>
                     }
 
@@ -342,7 +349,7 @@ class TextInput extends PureComponent {
                         onBlur={onBlur}
                         editable={enabled}
                         maxLength={maxLength}
-                        returnKeyType={(keyboardType === 'numeric' && Platform.OS === 'ios') ? 'done' : 'default'}
+                        returnKeyType={(((keyboardType === 'numeric') || (keyboardType === 'decimal-pad')) && Platform.OS === 'ios') ? 'done' : 'default'}
                         style={{
                             width: '100%',
                             height: height ? height : 27,

@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    Platform,
+    TouchableOpacity,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    SafeAreaView
+} from 'react-native';
 import axios from 'axios';
 import { Card, Divider, Icon } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
@@ -8,6 +18,7 @@ import Colors from '../values/Colors';
 import { getFilial } from '../utils/LoginManager';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
+import HeaderComponent from "../components/HeaderComponent";
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 const { OS } = Platform;
@@ -259,7 +270,13 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
         // console.log('OrdemServicoDefeitosConstScreen: ', this.state);
 
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.background }}>
+            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                <HeaderComponent
+                    color={'white'}
+                    titleCenterComponent={'Defeitos Constatados'}
+                    pressLeftComponen={() => this.props.navigation.goBack()}
+                    iconLeftComponen={'chevron-left'}
+                />
                 <StatusBar />
 
                 <ScrollView
@@ -321,7 +338,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
                     message="Aguarde..."
                 />
 
-            </View >
+            </SafeAreaView >
         )
     }
 }
