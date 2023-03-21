@@ -383,7 +383,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
                                         value={man_sp_obs}
                                         maxLength={150}
                                         onChange={this.onInputChange}
-                                        multiline={true}
+                                        multiline={false}
                                         height={50}
                                         enabled={!man_sp_idf}
                                     />
