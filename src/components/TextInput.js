@@ -233,7 +233,7 @@ class TextInput extends PureComponent {
                     }}>
 
 
-                        {!Platform.OS === 'ios' ?
+                        {Platform.OS === 'android' ?
 
                             <Picker
                                 note
