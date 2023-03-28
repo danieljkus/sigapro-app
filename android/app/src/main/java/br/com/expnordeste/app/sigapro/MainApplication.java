@@ -2,7 +2,7 @@ package br.com.expnordeste.app.sigapro;
 
 import android.app.Application;
 import android.content.Context;
-import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
+// import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -26,23 +26,7 @@ public class MainApplication extends Application implements ReactApplication {
             protected List<ReactPackage> getPackages() {
               @SuppressWarnings("UnnecessaryLocalVariable")
               List<ReactPackage> packages = new PackageList(this).getPackages();
-              new RNPermissionsPackage()
-              // Packages that cannot be autolinked yet can be added manually here, for example:
-              // packages.add(new MyReactNativePackage());
-              // return Arrays.<ReactPackage>asList(
-              // new MainReactPackage(),
-              // new RNPrintPackage(),
-              // new RNFetchBlobPackage(),
-              // new RNFSPackage(),
-              // new RNCameraPackage(),
-              // new NetInfoPackage(),
-              // new AsyncStoragePackage(),
-              // new RNDeviceInfo(),
-              // new PickerPackage(),
-              // new ReactNativeGetLocationPackage(),
-              // new VectorIconsPackage(),
-              // new RNSharePackage(),
-              // new RealmReactPackage()
+              // new RNPermissionsPackage()
               return packages;
             }
 
