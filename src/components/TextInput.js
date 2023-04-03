@@ -1,22 +1,9 @@
 import React, {PureComponent} from 'react';
-import {
-    View,
-    TextInput as TI,
-    Picker, Platform, ActionSheetIOS, StyleSheet
-} from 'react-native';
-
-import {
-    Icon,
-    Text
-} from 'react-native-elements';
-// import DatePicker from 'react-native-datepicker';
-import DatePicker from 'react-native-date-picker'
-// import RNDateTimePicker from '@react-native-community/datetimepicker';
+import {View, TextInput as TI, Picker, Platform, ActionSheetIOS} from 'react-native';
+import {Text} from 'react-native-elements';
 import Colors from '../values/Colors';
 import {TouchableOpacity} from "react-native-gesture-handler";
-// import Button from "./Button";
-import {formatDate, formatDateValue} from "../utils/Maskers";
-import Button from "./Button";
+import {formatDate} from "../utils/Maskers";
 import DatePickerComponent from "./DatePiker";
 
 class TextInput extends PureComponent {
@@ -101,103 +88,33 @@ class TextInput extends PureComponent {
                         </Text>
                     ) : null}
 
-
-                    {Platform.OS === 'android' ?
-
-                        <View style={{
-                            paddingBottom: 2,
-                            paddingLeft: 16,
-                        }}>
-                            <DatePicker
-                                ref="TextInput"
-                                mode={type}
-                                date={value}
-                                onDateChange={this.onChange}
-                                // format={dateFormat}
-                                minDate={minDate}
-                                maxDate={maxDate}
-                                confirmBtnText="Confirmar"
-                                cancelBtnText="Cancelar"
-                                showIcon={true}
-                                is24Hour={true}
-                                style={{
-                                    width: '100%',
-                                }}
-                                disabled={editable === false}
-                                customStyles={{
-                                    dateInput: {
-                                        width: '100%',
-                                        alignItems: "flex-start",
-                                        fontSize: 18,
-                                        height: 25,
-                                        backgroundColor: "transparent",
-                                        borderColor: borderColor,
-                                        borderTopWidth: 0,
-                                        borderBottomWidth: 0,
-                                        borderLeftWidth: 0,
-                                        borderRightWidth: 0,
-                                        ...style
-                                    },
-                                    disabled: {
-                                        backgroundColor: "transparent",
-                                        height: 25,
-                                        borderRadius: 2,
-                                    },
-                                    dateText: {
-                                        fontSize: fontSize,
-                                        color: Colors.textPrimaryDark,
-                                    },
-                                    dateTouchBody: {
-                                        flex: 1, width: '100%', height: 25,
-                                    },
-                                    placeholderText: {
-                                        color: Colors.textHintDark,
-                                        fontSize: 14,
-                                    },
-                                    btnTextConfirm: {
-                                        color: Colors.accent,
-                                        fontWeight: 'bold',
-                                    },
-                                    btnTextCancel: {
-                                        color: Colors.accentLight,
-                                    }
-                                }}
-                            />
-                        </View>
-                        :
-
-                        <View style={{
-                            paddingBottom: 2,
-                            paddingLeft: 16,
-                            // alignItems: 'center',
-                            // justifyContent: 'center',
-                            height: 20,
-                            // backgroundColor: 'red',
-                        }}>
-                            <DatePickerComponent
-                                dateText={dateText || null}
-                                ref="TextInput"
-                                mode={type}
-                                value={value}
-                                onChange={this.onChange}
-                                format={dateFormat}
-                                minDate={minDate}
-                                maxDate={maxDate}
-                                confirmBtnText="Confirmar"
-                                cancelBtnText="Cancelar"
-                                showIcon={true}
-                                is24Hour={true}
-                                style={{
-                                    width: '100%',
-                                    ...style
-                                }}
-                            />
-
-
-                        </View>
-                    }
-
-
+                    <View style={{
+                        paddingBottom: 2,
+                        paddingLeft: 16,
+                        // alignItems: 'center',
+                        // justifyContent: 'center',
+                        height: 20,
+                        // backgroundColor: 'red',
+                    }}>
+                        <DatePickerComponent
+                            dateText={dateText || null}
+                            ref="TextInput"
+                            mode={type}
+                            value={value}
+                            onChange={this.onChange}
+                            format={dateFormat}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            confirmBtnText="Confirmar"
+                            cancelBtnText="Cancelar"
+                            showIcon={true}
+                            is24Hour={true}
+                            style={{
+                                width: '100%',
+                                ...style
+                            }}
+                        />
+                    </View>
                 </View>
             )
 
