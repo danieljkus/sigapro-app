@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {View, ScrollView, RefreshControl, SafeAreaView} from 'react-native';
+import React, { Component } from 'react';
+import { View, ScrollView, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
-import {checkFormIsValid} from '../utils/Validator';
+import { checkFormIsValid } from '../utils/Validator';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import Colors from '../values/Colors';
-import {ProgressDialog} from 'react-native-simple-dialogs';
+import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import HeaderComponent from "../components/HeaderComponent";
 
@@ -37,45 +37,40 @@ export default class TrocarFilialScreen extends Component {
     }
 
     onSalvarRegistro = () => {
-        this.setState({salvado: true, loading: true});
-        const {usuario, filial} = this.state;
+        this.setState({ salvado: true, loading: true });
+        const { usuario, filial } = this.state;
 
         axios.put('/usuarios/updateFilialSIGAPRO/' + usuario + '/' + filial)
             .then(response => {
                 this.props.navigation.goBack(null);
             }).catch(ex => {
-            this.setState({salvado: false});
-            console.warn(ex);
-            console.warn(ex.response);
-        })
+                this.setState({ salvado: false });
+                console.warn(ex);
+                console.warn(ex.response);
+            })
     }
 
 
     render() {
-        const {usuario, filial, loading, salvado} = this.state;
+        const { usuario, filial, loading, salvado } = this.state;
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: '#1F829C', flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Trocar de Filial'}
                     pressLeftComponen={() => this.props.navigation.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />
-                <View style={{flex: 1, backgroundColor: 'white'}}>
-                    <StatusBar/>
+                <View style={{ flex: 1, backgroundColor: 'white' }}>
+                    <StatusBar />
 
                     <ScrollView
-                        style={{flex: 1,}}
+                        style={{ flex: 1, }}
                         keyboardShouldPersistTaps="always"
-                        refreshControl={(
-                            <RefreshControl
-                                refreshing={loading}
-                            />
-                        )}
                     >
                         <View
-                            style={{flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20}}
+                            style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
                         >
 
                             <View>
@@ -90,7 +85,7 @@ export default class TrocarFilialScreen extends Component {
                                     keyboardType="numeric"
                                     required={true}
                                     errorMessage="Usuário é obrigatório"
-                                    style={{textTransform: 'uppercase'}}
+                                    style={{ textTransform: 'uppercase' }}
                                 />
 
                                 <TextInput
@@ -113,7 +108,7 @@ export default class TrocarFilialScreen extends Component {
                                 loading={loading}
                                 onPress={this.onFormSubmit}
                                 color={Colors.textOnPrimary}
-                                buttonStyle={{marginBottom: 20, marginTop: 20}}
+                                buttonStyle={{ marginBottom: 20, marginTop: 20 }}
                                 icon={{
                                     name: 'check',
                                     type: 'font-awesome',

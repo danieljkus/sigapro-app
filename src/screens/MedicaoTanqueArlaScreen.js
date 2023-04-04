@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, ScrollView, RefreshControl, Platform, Dimensions, SafeAreaView} from 'react-native';
+import { View, Text, ScrollView, Platform, Dimensions, SafeAreaView } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 import { checkFormIsValid } from '../utils/Validator';
 
@@ -206,7 +206,7 @@ export default class MedicaoTanqueArlaScreen extends Component {
             estoq_tam_qtde_sistema, qtde_diferenca } = registro;
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Medir Tanque Arla'}
@@ -216,86 +216,81 @@ export default class MedicaoTanqueArlaScreen extends Component {
                 <ScrollView
                     style={{ flex: 1 }}
                     keyboardShouldPersistTaps="always"
-                    refreshControl={(
-                        <RefreshControl
-                            refreshing={loading}
-                        />
-                    )}
                 >
 
                     {/* <Card containerStyle={{ padding: 0 }}> */}
-                        {estoq_tam_idf !== '0' ? (
-                            <View
-                                style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
-                            >
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
-                                    Emissão: {moment(estoq_tam_data).format('DD/MM/YYYY [às] HH:mm')}
-                                </Text>
+                    {estoq_tam_idf !== '0' ? (
+                        <View
+                            style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
+                        >
+                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, marginTop: 5 }} >
+                                Emissão: {moment(estoq_tam_data).format('DD/MM/YYYY [às] HH:mm')}
+                            </Text>
 
-                            </View>
-                        ) : null}
+                        </View>
+                    ) : null}
 
-                        <Divider />
+                    <Divider />
+
+                    <View
+                        style={{
+                            margin: 15,
+                        }}
+                    >
+                        <TextInput
+                            label="Quantidade Medida (Lt)"
+                            id="estoq_tam_qtde_medida"
+                            ref="estoq_tam_qtde_medida"
+                            masker={maskDigitarVlrMoeda}
+                            value={String(estoq_tam_qtde_medida)}
+                            onChange={this.onInputChange}
+                            maxLength={9}
+                            keyboardType="decimal-pad"
+                            errorMessage="A quantidade é obrigatória"
+                            required={true}
+                        />
+                    </View>
+
+                    {estoq_tam_idf === 0 ? (
 
                         <View
-                            style={{
-                                margin: 15,
-                            }}
+                            style={{ paddingHorizontal: 16, paddingVertical: 8 }}
                         >
-                            <TextInput
-                                label="Quantidade Medida (Lt)"
-                                id="estoq_tam_qtde_medida"
-                                ref="estoq_tam_qtde_medida"
-                                masker={maskDigitarVlrMoeda}
-                                value={String(estoq_tam_qtde_medida)}
-                                onChange={this.onInputChange}
-                                maxLength={9}
-                                keyboardType="decimal-pad"
-                                errorMessage="A quantidade é obrigatória"
-                                required={true}
-                            />
-                        </View>
-
-                        {estoq_tam_idf === 0 ? (
+                            <View
+                                style={{ flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Quantidade Medida: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(estoq_tam_qtde_medida)}
+                                </Text>
+                            </View>
 
                             <View
-                                style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+                                style={{ flexDirection: 'row' }}
                             >
-                                <View
-                                    style={{ flexDirection: 'row' }}
-                                >
-                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                        Quantidade Medida: {' '}
-                                    </Text>
-                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                        {this.renderQtdeMedida(estoq_tam_qtde_medida)}
-                                    </Text>
-                                </View>
-
-                                <View
-                                    style={{ flexDirection: 'row' }}
-                                >
-                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                        Quantidade Sistema: {' '}
-                                    </Text>
-                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                        {this.renderQtdeMedida(estoq_tam_qtde_sistema)}
-                                    </Text>
-                                </View>
-
-                                <View
-                                    style={{ flexDirection: 'row' }}
-                                >
-                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
-                                        Diferença do Estoque: {' '}
-                                    </Text>
-                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
-                                        {this.renderQtdeMedida(qtde_diferenca)}
-                                    </Text>
-                                </View>
-
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Quantidade Sistema: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(estoq_tam_qtde_sistema)}
+                                </Text>
                             </View>
-                        ) : null}
+
+                            <View
+                                style={{ flexDirection: 'row' }}
+                            >
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, flex: 1, fontWeight: 'bold' }}>
+                                    Diferença do Estoque: {' '}
+                                </Text>
+                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 18, marginTop: 5 }} >
+                                    {this.renderQtdeMedida(qtde_diferenca)}
+                                </Text>
+                            </View>
+
+                        </View>
+                    ) : null}
 
                     {/* </Card> */}
 

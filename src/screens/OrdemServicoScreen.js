@@ -187,7 +187,6 @@ export default class OrdemServicoScreen extends Component {
 
     onFormSubmit = (event) => {
 
-
         if ((!this?.state?.filial_select) || (!this?.state?.filial_select?.adm_fil_codigo)) {
             Alert.showAlert('Informe uma Filial');
             return;

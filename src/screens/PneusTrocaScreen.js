@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, ScrollView, RefreshControl, Text, FlatList, SafeAreaView} from 'react-native';
+import { View, ScrollView, Text, FlatList, SafeAreaView } from 'react-native';
 import { Card, Divider, CheckBox } from 'react-native-elements';
 
 import axios from 'axios';
@@ -428,7 +428,7 @@ export default class PneusTrocaScreen extends Component {
         // console.log('PneusTrocaScreen.this.state', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Trocar Pneu'}
@@ -500,7 +500,7 @@ export default class PneusTrocaScreen extends Component {
                                     <View style={{ flex: 2 }}>
                                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
                                             Localização
-                                </Text>
+                                        </Text>
                                         <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
                                             {this.renderLocalizacao(registro)}
                                         </Text>

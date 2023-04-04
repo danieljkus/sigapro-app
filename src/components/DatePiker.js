@@ -1,11 +1,11 @@
 // CREATED BY MAYK FELIX 17/03/2023
-import React, {useEffect, useState} from 'react'
-import {View, Pressable, Text, Modal, DatePickerIOS} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Pressable, Text, Modal, DatePickerIOS } from 'react-native'
 import DatePicker from 'react-native-date-picker';
 import Colors from '../values/Colors';
 import Button from "./Button";
 import moment from 'moment';
-import {formatDateBasic} from "../utils/Maskers";
+import { formatDateBasic } from "../utils/Maskers";
 import CalendarPicker from 'react-native-calendar-picker';
 import Icon from "./Icon";
 
@@ -19,7 +19,7 @@ const DatePickerComponent = (props) => {
     return (
         <View style={{}}>
 
-            <Pressable onPress={() => setOpen(true)} style={{justifyContent: 'center'}} style={props?.style}>
+            <Pressable onPress={() => setOpen(true)} style={{ justifyContent: 'center' }} style={props?.style}>
                 <Text style={{
                     fontSize: 18,
                 }}>
@@ -51,6 +51,7 @@ const DatePickerComponent = (props) => {
                         paddingHorizontal: 15,
                         backgroundColor: Colors.background,
                         borderRadius: 5,
+                        width: "97%"
                     }}>
 
 
@@ -95,11 +96,11 @@ const DatePickerComponent = (props) => {
                                         selectMonthTitle={'Selecionar mês em '}
                                         selectYearTitle={'Selecionar ano'}
                                         nextTitle={<Icon family="MaterialIcons" name="arrow-forward"
-                                                         color={Colors.black}
-                                                         style={{padding: 16}}/>} // Próximo
+                                            color={Colors.black}
+                                            style={{ padding: 16 }} />} // Próximo
                                         previousTitle={<Icon family="MaterialIcons" name="arrow-back"
-                                                             color={Colors.black}
-                                                             style={{padding: 16}}/>} // Anterior
+                                            color={Colors.black}
+                                            style={{ padding: 16 }} />} // Anterior
                                         months={[
                                             'Janeiro',
                                             'Fevereiro',
@@ -155,11 +156,11 @@ const DatePickerComponent = (props) => {
                         }
 
 
-                        <View style={{marginTop: 4, paddingVertical: 10, backgroundColor: Colors.transparent}}>
+                        <View style={{ marginTop: 4, paddingVertical: 10, backgroundColor: Colors.transparent }}>
                             <Button
                                 title="FECHAR"
                                 onPress={() => setOpen(false)}
-                                buttonStyle={{marginTop: 10}}
+                                buttonStyle={{ marginTop: 10 }}
                                 icon={{
                                     name: 'close',
                                     type: 'font-awesome',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, ScrollView, RefreshControl, Platform, Dimensions, SafeAreaView} from 'react-native';
+import { View, Text, ScrollView, Platform, Dimensions, SafeAreaView } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 import { checkFormIsValid } from '../utils/Validator';
 
@@ -210,7 +210,7 @@ export default class MedicaoTanqueDieselScreen extends Component {
         // console.log('estoq_tcm_alt_medida: ', estoq_tcm_alt_medida);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Medir Tanque Diesel'}
@@ -220,11 +220,6 @@ export default class MedicaoTanqueDieselScreen extends Component {
                 <ScrollView
                     style={{ flex: 1 }}
                     keyboardShouldPersistTaps="always"
-                    refreshControl={(
-                        <RefreshControl
-                            refreshing={loading}
-                        />
-                    )}
                 >
 
                     <Card containerStyle={{ padding: 0 }}>

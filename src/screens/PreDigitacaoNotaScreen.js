@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {View, Text, ScrollView, RefreshControl, Platform, Dimensions, SafeAreaView} from 'react-native';
-import {Card, Divider} from 'react-native-elements';
-import {checkFormIsValid} from '../utils/Validator';
+import React, { Component } from 'react';
+import { View, Text, ScrollView, Platform, Dimensions, SafeAreaView } from 'react-native';
+import { Card, Divider } from 'react-native-elements';
+import { checkFormIsValid } from '../utils/Validator';
 
 import TextInput from '../components/TextInput';
 import moment from 'moment';
@@ -9,11 +9,11 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import axios from 'axios';
 import Alert from '../components/Alert';
-import {ProgressDialog} from 'react-native-simple-dialogs';
-import {getEmpresa} from '../utils/LoginManager';
+import { ProgressDialog } from 'react-native-simple-dialogs';
+import { getEmpresa } from '../utils/LoginManager';
 import HeaderComponent from "../components/HeaderComponent";
 
-const {OS} = Platform;
+const { OS } = Platform;
 
 
 export default class PreDigitacaoNotaScreen extends Component {
@@ -30,10 +30,10 @@ export default class PreDigitacaoNotaScreen extends Component {
 
     componentDidMount() {
         getEmpresa().then(empresa => {
-            this.setState({empresa});
+            this.setState({ empresa });
         })
 
-        const {estoq_nfpd_chave} = this.props.navigation.state.params;
+        const { estoq_nfpd_chave } = this.props.navigation.state.params;
         if (estoq_nfpd_chave) {
             axios.get('/preDigitacaoNotas/show/' + estoq_nfpd_chave, {}).then(response => {
                 this.setState({
@@ -63,7 +63,7 @@ export default class PreDigitacaoNotaScreen extends Component {
     }
 
     onSubmitForm = (event) => {
-        const {estoq_nfpd_chave} = this.state;
+        const { estoq_nfpd_chave } = this.state;
         if ((estoq_nfpd_chave === '') && (String(estoq_nfpd_chave).length !== 44)) {
             Alert.showAlert("Informe uma Chave válida com 44 dígitos.")
             return
@@ -71,8 +71,8 @@ export default class PreDigitacaoNotaScreen extends Component {
 
         if (checkFormIsValid(this.refs)) {
             Alert.showConfirm("Deseja salvar a Cahve da NFe ?", {
-                    text: "Cancelar"
-                },
+                text: "Cancelar"
+            },
                 {
                     text: "OK",
                     onPress: this.onSalvar
@@ -87,15 +87,15 @@ export default class PreDigitacaoNotaScreen extends Component {
     }
 
     onBarCodeRead = event => {
-        const {data, rawData, type} = event;
+        const { data, rawData, type } = event;
         this.setState({
             estoq_nfpd_chave: data
         })
     }
 
     onSalvar = () => {
-        this.setState({salvado: true});
-        const {estoq_nfpd_chave} = this.state;
+        this.setState({ salvado: true });
+        const { estoq_nfpd_chave } = this.state;
 
         const registro = {
             estoq_nfpd_chave
@@ -107,8 +107,8 @@ export default class PreDigitacaoNotaScreen extends Component {
                 this.props.navigation.goBack(null);
                 this.props.navigation.state.params.onRefresh();
             }).catch(ex => {
-                const {response} = ex;
-                this.setState({salvado: false});
+                const { response } = ex;
+                this.setState({ salvado: false });
 
                 // console.log(ex.response);
 
@@ -123,10 +123,10 @@ export default class PreDigitacaoNotaScreen extends Component {
     }
 
     render() {
-        const {estoq_nfpd_chave, loading, salvado} = this.state;
+        const { estoq_nfpd_chave, loading, salvado } = this.state;
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'NFEs Pré-Digitadas'}
@@ -134,16 +134,11 @@ export default class PreDigitacaoNotaScreen extends Component {
                     iconLeftComponen={'chevron-left'}
                 />
                 <ScrollView
-                    style={{flex: 1}}
+                    style={{ flex: 1 }}
                     keyboardShouldPersistTaps="always"
-                    refreshControl={(
-                        <RefreshControl
-                            refreshing={loading}
-                        />
-                    )}
                 >
 
-                    <Card containerStyle={{padding: 0}}>
+                    <Card containerStyle={{ padding: 0 }}>
                         <View
                             style={{
                                 margin: 15,
@@ -169,11 +164,11 @@ export default class PreDigitacaoNotaScreen extends Component {
 
 
                     <View
-                        style={{flex: 1, paddingHorizontal: 16, paddingVertical: 8}}
+                        style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8 }}
                     >
                         <Button
                             title="Escanear"
-                            buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 8}}
+                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 8 }}
                             onPress={this.onEscanearPress}
                             color={Colors.textOnPrimary}
                             icon={{
@@ -187,7 +182,7 @@ export default class PreDigitacaoNotaScreen extends Component {
                             title="Salvar"
                             backgroundColor='#4682B4'
                             color={Colors.textOnPrimary}
-                            buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+                            buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
                             onPress={this.onSubmitForm}
                             disabled={loading}
                             icon={{
