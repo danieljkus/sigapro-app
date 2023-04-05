@@ -109,6 +109,9 @@ export default class EscalaVeiculoScreen extends Component {
             veiculo_select: null,
             codVeiculo: '',
 
+            idfFichaViagem: 0,
+            viagemDiaAtual: false,
+
             listaRegistrosFunc: [],
             modalFuncBuscaVisible: false,
             carregandoFunc: false,
@@ -126,15 +129,20 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     componentDidMount() {
-        const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
         getPermissoes().then(permissoes => {
             this.setState({ permissoes });
         })
 
+        // console.log('componentDidMount: ', this.state)
+
+        const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
+
+        // console.log('componentDidMount: ', veiculo)
+
         this.setState({
-            codVeiculo: veiculo
-            // man_ev_veiculo_trocar: veiculo,
+            viagemDiaAtual: this.state.registro.pas_via_data_viagem === moment().format('YYYY-MM-DD') ? true : false,
         });
+
 
         if ((veiculo) && (veiculo !== '')) {
             this.setState({ carregarRegistro: true });
@@ -149,8 +157,8 @@ export default class EscalaVeiculoScreen extends Component {
             }).then(response => {
                 this.setState({ carregarRegistro: false });
 
-                // console.log('registro: ', response.data);
-
+                // console.log('componentDidMount - registro: ', response.data);
+                
                 let funcionariosSelect = [];
                 if (response.data.codMot) {
                     funcionariosSelect = [{
@@ -158,13 +166,16 @@ export default class EscalaVeiculoScreen extends Component {
                         label: response.data.nomeMot
                     }]
                 }
-
+                
                 this.setState({
                     carregarRegistro: false,
                     qtdeComb: response.data.qtdeComb,
                     dataComb: response.data.dataComb,
                     filial: response.data.filial,
                     descFilial: response.data.descFilial,
+
+                    codVeiculo: veiculo,
+                    idfFichaViagem: response.data.idfFichaViagem,
 
                     codFunc: response.data.codMot,
                     empFunc: response.data.empMot,
@@ -323,20 +334,26 @@ export default class EscalaVeiculoScreen extends Component {
 
         const idf = this.state.registro.idf2 ? this.state.registro.idf2 : (this.state.registro.idf1 ? this.state.registro.idf1 : 0);
 
-        axios.put('/escalaVeiculos/trocaCarro', {
-            idf,
+        const reg = {
+            idf: idf,
+            idfFichaViagem: this.state.idfFichaViagem,
 
-            man_ev_veiculo: veiculo_select.codVeic,
+            man_ev_veiculo: this.state.veiculo_select.codVeic,
             man_ev_data_ini: this.state.registro.pas_via_data_viagem,
             man_ev_servico: this.state.registro.pas_via_servico,
-            man_ev_servico_estra: this.state.registro.pas_via_servico_extra,
+            man_ev_servico_extra: this.state.registro.pas_via_servico_extra,
 
             codMot: this.state.codFunc,
             empMot: this.state.empFunc,
             nomeMot: this.state.codFunc ? this.state.funcionariosSelect[0].label : this.state.nomeFuncFL,
 
             gravarFichaSaida: this.state.checkedFichaSaida,
-        })
+        };
+
+        // console.log('onSalvarRegistro: ', reg);
+        // return;
+
+        axios.put('/escalaVeiculos/trocaCarro', reg)
             .then(response => {
                 if (response.data === 'OK') {
                     this.props.navigation.goBack(null);
@@ -488,7 +505,7 @@ export default class EscalaVeiculoScreen extends Component {
         const { pas_via_data_viagem, pas_via_servico, pas_serv_linha, pas_via_servico_extra,
             idf1, idf2, veic1, veic2, desc_sec_ini, desc_sec_fim, hora_ini, hora_fim,
         } = this.state.registro;
-        const { man_ev_veiculo_trocar, salvando, loading, refreshing, carregarRegistro, permissoes,
+        const { viagemDiaAtual, man_ev_veiculo_trocar, salvando, loading, refreshing, carregarRegistro, permissoes,
             veiculo_select, codVeiculo, codFunc, nomeFunc, nomeFuncFL, funcionariosSelect, carregandoFunc, listaRegistrosFunc, checkedFichaSaida,
         } = this.state;
 
@@ -587,18 +604,8 @@ export default class EscalaVeiculoScreen extends Component {
                                     onChange={this.onInputChangeVeiculo}
                                     onErro={this.onErroChange}
                                     tipo=""
-                                // enabled={!man_os_idf}
+                                    enabled={!this.state.idfFichaViagem}
                                 />
-
-                                {/* <TextInput
-                                    label="Veículo"
-                                    id="man_ev_veiculo_trocar"
-                                    ref="man_ev_veiculo_trocar"
-                                    value={man_ev_veiculo_trocar}
-                                    maxLength={9}
-                                    onChange={this.onInputChange}
-                                    keyboardType="numeric"
-                                /> */}
 
                                 <View style={{ flexDirection: 'row' }} >
                                     <View style={{ width: "25%" }}>
@@ -610,22 +617,25 @@ export default class EscalaVeiculoScreen extends Component {
                                             maxLength={6}
                                             keyboardType="numeric"
                                             onChange={this.onInputChangeFunc}
+                                            enabled={!this.state.idfFichaViagem}
                                         />
                                     </View>
 
                                     <View style={{ width: "7%", }}>
-                                        <Button
-                                            title=""
-                                            loading={loading}
-                                            onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                            buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
-                                            backgroundColor={Colors.transparent}
-                                            icon={{
-                                                name: 'search',
-                                                type: 'font-awesome',
-                                                color: Colors.textPrimaryDark
-                                            }}
-                                        />
+                                        {this.state.idfFichaViagem ? null : (
+                                            <Button
+                                                title=""
+                                                loading={loading}
+                                                onPress={() => { this.onAbrirFuncBuscaModal(true) }}
+                                                buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                                backgroundColor={Colors.transparent}
+                                                icon={{
+                                                    name: 'search',
+                                                    type: 'font-awesome',
+                                                    color: Colors.textPrimaryDark
+                                                }}
+                                            />
+                                        )}
                                     </View>
 
                                     <View style={{ width: "75%", marginLeft: -23 }}>
@@ -645,10 +655,10 @@ export default class EscalaVeiculoScreen extends Component {
                                                     selectedValue=""
                                                     options={funcionariosSelect}
                                                     onChange={this.onInputChangeListaFunc}
+                                                    enabled={!this.state.idfFichaViagem}
                                                 />
                                             )
                                         }
-
                                     </View>
                                 </View >
 
@@ -659,16 +669,20 @@ export default class EscalaVeiculoScreen extends Component {
                                     value={nomeFuncFL}
                                     maxLength={60}
                                     onChange={this.onInputChange}
+                                    enabled={!this.state.idfFichaViagem}
                                 />
 
-                                <CheckBox
-                                    title='Gravar Ficha de Saída'
-                                    // key={man_fv_sit_rota}
-                                    checked={checkedFichaSaida}
-                                    onPress={() => this.setState({ checkedFichaSaida: !checkedFichaSaida })}
-                                    containerStyle={{ padding: 0, margin: 0, marginVertical: 0, backgroundColor: 'transparent' }}
-                                />
-
+                                {this.state.idfFichaViagem || !viagemDiaAtual ? null : (
+                                    <CheckBox
+                                        title='Gravar Ficha de Saída'
+                                        // key={man_fv_sit_rota}
+                                        checked={checkedFichaSaida}
+                                        onPress={() => this.setState({ checkedFichaSaida: !checkedFichaSaida })}
+                                        size={25}
+                                        textStyle={{ fontSize: 18 }}
+                                        containerStyle={{ padding: 0, margin: 0, marginBottom: 30, backgroundColor: 'transparent' }}
+                                    />
+                                )}
 
                             </View>
                         ) : null}
@@ -805,19 +819,20 @@ export default class EscalaVeiculoScreen extends Component {
 
                 </ScrollView>
 
-                <Button
-                    title="SALVAR"
-                    loading={salvando}
-                    onPress={this.onFormSubmit}
-                    color={Colors.textOnPrimary}
-                    buttonStyle={{ margin: 5, marginTop: 10 }}
-                    // buttonStyle={{ marginBottom: 30, marginTop: 10 }}
-                    icon={{
-                        name: 'check',
-                        type: 'font-awesome',
-                        color: Colors.textOnPrimary
-                    }}
-                />
+                {this.state.idfFichaViagem ? null : (
+                    <Button
+                        title="SALVAR"
+                        loading={salvando}
+                        onPress={this.onFormSubmit}
+                        color={Colors.textOnPrimary}
+                        buttonStyle={{ margin: 5, marginTop: 10 }}
+                        icon={{
+                            name: 'check',
+                            type: 'font-awesome',
+                            color: Colors.textOnPrimary
+                        }}
+                    />
+                )}
             </SafeAreaView>
         )
     }

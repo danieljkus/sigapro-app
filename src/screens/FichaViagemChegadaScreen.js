@@ -1130,13 +1130,11 @@ export default class FichaViagemChegadaScreen extends Component {
                     <Modal
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => {
-                            console.log("Modal FUNCIONARIO FECHOU.")
-                        }}
+                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
                         animationType={"slide"}
                     >
 
-                        <SafeAreaView style={{backgroundColor: Colors.primary, flex: 1}}>
+                        <SafeAreaView style={{ backgroundColor: Colors.primary, flex: 1 }}>
 
                             <HeaderComponent
                                 color={'white'}
@@ -1150,8 +1148,8 @@ export default class FichaViagemChegadaScreen extends Component {
                                 placeholder="Busca por Nome"
                                 lightTheme={true}
                                 onChangeText={this.onBuscaNomeChange}
-                                inputStyle={{backgroundColor: 'white'}}
-                                containerStyle={{backgroundColor: Colors.primaryLight}}
+                                inputStyle={{ backgroundColor: 'white' }}
+                                containerStyle={{ backgroundColor: Colors.primaryLight }}
                                 clearIcon={true}
                             />
 
@@ -1161,14 +1159,14 @@ export default class FichaViagemChegadaScreen extends Component {
                             }}>
 
                                 <ScrollView
-                                    style={{flex: 1,}}
+                                    style={{ flex: 1, }}
                                     keyboardShouldPersistTaps="always"
                                 >
-                                    <View style={{marginTop: 4}}>
+                                    <View style={{ marginTop: 4 }}>
                                         <FlatList
                                             data={listaRegistrosFunc}
                                             renderItem={this.renderItemFunc}
-                                            contentContainerStyle={{paddingBottom: 100}}
+                                            contentContainerStyle={{ paddingBottom: 100 }}
                                             keyExtractor={registro => String(registro.rh_func_codigo) + String(registro.rh_func_empresa)}
                                             onRefresh={this.onRefreshFunc}
                                             refreshing={refreshing}

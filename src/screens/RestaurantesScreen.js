@@ -138,7 +138,7 @@ export default class RestaurantesScreen extends Component {
                 carregarMais: novosRegistros.length < total,
             })
         }).catch(ex => {
-            console.log(ex.response);
+            // console.log(ex.response);
             this.setState({
                 refreshing: false,
                 carregando: false,

@@ -3,7 +3,7 @@ import {
     View, Text, ScrollView, ActivityIndicator,
     FlatList, Modal, TouchableOpacity, SafeAreaView
 } from 'react-native';
-import { Card, Divider, SearchBar } from 'react-native-elements';
+import { Card, Divider, SearchBar, CheckBox } from 'react-native-elements';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
 import { checkFormIsValid } from '../utils/Validator';
@@ -23,8 +23,8 @@ import HeaderComponent from "../components/HeaderComponent";
 const stateInicial = {
     veiculo_select: null,
     funcionario_select: null,
-    rota_select: null,
-    linha_select: null,
+    // rota_select: null,
+    // linha_select: null,
 
     listaRegistrosFunc: [],
     modalFuncBuscaVisible: false,
@@ -40,13 +40,16 @@ const stateInicial = {
     nomeFunc: '',
 
     codVeiculo: '',
-    codRota: '',
-    codLinha: '',
+    // codRota: '',
+    // codLinha: '',
     man_rt_flag_eventual: 'N',
+
+    checkedLinhasRegulares: true,
+    checkedTodosServicos: false,
 
     man_fv_odo_ini: '',
     man_fv_km_ini: '',
-    man_fvd_disco: '',
+    man_fvd_disco: '0',
     man_fv_obs: '',
     pas_serv_codigo: null,
     servicoSelect: [],
@@ -93,6 +96,11 @@ export default class zFichaViagemSaidaScreen extends Component {
         }
     }
 
+    componentDidMount() {
+        this.buscaServicos('S');
+    }
+
+
     onInputChange = (id, value) => {
         const state = {};
         state[id] = value;
@@ -107,8 +115,8 @@ export default class zFichaViagemSaidaScreen extends Component {
         if (value) {
             this.setState({
                 codVeiculo: value.codVeic,
-                codRota: value.codRota ? value.codRota : '',
-                man_rt_flag_eventual: value.man_rt_flag_eventual,
+                // codRota: value.codRota ? value.codRota : '',
+                // man_rt_flag_eventual: value.man_rt_flag_eventual,
                 man_fv_odo_ini: value.kmOdo,
                 man_fv_km_ini: value.kmAcum,
             });
@@ -150,32 +158,32 @@ export default class zFichaViagemSaidaScreen extends Component {
         }
     }
 
-    onInputChangeRota = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-        if (value) {
-            this.setState({
-                codRota: value.man_rt_codigo,
-                man_rt_flag_eventual: value.man_rt_flag_eventual,
-            });
-        }
-    }
+    // onInputChangeRota = (id, value) => {
+    //     const state = {};
+    //     state[id] = value;
+    //     this.setState(state);
+    //     if (value) {
+    //         this.setState({
+    //             codRota: value.man_rt_codigo,
+    //             man_rt_flag_eventual: value.man_rt_flag_eventual,
+    //         });
+    //     }
+    // }
 
-    onInputChangeLinha = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
+    // onInputChangeLinha = (id, value) => {
+    //     const state = {};
+    //     state[id] = value;
+    //     this.setState(state);
 
-        if (value) {
-            this.setState({
-                codLinha: value.pas_lin_codigo,
-            });
-            if (value.pas_lin_codigo) {
-                this.buscaServicos(value.pas_lin_codigo);
-            }
-        }
-    }
+    //     if (value) {
+    //         this.setState({
+    //             codLinha: value.pas_lin_codigo,
+    //         });
+    //         if (value.pas_lin_codigo) {
+    //             this.buscaServicos(value.pas_lin_codigo);
+    //         }
+    //     }
+    // }
 
     onLimparTela = () => {
         this.setState(stateInicial);
@@ -195,21 +203,26 @@ export default class zFichaViagemSaidaScreen extends Component {
             }
         }
 
-        if ((this.state.rota_select === undefined) || (!this.state.rota_select)) {
-            Alert.showAlert('Informe a Rota');
+        // if ((this.state.rota_select === undefined) || (!this.state.rota_select)) {
+        //     Alert.showAlert('Informe a Rota');
+        //     return;
+        // }
+
+        // if (this.state.man_rt_flag_eventual !== 'S') {
+        //     if ((this.state.linha_select === undefined) || (!this.state.linha_select)) {
+        //         Alert.showAlert('Informe a Linha');
+        //         return;
+        //     }
+
+        //     if (!this.state.pas_serv_codigo) {
+        //         Alert.showAlert('Selecione um Serviço');
+        //         return;
+        //     }
+        // }
+
+        if (!this.state.pas_serv_codigo) {
+            Alert.showAlert('Selecione um Serviço');
             return;
-        }
-
-        if (this.state.man_rt_flag_eventual !== 'S') {
-            if ((this.state.linha_select === undefined) || (!this.state.linha_select)) {
-                Alert.showAlert('Informe a Linha');
-                return;
-            }
-
-            if (!this.state.pas_serv_codigo) {
-                Alert.showAlert('Selecione um Serviço');
-                return;
-            }
         }
 
         if (!this.state.man_fv_odo_ini) {
@@ -248,8 +261,8 @@ export default class zFichaViagemSaidaScreen extends Component {
         const registro = {
             man_fv_idf_rota: veiculo_select.idfRota,
             man_fv_veiculo: veiculo_select.codVeic,
-            man_fv_rota: rota_select.man_rt_codigo,
-            man_rt_flag_eventual: man_rt_flag_eventual,
+            man_fv_rota: 0, //rota_select.man_rt_codigo,
+            man_rt_flag_eventual: checkedLinhasRegulares ? 'N' : 'S', //man_rt_flag_eventual,
             pas_serv_codigo,
 
             man_fvm_motorista: codFunc,
@@ -337,16 +350,23 @@ export default class zFichaViagemSaidaScreen extends Component {
     buscaServicos = (value) => {
         this.setState({ servicoSelect: [] });
         this.setState({ carregandoServico: true });
+
+        console.log('buscaServicos: ', value)
+
         axios.get('/listaServicos', {
             params: {
-                linha: value
+                viagem: value,
+                // linha: value,
             }
         }).then(response => {
             const { data } = response;
+            // console.log('buscaServicos: ', data)
             const servicoSelect = data.map(regList => {
                 return {
-                    key: regList.pas_serv_codigo,
-                    label: regList.pas_serv_codigo + ' - ' + regList.pas_serv_horario + ' - ' + regList.pas_serv_descricao
+                    key: regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico,
+                    label: (regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico) + ' - ' +
+                        (regList.pas_via_servico_extra ? regList.pas_ext_horario_extra : (regList.hora_fim ? regList.hora_ini : regList.hora_ini + ' / ' + regList.hora_fim)) + ' - ' +
+                        (regList.pas_via_servico_extra ? (regList.desc_sec_ini_extra + ' a ' + regList.desc_sec_fim_extra) : (regList.desc_sec_ini + ' a ' + regList.desc_sec_fim))
                 }
             });
 
@@ -494,7 +514,7 @@ export default class zFichaViagemSaidaScreen extends Component {
     render() {
         const { man_fv_odo_ini, man_fv_obs, man_fvm_nome_mot, pas_serv_codigo, man_fvd_disco,
             servicoSelect, loading, salvado, carregandoServico,
-            veiculo_select, rota_select, linha_select, listaRegistrosFunc,
+            veiculo_select, rota_select, linha_select, listaRegistrosFunc, checkedLinhasRegulares, checkedTodosServicos,
             codVeiculo, codRota, man_rt_flag_eventual, codLinha,
             funcionariosSelect, codFunc, nomeFunc, carregandoFunc,
             refreshing,
@@ -592,6 +612,66 @@ export default class zFichaViagemSaidaScreen extends Component {
                             onChange={this.onInputChange}
                         />
 
+                        <View style={{ flexDirection: 'row', marginBottom: 20, marginTop: 30 }}>
+                            <View style={{ width: "50%", margin: 0, padding: 0 }}>
+                                <CheckBox
+                                    title='Linhas regulares'
+                                    checked={checkedLinhasRegulares}
+                                    onPress={() => this.setState({ checkedLinhasRegulares: !checkedLinhasRegulares })}
+                                    containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                />
+                            </View>
+
+                            {checkedLinhasRegulares ? (
+                                <View style={{ width: "50%", margin: 0, padding: 0 }}>
+                                    <CheckBox
+                                        title='Todos Serviços'
+                                        checked={checkedTodosServicos}
+                                        onPress={() =>
+                                            this.setState({
+                                                checkedTodosServicos: !checkedTodosServicos
+                                            }, this.buscaServicos(checkedTodosServicos ? 'S' : 'T'))
+                                        }
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                </View>
+                            ) : null}
+                        </View>
+
+                        {checkedLinhasRegulares ? (
+                            <View>
+                                {carregandoServico
+                                    ? (
+                                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                            <ActivityIndicator
+                                                style={{
+                                                    margin: 10,
+                                                }}
+                                            />
+                                            <Text>
+                                                Buscando Serviços
+                                            </Text>
+                                        </View>
+                                    )
+                                    : (
+                                        <TextInput
+                                            type="select"
+                                            label="Serviço"
+                                            id="pas_serv_codigo"
+                                            ref="pas_serv_codigo"
+                                            value={pas_serv_codigo}
+                                            options={servicoSelect}
+                                            onChange={this.onInputChange}
+                                        />
+                                    )
+                                }
+                            </View>
+                        ) : null}
+
+
+
+
+                        {/* 
                         <RotasSelect
                             label="Rota"
                             id="rota_select"
@@ -600,10 +680,10 @@ export default class zFichaViagemSaidaScreen extends Component {
                             // codRota={veiculo_select && veiculo_select.codRota ? veiculo_select.codRota : ''}
                             onChange={this.onInputChangeRota}
                             enabled={veiculo_select && veiculo_select.sitRota === 'A' ? false : true}
-                        />
+                        /> */}
 
 
-                        {String(man_rt_flag_eventual) === 'S'
+                        {/* {String(man_rt_flag_eventual) === 'S'
                             ? (null)
                             : (
                                 <View>
@@ -642,7 +722,7 @@ export default class zFichaViagemSaidaScreen extends Component {
                                     }
                                 </View>
                             )
-                        }
+                        } */}
 
 
 
@@ -718,14 +798,12 @@ export default class zFichaViagemSaidaScreen extends Component {
                     <Modal
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => {
-                            console.log("Modal FUNCIONARIO FECHOU.")
-                        }}
+                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
                         animationType={"slide"}
                     >
 
 
-                        <SafeAreaView style={{backgroundColor: Colors.primary, flex: 1}}>
+                        <SafeAreaView style={{ backgroundColor: Colors.primary, flex: 1 }}>
 
                             <HeaderComponent
                                 color={'white'}
@@ -739,8 +817,8 @@ export default class zFichaViagemSaidaScreen extends Component {
                                 placeholder="Busca por Nome"
                                 lightTheme={true}
                                 onChangeText={this.onBuscaNomeChange}
-                                inputStyle={{backgroundColor: 'white'}}
-                                containerStyle={{backgroundColor: Colors.primaryLight}}
+                                inputStyle={{ backgroundColor: 'white' }}
+                                containerStyle={{ backgroundColor: Colors.primaryLight }}
                                 clearIcon={true}
                             />
 
@@ -750,14 +828,14 @@ export default class zFichaViagemSaidaScreen extends Component {
                             }}>
 
                                 <ScrollView
-                                    style={{flex: 1,}}
+                                    style={{ flex: 1, }}
                                     keyboardShouldPersistTaps="always"
                                 >
-                                    <View style={{marginTop: 4}}>
+                                    <View style={{ marginTop: 4 }}>
                                         <FlatList
                                             data={listaRegistrosFunc}
                                             renderItem={this.renderItemFunc}
-                                            contentContainerStyle={{paddingBottom: 100}}
+                                            contentContainerStyle={{ paddingBottom: 100 }}
                                             keyExtractor={registro => String(registro.rh_func_codigo) + String(registro.rh_func_empresa)}
                                             onRefresh={this.onRefreshFunc}
                                             refreshing={refreshing}

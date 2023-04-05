@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     View, Text, FlatList, Modal,
     Platform, TouchableOpacity,
     Alert, ActivityIndicator, ScrollView, SafeAreaView
 } from 'react-native';
-import {Icon, Card, Divider, CheckBox} from 'react-native-elements';
-import {ProgressDialog} from 'react-native-simple-dialogs';
+import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
+import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import {maskDate} from '../utils/Maskers';
+import { maskDate } from '../utils/Maskers';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -19,10 +19,10 @@ import HeaderComponent from "../components/HeaderComponent";
 
 moment.locale('pt-BR');
 
-const {OS} = Platform;
+const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const RegistroItem = ({registro, onRegistroPress}) => {
+const RegistroItem = ({ registro, onRegistroPress }) => {
     return (
         <Card containerStyle={{
             padding: 0,
@@ -32,30 +32,30 @@ const RegistroItem = ({registro, onRegistroPress}) => {
             backgroundColor: Colors.textDisabledLight,
             elevation: 0,
         }}>
-            <View style={{borderLeftWidth: 5, borderLeftColor: Colors.primary}}>
+            <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
                 <TouchableOpacity
-                    // onPress={() => onRegistroPress(registro.adm_vei_idf)}
+                // onPress={() => onRegistroPress(registro.adm_vei_idf)}
                 >
 
-                    <View style={{paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row'}}>
-                        <View style={{flex: 3, flexDirection: 'row'}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                                 Veículo{': '}
                             </Text>
-                            <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                                 {registro.adm_vei_idf}
                             </Text>
                         </View>
-                        <View style={{flex: 3, flexDirection: 'row'}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 Placa{': '}
                             </Text>
-                            <Text style={{fontSize: 12, marginTop: 2}}>
+                            <Text style={{ fontSize: 12, marginTop: 2 }}>
                                 {registro.adm_vei_placa}
                             </Text>
                         </View>
-                        <View style={{flex: 3, flexDirection: 'row'}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 Lotação{': '}
                             </Text>
                             <Text>
@@ -64,8 +64,8 @@ const RegistroItem = ({registro, onRegistroPress}) => {
                         </View>
                     </View>
 
-                    <View style={{flexDirection: 'row', paddingLeft: 20}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                             Local{': '}
                         </Text>
                         <Text>
@@ -73,8 +73,8 @@ const RegistroItem = ({registro, onRegistroPress}) => {
                         </Text>
                     </View>
 
-                    <View style={{flexDirection: 'row', paddingLeft: 20}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                             Espécie{': '}
                         </Text>
                         <Text>
@@ -82,8 +82,8 @@ const RegistroItem = ({registro, onRegistroPress}) => {
                         </Text>
                     </View>
 
-                    <View style={{flexDirection: 'row', paddingLeft: 20}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                             Tipo{': '}
                         </Text>
                         <Text>
@@ -91,8 +91,8 @@ const RegistroItem = ({registro, onRegistroPress}) => {
                         </Text>
                     </View>
 
-                    <View style={{flexDirection: 'row', paddingLeft: 20, paddingBottom: 7}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                    <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 7 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                             Motor{': '}
                         </Text>
                         <Text>
@@ -100,7 +100,7 @@ const RegistroItem = ({registro, onRegistroPress}) => {
                         </Text>
                     </View>
 
-                    <Divider/>
+                    <Divider />
 
                     <Text style={{
                         paddingLeft: 10,
@@ -111,20 +111,20 @@ const RegistroItem = ({registro, onRegistroPress}) => {
                     }}>
                         Última O.S Aberta na Matriz
                     </Text>
-                    <View style={{paddingLeft: 10, marginBottom: 7, marginTop: 3, fontSize: 13, flexDirection: 'row'}}>
-                        <View style={{flex: 3, flexDirection: 'row', paddingLeft: 10}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                    <View style={{ paddingLeft: 10, marginBottom: 7, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 3, flexDirection: 'row', paddingLeft: 10 }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 Nº{': '}
                             </Text>
                             <Text>
                                 {registro.num_ult_os}
                             </Text>
                         </View>
-                        <View style={{flex: 3, flexDirection: 'row'}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 Data{': '}
                             </Text>
-                            <Text style={{fontSize: 12, marginTop: 2}}>
+                            <Text style={{ fontSize: 12, marginTop: 2 }}>
                                 {moment(registro.data_ult_os).format("DD/MM/YYYY")}
                             </Text>
                         </View>
@@ -136,8 +136,8 @@ const RegistroItem = ({registro, onRegistroPress}) => {
                                 {registro.data_ult_os}
                             </Text>
                         </View> */}
-                        <View style={{flex: 3, flexDirection: 'row'}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 Situação{': '}
                             </Text>
                             <Text>
@@ -146,13 +146,13 @@ const RegistroItem = ({registro, onRegistroPress}) => {
                         </View>
                     </View>
 
-                    <Divider/>
+                    <Divider />
 
-                    <View style={{paddingHorizontal: 10, marginVertical: 7}}>
-                        <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+                    <View style={{ paddingHorizontal: 10, marginVertical: 7 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                             Localização Atual{': '}
                         </Text>
-                        <Text style={{paddingLeft: 10}}>
+                        <Text style={{ paddingLeft: 10 }}>
                             {renderLocalizacao(registro.fil_fim, registro.desc_fil_fim, registro.sentido, registro.servico, registro.rota, registro.sec1, registro.sec2, registro.hora1, registro.hora2)}
                         </Text>
                     </View>
@@ -277,7 +277,7 @@ export default class VeiculosScreen extends Component {
 
     carregarMaisRegistros = () => {
         // console.log('carregarMaisRegistros')
-        const {carregarMais, refreshing, carregando, pagina} = this.state;
+        const { carregarMais, refreshing, carregando, pagina } = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -288,12 +288,12 @@ export default class VeiculosScreen extends Component {
 
 
     renderListFooter = () => {
-        const {carregando} = this.state;
+        const { carregando } = this.state;
 
         if (carregando) {
             return (
-                <View style={{marginTop: 8}}>
-                    <ActivityIndicator size="large"/>
+                <View style={{ marginTop: 8 }}>
+                    <ActivityIndicator size="large" />
                 </View>
             )
         }
@@ -301,7 +301,7 @@ export default class VeiculosScreen extends Component {
         return null;
     }
 
-    renderItem = ({item, index}) => {
+    renderItem = ({ item, index }) => {
         return (
             <RegistroItem
                 registro={item}
@@ -319,7 +319,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onSearchPress = (visible) => {
-        this.setState({modalFiltrosVisible: visible});
+        this.setState({ modalFiltrosVisible: visible });
         if (!visible) {
             // console.log('onSearchPress')
             this.setState({
@@ -330,7 +330,7 @@ export default class VeiculosScreen extends Component {
     }
 
     onClosePress = (visible) => {
-        this.setState({modalFiltrosVisible: visible});
+        this.setState({ modalFiltrosVisible: visible });
     }
 
     onClearSearchPress = () => {
@@ -349,92 +349,92 @@ export default class VeiculosScreen extends Component {
 
 
     buscaLocal = () => {
-        this.setState({localSelect: [], adm_veiloc_codigo: ''});
+        this.setState({ localSelect: [], adm_veiloc_codigo: '' });
         axios.get('/listaLocalizacoes', {}).then(response => {
-            const {data} = response;
+            const { data } = response;
             const localSelect = data.map(regList => {
                 return {
                     key: regList.adm_veiloc_codigo,
                     label: regList.adm_veiloc_descricao
                 }
             });
-            localSelect.unshift({key: 0, label: "Selecione uma Localização"});
+            localSelect.unshift({ key: 0, label: "Selecione uma Localização" });
             this.setState({
                 localSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                localSelect: [{label: "Localização não encontrdo", key: 0}],
+                localSelect: [{ label: "Localização não encontrdo", key: 0 }],
             });
         })
 
     }
 
     buscaEspecie = () => {
-        this.setState({especieSelect: [], adm_veiesp_codigo: ''});
+        this.setState({ especieSelect: [], adm_veiesp_codigo: '' });
         axios.get('/listaEspecies', {}).then(response => {
-            const {data} = response;
+            const { data } = response;
             const especieSelect = data.map(regList => {
                 return {
                     key: regList.adm_veiesp_codigo,
                     label: regList.adm_veiesp_descricao
                 }
             });
-            especieSelect.unshift({key: 0, label: "Selecione uma Espécie"});
+            especieSelect.unshift({ key: 0, label: "Selecione uma Espécie" });
             this.setState({
                 especieSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                especieSelect: [{label: "Espécie não encontrda", key: 0}],
+                especieSelect: [{ label: "Espécie não encontrda", key: 0 }],
             });
         })
 
     }
 
     buscaTipo = () => {
-        this.setState({tipoSelect: [], adm_veitp_codigo: ''});
+        this.setState({ tipoSelect: [], adm_veitp_codigo: '' });
         axios.get('/listaTipos', {}).then(response => {
-            const {data} = response;
+            const { data } = response;
             const tipoSelect = data.map(regList => {
                 return {
                     key: regList.adm_veitp_codigo,
                     label: regList.adm_veitp_descricao
                 }
             });
-            tipoSelect.unshift({key: 0, label: "Selecione um Tipo"});
+            tipoSelect.unshift({ key: 0, label: "Selecione um Tipo" });
             this.setState({
                 tipoSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                tipoSelect: [{label: "Tipo não encontrdo", key: 0}],
+                tipoSelect: [{ label: "Tipo não encontrdo", key: 0 }],
             });
         })
 
     }
 
     buscaMotor = () => {
-        this.setState({motorSelect: [], adm_veimotor_codigo: ''});
+        this.setState({ motorSelect: [], adm_veimotor_codigo: '' });
         axios.get('/listaMotores', {}).then(response => {
-            const {data} = response;
+            const { data } = response;
             const motorSelect = data.map(regList => {
                 return {
                     key: regList.adm_veimotor_codigo,
                     label: regList.adm_veimotor_descricao
                 }
             });
-            motorSelect.unshift({key: 0, label: "Selecione um Motor"});
+            motorSelect.unshift({ key: 0, label: "Selecione um Motor" });
             this.setState({
                 motorSelect,
             })
         }).catch(error => {
             console.error(error.response);
             this.setState({
-                motorSelect: [{label: "Motor não encontrdo", key: 0}],
+                motorSelect: [{ label: "Motor não encontrdo", key: 0 }],
             });
         })
 
@@ -451,21 +451,21 @@ export default class VeiculosScreen extends Component {
         // console.log('adm_vei_idf: ', this.state.adm_vei_idf);
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: '#1F829C', flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Lista dos Veículos'}
                     pressLeftComponen={() => this.props.navigation.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />
-                <View style={{flex: 1, backgroundColor: Colors.background}}>
+                <View style={{ flex: 1, backgroundColor: Colors.background }}>
                     <FlatList
                         style={{
                             backgroundColor: 'white'
                         }}
                         data={listaRegistros}
                         renderItem={this.renderItem}
-                        contentContainerStyle={{paddingBottom: 100}}
+                        contentContainerStyle={{ paddingBottom: 100 }}
                         keyExtractor={registro => String(registro.adm_vei_idf)}
                         onRefresh={this.onRefresh}
                         refreshing={refreshing}
@@ -479,9 +479,7 @@ export default class VeiculosScreen extends Component {
                     {/* ----------------------------- */}
                     <Modal
                         visible={this.state.modalFiltrosVisible}
-                        onRequestClose={() => {
-                            console.log("Modal FILTROS FECHOU.")
-                        }}
+                        onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                         animationType={"slide"}
                         transparent={true}
                     >
@@ -501,7 +499,7 @@ export default class VeiculosScreen extends Component {
                                     borderRadius: 5,
                                 }}>
 
-                                    <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                    <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
                                         <Text style={{
                                             color: Colors.textOnPrimary,
                                             marginTop: 15,
@@ -513,7 +511,7 @@ export default class VeiculosScreen extends Component {
                                         }}>Filtrar Veículos</Text>
                                     </View>
 
-                                    <View style={{marginTop: 4, paddingVertical: 10}}>
+                                    <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
                                         <TextInput
                                             label="Veículo"
@@ -575,7 +573,7 @@ export default class VeiculosScreen extends Component {
                                             onPress={() => {
                                                 this.onSearchPress(!this.state.modalFiltrosVisible)
                                             }}
-                                            buttonStyle={{marginTop: 10}}
+                                            buttonStyle={{ marginTop: 10 }}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
                                                 name: 'filter',
@@ -588,7 +586,7 @@ export default class VeiculosScreen extends Component {
                                             onPress={() => {
                                                 this.onClosePress(!this.state.modalFiltrosVisible)
                                             }}
-                                            buttonStyle={{marginTop: 10}}
+                                            buttonStyle={{ marginTop: 10 }}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
                                                 name: 'close',

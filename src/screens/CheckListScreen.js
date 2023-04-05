@@ -648,12 +648,12 @@ export default class CheckListScreen extends Component {
 
                 }).catch(ex => {
                     Alert.showAlert(`${'ERROR ' + ex?.response?.status + ' ' + ex?.response?.data?.message?.slice(0, 50) + '...'} `)
-                    console.log('ex response', ex.response);
+                    // console.log('ex response', ex.response);
                     this.setState({aguarde: false, modalOSVisible: false});
                 })
             }
         } catch (error) {
-            console.log('catch error', error);
+            // console.log('catch error', error);
         }
     };
 
@@ -685,13 +685,13 @@ export default class CheckListScreen extends Component {
                         }, this.getListaRegistros);
                     }).catch(ex => {
                         Alert.showAlert(`${'ERROR ' + ex?.response?.status + ' ' + ex?.response?.data?.message?.slice(0, 50) + '...'} `)
-                        console.log('ex response', ex.response);
+                        // console.log('ex response', ex.response);
                         this.setState({aguarde: false, modalOcorrenciaVisible: false});
                     })
                 }
             }
         } catch (error) {
-            console.log('catch error', error);
+            // console.log('catch error', error);
         }
     };
 

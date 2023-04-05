@@ -158,7 +158,7 @@ export default class CheckListItemScreen extends Component {
                 })
             }
         } catch (e) {
-            console.log(e)
+            // console.log(e)
             this.setState({ adm_spcl_escala: '', carregandoEscala: false, codVeiculo: '' });
         }
     };
@@ -192,7 +192,7 @@ export default class CheckListItemScreen extends Component {
             this.setState({ salvando: true });
             return axios.post('/checkList/store', registro)
                 .then(response => {
-                    console.log(response)
+                    // console.log(response)
 
                     if (response?.status === 200) {
                         Alert.showAlert('Check-List salvo com sucesso');
