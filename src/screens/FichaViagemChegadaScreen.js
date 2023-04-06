@@ -19,8 +19,8 @@ import Icon from '../components/Icon';
 
 import VeiculosSelect from '../components/VeiculosSelect';
 import FuncionariosSelect from '../components/FuncionariosSelect';
-import RotasSelect from '../components/RotasSelect';
-import LinhasSelect from '../components/LinhasSelect';
+// import RotasSelect from '../components/RotasSelect';
+// import LinhasSelect from '../components/LinhasSelect';
 import HeaderComponent from "../components/HeaderComponent";
 
 const stateInicial = {
@@ -65,6 +65,9 @@ const stateInicial = {
     checkedGeraOS: false,
     defeito_mec_ele_lub: 'Nada Consta',
     defeito_chap_borr: 'Nada Consta',
+
+    checkedLinhasRegulares: true,
+    checkedTodosServicos: false,
 
     man_fvm_data_hora_ini: moment().format('h:mm'),
     man_fvm_data_hora_fim: moment().format('h:mm'),
@@ -213,6 +216,7 @@ export default class FichaViagemChegadaScreen extends Component {
                 man_fvd_disco: value.man_fvd_disco,
             });
 
+            this.buscaServicos(this.state.checkedTodosServicos ? 'T' : 'S');
             this.buscaFuncionários(value.codFunc);
         }
     }
@@ -252,32 +256,32 @@ export default class FichaViagemChegadaScreen extends Component {
         }
     }
 
-    onInputChangeRota = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-        if (value) {
-            this.setState({
-                codRota: value.man_rt_codigo,
-                man_rt_flag_eventual: value.man_rt_flag_eventual,
-            });
-        }
-    }
+    // onInputChangeRota = (id, value) => {
+    //     const state = {};
+    //     state[id] = value;
+    //     this.setState(state);
+    //     if (value) {
+    //         this.setState({
+    //             codRota: value.man_rt_codigo,
+    //             man_rt_flag_eventual: value.man_rt_flag_eventual,
+    //         });
+    //     }
+    // }
 
-    onInputChangeLinha = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
+    // onInputChangeLinha = (id, value) => {
+    //     const state = {};
+    //     state[id] = value;
+    //     this.setState(state);
 
-        if (value) {
-            this.setState({
-                codLinha: value.pas_lin_codigo,
-            });
-            if (value.pas_lin_codigo) {
-                this.buscaServicos(value.pas_lin_codigo);
-            }
-        }
-    }
+    //     if (value) {
+    //         this.setState({
+    //             codLinha: value.pas_lin_codigo,
+    //         });
+    //         if (value.pas_lin_codigo) {
+    //             this.buscaServicos(value.pas_lin_codigo);
+    //         }
+    //     }
+    // }
 
     onLimparTela = () => {
         this.setState(stateInicial);
@@ -301,17 +305,24 @@ export default class FichaViagemChegadaScreen extends Component {
             }
         }
 
-        if ((this.state.rota_select === undefined) || (!this.state.rota_select)) {
-            Alert.showAlert('Informe a Rota');
-            return;
-        }
+        // if ((this.state.rota_select === undefined) || (!this.state.rota_select)) {
+        //     Alert.showAlert('Informe a Rota');
+        //     return;
+        // }
 
-        if (this.state.man_rt_flag_eventual !== 'S') {
-            if ((this.state.linha_select === undefined) || (!this.state.linha_select)) {
-                Alert.showAlert('Informe a Linha');
-                return;
-            }
+        // if (this.state.man_rt_flag_eventual !== 'S') {
+        //     if ((this.state.linha_select === undefined) || (!this.state.linha_select)) {
+        //         Alert.showAlert('Informe a Linha');
+        //         return;
+        //     }
 
+        //     if (!this.state.pas_serv_codigo) {
+        //         Alert.showAlert('Selecione um Serviço');
+        //         return;
+        //     }
+        // }
+
+        if (this.state.checkedLinhasRegulares) {
             if (!this.state.pas_serv_codigo) {
                 Alert.showAlert('Selecione um Serviço');
                 return;
@@ -510,14 +521,19 @@ export default class FichaViagemChegadaScreen extends Component {
 
         axios.get('/listaServicos', {
             params: {
-                linha: value
+                viagem: value,
+                // linha: value
             }
         }).then(response => {
             const { data } = response;
             const servicoSelect = data.map(regList => {
                 return {
-                    key: regList.pas_serv_codigo,
-                    label: regList.pas_serv_codigo + ' - ' + regList.pas_serv_horario + ' - ' + regList.pas_serv_descricao
+                    key: regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico,
+                    label: (regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico) + ' - ' +
+                        (regList.pas_via_servico_extra ? regList.pas_ext_horario_extra : (regList.hora_fim ? regList.hora_ini : regList.hora_ini + ' / ' + regList.hora_fim)) + ' - ' +
+                        (regList.pas_via_servico_extra ? (regList.desc_sec_ini_extra + ' a ' + regList.desc_sec_fim_extra) : (regList.desc_sec_ini + ' a ' + regList.desc_sec_fim))
+                    // key: regList.pas_serv_codigo,
+                    // label: regList.pas_serv_codigo + ' - ' + regList.pas_serv_horario + ' - ' + regList.pas_serv_descricao
                 }
             });
 
@@ -694,7 +710,8 @@ export default class FichaViagemChegadaScreen extends Component {
             ocorrenciaSelect, man_fv_sit_rota, geraOS, defeito_mec_ele_lub, defeito_chap_borr,
             man_fvm_data_hora_ini, man_fvm_data_hora_fim, servicoSelect, veiculo_select,
             funcionariosSelect, man_fvm_nome_mot, rota_select, codRota, linha_select, codLinha,
-            carregandoFunc, carregandoServico, loading, salvado, checkedFinalRota, checkedGeraOS,
+            carregandoFunc, carregandoServico, loading, salvado,
+            checkedFinalRota, checkedGeraOS, checkedLinhasRegulares, checkedTodosServicos,
             man_rt_flag_eventual, refreshing, listaRegistrosFunc,
         } = this.state;
 
@@ -788,7 +805,70 @@ export default class FichaViagemChegadaScreen extends Component {
                             onChange={this.onInputChange}
                         />
 
-                        <RotasSelect
+
+
+
+                        <View style={{ flexDirection: 'row', marginBottom: 20, marginTop: 10 }}>
+                            <View style={{ width: "50%", margin: 0, padding: 0 }}>
+                                <CheckBox
+                                    title='Linhas regulares'
+                                    checked={checkedLinhasRegulares}
+                                    onPress={() => this.setState({ checkedLinhasRegulares: !checkedLinhasRegulares })}
+                                    containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                />
+                            </View>
+
+                            {checkedLinhasRegulares ? (
+                                <View style={{ width: "50%", margin: 0, padding: 0 }}>
+                                    <CheckBox
+                                        title='Todos Serviços'
+                                        checked={checkedTodosServicos}
+                                        onPress={() =>
+                                            this.setState({
+                                                checkedTodosServicos: !checkedTodosServicos
+                                            }, this.buscaServicos(checkedTodosServicos ? 'S' : 'T'))
+                                        }
+                                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    />
+                                </View>
+                            ) : null}
+                        </View>
+
+                        {checkedLinhasRegulares ? (
+                            <View>
+                                {carregandoServico
+                                    ? (
+                                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                            <ActivityIndicator
+                                                style={{
+                                                    margin: 10,
+                                                }}
+                                            />
+                                            <Text>
+                                                Buscando Serviços
+                                            </Text>
+                                        </View>
+                                    )
+                                    : (
+                                        <TextInput
+                                            type="select"
+                                            label="Serviço"
+                                            id="pas_serv_codigo"
+                                            ref="pas_serv_codigo"
+                                            value={pas_serv_codigo}
+                                            options={servicoSelect}
+                                            onChange={this.onInputChange}
+                                        />
+                                    )
+                                }
+                            </View>
+                        ) : null}
+
+
+
+
+
+                        {/* <RotasSelect
                             label="Rota"
                             id="rota_select"
                             value={rota_select}
@@ -796,8 +876,6 @@ export default class FichaViagemChegadaScreen extends Component {
                             onChange={this.onInputChangeRota}
                             enabled={veiculo_select && veiculo_select.sitRota === 'A' ? false : true}
                         />
-
-                        {/* <Text>Eventual: {man_rt_flag_eventual}</Text> */}
 
                         {man_rt_flag_eventual === 'S'
                             ? (null)
@@ -838,7 +916,7 @@ export default class FichaViagemChegadaScreen extends Component {
                                     }
                                 </View>
                             )
-                        }
+                        } */}
 
 
 
@@ -990,6 +1068,7 @@ export default class FichaViagemChegadaScreen extends Component {
                                     value={man_fvd_disco}
                                     onChange={this.onInputChange}
                                     keyboardType="numeric"
+                                    enabled={false}
                                 />
                             </View>
 
@@ -1092,33 +1171,6 @@ export default class FichaViagemChegadaScreen extends Component {
                             ) : null
                         }
 
-
-                        <Button
-                            title="SALVAR"
-                            loading={loading}
-                            onPress={this.onFormSubmit}
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ marginBottom: 5, marginTop: 20 }}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-
-                        <Button
-                            title="LIMPAR TELA"
-                            onPress={this.onLimparTela}
-                            color={Colors.textOnPrimary}
-                            backgroundColor='#ccc'
-                            buttonStyle={{ marginBottom: 5, marginTop: 0 }}
-                            icon={{
-                                name: 'close',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-
                     </View>
 
 
@@ -1188,6 +1240,34 @@ export default class FichaViagemChegadaScreen extends Component {
                         message="Gravando. Aguarde..."
                     />
                 </ScrollView>
+
+                <Button
+                    title="SALVAR"
+                    loading={loading}
+                    onPress={this.onFormSubmit}
+                    color={Colors.textOnPrimary}
+                    buttonStyle={{ margin: 5, marginTop: 10 }}
+                    icon={{
+                        name: 'check',
+                        type: 'font-awesome',
+                        color: Colors.textOnPrimary
+                    }}
+                />
+
+                <Button
+                    title="LIMPAR TELA"
+                    onPress={this.onLimparTela}
+                    color={Colors.textOnPrimary}
+                    backgroundColor='#ccc'
+                    buttonStyle={{ margin: 5, marginTop: 0 }}
+                    icon={{
+                        name: 'close',
+                        type: 'font-awesome',
+                        color: Colors.textOnPrimary
+                    }}
+                />
+
+
             </View>
         )
     }

@@ -280,13 +280,11 @@ class RotasSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => {
-                        console.log("Modal FECHOU.")
-                    }}
+                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
 
-                    <SafeAreaView style={{backgroundColor: Colors.primary, flex: 1}}>
+                    <SafeAreaView style={{ backgroundColor: Colors.primary, flex: 1 }}>
 
                         <HeaderComponent
                             color={'white'}
@@ -300,8 +298,8 @@ class RotasSelect extends PureComponent {
                             placeholder="Pesquisar"
                             lightTheme={true}
                             onChangeText={this.onBuscaNomeChange}
-                            inputStyle={{backgroundColor: 'white'}}
-                            containerStyle={{backgroundColor: Colors.primaryLight}}
+                            inputStyle={{ backgroundColor: 'white' }}
+                            containerStyle={{ backgroundColor: Colors.primaryLight }}
                             clearIcon={true}
                         />
 
@@ -311,14 +309,14 @@ class RotasSelect extends PureComponent {
                         }}>
 
                             <ScrollView
-                                style={{flex: 1,}}
+                                style={{ flex: 1, }}
                                 keyboardShouldPersistTaps="always"
                             >
-                                <View style={{marginTop: 4}}>
+                                <View style={{ marginTop: 4 }}>
                                     <FlatList
                                         data={listaRegistros}
                                         renderItem={this.renderItem}
-                                        contentContainerStyle={{paddingBottom: 100}}
+                                        contentContainerStyle={{ paddingBottom: 100 }}
                                         keyExtractor={registro => registro.man_rt_codigo}
                                         onRefresh={this.onRefresh}
                                         refreshing={refreshing}

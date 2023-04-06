@@ -341,7 +341,7 @@ export default class EscalaVeiculoScreen extends Component {
             man_ev_veiculo: this.state.veiculo_select.codVeic,
             man_ev_data_ini: this.state.registro.pas_via_data_viagem,
             man_ev_servico: this.state.registro.pas_via_servico,
-            man_ev_servico_extra: this.state.registro.pas_via_servico_extra,
+            man_ev_servico_estra: this.state.registro.pas_via_servico_extra,
 
             codMot: this.state.codFunc,
             empMot: this.state.empFunc,

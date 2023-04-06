@@ -220,9 +220,11 @@ export default class zFichaViagemSaidaScreen extends Component {
         //     }
         // }
 
-        if (!this.state.pas_serv_codigo) {
-            Alert.showAlert('Selecione um Serviço');
-            return;
+        if (this.state.checkedLinhasRegulares) {
+            if (!this.state.pas_serv_codigo) {
+                Alert.showAlert('Selecione um Serviço');
+                return;
+            }
         }
 
         if (!this.state.man_fv_odo_ini) {
@@ -247,7 +249,7 @@ export default class zFichaViagemSaidaScreen extends Component {
 
         const { veiculo_select, funcionarioSelect, rota_select, man_rt_flag_eventual,
             man_fv_odo_ini, man_fv_km_ini, man_fv_obs, man_fvd_disco, pas_serv_codigo,
-            man_fvm_nome_mot, codFunc, empFunc, nomeFunc } = this.state;
+            man_fvm_nome_mot, codFunc, empFunc, nomeFunc, checkedLinhasRegulares } = this.state;
 
         // let codFunc = 0
         // let empFunc = 0
@@ -350,9 +352,6 @@ export default class zFichaViagemSaidaScreen extends Component {
     buscaServicos = (value) => {
         this.setState({ servicoSelect: [] });
         this.setState({ carregandoServico: true });
-
-        console.log('buscaServicos: ', value)
-
         axios.get('/listaServicos', {
             params: {
                 viagem: value,
@@ -612,6 +611,8 @@ export default class zFichaViagemSaidaScreen extends Component {
                             onChange={this.onInputChange}
                         />
 
+
+
                         <View style={{ flexDirection: 'row', marginBottom: 20, marginTop: 30 }}>
                             <View style={{ width: "50%", margin: 0, padding: 0 }}>
                                 <CheckBox
@@ -726,20 +727,20 @@ export default class zFichaViagemSaidaScreen extends Component {
 
 
 
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={{ width: "47%", marginRight: 20 }}>
-                                <TextInput
-                                    label="Odômetro"
-                                    id="man_fv_odo_ini"
-                                    ref="man_fv_odo_ini"
-                                    value={String(man_fv_odo_ini)}
-                                    maxLength={60}
-                                    onChange={this.onInputChange}
-                                    keyboardType="numeric"
-                                />
-                            </View>
+                        {/* <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: "47%", marginRight: 20 }}> */}
+                        <TextInput
+                            label="Odômetro"
+                            id="man_fv_odo_ini"
+                            ref="man_fv_odo_ini"
+                            value={String(man_fv_odo_ini)}
+                            maxLength={60}
+                            onChange={this.onInputChange}
+                            keyboardType="numeric"
+                        />
+                        {/* </View> */}
 
-                            <View style={{ width: "47%" }}>
+                        {/* <View style={{ width: "47%" }}>
                                 <TextInput
                                     label="Nº Disco"
                                     id="man_fvd_disco"
@@ -748,8 +749,8 @@ export default class zFichaViagemSaidaScreen extends Component {
                                     onChange={this.onInputChange}
                                     keyboardType="numeric"
                                 />
-                            </View>
-                        </View>
+                            </View> */}
+                        {/* </View> */}
 
                         <TextInput
                             label="Observação"
@@ -759,33 +760,6 @@ export default class zFichaViagemSaidaScreen extends Component {
                             maxLength={100}
                             onChange={this.onInputChange}
                             multiline={true}
-                        />
-
-
-                        <Button
-                            title="SALVAR"
-                            loading={loading}
-                            onPress={this.onFormSubmit}
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{ marginBottom: 5, marginTop: 20 }}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-
-                        <Button
-                            title="LIMPAR TELA"
-                            onPress={this.onLimparTela}
-                            color={Colors.textOnPrimary}
-                            backgroundColor='#ccc'
-                            buttonStyle={{ marginBottom: 5, marginTop: 0 }}
-                            icon={{
-                                name: 'close',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
                         />
 
                     </View>
@@ -857,6 +831,33 @@ export default class zFichaViagemSaidaScreen extends Component {
                         message="Gravando. Aguarde..."
                     />
                 </ScrollView>
+
+                <Button
+                    title="SALVAR"
+                    loading={loading}
+                    onPress={this.onFormSubmit}
+                    color={Colors.textOnPrimary}
+                    buttonStyle={{ margin: 5, marginTop: 10 }}
+                    icon={{
+                        name: 'check',
+                        type: 'font-awesome',
+                        color: Colors.textOnPrimary
+                    }}
+                />
+
+                <Button
+                    title="LIMPAR TELA"
+                    onPress={this.onLimparTela}
+                    color={Colors.textOnPrimary}
+                    backgroundColor='#ccc'
+                    buttonStyle={{ margin: 5, marginTop: 0 }}
+                    icon={{
+                        name: 'close',
+                        type: 'font-awesome',
+                        color: Colors.textOnPrimary
+                    }}
+                />
+
             </View>
         )
     }

@@ -416,9 +416,7 @@ export default class EscalaVeiculosScreen extends Component {
                     {/* ----------------------------- */}
                     <Modal
                         visible={this.state.modalFiltrosVisible}
-                        onRequestClose={() => {
-                            console.log("Modal FILTROS FECHOU.")
-                        }}
+                        onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                         animationType={"slide"}
                         transparent={true}
                     >

@@ -270,9 +270,7 @@ export default class AutorizacaoDespesaScreen extends Component {
                         {/* ----------------------------- */}
                         <Modal
                             visible={this.state.modalZap}
-                            onRequestClose={() => {
-                                console.log("Modal ZAP FECHOU.")
-                            }}
+                            onRequestClose={() => { console.log("Modal ZAP FECHOU.") }}
                             animationType={"slide"}
                             transparent={true}
                         >

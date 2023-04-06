@@ -274,7 +274,7 @@ class FiliaisSelect extends PureComponent {
                             onPress={() => {
                                 this.onAbrirBuscaModal(true)
                             }}
-                            buttonStyle={{width: 30, padding: 0, paddingTop: 20, marginLeft: -18}}
+                            buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                             backgroundColor={Colors.transparent}
                             icon={{
                                 name: 'search',
@@ -312,13 +312,11 @@ class FiliaisSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => {
-                        console.log("Modal FECHOU.")
-                    }}
+                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
 
-                    <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                    <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                         <HeaderComponent
                             color={'white'}
                             titleCenterComponent={'Buscar Filial'}
@@ -331,8 +329,8 @@ class FiliaisSelect extends PureComponent {
                             placeholder="Pesquisar"
                             lightTheme={true}
                             onChangeText={this.onBuscaNomeChange}
-                            inputStyle={{backgroundColor: 'white'}}
-                            containerStyle={{backgroundColor: Colors.primaryLight}}
+                            inputStyle={{ backgroundColor: 'white' }}
+                            containerStyle={{ backgroundColor: Colors.primaryLight }}
                             clearIcon={true}
                         />
 
@@ -342,14 +340,14 @@ class FiliaisSelect extends PureComponent {
                         }}>
 
                             <ScrollView
-                                style={{flex: 1,}}
+                                style={{ flex: 1, }}
                                 keyboardShouldPersistTaps="always"
                             >
-                                <View style={{marginTop: 4}}>
+                                <View style={{ marginTop: 4 }}>
                                     <FlatList
                                         data={listaRegistros}
                                         renderItem={this.renderItem}
-                                        contentContainerStyle={{paddingBottom: 100}}
+                                        contentContainerStyle={{ paddingBottom: 100 }}
                                         keyExtractor={registro => registro.adm_fil_codigo}
                                         onRefresh={this.onRefresh}
                                         refreshing={refreshing}

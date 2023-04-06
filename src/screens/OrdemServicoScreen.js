@@ -358,7 +358,7 @@ export default class OrdemServicoScreen extends Component {
 
     onAbrirFuncBuscaModal = (visible) => {
         if (visible) {
-            this.setState({modalFuncBuscaVisible: visible});
+            this.setState({ modalFuncBuscaVisible: visible });
         } else {
             this.setState({
                 buscaNome: '',
@@ -459,7 +459,7 @@ export default class OrdemServicoScreen extends Component {
         // console.log('OrdemServicoScreen - STATE: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Ordem Serviço'}
@@ -821,12 +821,10 @@ export default class OrdemServicoScreen extends Component {
                     <Modal
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => {
-                            console.log("Modal FUNCIONARIO FECHOU.")
-                        }}
+                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
                         animationType={"slide"}
                     >
-                        <SafeAreaView style={{backgroundColor: Colors.primary, flex: 1}}>
+                        <SafeAreaView style={{ backgroundColor: Colors.primary, flex: 1 }}>
 
                             <HeaderComponent
                                 color={'white'}
@@ -839,8 +837,8 @@ export default class OrdemServicoScreen extends Component {
                                 placeholder="Busca por Nome"
                                 lightTheme={true}
                                 onChangeText={this.onBuscaNomeChange}
-                                inputStyle={{backgroundColor: 'white'}}
-                                containerStyle={{backgroundColor: Colors.primaryLight}}
+                                inputStyle={{ backgroundColor: 'white' }}
+                                containerStyle={{ backgroundColor: Colors.primaryLight }}
                                 clearIcon={true}
                             />
 
@@ -850,14 +848,14 @@ export default class OrdemServicoScreen extends Component {
                             }}>
 
                                 <ScrollView
-                                    style={{flex: 1,}}
+                                    style={{ flex: 1, }}
                                     keyboardShouldPersistTaps="always"
                                 >
-                                    <View style={{marginTop: 4}}>
+                                    <View style={{ marginTop: 4 }}>
                                         <FlatList
                                             data={listaRegistrosFunc}
                                             renderItem={this.renderItemFunc}
-                                            contentContainerStyle={{paddingBottom: 100}}
+                                            contentContainerStyle={{ paddingBottom: 100 }}
                                             keyExtractor={registro => String(registro.rh_func_codigo) + String(registro.rh_func_empresa)}
                                             onRefresh={this.onRefreshFunc}
                                             refreshing={refreshing}

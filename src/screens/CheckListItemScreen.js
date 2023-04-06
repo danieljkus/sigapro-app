@@ -663,9 +663,7 @@ export default class CheckListItemScreen extends Component {
                             {/* ----------------------------- */}
                             <Modal
                                 visible={this.state.modalOBSVisible}
-                                onRequestClose={() => {
-                                    console.log("Modal OBS FECHOU.")
-                                }}
+                                onRequestClose={() => { console.log("Modal OBS FECHOU.") }}
                                 animationType={"slide"}
                                 transparent={true}
                             >
