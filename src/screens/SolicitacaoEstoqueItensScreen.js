@@ -128,8 +128,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onMudaTipoSaida = (tipo) => {
-        // console.log('onMudaTipoSaida: ', tipo);
-
         if (tipo === 'S') {
             this.setState({
                 estoq_sfi_situacao: 'S',
@@ -190,7 +188,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onRegistroPress = (estoq_sfi_seq, estoq_sfi_item, estoq_sfi_qtde_solicitada, estoq_sfi_qtde_atendida, estoq_sfi_situacao, estoq_sfi_obs) => {
-        // console.log('-------------onRegistroPress---------------');
         this.setState({
             estoq_sfi_seq,
             codItem: String(estoq_sfi_item),
@@ -205,7 +202,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onRegistroLongPress = (estoq_sfi_seq) => {
-        // console.log('-------------onRegistroLongPress---------------');
         if (!this.state.vendaEnviada) {
             Alert.showConfirm("Deseja excluir este item?",
                 { text: "Cancelar" },
@@ -219,8 +215,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
     }
 
     onExcluirRegistro = (estoq_sfi_seq) => {
-        // console.log('-------------onExcluirRegistro---------------');
-
         const listaItens = [...this.state.listaItens];
         const index = listaItens.findIndex(registro => registro.estoq_sfi_seq === estoq_sfi_seq);
 
@@ -250,7 +244,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onFormIncluirProduto = (event) => {
-        // console.log('-------------onFormIncluirProduto---------------');
         if ((this.state.estoq_sfi_qtde_solicitada == '') || (vlrStringParaFloat(this.state.estoq_sfi_qtde_solicitada) <= 0)) {
             Alert.showAlert('Informe a Quantidade Solicitada');
             return;
@@ -268,10 +261,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
     }
 
     onGravar = () => {
-        // console.log('-----------------onGravar-----------------------');
-
         const { listaItens } = this.state;
-
         const iIndItem = listaItens.findIndex(registro => registro.estoq_sfi_seq === this.state.estoq_sfi_seq);
         if (iIndItem >= 0) {
 
@@ -316,7 +306,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     calculoTotalPedido = () => {
-        // console.log('-------------calculoTotalPedido---------------');
         const { listaItens } = this.state;
         let qtdeSol = 0;
         let qtdeAten = 0;
@@ -351,14 +340,12 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onSomarQtdeSol = () => {
-        // console.log('-------------onSomarQtde---------------');
         let { estoq_sfi_qtde_solicitada } = this.state;
         estoq_sfi_qtde_solicitada = maskValorMoeda(parseFloat(estoq_sfi_qtde_solicitada) + 1);
         this.setState({ estoq_sfi_qtde_solicitada });
     }
 
     onDiminuirQtdeSol = () => {
-        // console.log('-------------onDiminuirQtde---------------');
         let { estoq_sfi_qtde_solicitada } = this.state;
         if (vlrStringParaFloat(estoq_sfi_qtde_solicitada) > 1) {
             estoq_sfi_qtde_solicitada = maskValorMoeda(vlrStringParaFloat(estoq_sfi_qtde_solicitada) - 1);
@@ -368,14 +355,12 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onSomarQtdeAten = () => {
-        // console.log('-------------onSomarQtde---------------');
         let { estoq_sfi_qtde_atendida } = this.state;
         estoq_sfi_qtde_atendida = maskValorMoeda(parseFloat(estoq_sfi_qtde_atendida) + 1);
         this.setState({ estoq_sfi_qtde_atendida });
     }
 
     onDiminuirQtdeAten = () => {
-        // console.log('-------------onDiminuirQtde---------------');
         let { estoq_sfi_qtde_atendida } = this.state;
         if (vlrStringParaFloat(estoq_sfi_qtde_atendida) >= 1) {
             estoq_sfi_qtde_atendida = maskValorMoeda(vlrStringParaFloat(estoq_sfi_qtde_atendida) - 1);
@@ -394,11 +379,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
     onBarCodeRead = event => {
         const { data, rawData, type } = event;
-        // console.log('FichaEstoqueScreen.onBarCodeRead: ', data);
-
         const codBar = String(data).substr(6, 6);
-        // console.log('FichaEstoqueScreen.onBarCodeRead: ', codBar);
-
         this.setState({
             codItem: codBar,
         }, this.buscaItem(codBar));
@@ -406,7 +387,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
     buscaItem = (value) => {
         this.setState({ carregando: true });
-        // console.log('FichaEstoqueScreen.buscaItem: ', value);
         axios.get('/listaItens', {
             params: {
                 codItem: value,
@@ -414,7 +394,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             }
         }).then(response => {
             const { data } = response;
-            // console.log('FichaEstoqueScreen.buscaItem: ', data);
             this.setState({
                 carregando: false,
             })

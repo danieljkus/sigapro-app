@@ -225,7 +225,6 @@ export default class OrdemServicoServPendenteScreen extends Component {
     }
 
     onAddPress = () => {
-        // console.log('onAddPress');
         this.setState({
             man_sp_idf: 0,
             man_sp_obs: '',
@@ -271,9 +270,6 @@ export default class OrdemServicoServPendenteScreen extends Component {
             man_sp_data_execucao: moment(man_sp_data_execucao, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
             man_sp_obs_execucao,
         };
-
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
 
         this.setState({ salvado: true });
         axios.post('/ordemServicos/storeServPendentes', registro)
@@ -342,7 +338,6 @@ export default class OrdemServicoServPendenteScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalBaixaVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
                     transparent={true}
                 >

@@ -61,7 +61,6 @@ export default class RefeicaoScreen extends Component {
 
     onNetEvento = (info) => {
         let state = this.state;
-        // console.log('onNetEvento: ', info)
         if (info.isConnected) {
             state.netStatus = 1;
         } else {
@@ -133,7 +132,6 @@ export default class RefeicaoScreen extends Component {
                     timeout: 30000,
                 }).then(location => {
                     const local = String(location.latitude) + ',' + String(location.longitude);
-                    // console.log('onAddPress: ', local);
                     const {registro} = this.state;
                     this.setState({salvado: true, salvando: true});
                     registro.rhref_cod_rest = this.state.rhref_cod_rest;
@@ -157,9 +155,6 @@ export default class RefeicaoScreen extends Component {
                                 }).catch(ex => {
                                     const {response} = ex;
                                     this.setState({salvado: false, salvando: false});
-
-                                    // console.log('RefeicaoScreen.onSalvar.ERROR: ', ex);
-
                                     if (ex.response) {
                                         // erro no servidor
                                         alert('Não foi possível gravar. ' + ex.response.data);
@@ -205,8 +200,6 @@ export default class RefeicaoScreen extends Component {
 
     onBarCodeRead = event => {
         const {data, rawData, type} = event;
-        // console.log('RefeicaoScreen.onBarCodeRead: ', data);
-
         this.setState({
                 rhref_cod_rest: data,
                 restaurante: [],
@@ -217,15 +210,12 @@ export default class RefeicaoScreen extends Component {
 
     buscaRestaurante = (value) => {
         this.setState({carregando: true});
-        // console.log('RefeicaoScreen.buscaRestaurante: ', value);
-
         axios.get('/buscaRestaurante', {
             params: {
                 codRestaurante: value
             }
         }).then(response => {
             const {data} = response;
-            // console.log('RefeicaoScreen.buscaRestaurante: ', response.data[0]);
 
             let checkedCafe = true;
             let checkedAlmoco = false;
@@ -326,8 +316,6 @@ export default class RefeicaoScreen extends Component {
     }
 
     onMostraRestaurante = (registro) => {
-        // console.log('onMostraRestaurante: ', registro)
-
         let checkedCafe = true;
         let checkedAlmoco = false;
         let checkedJanta = false;

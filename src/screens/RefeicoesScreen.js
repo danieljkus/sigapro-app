@@ -147,10 +147,6 @@ export default class RefeicoesScreen extends Component {
         const { dataIni, dataFim, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
 
-
-        // console.log('getListaRegistros: ', dataIni)
-        // console.log('getListaRegistros: ', dataIni)
-
         axios.get('/refeicoes', {
             params: {
                 page: pagina,
@@ -161,10 +157,6 @@ export default class RefeicoesScreen extends Component {
                 dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
             }
         }).then(response => {
-
-            // console.log('getListaRegistros: ', response.data)
-
-
             const novosRegistros = pagina === 1
                 ? response.data.consulta.data
                 : listaRegistros.concat(response.data.consulta.data);
@@ -310,7 +302,6 @@ export default class RefeicoesScreen extends Component {
                     {/* ----------------------------- */}
                     <Modal
                         visible={this.state.modalFiltrosVisible}
-                        onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                         animationType={"slide"}
                         transparent={true}
                     >

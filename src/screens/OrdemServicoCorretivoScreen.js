@@ -145,8 +145,6 @@ export default class OrdemServicoCorretivoScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        // console.log('onSalvarRegistro: ', registro);
-
         const reg = {
             controle: this.state.man_os_idf,
             servico: registro.man_sos_servico,
@@ -154,15 +152,9 @@ export default class OrdemServicoCorretivoScreen extends Component {
             dataFim: registro.man_sos_situacao === 'A' ? moment().format("YYYY-MM-DD") : '',
         };
 
-        // console.log('onSalvarRegistro: ', reg);
-
         this.setState({ carregarRegistro: true });
         axios.put('/ordemServicos/mudaSituacaoCorretivas', reg)
             .then(response => {
-                this.setState({ carregarRegistro: false });
-
-                // console.log('onRegistroPress: ', response.data);
-
                 this.setState({ carregarRegistro: false });
                 this.getListaRegistros();
 
@@ -286,30 +278,23 @@ export default class OrdemServicoCorretivoScreen extends Component {
             man_sos_situacao: 'A',
         };
 
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
-
         this.setState({ salvado: true });
 
         let axiosMethod;
-        // if (man_os_idf) {
-        // axiosMethod = axios.put('/ordemServicos/updateCorretivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
-        // } else {
-        axiosMethod = axios.post('/ordemServicos/storeCorretivas', registro);
-        // }
-        axiosMethod.then(response => {
-            this.setState({
-                man_sos_complemento: '',
-                servico_select: null,
-                codServico: '',
-                salvado: false,
-                refreshing: true
-            });
-            this.getListaRegistros();
-        }).catch(ex => {
-            this.setState({ salvado: false });
-            console.warn(ex);
-        })
+        axios.post('/ordemServicos/storeCorretivas', registro)
+            .then(response => {
+                this.setState({
+                    man_sos_complemento: '',
+                    servico_select: null,
+                    codServico: '',
+                    salvado: false,
+                    refreshing: true
+                });
+                this.getListaRegistros();
+            }).catch(ex => {
+                this.setState({ salvado: false });
+                console.warn(ex);
+            })
     }
 
     // ------------------------------------------------------------
@@ -324,7 +309,7 @@ export default class OrdemServicoCorretivoScreen extends Component {
         // console.log('OrdemServicoCorretivoScreen: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Serviços Corretivos'}

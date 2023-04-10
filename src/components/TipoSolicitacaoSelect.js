@@ -52,10 +52,6 @@ class TipoSolicitacaoSelect extends PureComponent {
 
     componentDidUpdate(propsAnterior, stateAnterior) {
         const { codTipoSol, onChange, id } = this.props;
-
-        // console.log('componentDidUpdate.this.props: ', this.props);
-        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
-
         if (codTipoSol !== propsAnterior.codTipoSol) {
             this.setState({
                 codTipoSol,
@@ -68,7 +64,6 @@ class TipoSolicitacaoSelect extends PureComponent {
     }
 
     componentDidMount() {
-        // console.log('TipoSolicitacaoSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
                 compras_sugtip_codigo: this.props.compras_sugtip_codigo,
@@ -84,8 +79,6 @@ class TipoSolicitacaoSelect extends PureComponent {
         const state = {};
         state[id] = value;
         this.setState(state);
-
-        // console.log('TipoSolicitacaoSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -102,9 +95,6 @@ class TipoSolicitacaoSelect extends PureComponent {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('TipoSolicitacaoSelect.buscaRegistros: ', data);
-
             if (data.length > 0) {
                 onChange(id, data[0])
             } else {
@@ -307,7 +297,6 @@ class TipoSolicitacaoSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
                     <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>

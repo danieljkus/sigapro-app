@@ -52,7 +52,6 @@ export default class CheckListItemScreen extends Component {
 
     onNetEvento = (info) => {
         let state = this.state;
-        // console.log('onNetEvento: ', info)
         if (info.isConnected) {
             state.netStatus = 1;
         } else {
@@ -62,8 +61,6 @@ export default class CheckListItemScreen extends Component {
     }
 
     componentDidMount() {
-        // console.log('componentDidMount: ', this.props.navigation.state.params.registro)
-
         if (this?.props?.navigation?.state?.params?.registro?.adm_spcl_idf) {
             this.setState({
                 codVeiculo: this?.props?.navigation?.state?.params?.registro?.adm_spcl_veiculo ? this?.props?.navigation?.state?.params?.registro?.adm_spcl_veiculo : '',
@@ -158,7 +155,6 @@ export default class CheckListItemScreen extends Component {
                 })
             }
         } catch (e) {
-            // console.log(e)
             this.setState({ adm_spcl_escala: '', carregandoEscala: false, codVeiculo: '' });
         }
     };
@@ -192,8 +188,6 @@ export default class CheckListItemScreen extends Component {
             this.setState({ salvando: true });
             return axios.post('/checkList/store', registro)
                 .then(response => {
-                    // console.log(response)
-
                     if (response?.status === 200) {
                         Alert.showAlert('Check-List salvo com sucesso');
                     }
@@ -214,10 +208,6 @@ export default class CheckListItemScreen extends Component {
 
 
             if (this.state.codVeiculo) {
-                // console.log('onMudaItem: ', tipo);
-                // console.log('onMudaItem total: ', this.state.listaRegistros.length);
-                // console.log('onMudaItem atual: ', this.state.adm_spcli_seq);
-
                 let total = this.state.listaRegistros.length;
                 let seq = this.state.adm_spcli_seq;
 
@@ -230,8 +220,6 @@ export default class CheckListItemScreen extends Component {
                         seq = this.state.adm_spcli_seq - 1;
                     }
                 }
-
-                // console.log('onMudaItem novo: ', seq);
 
                 let ok = true;
                 if ((this.state.adm_spcl_idf === 0) && (seq === total - 1)) {
@@ -303,11 +291,9 @@ export default class CheckListItemScreen extends Component {
     };
 
     onOBSPress = (visible) => {
-        // console.log('onOBSPress: ', visible);
         if (this.state.listaRegistros[this.state.adm_spcli_seq].adm_spcli_check === 'NC') {
             this.setState({ modalOBSVisible: visible });
             if ((this.state.adm_spcl_idf === 0) && (!visible)) {
-                // console.log('onOBSPress: ', this.state.adm_spcli_obs);
                 this.state.listaRegistros[this.state.adm_spcli_seq].adm_spcli_obs = this.state.adm_spcli_obs;
                 this.onMudaItem('P');
             }
@@ -663,7 +649,6 @@ export default class CheckListItemScreen extends Component {
                             {/* ----------------------------- */}
                             <Modal
                                 visible={this.state.modalOBSVisible}
-                                onRequestClose={() => { console.log("Modal OBS FECHOU.") }}
                                 animationType={"slide"}
                                 transparent={true}
                             >

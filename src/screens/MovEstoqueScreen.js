@@ -174,7 +174,6 @@ export default class MovEstoqueScreen extends Component {
                     }
                 }).then(response => {
                     const { data } = response;
-                    // console.log('FiliaisSelect.componentDidMount: ', data);
                     this.setState({
                         filialSelect: {
                             adm_fil_codigo: filial,
@@ -200,7 +199,6 @@ export default class MovEstoqueScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeFilial: ', state);
         if (value) {
             this.setState({
                 estoq_mei_filial: value.adm_fil_codigo
@@ -212,7 +210,6 @@ export default class MovEstoqueScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeItem: ', state);
         if (value) {
             this.setState({
                 estoq_mei_item: value.estoq_ie_codigo
@@ -375,7 +372,6 @@ export default class MovEstoqueScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
                     transparent={true}
                 >

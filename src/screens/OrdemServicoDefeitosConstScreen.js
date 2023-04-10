@@ -118,23 +118,15 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        // console.log('onRegistroPress: ', registro);
-
         const reg = {
             controle: this.state.man_os_idf,
             seq: registro.man_osd_sequencia,
             situacao: registro.man_osd_situacao === 'A' ? 'F' : 'A',
         };
 
-        // console.log('onRegistroPress: ', reg);
-
         this.setState({ carregarRegistro: true });
         axios.put('/ordemServicos/mudaSituacaoDefeitosConst', reg)
             .then(response => {
-                this.setState({ carregarRegistro: false });
-
-                // console.log('onRegistroPress: ', response.data);
-
                 this.setState({ carregarRegistro: false });
                 this.getListaRegistros();
 
@@ -198,29 +190,21 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
             man_osd_situacao: 'A',
         };
 
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
-
         this.setState({ salvado: true });
 
-        let axiosMethod;
-        // if (man_os_idf) {
-        // axiosMethod = axios.put('/ordemServicos/updateCorretivas/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
-        // } else {
-        axiosMethod = axios.post('/ordemServicos/storeDefeitosConst', registro);
-        // }
-        axiosMethod.then(response => {
-            this.setState({
-                man_osd_defeitos: '',
-                codServico: '',
-                salvado: false,
-                refreshing: true
-            });
-            this.getListaRegistros();
-        }).catch(ex => {
-            this.setState({ salvado: false });
-            console.warn(ex);
-        })
+        axios.post('/ordemServicos/storeDefeitosConst', registro)
+            .then(response => {
+                this.setState({
+                    man_osd_defeitos: '',
+                    codServico: '',
+                    salvado: false,
+                    refreshing: true
+                });
+                this.getListaRegistros();
+            }).catch(ex => {
+                this.setState({ salvado: false });
+                console.warn(ex);
+            })
     }
 
 
@@ -270,7 +254,7 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
         // console.log('OrdemServicoDefeitosConstScreen: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Defeitos Constatados'}

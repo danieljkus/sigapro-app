@@ -16,15 +16,11 @@ import Icon from '../components/Icon';
 
 import VeiculosSelect from '../components/VeiculosSelect';
 import FuncionariosSelect from '../components/FuncionariosSelect';
-import RotasSelect from '../components/RotasSelect';
-import LinhasSelect from '../components/LinhasSelect';
 import HeaderComponent from "../components/HeaderComponent";
 
 const stateInicial = {
     veiculo_select: null,
     funcionario_select: null,
-    // rota_select: null,
-    // linha_select: null,
 
     listaRegistrosFunc: [],
     modalFuncBuscaVisible: false,
@@ -40,9 +36,6 @@ const stateInicial = {
     nomeFunc: '',
 
     codVeiculo: '',
-    // codRota: '',
-    // codLinha: '',
-    man_rt_flag_eventual: 'N',
 
     checkedLinhasRegulares: true,
     checkedTodosServicos: false,
@@ -115,8 +108,6 @@ export default class zFichaViagemSaidaScreen extends Component {
         if (value) {
             this.setState({
                 codVeiculo: value.codVeic,
-                // codRota: value.codRota ? value.codRota : '',
-                // man_rt_flag_eventual: value.man_rt_flag_eventual,
                 man_fv_odo_ini: value.kmOdo,
                 man_fv_km_ini: value.kmAcum,
             });
@@ -158,32 +149,6 @@ export default class zFichaViagemSaidaScreen extends Component {
         }
     }
 
-    // onInputChangeRota = (id, value) => {
-    //     const state = {};
-    //     state[id] = value;
-    //     this.setState(state);
-    //     if (value) {
-    //         this.setState({
-    //             codRota: value.man_rt_codigo,
-    //             man_rt_flag_eventual: value.man_rt_flag_eventual,
-    //         });
-    //     }
-    // }
-
-    // onInputChangeLinha = (id, value) => {
-    //     const state = {};
-    //     state[id] = value;
-    //     this.setState(state);
-
-    //     if (value) {
-    //         this.setState({
-    //             codLinha: value.pas_lin_codigo,
-    //         });
-    //         if (value.pas_lin_codigo) {
-    //             this.buscaServicos(value.pas_lin_codigo);
-    //         }
-    //     }
-    // }
 
     onLimparTela = () => {
         this.setState(stateInicial);
@@ -203,22 +168,6 @@ export default class zFichaViagemSaidaScreen extends Component {
             }
         }
 
-        // if ((this.state.rota_select === undefined) || (!this.state.rota_select)) {
-        //     Alert.showAlert('Informe a Rota');
-        //     return;
-        // }
-
-        // if (this.state.man_rt_flag_eventual !== 'S') {
-        //     if ((this.state.linha_select === undefined) || (!this.state.linha_select)) {
-        //         Alert.showAlert('Informe a Linha');
-        //         return;
-        //     }
-
-        //     if (!this.state.pas_serv_codigo) {
-        //         Alert.showAlert('Selecione um Serviço');
-        //         return;
-        //     }
-        // }
 
         if (this.state.checkedLinhasRegulares) {
             if (!this.state.pas_serv_codigo) {
@@ -247,25 +196,15 @@ export default class zFichaViagemSaidaScreen extends Component {
     onSalvarRegistro = () => {
         this.setState({ salvado: true });
 
-        const { veiculo_select, funcionarioSelect, rota_select, man_rt_flag_eventual,
+        const { veiculo_select, funcionarioSelect, 
             man_fv_odo_ini, man_fv_km_ini, man_fv_obs, man_fvd_disco, pas_serv_codigo,
             man_fvm_nome_mot, codFunc, empFunc, nomeFunc, checkedLinhasRegulares } = this.state;
-
-        // let codFunc = 0
-        // let empFunc = 0
-        // if (funcionarios) {
-        //     const ind = funcionarios.key.indexOf("_");
-        //     const tam = funcionarios.key.length;
-        //     codFunc = funcionarios.key.substr(0, ind).trim();
-        //     empFunc = funcionarios.key.substr(ind + 1, tam).trim();
-        // }
 
         const registro = {
             man_fv_idf_rota: veiculo_select.idfRota,
             man_fv_veiculo: veiculo_select.codVeic,
-            man_fv_rota: 0, //rota_select.man_rt_codigo,
-            man_rt_flag_eventual: checkedLinhasRegulares ? 'N' : 'S', //man_rt_flag_eventual,
-            pas_serv_codigo,
+            checkedLinhasRegulares: checkedLinhasRegulares ? 'N' : 'S',
+            pas_serv_codigo: checkedLinhasRegulares ? pas_serv_codigo : 0,
 
             man_fvm_motorista: codFunc,
             man_fvm_empresa_mot: empFunc,
@@ -359,7 +298,6 @@ export default class zFichaViagemSaidaScreen extends Component {
             }
         }).then(response => {
             const { data } = response;
-            // console.log('buscaServicos: ', data)
             const servicoSelect = data.map(regList => {
                 return {
                     key: regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico,
@@ -513,9 +451,8 @@ export default class zFichaViagemSaidaScreen extends Component {
     render() {
         const { man_fv_odo_ini, man_fv_obs, man_fvm_nome_mot, pas_serv_codigo, man_fvd_disco,
             servicoSelect, loading, salvado, carregandoServico,
-            veiculo_select, rota_select, linha_select, listaRegistrosFunc, checkedLinhasRegulares, checkedTodosServicos,
-            codVeiculo, codRota, man_rt_flag_eventual, codLinha,
-            funcionariosSelect, codFunc, nomeFunc, carregandoFunc,
+            veiculo_select, listaRegistrosFunc, checkedLinhasRegulares, checkedTodosServicos,
+            codVeiculo, funcionariosSelect, codFunc, nomeFunc, carregandoFunc,
             refreshing,
         } = this.state;
 
@@ -670,77 +607,20 @@ export default class zFichaViagemSaidaScreen extends Component {
                         ) : null}
 
 
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: "47%", marginRight: 20 }}>
+                                <TextInput
+                                    label="Odômetro"
+                                    id="man_fv_odo_ini"
+                                    ref="man_fv_odo_ini"
+                                    value={String(man_fv_odo_ini)}
+                                    maxLength={60}
+                                    onChange={this.onInputChange}
+                                    keyboardType="numeric"
+                                />
+                            </View>
 
-
-                        {/* 
-                        <RotasSelect
-                            label="Rota"
-                            id="rota_select"
-                            value={rota_select}
-                            codRota={codRota}
-                            // codRota={veiculo_select && veiculo_select.codRota ? veiculo_select.codRota : ''}
-                            onChange={this.onInputChangeRota}
-                            enabled={veiculo_select && veiculo_select.sitRota === 'A' ? false : true}
-                        /> */}
-
-
-                        {/* {String(man_rt_flag_eventual) === 'S'
-                            ? (null)
-                            : (
-                                <View>
-                                    <LinhasSelect
-                                        label="Linha"
-                                        id="linha_select"
-                                        codLinha={codLinha}
-                                        onChange={this.onInputChangeLinha}
-                                        value={linha_select}
-                                    />
-
-                                    {carregandoServico
-                                        ? (
-                                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                                <ActivityIndicator
-                                                    style={{
-                                                        margin: 10,
-                                                    }}
-                                                />
-                                                <Text>
-                                                    Buscando Serviços
-                                                </Text>
-                                            </View>
-                                        )
-                                        : (
-                                            <TextInput
-                                                type="select"
-                                                label="Serviço"
-                                                id="pas_serv_codigo"
-                                                ref="pas_serv_codigo"
-                                                value={pas_serv_codigo}
-                                                options={servicoSelect}
-                                                onChange={this.onInputChange}
-                                            />
-                                        )
-                                    }
-                                </View>
-                            )
-                        } */}
-
-
-
-                        {/* <View style={{ flexDirection: 'row' }}>
-                            <View style={{ width: "47%", marginRight: 20 }}> */}
-                        <TextInput
-                            label="Odômetro"
-                            id="man_fv_odo_ini"
-                            ref="man_fv_odo_ini"
-                            value={String(man_fv_odo_ini)}
-                            maxLength={60}
-                            onChange={this.onInputChange}
-                            keyboardType="numeric"
-                        />
-                        {/* </View> */}
-
-                        {/* <View style={{ width: "47%" }}>
+                            <View style={{ width: "47%" }}>
                                 <TextInput
                                     label="Nº Disco"
                                     id="man_fvd_disco"
@@ -749,8 +629,8 @@ export default class zFichaViagemSaidaScreen extends Component {
                                     onChange={this.onInputChange}
                                     keyboardType="numeric"
                                 />
-                            </View> */}
-                        {/* </View> */}
+                            </View>
+                        </View>
 
                         <TextInput
                             label="Observação"
@@ -772,7 +652,6 @@ export default class zFichaViagemSaidaScreen extends Component {
                     <Modal
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
                         animationType={"slide"}
                     >
 

@@ -152,7 +152,6 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     onRegistroPress = (estoq_mei_seq, estoq_mei_item, estoq_mei_qtde_mov, estoq_mei_valor_unit, estoq_mei_total_mov, tipo_destino, cod_destino, descr_destino, estoq_mei_obs) => {
-        // console.log('-------------onRegistroPress---------------');
         this.setState({
             estoq_mei_seq,
             estoq_mei_qtde_mov: maskValorMoeda(estoq_mei_qtde_mov),
@@ -161,12 +160,10 @@ export default class SaidaEstoqueItensScreen extends Component {
             descr_destino,
             estoq_mei_obs,
         });
-
     }
 
 
     onRegistroLongPress = (estoq_mei_seq) => {
-        // console.log('-------------onRegistroLongPress---------------');
         if (!this.state.vendaEnviada) {
             Alert.showConfirm("Deseja excluir este item?",
                 { text: "Cancelar" },
@@ -180,8 +177,6 @@ export default class SaidaEstoqueItensScreen extends Component {
     }
 
     onExcluirRegistro = (estoq_mei_seq) => {
-        // console.log('-------------onExcluirRegistro---------------');
-
         const listaItens = [...this.state.listaItens];
         const index = listaItens.findIndex(registro => registro.estoq_mei_seq === estoq_mei_seq);
 
@@ -206,7 +201,6 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     onFormIncluirProduto = (event) => {
-        // console.log('-------------onFormIncluirProduto---------------');
         if ((!this.state.item_select) || (!this.state.item_select.estoq_ie_codigo)) {
             Alert.showAlert('Informe o Item');
             return;
@@ -219,13 +213,6 @@ export default class SaidaEstoqueItensScreen extends Component {
             Alert.showAlert('Estoque Insuficiente');
             return;
         }
-
-
-        // console.log('onFormIncluirProduto: ', this.state);
-        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual));
-        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_mov));
-        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_me_qtde));
-        // console.log('onFormIncluirProduto: ', vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde));
 
         if ((vlrStringParaFloat(this.state.estoq_mei_qtde_atual) - vlrStringParaFloat(this.state.estoq_mei_qtde_mov) - vlrStringParaFloat(this.state.estoq_me_qtde)) < 0) {
             Alert.showAlert('Estoque Insuficiente');
@@ -240,10 +227,7 @@ export default class SaidaEstoqueItensScreen extends Component {
     }
 
     onGravar = () => {
-        // console.log('-----------------onGravar-----------------------');
-
         const { listaItens } = this.state;
-
         const iIndItem = listaItens.findIndex(registro => registro.estoq_mei_seq === this.state.estoq_mei_seq);
         if (iIndItem >= 0) {
 
@@ -289,7 +273,6 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     calculoTotalPedido = () => {
-        // console.log('-------------calculoTotalPedido---------------');
         const { listaItens } = this.state;
         let qtdeItens = 0;
         let vlrTotal = 0;
@@ -323,7 +306,6 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     onInputChangeQtde = (id, value) => {
-        // console.log('-------------onInputChangeQtde---------------');
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -334,7 +316,6 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     onSomarQtde = () => {
-        // console.log('-------------onSomarQtde---------------');
         let { estoq_mei_qtde_mov, estoq_mei_valor_unit } = this.state;
         estoq_mei_qtde_mov = maskValorMoeda(parseFloat(estoq_mei_qtde_mov) + 1);
         this.setState({ estoq_mei_qtde_mov });
@@ -342,7 +323,6 @@ export default class SaidaEstoqueItensScreen extends Component {
     }
 
     onDiminuirQtde = () => {
-        // console.log('-------------onDiminuirQtde---------------');
         let { estoq_mei_qtde_mov, estoq_mei_valor_unit } = this.state;
         if (vlrStringParaFloat(estoq_mei_qtde_mov) > 1) {
             estoq_mei_qtde_mov = maskValorMoeda(vlrStringParaFloat(estoq_mei_qtde_mov) - 1);
@@ -353,15 +333,10 @@ export default class SaidaEstoqueItensScreen extends Component {
 
 
     calculoItem = (estoq_mei_qtde_mov, estoq_mei_valor_unit) => {
-        // console.log('----------------calculoItem---------------------');
         const vlrUnit = vlrStringParaFloat(String(estoq_mei_valor_unit).replace('.', ''));
         const qtde = vlrStringParaFloat(String(estoq_mei_qtde_mov).replace('.', ''));
-        // console.log('estoq_mei_qtde_mov: ', qtde);
-        // console.log('estoq_mei_valor_unit: ', vlrUnit);
         let vlrTotal = parseFloat(parseFloat(vlrUnit) * parseFloat(qtde));
-        // console.log('vlrTotal: ', vlrTotal);
         vlrTotal = parseFloat(vlrTotal.toFixed(2));
-        // console.log('vlrTotal-: ', vlrTotal);
         this.setState({
             estoq_mei_total_mov: maskValorMoeda(vlrTotal),
         });
@@ -377,11 +352,7 @@ export default class SaidaEstoqueItensScreen extends Component {
 
     onBarCodeRead = event => {
         const { data, rawData, type } = event;
-        // console.log('FichaEstoqueScreen.onBarCodeRead: ', data);
-
         const codBar = String(data).substr(6, 6);
-        // console.log('FichaEstoqueScreen.onBarCodeRead: ', codBar);
-
         this.setState({
             codItem: codBar,
         }, this.buscaItem(codBar));
@@ -389,7 +360,6 @@ export default class SaidaEstoqueItensScreen extends Component {
 
     buscaItem = (value) => {
         this.setState({ carregando: true });
-        // console.log('FichaEstoqueScreen.buscaItem: ', value);
         axios.get('/listaItens', {
             params: {
                 codItem: value,
@@ -397,7 +367,6 @@ export default class SaidaEstoqueItensScreen extends Component {
             }
         }).then(response => {
             const { data } = response;
-            // console.log('FichaEstoqueScreen.buscaItem: ', data);
             this.setState({
                 carregando: false,
             })

@@ -109,9 +109,6 @@ export default class PreDigitacaoNotaScreen extends Component {
             }).catch(ex => {
                 const { response } = ex;
                 this.setState({ salvado: false });
-
-                // console.log(ex.response);
-
                 if (ex.response) {
                     // erro no servidor
                     Alert.showAlert('Não foi possível concluir a solicitação. ' + ex.response.data.estoq_nfpd_chave);

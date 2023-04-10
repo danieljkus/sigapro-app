@@ -127,7 +127,6 @@ export default class SaidasEstoqueScreen extends Component {
                     }
                 }).then(response => {
                     const { data } = response;
-                    // console.log('FiliaisSelect.componentDidMount: ', data);
                     this.setState({
                         filialSelect: {
                             adm_fil_codigo: filial,
@@ -151,7 +150,6 @@ export default class SaidasEstoqueScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeFilial: ', state);
         if (value) {
             this.setState({
                 estoq_mei_filial: value.adm_fil_codigo
@@ -194,14 +192,10 @@ export default class SaidasEstoqueScreen extends Component {
     }
 
     onRegistroPress = (estoq_me_idf) => {
-        // console.log('onRegistroPress: ', estoq_me_idf);
-
         this.setState({ carregarRegistro: true });
         axios.get('/saidasEstoque/show/' + estoq_me_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
-
-                // console.log('onRegistroPress: ', response.data);
 
                 let tipo_destino = '';
                 let codVeiculo = '';
@@ -255,8 +249,6 @@ export default class SaidasEstoqueScreen extends Component {
     }
 
     onAddPress = () => {
-        // console.log('onAddPress');
-
         this.props.navigation.navigate('SaidaEstoqueScreen', {
             registro: {
                 estoq_me_idf: 0,
@@ -413,7 +405,6 @@ export default class SaidasEstoqueScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
                     transparent={true}
                 >

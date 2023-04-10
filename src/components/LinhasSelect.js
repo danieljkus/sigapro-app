@@ -108,7 +108,7 @@ class LinhasSelect extends PureComponent {
 
 
     // ---------------------------------------------------------------------------
-    // MODAL PARA SELECIONAR ROTAS
+    // MODAL PARA SELECIONAR LINHAS
     // ---------------------------------------------------------------------------
 
     onAbrirBuscaModal = (visible) => {
@@ -283,7 +283,6 @@ class LinhasSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
 

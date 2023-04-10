@@ -131,8 +131,6 @@ export default class SaidaEstoqueScreen extends Component {
 
 
     onMudaTipoDestino = (tipo) => {
-        // console.log('onMudaTipoDestino: ', tipo);
-
         if (!this.state.estoq_me_idf) {
             if (tipo === 'VEIC') {
                 this.setState({
@@ -298,9 +296,6 @@ export default class SaidaEstoqueScreen extends Component {
             listaItens: lista,
         };
 
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
-
         let axiosMethod;
         if (estoq_me_idf) {
             axiosMethod = axios.put('/saidasEstoque/update/' + estoq_me_idf, registro);
@@ -384,7 +379,6 @@ export default class SaidaEstoqueScreen extends Component {
     }
 
     onCarregaProdutos = (listaItens) => {
-        // console.log('onCarregaProdutos: ', listaItens);
         this.setState({ listaItens });
         this.calculoTotalPedido();
     }
@@ -403,9 +397,6 @@ export default class SaidaEstoqueScreen extends Component {
     }
 
     buscaOS = (value) => {
-        // this.setState({ carregando: true });
-
-        // console.log('buscaOS: ', value);
 
         axios.get('/ordemServicos/buscaOS', {
             params: {
@@ -413,8 +404,6 @@ export default class SaidaEstoqueScreen extends Component {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('buscaOS: ', data);
 
             this.setState({
                 estoq_mei_ordem_servico: data.idf,

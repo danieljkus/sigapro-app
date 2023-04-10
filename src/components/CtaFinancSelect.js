@@ -53,9 +53,6 @@ class CtaFinancSelect extends PureComponent {
     componentDidUpdate(propsAnterior, stateAnterior) {
         const { codCta, onChange, id } = this.props;
 
-        // console.log('componentDidUpdate.this.props: ', this.props);
-        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
-
         if (codCta !== propsAnterior.codCta) {
             this.setState({
                 codCta,
@@ -68,7 +65,6 @@ class CtaFinancSelect extends PureComponent {
     }
 
     componentDidMount() {
-        // console.log('CtaFinancSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
                 ctaFinancSelect: {
@@ -84,7 +80,6 @@ class CtaFinancSelect extends PureComponent {
         state[id] = value;
         this.setState(state);
 
-        // console.log('CtaFinancSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -101,8 +96,6 @@ class CtaFinancSelect extends PureComponent {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('CtaFinancSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -306,7 +299,6 @@ class CtaFinancSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
                     <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>

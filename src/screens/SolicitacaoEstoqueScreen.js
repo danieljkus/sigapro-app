@@ -66,8 +66,6 @@ export default class SolicitacaoEstoqueScreen extends Component {
     }
 
     componentDidMount() {
-        // console.log('PROPS: ', this.props.navigation.state.params.registro);
-
         getFilial().then(filial => {
             this.setState({
                 filial,
@@ -161,9 +159,6 @@ export default class SolicitacaoEstoqueScreen extends Component {
             listaItens,
         };
 
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
-
         this.setState({ salvado: true });
 
         let axiosMethod;
@@ -214,7 +209,6 @@ export default class SolicitacaoEstoqueScreen extends Component {
     }
 
     onCarregaProdutos = (listaItens) => {
-        // console.log('onCarregaProdutos: ', listaItens);
         this.setState({ listaItens });
     }
 

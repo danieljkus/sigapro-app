@@ -23,30 +23,26 @@ export const isLoggedIn = async () => {
 
 
 export const getTemPermissao = (permissao, permissoes) => {
-    // getPermissoes().then(permissoes => {
-        // this.setState({ permissoes });
+    // console.log('getTemPermissao: ', permissao);
+    // console.log('getTemPermissao: ', permissoes);
 
-        // console.log('getTemPermissao: ', permissao);
+    let iIndItem = -1;
+    if ((permissoes) && (permissoes.length > 0) && (permissao)) {
         // console.log('getTemPermissao: ', permissoes);
+        // const iIndItem = permissoes.findIndex(registro => (registro.adm_fsp_nome).trim().toUpperCase === (permissao).trim().toUpperCase);
 
-        let iIndItem = -1;
-        if ((permissoes) && (permissoes.length > 0) && (permissao)) {
-            // console.log('getTemPermissao: ', permissoes);
-            // const iIndItem = permissoes.findIndex(registro => (registro.adm_fsp_nome).trim().toUpperCase === (permissao).trim().toUpperCase);
+        for (var x in permissoes) {
+            if (permissoes[x].adm_fsp_nome === permissao) {
+                iIndItem = x;
+            }
+        };
 
-            for (var x in permissoes) {
-                if (permissoes[x].adm_fsp_nome === permissao) {
-                    iIndItem = x;
-                }
-            };
-    
-            // console.log('getTemPermissao: ', permissao + ' - ' + (iIndItem >= 0 ? true : false));
-            // console.log('getTemPermissao: ', permissao + ' - ' + iIndItem);
-            return iIndItem >= 0 ? 1 : 0;
-        } else {
-            // return false;
-        }
-    // })
+        // console.log('getTemPermissao: ', permissao + ' - ' + (iIndItem >= 0 ? true : false));
+        // console.log('getTemPermissao: ', permissao + ' - ' + iIndItem);
+        return iIndItem >= 0 ? 1 : 0;
+    } else {
+        // return false;
+    }
 }
 
 export const removePermissoes = async () => {

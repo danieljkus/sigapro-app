@@ -221,7 +221,6 @@ export default class PneusTrocaScreen extends Component {
 
     onOKForm = (event) => {
         const { registro } = this.state;
-        // console.log('onOKForm: ', registro);
         if (checkFormIsValid(this.refs)) {
             if (registro.tipoTela === 'ADDVEIC') {
                 if (!registro.pneus_mov_pneu_novo) {
@@ -360,9 +359,6 @@ export default class PneusTrocaScreen extends Component {
             }
 
         }
-
-        // console.log('onSalvarRegistro: ', registroGravar);
-        // return;
 
         if (registroGravar) {
             this.setState({ salvando: true });

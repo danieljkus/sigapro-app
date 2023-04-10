@@ -53,10 +53,6 @@ class FiliaisSelect extends PureComponent {
 
     componentDidUpdate(propsAnterior, stateAnterior) {
         const { codFilial, onChange, id } = this.props;
-
-        // console.log('componentDidUpdate.this.props: ', this.props);
-        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
-
         if (codFilial !== propsAnterior.codFilial) {
             this.setState({
                 codFilial,
@@ -69,7 +65,6 @@ class FiliaisSelect extends PureComponent {
     }
 
     componentDidMount() {
-        // console.log('FiliaisSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
                 pneus_mov_filial: this.props.adm_fil_codigo,
@@ -86,7 +81,6 @@ class FiliaisSelect extends PureComponent {
         state[id] = value;
         this.setState(state);
 
-        // console.log('FiliaisSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -103,8 +97,6 @@ class FiliaisSelect extends PureComponent {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('FiliaisSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -312,7 +304,6 @@ class FiliaisSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
 

@@ -19,15 +19,11 @@ import Icon from '../components/Icon';
 
 import VeiculosSelect from '../components/VeiculosSelect';
 import FuncionariosSelect from '../components/FuncionariosSelect';
-// import RotasSelect from '../components/RotasSelect';
-// import LinhasSelect from '../components/LinhasSelect';
 import HeaderComponent from "../components/HeaderComponent";
 
 const stateInicial = {
     veiculo_select: null,
     funcionario_select: null,
-    rota_select: null,
-    linha_select: null,
 
     listaRegistrosFunc: [],
     modalFuncBuscaVisible: false,
@@ -43,9 +39,6 @@ const stateInicial = {
     nomeFunc: '',
 
     codVeiculo: '',
-    codRota: '',
-    codLinha: '',
-    man_rt_flag_eventual: 'N',
 
     man_fv_odo_ini: 0,
     man_fv_odo_fim: '',
@@ -67,7 +60,7 @@ const stateInicial = {
     defeito_chap_borr: 'Nada Consta',
 
     checkedLinhasRegulares: true,
-    checkedTodosServicos: false,
+    checkedTodosServicos: true,
 
     man_fvm_data_hora_ini: moment().format('h:mm'),
     man_fvm_data_hora_fim: moment().format('h:mm'),
@@ -137,6 +130,9 @@ export default class FichaViagemChegadaScreen extends Component {
     onInputChangeQtdeComb = (id, value) => {
         const state = {};
         state[id] = value;
+        this.setState({
+            checkedFinalRota: vlrStringParaFloat(value) ? true : false,
+        });
         this.setState(state);
 
         const { man_fv_odo_fim, man_fv_qtde_comb, man_fv_qtde_arla } = this.state;
@@ -200,14 +196,13 @@ export default class FichaViagemChegadaScreen extends Component {
         if (value) {
             this.setState({
                 codVeiculo: value.codVeic,
-                codRota: value.codRota ? value.codRota : '',
-                man_rt_flag_eventual: value.man_rt_flag_eventual,
-                codLinha: value.codLinha ? value.codLinha : '',
-                pas_serv_codigo: value.man_fvd_servico,
                 codFunc: value.codFunc ? value.codFunc : '',
                 empFunc: value.empFunc ? value.empFunc : '',
                 nomeFunc: value.nomeFunc ? value.nomeFunc : '',
                 man_fvm_nome_mot: value.codFunc ? '' : value.nomeFunc,
+
+                pas_serv_codigo: value.man_fvd_servico,
+                checkedLinhasRegulares: value.man_fvd_servico ? true : false,
 
                 man_fv_odo_ini: value.kmOdo,
                 man_fv_km_ini: value.kmAcum,
@@ -256,32 +251,7 @@ export default class FichaViagemChegadaScreen extends Component {
         }
     }
 
-    // onInputChangeRota = (id, value) => {
-    //     const state = {};
-    //     state[id] = value;
-    //     this.setState(state);
-    //     if (value) {
-    //         this.setState({
-    //             codRota: value.man_rt_codigo,
-    //             man_rt_flag_eventual: value.man_rt_flag_eventual,
-    //         });
-    //     }
-    // }
 
-    // onInputChangeLinha = (id, value) => {
-    //     const state = {};
-    //     state[id] = value;
-    //     this.setState(state);
-
-    //     if (value) {
-    //         this.setState({
-    //             codLinha: value.pas_lin_codigo,
-    //         });
-    //         if (value.pas_lin_codigo) {
-    //             this.buscaServicos(value.pas_lin_codigo);
-    //         }
-    //     }
-    // }
 
     onLimparTela = () => {
         this.setState(stateInicial);
@@ -305,22 +275,6 @@ export default class FichaViagemChegadaScreen extends Component {
             }
         }
 
-        // if ((this.state.rota_select === undefined) || (!this.state.rota_select)) {
-        //     Alert.showAlert('Informe a Rota');
-        //     return;
-        // }
-
-        // if (this.state.man_rt_flag_eventual !== 'S') {
-        //     if ((this.state.linha_select === undefined) || (!this.state.linha_select)) {
-        //         Alert.showAlert('Informe a Linha');
-        //         return;
-        //     }
-
-        //     if (!this.state.pas_serv_codigo) {
-        //         Alert.showAlert('Selecione um Serviço');
-        //         return;
-        //     }
-        // }
 
         if (this.state.checkedLinhasRegulares) {
             if (!this.state.pas_serv_codigo) {
@@ -389,11 +343,11 @@ export default class FichaViagemChegadaScreen extends Component {
     onSalvarRegistro = () => {
         this.setState({ salvado: true });
 
-        const { veiculo_select, funcionario_select, rota_select, codFunc, empFunc, man_fvm_nome_mot,
+        const { veiculo_select, funcionario_select, codFunc, empFunc, man_fvm_nome_mot,
             man_fv_odo_fim, man_fv_km_fim, man_fv_km_viagem, man_fv_km_rota, man_fv_qtde_comb,
             man_fv_qtde_comb_extra, man_fv_media, man_fv_qtde_arla, man_fv_media_arla, man_fv_ocorrencia,
-            man_fv_obs, man_fvd_disco, pas_serv_codigo, checkedFinalRota, checkedGeraOS,
-            man_rt_flag_eventual, defeito_mec_ele_lub, defeito_chap_borr } = this.state;
+            man_fv_obs, man_fvd_disco, pas_serv_codigo, checkedFinalRota, checkedGeraOS, checkedLinhasRegulares,
+            defeito_mec_ele_lub, defeito_chap_borr } = this.state;
 
         // let codFunc = 0
         // let empFunc = 0
@@ -410,8 +364,8 @@ export default class FichaViagemChegadaScreen extends Component {
         const registro = {
             man_fv_idf: veiculo_select.idfViagem,
             man_fv_veiculo: veiculo_select.codVeic,
-            man_fv_rota: rota_select.man_rt_codigo,
-            man_rt_flag_eventual: man_rt_flag_eventual,
+            man_fv_rota: 0,
+            checkedLinhasRegulares: checkedLinhasRegulares ? 'N' : 'S',
 
             man_fvm_motorista: codFunc,
             man_fvm_empresa_mot: empFunc,
@@ -442,6 +396,8 @@ export default class FichaViagemChegadaScreen extends Component {
         };
 
         // console.log(registro);
+
+        // return;
 
         axios.put('/fichaViagem/chegada/' + registro.man_fv_idf, registro)
             .then(response => {
@@ -522,7 +478,6 @@ export default class FichaViagemChegadaScreen extends Component {
         axios.get('/listaServicos', {
             params: {
                 viagem: value,
-                // linha: value
             }
         }).then(response => {
             const { data } = response;
@@ -709,11 +664,14 @@ export default class FichaViagemChegadaScreen extends Component {
             man_fv_qtde_comb_extra, man_fv_qtde_arla, man_fv_media_arla, man_fv_ocorrencia,
             ocorrenciaSelect, man_fv_sit_rota, geraOS, defeito_mec_ele_lub, defeito_chap_borr,
             man_fvm_data_hora_ini, man_fvm_data_hora_fim, servicoSelect, veiculo_select,
-            funcionariosSelect, man_fvm_nome_mot, rota_select, codRota, linha_select, codLinha,
+            funcionariosSelect, man_fvm_nome_mot,
             carregandoFunc, carregandoServico, loading, salvado,
             checkedFinalRota, checkedGeraOS, checkedLinhasRegulares, checkedTodosServicos,
-            man_rt_flag_eventual, refreshing, listaRegistrosFunc,
+            refreshing, listaRegistrosFunc,
         } = this.state;
+
+
+        // console.log('this.state: ', this.state)
 
         return (
             <View style={{ flex: 1, }}>
@@ -864,59 +822,6 @@ export default class FichaViagemChegadaScreen extends Component {
                             </View>
                         ) : null}
 
-
-
-
-
-                        {/* <RotasSelect
-                            label="Rota"
-                            id="rota_select"
-                            value={rota_select}
-                            codRota={codRota}
-                            onChange={this.onInputChangeRota}
-                            enabled={veiculo_select && veiculo_select.sitRota === 'A' ? false : true}
-                        />
-
-                        {man_rt_flag_eventual === 'S'
-                            ? (null)
-                            : (
-                                <View>
-                                    <LinhasSelect
-                                        label="Linha"
-                                        id="linha_select"
-                                        codLinha={codLinha}
-                                        onChange={this.onInputChangeLinha}
-                                        value={linha_select}
-                                    />
-
-                                    {carregandoServico
-                                        ? (
-                                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                                <ActivityIndicator
-                                                    style={{
-                                                        margin: 10,
-                                                    }}
-                                                />
-                                                <Text>
-                                                    Buscando Serviços
-                                                </Text>
-                                            </View>
-                                        )
-                                        : (
-                                            <TextInput
-                                                type="select"
-                                                label="Serviço"
-                                                id="pas_serv_codigo"
-                                                ref="pas_serv_codigo"
-                                                value={pas_serv_codigo}
-                                                options={servicoSelect}
-                                                onChange={this.onInputChange}
-                                            />
-                                        )
-                                    }
-                                </View>
-                            )
-                        } */}
 
 
 
@@ -1120,11 +1025,12 @@ export default class FichaViagemChegadaScreen extends Component {
                         <View style={{ flexDirection: 'row', marginBottom: 20 }}>
                             <View style={{ width: "50%", margin: 0, padding: 0 }}>
                                 <CheckBox
-                                    title='Final da Rota'
+                                    title='Tanque cheio?'
                                     key={man_fv_sit_rota}
                                     checked={checkedFinalRota}
                                     onPress={() => this.setState({ checkedFinalRota: !checkedFinalRota })}
                                     containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                                    disabled={vlrStringParaFloat(man_fv_qtde_comb) === 0 ? true : false}
                                 />
                             </View>
 
@@ -1182,7 +1088,6 @@ export default class FichaViagemChegadaScreen extends Component {
                     <Modal
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
                         animationType={"slide"}
                     >
 

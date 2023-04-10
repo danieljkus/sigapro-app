@@ -54,10 +54,6 @@ class Drawer extends PureComponent {
             this.setState({empresa});
         })
         getPermissoes().then(permissoes => {
-
-            // const per = getTemPermissao('ESCALAVEICULOSSCREEN', permissoes);
-            // console.log('refreshUsuario: ', per);
-
             this.setState({permissoes});
         })
         getFilial().then(filial => {
@@ -89,7 +85,6 @@ class Drawer extends PureComponent {
 
         // console.log('Drawer.state: ', this.state);
         // console.log('Drawer.permissoes: ', permissoes);
-        // console.log('Drawer.getTemPermissao: ', getTemPermissao('VIAGENSTURISMOSCREEN', permissoes));
 
         return (
             <View style={{flex: 1}}>

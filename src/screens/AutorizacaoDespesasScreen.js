@@ -192,8 +192,6 @@ export default class AutorizacaoDespesasScreen extends Component {
                 sit: buscaSituacao,
             }
         }).then(response => {
-            // console.log('getListaRegistros: ', response.data);
-
             const novosRegistros = pagina === 1
                 ? response.data.data
                 : listaRegistros.concat(response.data.data);

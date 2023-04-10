@@ -538,7 +538,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     }
                 }).then(response => {
                     const { data } = response;
-                    // console.log('FiliaisSelect.componentDidMount: ', data);
                     this.setState({
                         filialSelect: {
                             adm_fil_codigo: filial,
@@ -557,7 +556,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     onInputChangeItem = (id, value) => {
-        // console.log('onInputChangeItem')
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -608,8 +606,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             state[id] = value;
             this.setState(state);
 
-            // console.log('onInputChangeLista: ', value);
-
             if ((this.state.item_select) && (this.state.item_select.estoq_ie_codigo)) {
                 this.setState({ refreshing: true });
 
@@ -634,7 +630,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeFilial: ', state);
         if (value) {
             this.setState({
                 estoq_mei_filial: value.adm_fil_codigo
@@ -643,13 +638,11 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     buscaEstoque = (codItem) => {
-        // console.log('buscaEstoque')
         axios.get('/estoque/buscaEstoque', {
             params: {
                 codItem,
             }
         }).then(response => {
-            // console.log('buscaEstoque: ', response.data);
             this.setState({
                 qtdeEstoque: response.data.qtde,
                 custo: response.data.custo,
@@ -682,8 +675,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
 
     getListaFiliais = () => {
         const { pagina, listaRegistrosFiliais, item_select } = this.state;
-
-        // console.log('getListaFiliais OK: ', item_select.estoq_ie_codigo)
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             axios.get('/estoque/itensEstoqueFiliais', {
                 params: {
@@ -692,8 +683,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     codItem: item_select.estoq_ie_codigo,
                 }
             }).then(response => {
-                // console.log('getListaFiliais: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosFiliais.concat(response.data.data);
@@ -721,7 +710,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             pagina, listaRegistrosSaidas, item_select
         } = this.state;
 
-        // console.log('getListaSaidas: ', item_select.estoq_ie_codigo)
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             const temFiltro = estoq_mei_filial !== '' || estoq_me_idf !== '' || estoq_me_numero !== '';
 
@@ -737,8 +725,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
                 }
             }).then(response => {
-                // console.log('getListaSaidas: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosSaidas.concat(response.data.data);
@@ -767,7 +753,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             estoq_mei_filial, dataIni, dataFim, estoq_me_idf, estoq_me_numero,
             pagina, listaRegistrosCompras, item_select
         } = this.state;
-        // console.log('getListaCompras: ', item_select.estoq_ie_codigo)
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             const temFiltro = estoq_mei_filial !== '' || estoq_me_idf !== '' || estoq_me_numero !== '';
             axios.get('/estoque/itensEstoqueCompras', {
@@ -782,8 +767,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
                 }
             }).then(response => {
-                // console.log('getListaCompras: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosCompras.concat(response.data.data);
@@ -810,7 +793,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             estoq_mei_filial, dataIni, dataFim, estoq_me_idf, estoq_me_numero,
             pagina, listaRegistrosNotas, item_select
         } = this.state;
-        // console.log('getListaNotas: ', item_select.estoq_ie_codigo)
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             const temFiltro = estoq_mei_filial !== '' || estoq_me_idf !== '' || estoq_me_numero !== '';
             axios.get('/estoque/itensEstoqueNotasFiscais', {
@@ -825,8 +807,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
                 }
             }).then(response => {
-                // console.log('getListaNotas: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosNotas.concat(response.data.data);
@@ -851,7 +831,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
 
     getListaFornecedores = () => {
         const { item_select, pagina, listaRegistrosFornec } = this.state;
-        // console.log('getListaFornecedores: ', item_select.estoq_ie_codigo)
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             axios.get('/estoque/itensEstoqueFornecedores', {
                 params: {
@@ -860,8 +839,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     codItem: item_select.estoq_ie_codigo,
                 }
             }).then(response => {
-                // console.log('getListaFornecedores: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosFornec.concat(response.data.data);
@@ -996,11 +973,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
 
     onBarCodeRead = event => {
         const { data, rawData, type } = event;
-        // console.log('ConsultaItensEstoqueScreen.onBarCodeRead: ', data);
-
         const codBar = String(data).substr(6, 6);
-        // console.log('ConsultaItensEstoqueScreen.onBarCodeRead: ', codBar);
-
         this.setState({
             codItem: codBar,
         }, this.buscaItem(codBar));
@@ -1008,7 +981,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
 
     buscaItem = (value) => {
         this.setState({ carregando: true });
-        // console.log('ConsultaItensEstoqueScreen.buscaItem: ', value);
         axios.get('/listaItens', {
             params: {
                 codItem: value,
@@ -1016,7 +988,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             }
         }).then(response => {
             const { data } = response;
-            // console.log('ConsultaItensEstoqueScreen.buscaItem: ', data);
             this.setState({
                 carregando: false,
             })
@@ -1193,7 +1164,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
                     transparent={true}
                 >

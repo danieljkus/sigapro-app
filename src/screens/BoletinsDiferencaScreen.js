@@ -102,8 +102,6 @@ export default class BoletinsDiferencaScreen extends Component {
                 sit: buscaSituacao,
             }
         }).then(response => {
-            // console.log('getListaRegistros: ', response.data);
-
             const novosRegistros = pagina === 1
                 ? response.data.data
                 : listaRegistros.concat(response.data.data);
@@ -161,9 +159,6 @@ export default class BoletinsDiferencaScreen extends Component {
 
         axios.get('/boletimDeiferenca/montarBoletim/' + registro.fin_lanc_filial).then(response => {
             this.setState({carregarRegistro: false});
-
-            // console.log('onWhatsAppEnviar: ', response.data);
-
             Linking.openURL(
                 'https://api.whatsapp.com/send?' +
                 // 'phone=' + telefone +

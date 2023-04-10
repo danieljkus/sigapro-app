@@ -55,10 +55,6 @@ class ItemEstoqueSelect extends PureComponent {
 
     componentDidUpdate(propsAnterior, stateAnterior) {
         const { codItem, onChange, id } = this.props;
-
-        // console.log('componentDidUpdate.this.props: ', this.props);
-        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
-
         if (codItem !== propsAnterior.codItem) {
             this.setState({
                 codItem,
@@ -71,7 +67,6 @@ class ItemEstoqueSelect extends PureComponent {
     }
 
     componentDidMount() {
-        // console.log('ItemEstoqueSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
                 item_select: {
@@ -86,9 +81,6 @@ class ItemEstoqueSelect extends PureComponent {
         const state = {};
         state[id] = value;
         this.setState(state);
-
-        // console.log('ItemEstoqueSelect.onInputChange: ', state);
-
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -106,8 +98,6 @@ class ItemEstoqueSelect extends PureComponent {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('ItemEstoqueSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -317,7 +307,6 @@ class ItemEstoqueSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
 

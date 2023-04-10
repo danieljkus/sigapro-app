@@ -202,7 +202,6 @@ export default class OrdensServicosScreen extends Component {
                     }
                 }).then(response => {
                     const { data } = response;
-                    // console.log('FiliaisSelect.componentDidMount: ', data);
                     this.setState({
                         filialSelect: {
                             adm_fil_codigo: filial,
@@ -226,7 +225,6 @@ export default class OrdensServicosScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeFilial: ', state);
         if (value) {
             this.setState({
                 manu_os_filial: value.adm_fil_codigo
@@ -268,15 +266,10 @@ export default class OrdensServicosScreen extends Component {
     }
 
     onRegistroPress = (man_os_idf) => {
-        // console.log('onRegistroPress: ', man_os_idf);
-
         this.setState({ carregarRegistro: true });
         axios.get('/ordemServicos/show/' + man_os_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
-
-                // console.log('onRegistroPress: ', response.data);
-
                 this.props.navigation.navigate('OrdemServicoScreen', {
                     registro: {
                         ...response.data,
@@ -291,7 +284,6 @@ export default class OrdensServicosScreen extends Component {
     }
 
     onAddPress = () => {
-        // console.log('onAddPress');
         this.props.navigation.navigate('OrdemServicoScreen', {
             registro: {
                 man_os_idf: 0,
@@ -473,7 +465,6 @@ export default class OrdensServicosScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
                     transparent={true}
                 >

@@ -92,8 +92,6 @@ export default class AutorizacaoDespesaScreen extends Component {
 
         registro.fin_ad_valor = parseFloat(vlrStringParaFloat(registro.fin_ad_valor));
 
-        // console.log('onSalvar: ', registro)
-
         let axiosMethod;
         if (registro.fin_ad_documento) {
             axiosMethod = axios.put('/autorzacaoDespesas/update/' + registro.fin_ad_documento, registro);
@@ -101,8 +99,6 @@ export default class AutorizacaoDespesaScreen extends Component {
             axiosMethod = axios.post('/autorzacaoDespesas/store', registro);
         }
         axiosMethod.then(response => {
-
-            // console.log('onSalvar response: ', response.data)
 
             if (registro.fin_ad_documento) {
                 this.props.navigation.goBack(null);
@@ -270,7 +266,6 @@ export default class AutorizacaoDespesaScreen extends Component {
                         {/* ----------------------------- */}
                         <Modal
                             visible={this.state.modalZap}
-                            onRequestClose={() => { console.log("Modal ZAP FECHOU.") }}
                             animationType={"slide"}
                             transparent={true}
                         >

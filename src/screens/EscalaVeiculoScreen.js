@@ -133,11 +133,7 @@ export default class EscalaVeiculoScreen extends Component {
             this.setState({ permissoes });
         })
 
-        // console.log('componentDidMount: ', this.state)
-
         const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
-
-        // console.log('componentDidMount: ', veiculo)
 
         this.setState({
             viagemDiaAtual: this.state.registro.pas_via_data_viagem === moment().format('YYYY-MM-DD') ? true : false,
@@ -157,8 +153,6 @@ export default class EscalaVeiculoScreen extends Component {
             }).then(response => {
                 this.setState({ carregarRegistro: false });
 
-                // console.log('componentDidMount - registro: ', response.data);
-                
                 let funcionariosSelect = [];
                 if (response.data.codMot) {
                     funcionariosSelect = [{
@@ -221,7 +215,6 @@ export default class EscalaVeiculoScreen extends Component {
 
 
     onInputChangeFunc = (id, value) => {
-        // console.log('onInputChangeFunc: ', value)
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -233,7 +226,6 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     onInputChangeListaFunc = (id, value) => {
-        // console.log('onInputChangeListaFunc: ', value)
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -254,8 +246,6 @@ export default class EscalaVeiculoScreen extends Component {
         this.setState({ funcionariosSelect: [], empFunc: '', });
         const { codFunc } = this.state;
 
-        // console.log('buscaFuncionários: ', value)
-
         if (value) {
             this.setState({ carregandoFunc: true });
             axios.get('/listaFuncionarios', {
@@ -265,9 +255,6 @@ export default class EscalaVeiculoScreen extends Component {
                 }
             }).then(response => {
                 const { data } = response;
-
-                // console.log('buscaFuncionários: ', data)
-
                 if (data) {
                     const funcionariosSelect = data.map(regList => {
                         return {
@@ -350,9 +337,6 @@ export default class EscalaVeiculoScreen extends Component {
             gravarFichaSaida: this.state.checkedFichaSaida,
         };
 
-        // console.log('onSalvarRegistro: ', reg);
-        // return;
-
         axios.put('/escalaVeiculos/trocaCarro', reg)
             .then(response => {
                 if (response.data === 'OK') {
@@ -398,7 +382,6 @@ export default class EscalaVeiculoScreen extends Component {
     // ---------------------------------------------------------------------------
 
     onAbrirFuncBuscaModal = (visible) => {
-        // console.log('onAbrirFuncBuscaModal: ', visible)
         this.setState({ modalFuncBuscaVisible: visible });
         if (visible) {
             this.getListaRegistrosFunc();
@@ -417,8 +400,6 @@ export default class EscalaVeiculoScreen extends Component {
     getListaRegistrosFunc = () => {
         const { buscaNome, pagina, listaRegistrosFunc } = this.state;
         this.setState({ carregando: true });
-        // console.log('getListaRegistrosFunc')
-
         axios.get('/listaFuncionariosBusca', {
             params: {
                 page: pagina,
@@ -430,8 +411,6 @@ export default class EscalaVeiculoScreen extends Component {
                 ? response.data.data
                 : listaRegistrosFunc.concat(response.data.data);
             const total = response.data.total;
-
-            // console.log('getListaRegistrosFunc: ', novosRegistros)
 
             this.setState({
                 listaRegistrosFunc: novosRegistros,
@@ -675,7 +654,6 @@ export default class EscalaVeiculoScreen extends Component {
                                 {this.state.idfFichaViagem || !viagemDiaAtual ? null : (
                                     <CheckBox
                                         title='Gravar Ficha de Saída'
-                                        // key={man_fv_sit_rota}
                                         checked={checkedFichaSaida}
                                         onPress={() => this.setState({ checkedFichaSaida: !checkedFichaSaida })}
                                         size={25}
@@ -765,7 +743,6 @@ export default class EscalaVeiculoScreen extends Component {
                         }}
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
                         animationType={"slide"}
                     >
                         <SafeAreaView style={{ backgroundColor: Colors.white, flex: 0, flexDirection: 'row' }} />

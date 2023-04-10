@@ -280,7 +280,6 @@ export default class CheckListScreen extends Component {
 
     onNetEvento = (info) => {
         let state = this.state;
-        // console.log('onNetEvento: ', info)
         if (info.isConnected) {
             state.netStatus = 1;
         } else {
@@ -335,15 +334,10 @@ export default class CheckListScreen extends Component {
     }
 
     onRegistroPress = (adm_spcl_idf) => {
-        // console.log('onRegistroPress: ', adm_spcl_idf);
-
         this.setState({ aguarde: true });
         axios.get('/checkList/show/' + adm_spcl_idf)
             .then(response => {
                 this.setState({ aguarde: false });
-
-                // console.log('onRegistroPress: ', response.data);
-
                 this.props.navigation.navigate('CheckListItemScreen', {
                     registro: {
                         ...response.data.dados,
@@ -380,7 +374,6 @@ export default class CheckListScreen extends Component {
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
-            // console.log('onAddPress');
             this.requestLocationPermission().then(() => {
                 GetLocation.getCurrentPosition({
                     enableHighAccuracy: true,
@@ -388,7 +381,6 @@ export default class CheckListScreen extends Component {
                 })
                     .then(location => {
                         const local = String(location.latitude) + ',' + String(location.longitude);
-                        // console.log('onAddPress: ', local);
                         this.setState({ aguarde: false, loadingAdd: false });
                         this.props.navigation.navigate('CheckListItemScreen', {
                             registro: {
@@ -401,9 +393,6 @@ export default class CheckListScreen extends Component {
                         this.setState({ aguarde: false, loadingAdd: false });
                         const { code, message } = ex;
                         console.warn(ex, code, message);
-                        // console.log('requestLocationPermission: ', message)
-                        // console.log('requestLocationPermission: ', code)
-                        // console.log('requestLocationPermission: ', message)
 
                         if (message === 'Location not available') {
                             Alert.showAlert('Serviço de localização está desabilitado', () => {
@@ -561,16 +550,12 @@ export default class CheckListScreen extends Component {
         } else {
             this.setState({ aguarde: true });
             this.requestLocationPermission().then(() => {
-                // console.log('requestLocationPermission');
-
                 GetLocation.getCurrentPosition({
                     enableHighAccuracy: true,
                     timeout: 30000,
                 })
                     .then(location => {
                         const local = String(location.latitude) + ',' + String(location.longitude);
-                        // console.log('checkOutVerificaAPIGoogle: ', local);
-
                         axios.put(`/checkList/checkOut/${adm_spcl_idf}/${local}`)
                             .then(response => {
                                 this.setState({
@@ -585,10 +570,6 @@ export default class CheckListScreen extends Component {
                         this.setState({ aguarde: false });
                         const { code, message } = ex;
                         console.warn(ex, code, message);
-                        // console.log('requestLocationPermission: ', message)
-                        // console.log('requestLocationPermission: ', code)
-                        // console.log('requestLocationPermission: ', message)
-
                         if (message === 'Location not available') {
                             Alert.showAlert('Serviço de localização está desabilitado', () => {
                                 GetLocation.openGpsSettings();
@@ -648,7 +629,6 @@ export default class CheckListScreen extends Component {
 
                 }).catch(ex => {
                     Alert.showAlert(`${'ERROR ' + ex?.response?.status + ' ' + ex?.response?.data?.message?.slice(0, 50) + '...'} `)
-                    // console.log('ex response', ex.response);
                     this.setState({ aguarde: false, modalOSVisible: false });
                 })
             }
@@ -685,7 +665,6 @@ export default class CheckListScreen extends Component {
                         }, this.getListaRegistros);
                     }).catch(ex => {
                         Alert.showAlert(`${'ERROR ' + ex?.response?.status + ' ' + ex?.response?.data?.message?.slice(0, 50) + '...'} `)
-                        // console.log('ex response', ex.response);
                         this.setState({ aguarde: false, modalOcorrenciaVisible: false });
                     })
                 }
@@ -757,7 +736,6 @@ export default class CheckListScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalOSVisible}
-                    onRequestClose={() => { console.log("Modal os FECHOU.") }}
                     // onShow={()=> this.setState({modalOSVisible: false})}
                     animationType={"fade"}
                     transparent={true}
@@ -842,7 +820,6 @@ export default class CheckListScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalOcorrenciaVisible}
-                    onRequestClose={() => { console.log("Modal OBS FECHOU.") }}
                     animationType={"fade"}
                     transparent={true}
                 >
@@ -925,7 +902,6 @@ export default class CheckListScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"fade"}
                     transparent={true}
                 >

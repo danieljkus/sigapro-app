@@ -168,7 +168,7 @@ const renderLocalizacao = (fil_fim, desc_fil_fim, sentido, servico, rota, sec1, 
         return 'FILIAL: ' + fil_fim + ' - ' + desc_fil_fim;
     } else {
         if (servico) {
-            return 'VIAGEM ROTA: ' + rota + '   SERVIÇO: ' + servico + ' - ' + (sentido === 'I' ? (sec1 + ' a ' + sec2 + ' [' + hora1 + ']') : (sec2 + ' a ' + sec1 + ' [' + hora2 + ']'));
+            return 'VIAGEM SERVIÇO: ' + servico + ' - ' + (sentido === 'I' ? (sec1 + ' a ' + sec2 + ' [' + hora1 + ']') : (sec2 + ' a ' + sec1 + ' [' + hora2 + ']'));
         } else {
             return rota ? 'VIAGEM ROTA: ' + rota : '';
         }
@@ -200,8 +200,6 @@ export default class VeiculosScreen extends Component {
     };
 
     componentDidMount() {
-        // this.setState({ refreshing: true });
-        // this.getListaRegistros();
         this.buscaLocal();
         this.buscaEspecie();
         this.buscaTipo();
@@ -215,7 +213,6 @@ export default class VeiculosScreen extends Component {
     }
 
     onInputChangeData = (id, value) => {
-        // console.log('onInputChangeData')
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -268,7 +265,6 @@ export default class VeiculosScreen extends Component {
     }
 
     onRefresh = () => {
-        // console.log('onRefresh')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -276,7 +272,6 @@ export default class VeiculosScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        // console.log('carregarMaisRegistros')
         const { carregarMais, refreshing, carregando, pagina } = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
@@ -311,7 +306,6 @@ export default class VeiculosScreen extends Component {
     }
 
     onRefreshPress = (visible) => {
-        // console.log('onRefreshPress')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -321,7 +315,6 @@ export default class VeiculosScreen extends Component {
     onSearchPress = (visible) => {
         this.setState({ modalFiltrosVisible: visible });
         if (!visible) {
-            // console.log('onSearchPress')
             this.setState({
                 pagina: 1,
                 refreshing: true,
@@ -334,7 +327,6 @@ export default class VeiculosScreen extends Component {
     }
 
     onClearSearchPress = () => {
-        // console.log('onClearSearchPress')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -479,7 +471,6 @@ export default class VeiculosScreen extends Component {
                     {/* ----------------------------- */}
                     <Modal
                         visible={this.state.modalFiltrosVisible}
-                        onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                         animationType={"slide"}
                         transparent={true}
                     >

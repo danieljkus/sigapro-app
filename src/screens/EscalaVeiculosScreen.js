@@ -169,21 +169,6 @@ export default class EscalaVeiculosScreen extends Component {
             }
         }).then(response => {
 
-            // console.log('getListaRegistros ATUAL: ', listaRegistros);
-            // console.log('getListaRegistros DATA: ', response.data);
-
-            // const novosRegistros = pagina === 1
-            //     ? response.data.data
-            //     : listaRegistros.concat(response.data.data);
-            // const total = response.data.total;
-            // console.log('getListaRegistros NOVO: ', novosRegistros);
-            // this.setState({
-            //     listaRegistros: novosRegistros,
-            //     refreshing: false,
-            //     carregando: false,
-            //     carregarMais: novosRegistros.length < total
-            // })
-
             this.setState({
                 listaRegistros: response.data,
                 refreshing: false,
@@ -204,7 +189,6 @@ export default class EscalaVeiculosScreen extends Component {
 
 
     onRefresh = () => {
-        // console.log('onRefresh');
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -212,7 +196,6 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        // console.log('onRegistroPress: ', registro);
         this.props.navigation.navigate('EscalaVeiculoScreen', {
             registro: {
                 registro: registro,
@@ -222,7 +205,6 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        // console.log('carregarMaisRegistros');
         // const { carregarMais, refreshing, carregando, pagina } = this.state;
         // if (carregarMais && !refreshing && !carregando) {
         //     this.setState({
@@ -256,7 +238,6 @@ export default class EscalaVeiculosScreen extends Component {
 
 
     onSearchPress = (visible) => {
-        // console.log('onSearchPress');
         this.setState({ modalFiltrosVisible: visible });
         this.setState({
             pagina: 1,
@@ -265,12 +246,10 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onClosePress = (visible) => {
-        // console.log('onClosePress');
         this.setState({ modalFiltrosVisible: visible });
     }
 
     onClearSearchPress = () => {
-        // console.log('onClearSearchPress');
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -285,7 +264,6 @@ export default class EscalaVeiculosScreen extends Component {
         const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).subtract(1, 'days').format(DATE_FORMAT);
-        // console.log('onAntPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -297,7 +275,6 @@ export default class EscalaVeiculosScreen extends Component {
         const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).add(1, 'days').format(DATE_FORMAT);
-        // console.log('onProxPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -416,7 +393,6 @@ export default class EscalaVeiculosScreen extends Component {
                     {/* ----------------------------- */}
                     <Modal
                         visible={this.state.modalFiltrosVisible}
-                        onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                         animationType={"slide"}
                         transparent={true}
                     >

@@ -172,29 +172,6 @@ export default class OrdemServicoResponsaveisScreen extends Component {
             })
     }
 
-    // onRegistroPress = (man_osf_sequencia) => {
-    //     console.log('onRegistroPress: ', man_osf_sequencia);
-
-    //     this.setState({ carregarRegistro: true });
-    //     axios.get('/ordemServicos/show/' + this.state.man_os_idf + '/' + man_osf_sequencia)
-    //         .then(response => {
-    //             this.setState({ carregarRegistro: false });
-
-    //             console.log('onRegistroPress: ', response.data);
-
-    //             this.props.navigation.navigate('OrdemServicoScreen', {
-    //                 registro: {
-    //                     ...response.data,
-    //                 },
-    //                 onRefresh: this.onRefresh
-    //             });
-    //         }).catch(ex => {
-    //             this.setState({ carregarRegistro: false });
-    //             console.warn(ex);
-    //             console.warn(ex.response);
-    //         });
-    // }
-
 
     onRegistroLongPress = (man_osf_sequencia) => {
         Alert.alert("Excluir registro", `Deseja excluir este Responsável?`, [
@@ -311,35 +288,27 @@ export default class OrdemServicoResponsaveisScreen extends Component {
             man_osf_obs,
         };
 
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
-
         this.setState({ salvado: true });
 
-        let axiosMethod;
-        // if (man_os_idf) {
-        // axiosMethod = axios.put('/ordemServicos/updateResponsaveis/' + this.state.man_os_idf + '/' + String(servico_select.man_serv_codigo), registro);
-        // } else {
-        axiosMethod = axios.post('/ordemServicos/storeResponsaveis', registro);
-        // }
-        axiosMethod.then(response => {
-            this.setState({
-                man_osf_nome_funcionario: '',
-                man_osf_obs: '',
-                funcionariosSelect: [],
-                codFunc: '',
-                empFunc: '',
-                nomeFunc: '',
-                carregandoFunc: false,
-                modalFuncBuscaVisible: false,
-                salvado: false,
-                refreshing: true
-            });
-            this.getListaRegistros();
-        }).catch(ex => {
-            this.setState({ salvado: false });
-            console.warn(ex);
-        })
+        axios.post('/ordemServicos/storeResponsaveis', registro)
+            .then(response => {
+                this.setState({
+                    man_osf_nome_funcionario: '',
+                    man_osf_obs: '',
+                    funcionariosSelect: [],
+                    codFunc: '',
+                    empFunc: '',
+                    nomeFunc: '',
+                    carregandoFunc: false,
+                    modalFuncBuscaVisible: false,
+                    salvado: false,
+                    refreshing: true
+                });
+                this.getListaRegistros();
+            }).catch(ex => {
+                this.setState({ salvado: false });
+                console.warn(ex);
+            })
     }
 
 
@@ -463,7 +432,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
         // console.log('OrdemServicoResponsaveisScreen: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Responsáveis'}
@@ -553,24 +522,24 @@ export default class OrdemServicoResponsaveisScreen extends Component {
                         />
 
 
-{this.state.man_os_situacao === 'A' ? (
-                       <Button
-                            title="SALVAR SERVIÇO"
-                            loading={salvado}
-                            onPress={this.onFormSubmit}
-                            buttonStyle={{ height: 45 }}
-                            backgroundColor={Colors.buttonPrimary}
-                            textStyle={{
-                                fontWeight: 'bold',
-                                fontSize: 15
-                            }}
-                            icon={{
-                                name: 'check',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-) : null}
+                        {this.state.man_os_situacao === 'A' ? (
+                            <Button
+                                title="SALVAR SERVIÇO"
+                                loading={salvado}
+                                onPress={this.onFormSubmit}
+                                buttonStyle={{ height: 45 }}
+                                backgroundColor={Colors.buttonPrimary}
+                                textStyle={{
+                                    fontWeight: 'bold',
+                                    fontSize: 15
+                                }}
+                                icon={{
+                                    name: 'check',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary
+                                }}
+                            />
+                        ) : null}
 
                     </View>
 
