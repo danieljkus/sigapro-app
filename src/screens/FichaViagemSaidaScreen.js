@@ -44,8 +44,12 @@ const stateInicial = {
     man_fv_km_ini: '',
     man_fvd_disco: '0',
     man_fv_obs: '',
+    
     pas_serv_codigo: null,
     servicoSelect: [],
+    servico: 0,
+    servicoExtra: 0,
+    
     msgErroVeiculo: 'Informe o Veículo',
 }
 
@@ -100,11 +104,23 @@ export default class zFichaViagemSaidaScreen extends Component {
         this.setState(state);
     }
 
+    onInputChangeServico = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        const index = this.state.servicoSelect.findIndex(registro => registro.key === value);
+        if ((value) && (index >= 0)) {
+            this.setState({
+                servico: this.state.servicoSelect[index].servico ? this.state.servicoSelect[index].servico : 0,
+                servicoExtra: this.state.servicoSelect[index].servicoExtra ? this.state.servicoSelect[index].servicoExtra : 0,
+            });
+        }
+    }
+
     onInputChangeVeiculo = (id, value) => {
         const state = {};
         state[id] = value;
         this.setState(state);
-
         if (value) {
             this.setState({
                 codVeiculo: value.codVeic,
@@ -196,15 +212,15 @@ export default class zFichaViagemSaidaScreen extends Component {
     onSalvarRegistro = () => {
         this.setState({ salvado: true });
 
-        const { veiculo_select, funcionarioSelect, 
-            man_fv_odo_ini, man_fv_km_ini, man_fv_obs, man_fvd_disco, pas_serv_codigo,
+        const { veiculo_select, funcionarioSelect,
+            man_fv_odo_ini, man_fv_km_ini, man_fv_obs, man_fvd_disco, servico, servicoExtra,
             man_fvm_nome_mot, codFunc, empFunc, nomeFunc, checkedLinhasRegulares } = this.state;
 
         const registro = {
-            man_fv_idf_rota: veiculo_select.idfRota,
             man_fv_veiculo: veiculo_select.codVeic,
-            checkedLinhasRegulares: checkedLinhasRegulares ? 'N' : 'S',
-            pas_serv_codigo: checkedLinhasRegulares ? pas_serv_codigo : 0,
+            linhaRegular: checkedLinhasRegulares ? 'S' : 'N',
+            servico: checkedLinhasRegulares && servico ? servico : 0,
+            servicoExtra: checkedLinhasRegulares && servicoExtra ? servicoExtra : 0,
 
             man_fvm_motorista: codFunc,
             man_fvm_empresa_mot: empFunc,
@@ -216,7 +232,7 @@ export default class zFichaViagemSaidaScreen extends Component {
             man_fvd_disco,
         };
 
-        // console.log(registro);
+        console.log(registro);
 
         axios.post('/fichaViagem/saida', registro)
             .then(response => {
@@ -236,6 +252,10 @@ export default class zFichaViagemSaidaScreen extends Component {
                 console.warn(ex.response);
             })
     }
+
+
+
+
 
     buscaFuncionários = (value) => {
         this.setState({ funcionariosSelect: [], empFunc: '', });
@@ -294,13 +314,14 @@ export default class zFichaViagemSaidaScreen extends Component {
         axios.get('/listaServicos', {
             params: {
                 viagem: value,
-                // linha: value,
             }
         }).then(response => {
             const { data } = response;
             const servicoSelect = data.map(regList => {
                 return {
                     key: regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico,
+                    servico: regList.pas_via_servico,
+                    servicoExtra: regList.pas_via_servico_extra,
                     label: (regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico) + ' - ' +
                         (regList.pas_via_servico_extra ? regList.pas_ext_horario_extra : (regList.hora_fim ? regList.hora_ini : regList.hora_ini + ' / ' + regList.hora_fim)) + ' - ' +
                         (regList.pas_via_servico_extra ? (regList.desc_sec_ini_extra + ' a ' + regList.desc_sec_fim_extra) : (regList.desc_sec_ini + ' a ' + regList.desc_sec_fim))
@@ -456,6 +477,8 @@ export default class zFichaViagemSaidaScreen extends Component {
             refreshing,
         } = this.state;
 
+        console.log('FichaViagemSaidaScreen.this.state: ', this.state)
+
         return (
             <View style={{ flex: 1, }}>
                 <StatusBar />
@@ -599,7 +622,7 @@ export default class zFichaViagemSaidaScreen extends Component {
                                             ref="pas_serv_codigo"
                                             value={pas_serv_codigo}
                                             options={servicoSelect}
-                                            onChange={this.onInputChange}
+                                            onChange={this.onInputChangeServico}
                                         />
                                     )
                                 }
