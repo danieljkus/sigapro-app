@@ -124,19 +124,30 @@ export default class EscalaVeiculoScreen extends Component {
 
             checkedFichaSaida: false,
 
+            permissaoTrocarVeic: false,
+            permissaoTrocarVeicAdmin: false,
+
             ...props.navigation.state.params.registro,
         }
     }
 
     componentDidMount() {
         getPermissoes().then(permissoes => {
-            this.setState({ permissoes });
+            const permissaoTrocarVeic = getTemPermissao('ESCALAVEICULOSTROCARVEICSCREEN', permissoes);
+            const permissaoTrocarVeicAdmin = getTemPermissao('ESCALAVEICULOSTROCARVEICADMINSCREEN', permissoes);
+
+            this.setState({
+                permissoes,
+                permissaoTrocarVeic,
+                permissaoTrocarVeicAdmin,
+            });
         })
+
 
         const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
 
         this.setState({
-            viagemDiaAtual: this.state.registro.pas_via_data_viagem === moment().format('YYYY-MM-DD') ? true : false,
+            viagemDiaAtual: this.state.registro.pas_via_data_viagem <= moment().format('YYYY-MM-DD') ? true : false,
         });
 
 
@@ -160,7 +171,7 @@ export default class EscalaVeiculoScreen extends Component {
                         label: response.data.nomeMot
                     }]
                 }
-                
+
                 this.setState({
                     carregarRegistro: false,
                     qtdeComb: response.data.qtdeComb,
@@ -336,6 +347,8 @@ export default class EscalaVeiculoScreen extends Component {
 
             gravarFichaSaida: this.state.checkedFichaSaida,
         };
+
+        // console.log('onSalvarRegistro: ', reg)
 
         axios.put('/escalaVeiculos/trocaCarro', reg)
             .then(response => {
@@ -572,8 +585,8 @@ export default class EscalaVeiculoScreen extends Component {
                     <View
                         style={{ flex: 1, paddingVertical: 30, paddingHorizontal: 16 }}
                     >
-                        {getTemPermissao('ESCALAVEICULOSTROCARVEICSCREEN', permissoes) ? (
-                            <View style={{ marginBottom: 30 }}>
+                        {this.state.permissaoTrocarVeic ? (
+                            <View style={{}}>
 
                                 <VeiculosSelect
                                     label="Veículo"
@@ -583,7 +596,8 @@ export default class EscalaVeiculoScreen extends Component {
                                     onChange={this.onInputChangeVeiculo}
                                     onErro={this.onErroChange}
                                     tipo=""
-                                    enabled={!this.state.idfFichaViagem}
+                                // enabled={!this.state.idfFichaViagem}
+                                // enabled={this.state.permissaoTrocarVeicAdmin ? true : false}
                                 />
 
                                 <View style={{ flexDirection: 'row' }} >
@@ -596,7 +610,8 @@ export default class EscalaVeiculoScreen extends Component {
                                             maxLength={6}
                                             keyboardType="numeric"
                                             onChange={this.onInputChangeFunc}
-                                            enabled={!this.state.idfFichaViagem}
+                                        // enabled={!this.state.idfFichaViagem}
+                                        // enabled={this.state.permissaoTrocarVeicAdmin ? true : false}
                                         />
                                     </View>
 
@@ -634,7 +649,8 @@ export default class EscalaVeiculoScreen extends Component {
                                                     selectedValue=""
                                                     options={funcionariosSelect}
                                                     onChange={this.onInputChangeListaFunc}
-                                                    enabled={!this.state.idfFichaViagem}
+                                                // enabled={!this.state.idfFichaViagem}
+                                                // enabled={this.state.permissaoTrocarVeicAdmin ? true : false}
                                                 />
                                             )
                                         }
@@ -648,7 +664,8 @@ export default class EscalaVeiculoScreen extends Component {
                                     value={nomeFuncFL}
                                     maxLength={60}
                                     onChange={this.onInputChange}
-                                    enabled={!this.state.idfFichaViagem}
+                                // enabled={!this.state.idfFichaViagem}
+                                // enabled={this.state.permissaoTrocarVeicAdmin ? true : false}
                                 />
 
                                 {this.state.idfFichaViagem || !viagemDiaAtual ? null : (
@@ -666,11 +683,15 @@ export default class EscalaVeiculoScreen extends Component {
                         ) : null}
 
 
-
+                        {this.state.idfFichaViagem ? (
+                            <Text style={{ color: "red", fontSize: 15, textAlign: 'center', fontWeight: 'bold' }}>
+                                FICHA DE SAÍDA JÁ GRAVADA
+                            </Text>
+                        ) : null}
 
 
                         {this.state.filial ? (
-                            <View style={{ marginBottom: 30 }}>
+                            <View style={{ marginBottom: 30, marginTop: 30 }}>
                                 <Text style={{
                                     color: Colors.textSecondaryDark,
                                     fontWeight: 'bold',
@@ -708,25 +729,24 @@ export default class EscalaVeiculoScreen extends Component {
                                         {this.state.filial ? this.state.filial + ' - ' + this.state.descFilial : ''}
                                     </Text>
                                 </View>
-
-                                <View style={{ flexDirection: 'row', justifyContent: "center" }}>
-                                    <Button
-                                        title="Log"
-                                        onPress={this.onAbrirLog}
-                                        color={Colors.textOnPrimary}
-                                        buttonStyle={{ margin: 5, marginTop: 10, height: 20, width: 150 }}
-                                        // buttonStyle={{ margin: 5, marginTop: 10, height: 20 }}
-                                        // buttonStyle={{ marginBottom: 0, marginTop: 0, height: 10, width: 150 }}
-                                        icon={{
-                                            name: 'file-text-o',
-                                            type: 'font-awesome',
-                                            color: Colors.textOnPrimary,
-                                        }}
-                                    />
-                                </View>
                             </View>
                         ) : null}
 
+                        <View style={{ flexDirection: 'row', justifyContent: "center" }}>
+                            <Button
+                                title="Log"
+                                onPress={this.onAbrirLog}
+                                color={Colors.textOnPrimary}
+                                buttonStyle={{ margin: 5, marginTop: 10, height: 20, width: 150 }}
+                                // buttonStyle={{ margin: 5, marginTop: 10, height: 20 }}
+                                // buttonStyle={{ marginBottom: 0, marginTop: 0, height: 10, width: 150 }}
+                                icon={{
+                                    name: 'file-text-o',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary,
+                                }}
+                            />
+                        </View>
                     </View>
 
                     {/* <Text style={{ color: Colors.textSecondaryDark, fontSize: 8, textAlign: 'center' }}>
@@ -796,7 +816,7 @@ export default class EscalaVeiculoScreen extends Component {
 
                 </ScrollView>
 
-                {this.state.idfFichaViagem ? null : (
+                {this.state.idfFichaViagem && pas_via_data_viagem < moment().format('YYYY-MM-DD') ? null : (
                     <Button
                         title="SALVAR"
                         loading={salvando}
@@ -810,6 +830,7 @@ export default class EscalaVeiculoScreen extends Component {
                         }}
                     />
                 )}
+
             </SafeAreaView>
         )
     }

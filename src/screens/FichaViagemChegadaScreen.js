@@ -21,6 +21,8 @@ import VeiculosSelect from '../components/VeiculosSelect';
 import FuncionariosSelect from '../components/FuncionariosSelect';
 import HeaderComponent from "../components/HeaderComponent";
 
+const DATE_FORMAT = 'DD/MM/YYYY';
+
 const stateInicial = {
     veiculo_select: null,
     funcionario_select: null,
@@ -40,6 +42,7 @@ const stateInicial = {
 
     codVeiculo: '',
 
+    man_fv_data_ini: moment(new Date()).format(DATE_FORMAT),
     man_fv_odo_ini: 0,
     man_fv_odo_fim: '',
     man_fv_km_ini: 0,
@@ -659,7 +662,7 @@ export default class FichaViagemChegadaScreen extends Component {
 
 
     render() {
-        const { codVeiculo, codFunc, nomeFunc, man_fv_odo_ini, man_fv_obs, pas_serv_codigo, man_fvd_disco,
+        const { man_fv_data_ini, codVeiculo, codFunc, nomeFunc, man_fv_odo_ini, man_fv_obs, pas_serv_codigo, man_fvd_disco,
             man_fv_odo_fim, man_fv_km_viagem, man_fv_km_rota, man_fv_qtde_comb, man_fv_media,
             man_fv_qtde_comb_extra, man_fv_qtde_arla, man_fv_media_arla, man_fv_ocorrencia,
             ocorrenciaSelect, man_fv_sit_rota, geraOS, defeito_mec_ele_lub, defeito_chap_borr,
@@ -682,8 +685,19 @@ export default class FichaViagemChegadaScreen extends Component {
                     keyboardShouldPersistTaps="always"
                 >
                     <View
-                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
+                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 10 }}
                     >
+
+                        <TextInput
+                            label="Data da Chegada"
+                            id="man_fv_data_ini"
+                            ref="man_fv_data_ini"
+                            value={man_fv_data_ini}
+                            maxLength={60}
+                            onChange={this.onInputChange}
+                            enabled={false}
+                            style={{ fontSize: 18 }}
+                        />
 
                         <VeiculosSelect
                             label="Veículo"

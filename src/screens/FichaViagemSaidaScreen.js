@@ -13,10 +13,13 @@ import Colors from '../values/Colors';
 import { ProgressDialog, ConfirmDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import Icon from '../components/Icon';
+import moment from 'moment';
 
 import VeiculosSelect from '../components/VeiculosSelect';
 import FuncionariosSelect from '../components/FuncionariosSelect';
 import HeaderComponent from "../components/HeaderComponent";
+
+const DATE_FORMAT = 'DD/MM/YYYY';
 
 const stateInicial = {
     veiculo_select: null,
@@ -40,16 +43,17 @@ const stateInicial = {
     checkedLinhasRegulares: true,
     checkedTodosServicos: false,
 
+    man_fv_data_ini: moment(new Date()).format(DATE_FORMAT),
     man_fv_odo_ini: '',
     man_fv_km_ini: '',
     man_fvd_disco: '0',
     man_fv_obs: '',
-    
+
     pas_serv_codigo: null,
     servicoSelect: [],
     servico: 0,
     servicoExtra: 0,
-    
+
     msgErroVeiculo: 'Informe o Veículo',
 }
 
@@ -232,22 +236,21 @@ export default class zFichaViagemSaidaScreen extends Component {
             man_fvd_disco,
         };
 
-        console.log(registro);
+        // console.log(registro);
 
         axios.post('/fichaViagem/saida', registro)
             .then(response => {
-
-                Alert.showAlert("Saída gravada com sucesso.")
-
+                // console.log('onSalvarRegistro: ', response);
                 this.setState({
                     loading: false,
                     salvado: false,
                 })
-
+                Alert.showAlert("Saída gravada com sucesso.")
                 this.onLimparTela();
-
             }).catch(ex => {
                 this.setState({ salvado: false });
+                // console.log('onSalvarRegistro ERRO: ', ex.response);
+                Alert.showAlert(ex.response.data)
                 console.warn(ex);
                 console.warn(ex.response);
             })
@@ -470,14 +473,14 @@ export default class zFichaViagemSaidaScreen extends Component {
 
 
     render() {
-        const { man_fv_odo_ini, man_fv_obs, man_fvm_nome_mot, pas_serv_codigo, man_fvd_disco,
+        const { man_fv_data_ini, man_fv_odo_ini, man_fv_obs, man_fvm_nome_mot, pas_serv_codigo, man_fvd_disco,
             servicoSelect, loading, salvado, carregandoServico,
             veiculo_select, listaRegistrosFunc, checkedLinhasRegulares, checkedTodosServicos,
             codVeiculo, funcionariosSelect, codFunc, nomeFunc, carregandoFunc,
             refreshing,
         } = this.state;
 
-        console.log('FichaViagemSaidaScreen.this.state: ', this.state)
+        // console.log('FichaViagemSaidaScreen.this.state: ', this.state)
 
         return (
             <View style={{ flex: 1, }}>
@@ -489,8 +492,20 @@ export default class zFichaViagemSaidaScreen extends Component {
                     keyboardShouldPersistTaps="always"
                 >
                     <View
-                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
+                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 10 }}
                     >
+
+                        <TextInput
+                            label="Data da Saída"
+                            id="man_fv_data_ini"
+                            ref="man_fv_data_ini"
+                            value={man_fv_data_ini}
+                            maxLength={60}
+                            onChange={this.onInputChange}
+                            enabled={false}
+                            style={{ fontSize: 18 }}
+                        />
+
 
                         <VeiculosSelect
                             label="Veículo"
