@@ -70,6 +70,9 @@ const stateInicial = {
 
     pas_serv_codigo: null,
     servicoSelect: [],
+    servico: 0,
+    servicoExtra: 0,
+
     msgErroVeiculo: 'Informe o Veículo',
 }
 
@@ -113,6 +116,7 @@ export default class FichaViagemChegadaScreen extends Component {
 
     componentDidMount() {
         this.buscaOcorrencias();
+        this.buscaServicos(this.state.checkedTodosServicos ? 'T' : 'S');
     }
 
     onInputChange = (id, value) => {
@@ -190,6 +194,18 @@ export default class FichaViagemChegadaScreen extends Component {
         }
     }
 
+    onInputChangeServico = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        const index = this.state.servicoSelect.findIndex(registro => registro.key === value);
+        if ((value) && (index >= 0)) {
+            this.setState({
+                servico: this.state.servicoSelect[index].servico ? this.state.servicoSelect[index].servico : 0,
+                servicoExtra: this.state.servicoSelect[index].servicoExtra ? this.state.servicoSelect[index].servicoExtra : 0,
+            });
+        }
+    }
 
     onInputChangeVeiculo = (id, value) => {
         const state = {};
@@ -197,6 +213,8 @@ export default class FichaViagemChegadaScreen extends Component {
         this.setState(state);
 
         if (value) {
+            this.buscaFuncionários(value.codFunc);
+
             this.setState({
                 codVeiculo: value.codVeic,
                 codFunc: value.codFunc ? value.codFunc : '',
@@ -204,7 +222,7 @@ export default class FichaViagemChegadaScreen extends Component {
                 nomeFunc: value.nomeFunc ? value.nomeFunc : '',
                 man_fvm_nome_mot: value.codFunc ? '' : value.nomeFunc,
 
-                pas_serv_codigo: value.man_fvd_servico,
+                pas_serv_codigo: value.man_fvd_servico_extra ? value.man_fvd_servico_extra : value.man_fvd_servico,
                 checkedLinhasRegulares: value.man_fvd_servico ? true : false,
 
                 man_fv_odo_ini: value.kmOdo,
@@ -214,8 +232,7 @@ export default class FichaViagemChegadaScreen extends Component {
                 man_fvd_disco: value.man_fvd_disco,
             });
 
-            this.buscaServicos(this.state.checkedTodosServicos ? 'T' : 'S');
-            this.buscaFuncionários(value.codFunc);
+            this.onInputChangeServico('pas_serv_codigo', value.man_fvd_servico_extra ? String(value.man_fvd_servico_extra) : String(value.man_fvd_servico));
         }
     }
 
@@ -349,7 +366,7 @@ export default class FichaViagemChegadaScreen extends Component {
         const { veiculo_select, funcionario_select, codFunc, empFunc, man_fvm_nome_mot,
             man_fv_odo_fim, man_fv_km_fim, man_fv_km_viagem, man_fv_km_rota, man_fv_qtde_comb,
             man_fv_qtde_comb_extra, man_fv_media, man_fv_qtde_arla, man_fv_media_arla, man_fv_ocorrencia,
-            man_fv_obs, man_fvd_disco, pas_serv_codigo, checkedFinalRota, checkedGeraOS, checkedLinhasRegulares,
+            man_fv_obs, man_fvd_disco, servico, servicoExtra, checkedFinalRota, checkedGeraOS, checkedLinhasRegulares,
             defeito_mec_ele_lub, defeito_chap_borr } = this.state;
 
         // let codFunc = 0
@@ -388,7 +405,10 @@ export default class FichaViagemChegadaScreen extends Component {
             geraOS: checkedGeraOS ? 'S' : 'N',
 
             man_fvd_disco: man_fvd_disco,
-            pas_serv_codigo: pas_serv_codigo,
+            // pas_serv_codigo: pas_serv_codigo,
+            linhaRegular: checkedLinhasRegulares ? 'S' : 'N',
+            servico: checkedLinhasRegulares && servico ? servico : 0,
+            servicoExtra: checkedLinhasRegulares && servicoExtra ? servicoExtra : 0,
 
             man_fv_obs: man_fv_obs,
             defeito_mec_ele_lub: defeito_mec_ele_lub,
@@ -399,7 +419,6 @@ export default class FichaViagemChegadaScreen extends Component {
         };
 
         // console.log(registro);
-
         // return;
 
         axios.put('/fichaViagem/chegada/' + registro.man_fv_idf, registro)
@@ -487,11 +506,11 @@ export default class FichaViagemChegadaScreen extends Component {
             const servicoSelect = data.map(regList => {
                 return {
                     key: regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico,
+                    servico: regList.pas_via_servico,
+                    servicoExtra: regList.pas_via_servico_extra,
                     label: (regList.pas_via_servico_extra ? regList.pas_via_servico_extra : regList.pas_via_servico) + ' - ' +
                         (regList.pas_via_servico_extra ? regList.pas_ext_horario_extra : (regList.hora_fim ? regList.hora_ini : regList.hora_ini + ' / ' + regList.hora_fim)) + ' - ' +
                         (regList.pas_via_servico_extra ? (regList.desc_sec_ini_extra + ' a ' + regList.desc_sec_fim_extra) : (regList.desc_sec_ini + ' a ' + regList.desc_sec_fim))
-                    // key: regList.pas_serv_codigo,
-                    // label: regList.pas_serv_codigo + ' - ' + regList.pas_serv_horario + ' - ' + regList.pas_serv_descricao
                 }
             });
 
@@ -829,7 +848,7 @@ export default class FichaViagemChegadaScreen extends Component {
                                             ref="pas_serv_codigo"
                                             value={pas_serv_codigo}
                                             options={servicoSelect}
-                                            onChange={this.onInputChange}
+                                            onChange={this.onInputChangeServico}
                                         />
                                     )
                                 }
