@@ -119,6 +119,7 @@ export default class EscalaVeiculosScreen extends Component {
         man_ev_data_ini: moment(new Date()).format(DATE_FORMAT),
         man_ev_veiculo: '',
         man_ev_servico: '',
+        man_ev_filial: '',
         man_ev_od: '',
         somente_escala_filial: true,
         temFiltro: false,
@@ -149,11 +150,11 @@ export default class EscalaVeiculosScreen extends Component {
 
     getListaRegistros = () => {
         const {
-            man_ev_data_ini, man_ev_servico, man_ev_veiculo, man_ev_od,
+            man_ev_data_ini, man_ev_servico, man_ev_filial, man_ev_veiculo, man_ev_od,
             somente_escala_filial, pagina, listaRegistros
         } = this.state;
 
-        const temFiltro = man_ev_servico !== '' || man_ev_veiculo !== '' || man_ev_od !== '';
+        const temFiltro = man_ev_servico !== '' || man_ev_veiculo !== '' || man_ev_od !== '' || man_ev_filial !== '';
 
         // this.setState({ refreshing: true });
 
@@ -164,6 +165,7 @@ export default class EscalaVeiculosScreen extends Component {
                 data: moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD"),
                 veiculo: man_ev_veiculo,
                 servico: man_ev_servico,
+                filial: man_ev_filial,
                 cidade: man_ev_od,
                 somente_escala_filial: somente_escala_filial ? 1 : 0,
             }
@@ -256,6 +258,7 @@ export default class EscalaVeiculosScreen extends Component {
             temFiltro: false,
             man_ev_veiculo: '',
             man_ev_servico: '',
+            man_ev_filial: '',
             somente_escala_filial: true,
         }, this.getListaRegistros);
     }
@@ -286,7 +289,7 @@ export default class EscalaVeiculosScreen extends Component {
     render() {
         const {
             listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
-            man_ev_data_ini, man_ev_veiculo, man_ev_servico
+            man_ev_data_ini, man_ev_veiculo, man_ev_servico, man_ev_filial
         } = this.state;
 
         return (
@@ -441,6 +444,16 @@ export default class EscalaVeiculosScreen extends Component {
                                             id="man_ev_servico"
                                             ref="man_ev_servico"
                                             value={man_ev_servico}
+                                            maxLength={20}
+                                            onChange={this.onInputChange}
+                                            keyboardType="numeric"
+                                        />
+
+                                        <TextInput
+                                            label="Filial"
+                                            id="man_ev_filial"
+                                            ref="man_ev_filial"
+                                            value={man_ev_filial}
                                             maxLength={20}
                                             onChange={this.onInputChange}
                                             keyboardType="numeric"
