@@ -116,7 +116,7 @@ export default class FichaViagemChegadaScreen extends Component {
 
     componentDidMount() {
         this.buscaOcorrencias();
-        this.buscaServicos(this.state.checkedTodosServicos ? 'T' : 'S');
+        this.buscaServicos(this.state.checkedTodosServicos ? 'T' : 'C');
     }
 
     onInputChange = (id, value) => {
@@ -817,7 +817,7 @@ export default class FichaViagemChegadaScreen extends Component {
                                         onPress={() =>
                                             this.setState({
                                                 checkedTodosServicos: !checkedTodosServicos
-                                            }, this.buscaServicos(checkedTodosServicos ? 'S' : 'T'))
+                                            }, this.buscaServicos(checkedTodosServicos ? 'C' : 'T'))
                                         }
                                         containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                                     />
