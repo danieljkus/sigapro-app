@@ -70,6 +70,7 @@ import PreDigitacaoNotasScreen from './PreDigitacaoNotasScreen';
 import BarCodeScreen from '../components/BarCodeScreen';
 
 import FichaViagemScreen from './FichaViagemScreen';
+import AbastecimentoTransitoScreen from './AbastecimentoTransitoScreen';
 
 import ViagensTurismoScreen from './ViagensTurismoScreen';
 
@@ -178,6 +179,16 @@ const HomeStackNavigator = createStackNavigator({
         navigationOptions: {
             headerShown: false,
             title: "Log das Alterações",
+            ...defaultNavigationOptions
+        }
+    },
+
+
+    AbastecimentoTransitoScreen: {
+        screen: AbastecimentoTransitoScreen,
+        navigationOptions: {
+            headerShown: false,
+            title: "Abastecimento em Trânsito",
             ...defaultNavigationOptions
         }
     },

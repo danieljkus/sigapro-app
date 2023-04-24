@@ -34,13 +34,13 @@ export default class SolicitacaoEstoqueScreen extends Component {
             estoq_sf_obs: props.navigation.state.params.registro.estoq_sf_obs ? props.navigation.state.params.registro.estoq_sf_obs : '',
 
             estoq_sf_filial_solicitante: props.navigation.state.params.registro.estoq_sf_filial_solicitante ? props.navigation.state.params.registro.estoq_sf_filial_solicitante : '',
-            estoq_sf_filial_solicitada: props.navigation.state.params.registro.estoq_sf_filial_solicitada ? props.navigation.state.params.registro.estoq_sf_filial_solicitada : '',
-            estoq_sf_setor_solicitada: props.navigation.state.params.registro.estoq_sf_setor_solicitada ? props.navigation.state.params.registro.estoq_sf_setor_solicitada : '',
+            // estoq_sf_filial_solicitada: props.navigation.state.params.registro.estoq_sf_filial_solicitada ? props.navigation.state.params.registro.estoq_sf_filial_solicitada : '',
+            // estoq_sf_setor_solicitada: props.navigation.state.params.registro.estoq_sf_setor_solicitada ? props.navigation.state.params.registro.estoq_sf_setor_solicitada : '',
             compras_sugtip_descricao: props.navigation.state.params.registro.compras_sugtip_descricao ? props.navigation.state.params.registro.compras_sugtip_descricao : '',
 
-            tipoSol_select: null,
-            estoq_sf_tipo: '',
-            codTipoSol: '',
+            // tipoSol_select: null,
+            // estoq_sf_tipo: '',
+            // codTipoSol: '',
 
             filial_select: null,
             codFilial: '',
@@ -69,11 +69,11 @@ export default class SolicitacaoEstoqueScreen extends Component {
         getFilial().then(filial => {
             this.setState({
                 filial,
-                codFilial: this.props.navigation.state.params.registro.estoq_sf_filial_solicitada,
-                codCC: this.props.navigation.state.params.registro.estoq_sf_setor_solicitada ? this.props.navigation.state.params.registro.estoq_sf_setor_solicitada : '',
+                // codFilial: this.props.navigation.state.params.registro.estoq_sf_filial_solicitada,
+                // codCC: this.props.navigation.state.params.registro.estoq_sf_setor_solicitada ? this.props.navigation.state.params.registro.estoq_sf_setor_solicitada : '',
 
-                estoq_sf_tipo: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
-                codTipoSol: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
+                // estoq_sf_tipo: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
+                // codTipoSol: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
             });
         })
     }
@@ -131,10 +131,10 @@ export default class SolicitacaoEstoqueScreen extends Component {
 
 
     onFormSubmit = (event) => {
-        if ((!this.state.filial_select) || (!this.state.filial_select.adm_fil_codigo)) {
-            Alert.showAlert('Informe uma Filial');
-            return;
-        }
+        // if ((!this.state.filial_select) || (!this.state.filial_select.adm_fil_codigo)) {
+        //     Alert.showAlert('Informe uma Filial');
+        //     return;
+        // }
 
         if ((!this.state.listaItens) || (this.state.listaItens.length === 0)) {
             Alert.showAlert('Inclua algum Item.');
@@ -151,9 +151,9 @@ export default class SolicitacaoEstoqueScreen extends Component {
             estoq_sf_controle,
             estoq_sf_data: moment(estoq_sf_data, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
             estoq_sf_situacao: estoq_sf_situacao ? estoq_sf_situacao : 'G',
-            estoq_sf_tipo,
-            estoq_sf_filial_solicitada: this.state.filial_select.adm_fil_codigo,
-            estoq_sf_setor_solicitada: this.state.cc_select && this.state.cc_select.contab_cc_codigo ? this.state.cc_select.contab_cc_codigo : '',
+            // estoq_sf_tipo,
+            // estoq_sf_filial_solicitada: this.state.filial_select.adm_fil_codigo,
+            // estoq_sf_setor_solicitada: this.state.cc_select && this.state.cc_select.contab_cc_codigo ? this.state.cc_select.contab_cc_codigo : '',
             estoq_sf_obs,
 
             listaItens,
@@ -307,13 +307,13 @@ export default class SolicitacaoEstoqueScreen extends Component {
                         </View>
 
 
-                        <TipoSolicitacaoSelect
+                        {/* <TipoSolicitacaoSelect
                             label="Tipo"
                             id="tipoSol_select"
                             codTipoSol={codTipoSol}
                             onChange={this.onInputChangeTipoSol}
                             value={tipoSol_select}
-                        />
+                        /> */}
 
                         <TextInput
                             label="Observação"
@@ -325,10 +325,10 @@ export default class SolicitacaoEstoqueScreen extends Component {
                             multiline={true}
                         />
 
-                        <Divider />
-                        <Divider />
+                        {/* <Divider /> */}
+                        {/* <Divider /> */}
 
-                        <View style={{ marginBottom: 15, height: 35, backgroundColor: Colors.dividerDark, borderRadius: 3 }}>
+                        {/* <View style={{ marginBottom: 15, height: 35, backgroundColor: Colors.dividerDark, borderRadius: 3 }}>
                             <Text style={{ paddingLeft: 15, paddingTop: 6, fontSize: 18 }}>
                                 FILIAL SOLICITADA
                             </Text>
@@ -350,7 +350,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
                                 onChange={this.onInputChangeCC}
                                 value={cc_select}
                             />
-                        </View>
+                        </View> */}
 
 
 
