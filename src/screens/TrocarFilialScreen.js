@@ -9,6 +9,7 @@ import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import HeaderComponent from "../components/HeaderComponent";
+import { getUsuario } from '../utils/LoginManager';
 
 export default class TrocarFilialScreen extends Component {
 
@@ -20,6 +21,14 @@ export default class TrocarFilialScreen extends Component {
             usuario: '',
             filial: '',
         }
+    }
+
+    componentDidMount() {
+        getUsuario().then(usuario => {
+            this.setState({
+                usuario: usuario.adm_pes_pfj,
+            });
+        })
     }
 
     onInputChange = (id, value) => {
@@ -42,13 +51,18 @@ export default class TrocarFilialScreen extends Component {
 
         axios.put('/usuarios/updateFilialSIGAPRO/' + usuario + '/' + filial)
             .then(response => {
+
                 this.props.navigation.goBack(null);
+
             }).catch(ex => {
                 this.setState({ salvado: false });
                 console.warn(ex);
                 console.warn(ex.response);
             })
     }
+
+
+
 
 
     render() {

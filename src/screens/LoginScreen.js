@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {View, ScrollView, Image, ActivityIndicator} from 'react-native';
-import {Text, Divider} from 'react-native-elements';
-import {NavigationActions, SafeAreaView, StackActions} from 'react-navigation';
+import React, { Component } from 'react';
+import { View, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { Text, Divider } from 'react-native-elements';
+import { NavigationActions, SafeAreaView, StackActions } from 'react-navigation';
 import axios from 'axios';
 import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -10,12 +10,12 @@ import Colors from '../values/Colors';
 import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
-import {validateSenha, checkFormIsValid, savePermissoes} from '../utils/Validator';
-import {saveToken} from '../utils/LoginManager';
+import { validateSenha, checkFormIsValid, savePermissoes } from '../utils/Validator';
+import { saveToken, saveUsuario, saveSenha, getUsuarioAux } from '../utils/LoginManager';
 import DeviceInfo from 'react-native-device-info';
 import NetInfo from '@react-native-community/netinfo';
 import HeaderComponent from "../components/HeaderComponent";
-import {maskCPF} from "../utils/Maskers";
+import { maskCPF } from "../utils/Maskers";
 
 export default class LoginScreen extends Component {
 
@@ -51,7 +51,11 @@ export default class LoginScreen extends Component {
 
 
     componentDidMount() {
-
+        getUsuarioAux().then(usuario => {
+            this.setState({
+                usuario
+            }, this.buscaEmpresas);
+        })
     }
 
     onFormSubmit = (event) => {
@@ -61,8 +65,8 @@ export default class LoginScreen extends Component {
     }
 
     postLogin = () => {
-        this.setState({loading: true});
-        const {usuario, senha, empresa} = this.state;
+        this.setState({ loading: true });
+        const { usuario, senha, empresa } = this.state;
 
         if (this.state.netStatus) {
             axios.post("/usuarios/login", {
@@ -71,12 +75,16 @@ export default class LoginScreen extends Component {
                 empresa,
                 tipoAcesso: 'SIGAPRO'
             }).then(async response => {
+
+                await saveUsuario(usuario);
+                await saveSenha(senha);
                 await saveToken(response.data.token);
                 AsyncStorage.setItem('SIGAPRO-permissoes', JSON.stringify(response.data.permissoes))
                 this.goToHome()
+
             }).catch(error => {
                 console.warn('Erro Login: ', error);
-                this.setState({loading: false});
+                this.setState({ loading: false });
                 if (error.response) {
                     if (error.response.status === 401) {
                         alert("Usuário ou Senha Incorreto");
@@ -95,7 +103,7 @@ export default class LoginScreen extends Component {
                     this.goToHome()
                 })
             } else {
-                this.setState({loading: false});
+                this.setState({ loading: false });
                 Alert.showAlert('Senha Incorreta');
             }
         }
@@ -106,7 +114,7 @@ export default class LoginScreen extends Component {
         const resetAction = StackActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({routeName: "HomeScreen", props: this.props})
+                NavigationActions.navigate({ routeName: "HomeScreen", props: this.props })
             ]
         });
 
@@ -120,9 +128,9 @@ export default class LoginScreen extends Component {
     }
 
     buscaEmpresas = () => {
-        const {usuario} = this.state;
+        const { usuario } = this.state;
         if (usuario) {
-            this.setState({empresaSelect: [], carregandoEmpresa: true});
+            this.setState({ empresaSelect: [], carregandoEmpresa: true });
 
             axios.get('/listaEmpresasLogin', {
                 params: {
@@ -130,7 +138,7 @@ export default class LoginScreen extends Component {
                     app: 'SIGAPRO',
                 }
             }).then(response => {
-                const {data} = response;
+                const { data } = response;
                 const empresaSelect = data.map(regList => {
                     return {
                         key: regList.adm_emp_codigo,
@@ -154,11 +162,11 @@ export default class LoginScreen extends Component {
 
 
     render() {
-        const {usuario, senha, empresa, empresaSelect, loading} = this.state;
+        const { usuario, senha, empresa, empresaSelect, loading } = this.state;
         return (
-            <SafeAreaView style={{backgroundColor: 'white', flex: 1, justifyContent: 'center'}}>
-                <StatusBar/>
-                <View style={{backgroundColor: 'white', flex: 1, justifyContent: 'center'}}>
+            <SafeAreaView style={{ backgroundColor: 'white', flex: 1, justifyContent: 'center' }}>
+                <StatusBar />
+                <View style={{ backgroundColor: 'white', flex: 1, justifyContent: 'center' }}>
 
 
                     <View
@@ -190,15 +198,15 @@ export default class LoginScreen extends Component {
 
                         {this.state.netStatus
                             ? null : (
-                                <Text style={{textAlign: 'center', color: '#d50000'}}> Dispositivo sem
+                                <Text style={{ textAlign: 'center', color: '#d50000' }}> Dispositivo sem
                                     conexão </Text>
                             )}
                     </View>
 
 
-                    <View style={{paddingVertical: 8, paddingHorizontal: 16}}>
+                    <View style={{ paddingVertical: 8, paddingHorizontal: 16 }}>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TextInput
                                 label="Usuário"
                                 id="usuario"
@@ -220,7 +228,7 @@ export default class LoginScreen extends Component {
                             />
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TextInput
                                 label="Senha"
                                 id="senha"
@@ -241,7 +249,7 @@ export default class LoginScreen extends Component {
                         </View>
 
                         {empresaSelect.length > 0 ? (
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <TextInput
                                     label="Empresa"
                                     type="select"

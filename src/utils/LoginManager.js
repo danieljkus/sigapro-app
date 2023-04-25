@@ -7,6 +7,14 @@ export const saveToken = async (token) => {
     await AsyncStorage.setItem(PROF_COOKIE_NAME, token);
 }
 
+export const saveSenha = async (senha) => {
+    await AsyncStorage.setItem('SIGAPRO-access-token-senha', senha);
+}
+
+export const saveUsuario = async (usuario) => {
+    await AsyncStorage.setItem('SIGAPRO-access-token-usuario', usuario);
+}
+
 export const getToken = async () => {
     return await AsyncStorage.getItem(PROF_COOKIE_NAME);
 }
@@ -19,6 +27,45 @@ export const isLoggedIn = async () => {
     const token = await getToken();
     return !!token;
 }
+
+export const getPermissoes = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).permissoes : null;
+}
+
+export const getUsuario = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).usuario : null;
+}
+
+export const getTipoUsuario = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).tipo : null;
+}
+
+export const getEmpresa = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).empresa : null;
+}
+
+export const getSenha = async () => {
+    return await AsyncStorage.getItem('SIGAPRO-access-token-senha');
+}
+
+export const getUsuarioAux = async () => {
+    return await AsyncStorage.getItem('SIGAPRO-access-token-usuario');
+}
+
+export const getFilial = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).filial : null;
+}
+
+export const getGrupoPerm = async () => {
+    const token = await getToken();
+    return token ? jwtDecode(token).grupo : null;
+}
+
 
 
 
@@ -50,36 +97,5 @@ export const removePermissoes = async () => {
 }
 
 
-
-
-export const getPermissoes = async () => {
-    const token = await getToken();
-    return token ? jwtDecode(token).permissoes : null;
-}
-
-export const getUsuario = async () => {
-    const token = await getToken();
-    return token ? jwtDecode(token).usuario : null;
-}
-
-export const getTipoUsuario = async () => {
-    const token = await getToken();
-    return token ? jwtDecode(token).tipo : null;
-}
-
-export const getEmpresa = async () => {
-    const token = await getToken();
-    return token ? jwtDecode(token).empresa : null;
-}
-
-export const getFilial = async () => {
-    const token = await getToken();
-    return token ? jwtDecode(token).filial : null;
-}
-
-export const getGrupoPerm = async () => {
-    const token = await getToken();
-    return token ? jwtDecode(token).grupo : null;
-}
 
 
