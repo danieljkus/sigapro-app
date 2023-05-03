@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, ScrollView, SafeAreaView} from 'react-native';
+import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { CheckBox, Divider } from 'react-native-elements';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
@@ -452,7 +452,7 @@ export default class SaidaEstoqueScreen extends Component {
         // console.log('SaidaEstoqueScreen - STATE: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Baixa do Estoque'}
@@ -467,7 +467,7 @@ export default class SaidaEstoqueScreen extends Component {
                         style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
                     >
 
-                        <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
                                     label="Controle"
@@ -491,10 +491,10 @@ export default class SaidaEstoqueScreen extends Component {
                                     enabled={false}
                                 />
                             </View>
-                        </View>
+                        </View> */}
 
 
-                        <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
                                     type="date"
@@ -531,6 +531,18 @@ export default class SaidaEstoqueScreen extends Component {
                             maxLength={100}
                             onChange={this.onInputChange}
                             multiline={true}
+                        /> */}
+
+
+
+                        <TextInput
+                            label="Data"
+                            id="estoq_me_data"
+                            ref="estoq_me_data"
+                            value={estoq_me_data}
+                            maxLength={60}
+                            onChange={this.onInputChange}
+                            enabled={false}
                         />
 
                         <Divider />

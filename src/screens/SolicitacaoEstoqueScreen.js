@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, ScrollView, SafeAreaView} from 'react-native';
+import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { CheckBox, Divider } from 'react-native-elements';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
@@ -234,7 +234,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
         // console.log('SolicitacaoEstoqueScreen - STATE: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Solicitação de Estoque'}
@@ -251,7 +251,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
                         style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
                     >
 
-                        <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
                                     label="Nº Solicitação"
@@ -274,10 +274,10 @@ export default class SolicitacaoEstoqueScreen extends Component {
                                     enabled={false}
                                 />
                             </View>
-                        </View>
+                        </View> */}
 
 
-                        <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
                                     type="date"
@@ -304,7 +304,7 @@ export default class SolicitacaoEstoqueScreen extends Component {
                                     enabled={false}
                                 />
                             </View>
-                        </View>
+                        </View> */}
 
 
                         {/* <TipoSolicitacaoSelect
@@ -314,6 +314,18 @@ export default class SolicitacaoEstoqueScreen extends Component {
                             onChange={this.onInputChangeTipoSol}
                             value={tipoSol_select}
                         /> */}
+
+
+
+                        <TextInput
+                            label="Data da Solicitação"
+                            id="estoq_sf_data"
+                            ref="estoq_sf_data"
+                            value={estoq_sf_data}
+                            maxLength={60}
+                            onChange={this.onInputChange}
+                            enabled={false}
+                        />
 
                         <TextInput
                             label="Observação"
