@@ -223,7 +223,7 @@ export default class SaidasEstoqueScreen extends Component {
                     cod_ccdestino = response.data.listaItens[0].estoq_mei_cc_dest;
                 }
 
-                this.props.navigation.navigate('SaidaEstoqueScreen', {
+                this.props.navigation.navigate('SaidaEstoqueItensScreen', {
                     registro: {
                         ...response.data,
                         checkedVeiculo: response.data.listaItens[0].estoq_mei_veic_dest ? true : false,
@@ -249,7 +249,7 @@ export default class SaidasEstoqueScreen extends Component {
     }
 
     onAddPress = () => {
-        this.props.navigation.navigate('SaidaEstoqueScreen', {
+        this.props.navigation.navigate('SaidaEstoqueItensScreen', {
             registro: {
                 estoq_me_idf: 0,
                 estoq_me_data: '', //moment(new Date()).format('DD/MM/YYYY'),

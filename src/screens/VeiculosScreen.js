@@ -12,6 +12,7 @@ import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import { maskDate } from '../utils/Maskers';
+import VeiculosSelect from '../components/VeiculosSelect';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -33,131 +34,117 @@ const RegistroItem = ({ registro, onRegistroPress }) => {
             elevation: 0,
         }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
-                <TouchableOpacity
-                // onPress={() => onRegistroPress(registro.adm_vei_idf)}
-                >
-
-                    <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
-                                Veículo{': '}
-                            </Text>
-                            <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
-                                {registro.adm_vei_idf}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                                Placa{': '}
-                            </Text>
-                            <Text style={{ fontSize: 12, marginTop: 2 }}>
-                                {registro.adm_vei_placa}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                                Lotação{': '}
-                            </Text>
-                            <Text>
-                                {registro.adm_vei_lotacao_sentado}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                            Local{': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_veiloc_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                            Espécie{': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_veiesp_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                            Tipo{': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_veitp_descricao}
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 7 }}>
-                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                            Motor{': '}
-                        </Text>
-                        <Text>
-                            {registro.adm_veimotor_descricao}
-                        </Text>
-                    </View>
-
-                    <Divider />
-
-                    <Text style={{
-                        paddingLeft: 10,
-                        marginTop: 7,
-                        fontWeight: 'bold',
-                        color: Colors.primaryDark,
-                        fontSize: 15
-                    }}>
-                        Última O.S Aberta na Matriz
-                    </Text>
-                    <View style={{ paddingLeft: 10, marginBottom: 7, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 3, flexDirection: 'row', paddingLeft: 10 }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                                Nº{': '}
-                            </Text>
-                            <Text>
-                                {registro.num_ult_os}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                                Data{': '}
-                            </Text>
-                            <Text style={{ fontSize: 12, marginTop: 2 }}>
-                                {moment(registro.data_ult_os).format("DD/MM/YYYY")}
-                            </Text>
-                        </View>
-                        {/* <View style={{ flex: 3, flexDirection: 'row', fontSize: 10 }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
-                                Dias {': '}
-                            </Text>
-                            <Text>
-                                {registro.data_ult_os}
-                            </Text>
-                        </View> */}
-                        <View style={{ flex: 3, flexDirection: 'row' }}>
-                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
-                                Situação{': '}
-                            </Text>
-                            <Text>
-                                {registro.sit_ult_os === 'F' ? 'FIN' : 'ABE'}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <Divider />
-
-                    <View style={{ paddingHorizontal: 10, marginVertical: 7 }}>
+                <View style={{ paddingLeft: 10, marginBottom: 3, marginTop: 7, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
-                            Localização Atual{': '}
+                            Veículo{': '}
                         </Text>
-                        <Text style={{ paddingLeft: 10 }}>
-                            {renderLocalizacao(registro.fil_fim, registro.desc_fil_fim, registro.sentido, registro.servico, registro.rota, registro.sec1, registro.sec2, registro.hora1, registro.hora2)}
+                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
+                            {registro.adm_vei_idf}
                         </Text>
                     </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                            Placa{': '}
+                        </Text>
+                        <Text style={{ fontSize: 12, marginTop: 2 }}>
+                            {registro.adm_vei_placa}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                            Lotação{': '}
+                        </Text>
+                        <Text>
+                            {registro.adm_vei_lotacao_sentado}
+                        </Text>
+                    </View>
+                </View>
 
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                        Local{': '}
+                    </Text>
+                    <Text>
+                        {registro.adm_veiloc_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                        Espécie{': '}
+                    </Text>
+                    <Text>
+                        {registro.adm_veiesp_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                        Tipo{': '}
+                    </Text>
+                    <Text>
+                        {registro.adm_veitp_descricao}
+                    </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 7 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                        Motor{': '}
+                    </Text>
+                    <Text>
+                        {registro.adm_veimotor_descricao}
+                    </Text>
+                </View>
+
+                <Divider />
+
+                <Text style={{
+                    paddingLeft: 10,
+                    marginTop: 7,
+                    fontWeight: 'bold',
+                    color: Colors.primaryDark,
+                    fontSize: 15
+                }}>
+                    Última O.S Aberta na Matriz
+                </Text>
+                <View style={{ paddingLeft: 10, marginBottom: 7, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 3, flexDirection: 'row', paddingLeft: 10 }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                            Nº{': '}
+                        </Text>
+                        <Text>
+                            {registro.num_ult_os}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                            Data{': '}
+                        </Text>
+                        <Text style={{ fontSize: 12, marginTop: 2 }}>
+                            {registro.data_ult_os ? moment(registro.data_ult_os).format("DD/MM/YYYY") : ''}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                            Situação{': '}
+                        </Text>
+                        <Text>
+                            {registro.sit_ult_os === 'F' ? 'FIN' : registro.sit_ult_os ? 'ABE' : ''}
+                        </Text>
+                    </View>
+                </View>
+
+                <Divider />
+
+                <View style={{ paddingHorizontal: 10, marginVertical: 7 }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
+                        Localização Atual{': '}
+                    </Text>
+                    <Text style={{ paddingLeft: 10 }}>
+                        {renderLocalizacao(registro.fil_fim, registro.desc_fil_fim, registro.sentido, registro.servico, registro.rota, registro.sec1, registro.sec2, registro.hora1, registro.hora2)}
+                    </Text>
+                </View>
             </View>
         </Card>
     )
@@ -170,7 +157,7 @@ const renderLocalizacao = (fil_fim, desc_fil_fim, sentido, servico, rota, sec1, 
         if (servico) {
             return 'VIAGEM SERVIÇO: ' + servico + ' - ' + (sentido === 'I' ? (sec1 + ' a ' + sec2 + ' [' + hora1 + ']') : (sec2 + ' a ' + sec1 + ' [' + hora2 + ']'));
         } else {
-            return rota ? 'VIAGEM ROTA: ' + rota : '';
+            return '';
         }
     }
 };
@@ -186,6 +173,7 @@ export default class VeiculosScreen extends Component {
         carregarMais: false,
         pagina: 1,
 
+        veiculoSelect: null,
         adm_vei_idf: '',
         adm_veiloc_codigo: '',
         adm_veiesp_codigo: '',
@@ -212,30 +200,43 @@ export default class VeiculosScreen extends Component {
         this.setState(state);
     }
 
-    onInputChangeData = (id, value) => {
+    onInputChangeVeiculo = (id, value) => {
         const state = {};
         state[id] = value;
         this.setState(state);
-        this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
+        if (value) {
+            this.setState({
+                adm_vei_idf: value.codVeic,
+                refreshing: true,
+            }, this.getListaRegistros());
+        }
     }
+
+    onErroChange = msgErro => {
+        this.setState({
+            listaRegistros: [],
+            msgErroVeiculo: msgErro,
+        })
+    }
+
 
 
     getListaRegistros = () => {
         const {
-            adm_vei_idf, adm_veiloc_codigo, adm_veiesp_codigo, adm_veitp_codigo, adm_veimotor_codigo,
+            veiculoSelect, adm_vei_idf, adm_veiloc_codigo, adm_veiesp_codigo, adm_veitp_codigo, adm_veimotor_codigo,
             pagina, listaRegistros
         } = this.state;
 
         const temFiltro = adm_vei_idf !== '' || adm_veiloc_codigo !== '' || adm_veiesp_codigo !== '' || adm_veitp_codigo !== '' || adm_veimotor_codigo !== '';
 
+        console.log('adm_vei_idf: ', adm_vei_idf)
+        console.log('veiculoSelect: ', veiculoSelect)
+
         axios.get('/escalaVeiculos/listaVeiculos', {
             params: {
                 page: pagina,
                 limite: 10,
-                veiculo: adm_vei_idf,
+                veiculo: veiculoSelect && veiculoSelect.codVeic ? veiculoSelect.codVeic : '',
                 local: adm_veiloc_codigo,
                 especie: adm_veiesp_codigo,
                 tipo: adm_veitp_codigo,
@@ -284,7 +285,6 @@ export default class VeiculosScreen extends Component {
 
     renderListFooter = () => {
         const { carregando } = this.state;
-
         if (carregando) {
             return (
                 <View style={{ marginTop: 8 }}>
@@ -292,7 +292,6 @@ export default class VeiculosScreen extends Component {
                 </View>
             )
         }
-
         return null;
     }
 
@@ -331,6 +330,7 @@ export default class VeiculosScreen extends Component {
             pagina: 1,
             refreshing: true,
             temFiltro: false,
+            veiculoSelect: [],
             adm_vei_idf: '',
             adm_veiloc_codigo: '',
             adm_veiesp_codigo: '',
@@ -437,74 +437,86 @@ export default class VeiculosScreen extends Component {
         const {
             listaRegistros, refreshing, carregarRegistro, temFiltro,
             adm_vei_idf, adm_veiloc_codigo, adm_veiesp_codigo, adm_veitp_codigo, adm_veimotor_codigo,
-            localSelect, especieSelect, tipoSelect, motorSelect
+            veiculoSelect, localSelect, especieSelect, tipoSelect, motorSelect
         } = this.state;
 
         // console.log('adm_vei_idf: ', this.state.adm_vei_idf);
 
         return (
-            <SafeAreaView style={{ backgroundColor: '#1F829C', flex: 1 }}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Lista dos Veículos'}
                     pressLeftComponen={() => this.props.navigation.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />
-                <View style={{ flex: 1, backgroundColor: Colors.background }}>
-                    <FlatList
-                        style={{
-                            backgroundColor: 'white'
-                        }}
-                        data={listaRegistros}
-                        renderItem={this.renderItem}
-                        contentContainerStyle={{ paddingBottom: 100 }}
-                        keyExtractor={registro => String(registro.adm_vei_idf)}
-                        onRefresh={this.onRefresh}
-                        refreshing={refreshing}
-                        onEndReached={this.carregarMaisRegistros}
-                        ListFooterComponent={this.renderListFooter}
+
+                <View style={{ margin: 10, marginBottom: -20, padding: 0 }}>
+
+                    <VeiculosSelect
+                        label="Veículo"
+                        id="veiculoSelect"
+                        value={veiculoSelect}
+                        codVeiculo={adm_vei_idf}
+                        onChange={this.onInputChangeVeiculo}
+                        onErro={this.onErroChange}
+                        tipo=""
                     />
 
+                </View>
 
-                    {/* ----------------------------- */}
-                    {/* MODAL PARA FILTROS            */}
-                    {/* ----------------------------- */}
-                    <Modal
-                        visible={this.state.modalFiltrosVisible}
-                        animationType={"slide"}
-                        transparent={true}
-                    >
+
+                <FlatList
+                    data={listaRegistros}
+                    renderItem={this.renderItem}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    keyExtractor={registro => String(registro.adm_vei_idf)}
+                    onRefresh={this.onRefresh}
+                    refreshing={refreshing}
+                    onEndReached={this.carregarMaisRegistros}
+                    ListFooterComponent={this.renderListFooter}
+                />
+
+
+                {/* ----------------------------- */}
+                {/* MODAL PARA FILTROS            */}
+                {/* ----------------------------- */}
+                <Modal
+                    visible={this.state.modalFiltrosVisible}
+                    animationType={"slide"}
+                    transparent={true}
+                >
+                    <View style={{
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}>
                         <View style={{
-                            backgroundColor: 'rgba(0,0,0,0.5)',
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center"
+                            width: "90%",
                         }}>
                             <View style={{
-                                width: "90%",
+                                paddingVertical: 15,
+                                paddingHorizontal: 15,
+                                backgroundColor: Colors.background,
+                                borderRadius: 5,
                             }}>
-                                <View style={{
-                                    paddingVertical: 15,
-                                    paddingHorizontal: 15,
-                                    backgroundColor: Colors.background,
-                                    borderRadius: 5,
-                                }}>
 
-                                    <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
-                                        <Text style={{
-                                            color: Colors.textOnPrimary,
-                                            marginTop: 15,
-                                            marginBottom: 15,
-                                            marginLeft: 16,
-                                            textAlign: 'center',
-                                            fontSize: 20,
-                                            fontWeight: 'bold',
-                                        }}>Filtrar Veículos</Text>
-                                    </View>
+                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
+                                    <Text style={{
+                                        color: Colors.textOnPrimary,
+                                        marginTop: 15,
+                                        marginBottom: 15,
+                                        marginLeft: 16,
+                                        textAlign: 'center',
+                                        fontSize: 20,
+                                        fontWeight: 'bold',
+                                    }}>Filtrar Veículos</Text>
+                                </View>
 
-                                    <View style={{ marginTop: 4, paddingVertical: 10 }}>
+                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
-                                        <TextInput
+                                    {/* <TextInput
                                             label="Veículo"
                                             id="adm_vei_idf"
                                             ref="adm_vei_idf"
@@ -512,128 +524,128 @@ export default class VeiculosScreen extends Component {
                                             maxLength={20}
                                             onChange={this.onInputChange}
                                             keyboardType="numeric"
-                                        />
+                                        /> */}
 
-                                        <TextInput
-                                            type="select"
-                                            label="Localização"
-                                            id="adm_veiloc_codigo"
-                                            ref="adm_veiloc_codigo"
-                                            value={adm_veiloc_codigo}
-                                            selectedValue=""
-                                            options={localSelect}
-                                            onChange={this.onInputChange}
-                                        />
+                                    <TextInput
+                                        type="select"
+                                        label="Localização"
+                                        id="adm_veiloc_codigo"
+                                        ref="adm_veiloc_codigo"
+                                        value={adm_veiloc_codigo}
+                                        selectedValue=""
+                                        options={localSelect}
+                                        onChange={this.onInputChange}
+                                    />
 
-                                        <TextInput
-                                            type="select"
-                                            label="Espécie"
-                                            id="adm_veiesp_codigo"
-                                            ref="adm_veiesp_codigo"
-                                            value={adm_veiesp_codigo}
-                                            selectedValue=""
-                                            options={especieSelect}
-                                            onChange={this.onInputChange}
-                                        />
+                                    <TextInput
+                                        type="select"
+                                        label="Espécie"
+                                        id="adm_veiesp_codigo"
+                                        ref="adm_veiesp_codigo"
+                                        value={adm_veiesp_codigo}
+                                        selectedValue=""
+                                        options={especieSelect}
+                                        onChange={this.onInputChange}
+                                    />
 
-                                        <TextInput
-                                            type="select"
-                                            label="Tipo"
-                                            id="adm_veitp_codigo"
-                                            ref="adm_veitp_codigo"
-                                            value={adm_veitp_codigo}
-                                            selectedValue=""
-                                            options={tipoSelect}
-                                            onChange={this.onInputChange}
-                                        />
+                                    <TextInput
+                                        type="select"
+                                        label="Tipo"
+                                        id="adm_veitp_codigo"
+                                        ref="adm_veitp_codigo"
+                                        value={adm_veitp_codigo}
+                                        selectedValue=""
+                                        options={tipoSelect}
+                                        onChange={this.onInputChange}
+                                    />
 
-                                        <TextInput
-                                            type="select"
-                                            label="Motor"
-                                            id="adm_veimotor_codigo"
-                                            ref="adm_veimotor_codigo"
-                                            value={adm_veimotor_codigo}
-                                            selectedValue=""
-                                            options={motorSelect}
-                                            onChange={this.onInputChange}
-                                        />
+                                    <TextInput
+                                        type="select"
+                                        label="Motor"
+                                        id="adm_veimotor_codigo"
+                                        ref="adm_veimotor_codigo"
+                                        value={adm_veimotor_codigo}
+                                        selectedValue=""
+                                        options={motorSelect}
+                                        onChange={this.onInputChange}
+                                    />
 
 
-                                        <Button
-                                            title="FILTRAR"
-                                            onPress={() => {
-                                                this.onSearchPress(!this.state.modalFiltrosVisible)
-                                            }}
-                                            buttonStyle={{ marginTop: 10 }}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'filter',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                        <Button
-                                            title="FECHAR"
-                                            onPress={() => {
-                                                this.onClosePress(!this.state.modalFiltrosVisible)
-                                            }}
-                                            buttonStyle={{ marginTop: 10 }}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'close',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    </View>
+                                    <Button
+                                        title="FILTRAR"
+                                        onPress={() => {
+                                            this.onSearchPress(!this.state.modalFiltrosVisible)
+                                        }}
+                                        buttonStyle={{ marginTop: 10 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'filter',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
+                                    <Button
+                                        title="FECHAR"
+                                        onPress={() => {
+                                            this.onClosePress(!this.state.modalFiltrosVisible)
+                                        }}
+                                        buttonStyle={{ marginTop: 10 }}
+                                        backgroundColor={Colors.buttonPrimary}
+                                        icon={{
+                                            name: 'close',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
                                 </View>
                             </View>
                         </View>
-                    </Modal>
+                    </View>
+                </Modal>
 
 
-                    <FloatActionButton
-                        iconFamily="MaterialIcons"
-                        iconName="cached"
-                        iconColor={Colors.textOnPrimary}
-                        onPress={this.onRefresh}
-                        backgroundColor={Colors.primary}
-                        marginBottom={90}
-                        marginRight={10}
-                    />
-                    <FloatActionButton
-                        iconFamily="MaterialIcons"
-                        iconName="search"
-                        iconColor={Colors.textOnPrimary}
-                        onPress={() => {
-                            this.onSearchPress(true)
-                        }}
-                        backgroundColor={Colors.primary}
-                        marginRight={10}
-                    />
+                <FloatActionButton
+                    iconFamily="MaterialIcons"
+                    iconName="cached"
+                    iconColor={Colors.textOnPrimary}
+                    onPress={this.onRefresh}
+                    backgroundColor={Colors.primary}
+                    marginBottom={90}
+                    marginRight={10}
+                />
+                <FloatActionButton
+                    iconFamily="MaterialIcons"
+                    iconName="search"
+                    iconColor={Colors.textOnPrimary}
+                    onPress={() => {
+                        this.onSearchPress(true)
+                    }}
+                    backgroundColor={Colors.primary}
+                    marginRight={10}
+                />
 
-                    {
-                        temFiltro
-                            ? (
-                                <FloatActionButton
-                                    iconFamily="MaterialIcons"
-                                    iconName="clear"
-                                    iconColor={Colors.textOnPrimary}
-                                    onPress={this.onClearSearchPress}
-                                    backgroundColor={Colors.primary}
-                                    marginRight={60}
-                                />
-                            ) : null
-                    }
+                {
+                    temFiltro
+                        ? (
+                            <FloatActionButton
+                                iconFamily="MaterialIcons"
+                                iconName="clear"
+                                iconColor={Colors.textOnPrimary}
+                                onPress={this.onClearSearchPress}
+                                backgroundColor={Colors.primary}
+                                marginRight={60}
+                            />
+                        ) : null
+                }
 
-                    <ProgressDialog
-                        visible={carregarRegistro}
-                        title="SIGA PRO"
-                        message="Aguarde..."
-                    />
+                <ProgressDialog
+                    visible={carregarRegistro}
+                    title="SIGA PRO"
+                    message="Aguarde..."
+                />
 
 
-                </View>
+
             </SafeAreaView>
         )
     }

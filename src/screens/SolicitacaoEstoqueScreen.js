@@ -76,6 +76,10 @@ export default class SolicitacaoEstoqueScreen extends Component {
                 // codTipoSol: this.props.navigation.state.params.registro.estoq_sf_tipo ? this.props.navigation.state.params.registro.estoq_sf_tipo : '',
             });
         })
+
+        if (!this.props.navigation.state.params.registro.estoq_sf_controle) {
+            this.onAbrirItensModal();
+        }
     }
 
     onInputChange = (id, value) => {

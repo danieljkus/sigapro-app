@@ -176,7 +176,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
 
                 <View style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity
-                        onPress={() => onOSPress(registro.adm_spcl_idf, registro.man_sp_obs, true)}
+                        onPress={() => onOSPress(registro.adm_spcl_idf, registro.man_sp_obs1, registro.man_sp_obs2, registro.man_sp_obs3, registro.man_sp_obs4, registro.man_sp_obs5, true)}
                     >
                         <View style={{
                             flex: 1,
@@ -201,7 +201,7 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
                             fontSize: 11,
                             marginTop: 5,
                             marginBottom: 5,
-                            textDecorationLine: registro?.man_sp_obs ? 'underline' : 'none'
+                            textDecorationLine: registro?.man_sp_obs1 ? 'underline' : 'none'
                         }}>
                             O.S.
                         </Text>
@@ -266,7 +266,11 @@ export default class CheckListScreen extends Component {
             temFiltro: false,
             modalFiltrosVisible: false,
             modalOSVisible: false,
-            man_sp_obs: '',
+            man_sp_obs1: '',
+            man_sp_obs2: '',
+            man_sp_obs3: '',
+            man_sp_obs4: '',
+            man_sp_obs5: '',
             modalOcorrenciaVisible: false,
             adm_spcl_idf: 0,
             adm_spcl_ocorrencia: '',
@@ -604,24 +608,28 @@ export default class CheckListScreen extends Component {
 
 
     // SETA AS VARIAVES NO MODAL ORDEM DE SERVICO
-    onOSPress = (adm_spcl_idf, man_sp_obs, visible) => {
+    onOSPress = (adm_spcl_idf, man_sp_obs1, man_sp_obs2, man_sp_obs3, man_sp_obs4, man_sp_obs5, visible) => {
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
             this.setState({
                 modalOSVisible: visible,
-                adm_spcl_idf: adm_spcl_idf,
-                man_sp_obs: man_sp_obs,
+                adm_spcl_idf,
+                man_sp_obs1,
+                man_sp_obs2,
+                man_sp_obs3,
+                man_sp_obs4,
+                man_sp_obs5,
             });
         }
     };
 
     // SETA O UPDATE DA ORDEM DE SERVICO
-    onOSPressPut = async (adm_spcl_idf, man_sp_obs, visible) => {
+    onOSPressPut = async (adm_spcl_idf, man_sp_obs1, man_sp_obs2, man_sp_obs3, man_sp_obs4, man_sp_obs5, visible) => {
         try {
-            if ((!visible) && (adm_spcl_idf) && (man_sp_obs)) {
+            if ((!visible) && (adm_spcl_idf) && (man_sp_obs1)) {
                 this.setState({ aguarde: true });
-                axios.put(`${"/checkList/ordemServico/" + adm_spcl_idf + "/" + man_sp_obs}`).then(response => {
+                axios.put(`${"/checkList/ordemServico/" + adm_spcl_idf + "/" + man_sp_obs1}`).then(response => {
                     this.setState({
                         aguarde: false,
                         modalOSVisible: false
@@ -695,7 +703,7 @@ export default class CheckListScreen extends Component {
     render() {
         const {
             listaRegistros, refreshing, aguarde,
-            adm_spcl_veiculo, adm_spcl_idf, adm_spcl_ocorrencia, man_sp_obs,
+            adm_spcl_veiculo, adm_spcl_idf, adm_spcl_ocorrencia, man_sp_obs1, man_sp_obs2, man_sp_obs3, man_sp_obs4, man_sp_obs5,
             dataIni, dataFim, netStatus
         } = this.state;
 
@@ -737,7 +745,7 @@ export default class CheckListScreen extends Component {
                 <Modal
                     visible={this.state.modalOSVisible}
                     // onShow={()=> this.setState({modalOSVisible: false})}
-                    animationType={"fade"}
+                    animationType={"slide"}
                     transparent={true}
 
                 >
@@ -747,12 +755,10 @@ export default class CheckListScreen extends Component {
                         justifyContent: 'center',
                         backgroundColor: 'rgba(0,0,0,0.5)',
                         display: 'flex',
-                        top: 30
+                        // top: 30
                     }}>
                         <View style={{
-                            // flex: 1,
                             width: "90%",
-                            // paddingTop: 30,
                         }}>
                             <View style={{
                                 paddingVertical: 15,
@@ -775,19 +781,54 @@ export default class CheckListScreen extends Component {
 
                                 <View style={{ marginTop: 4, paddingVertical: 10 }}>
                                     <TextInput
-                                        label="Descrição dos Serviços"
-                                        id="man_sp_obs"
-                                        ref="man_sp_obs"
-                                        value={man_sp_obs}
+                                        label="Serviço 1"
+                                        id="man_sp_obs1"
+                                        ref="man_sp_obs1"
+                                        value={man_sp_obs1}
                                         maxLength={200}
                                         onChange={this.onInputChange}
                                         multiline={false}
-                                        height={100}
+                                    />
+                                    <TextInput
+                                        label="Serviço 2"
+                                        id="man_sp_obs2"
+                                        ref="man_sp_obs2"
+                                        value={man_sp_obs2}
+                                        maxLength={200}
+                                        onChange={this.onInputChange}
+                                        multiline={false}
+                                    />
+                                    <TextInput
+                                        label="Serviço 3"
+                                        id="man_sp_obs3"
+                                        ref="man_sp_obs3"
+                                        value={man_sp_obs3}
+                                        maxLength={200}
+                                        onChange={this.onInputChange}
+                                        multiline={false}
+                                    />
+                                    <TextInput
+                                        label="Serviço 4"
+                                        id="man_sp_obs4"
+                                        ref="man_sp_obs4"
+                                        value={man_sp_obs4}
+                                        maxLength={200}
+                                        onChange={this.onInputChange}
+                                        multiline={false}
+                                    />
+                                    <TextInput
+                                        label="Serviço 5"
+                                        id="man_sp_obs5"
+                                        ref="man_sp_obs5"
+                                        value={man_sp_obs5}
+                                        maxLength={200}
+                                        onChange={this.onInputChange}
+                                        multiline={false}
                                     />
 
                                     <Button
                                         title="SALVAR"
-                                        onPress={() => this.onOSPressPut(adm_spcl_idf, man_sp_obs, false)}
+                                        onPress={() => this.onOSPressPut(adm_spcl_idf, man_sp_obs1, man_sp_obs2, man_sp_obs3, man_sp_obs4, man_sp_obs5, false)}
                                         buttonStyle={{ marginTop: 15 }}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
@@ -820,10 +861,10 @@ export default class CheckListScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalOcorrenciaVisible}
-                    animationType={"fade"}
+                    animationType={"slide"}
                     transparent={true}
                 >
-                    <View style={{
+                    <Pressable onPress={() => this.setState({ modalOcorrenciaVisible: false })} style={{
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -893,7 +934,7 @@ export default class CheckListScreen extends Component {
                                 </View>
                             </View>
                         </View>
-                    </View>
+                    </Pressable>
                 </Modal>
 
 
@@ -902,10 +943,10 @@ export default class CheckListScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    animationType={"fade"}
+                    animationType={"slide"}
                     transparent={true}
                 >
-                    <View style={{
+                    <Pressable onPress={() => this.setState({ modalFiltrosVisible: false })} style={{
                         backgroundColor: 'rgba(0,0,0,0.5)',
                         flex: 1,
                         justifyContent: "center",
@@ -1008,7 +1049,7 @@ export default class CheckListScreen extends Component {
                                 </View>
                             </View>
                         </View>
-                    </View>
+                    </Pressable>
                 </Modal>
 
 

@@ -10,7 +10,7 @@ import Colors from '../values/Colors';
 import Icon from './Icon';
 import { Card, Divider, SearchBar } from 'react-native-elements';
 import HeaderComponent from "./HeaderComponent";
-
+import { maskValorMoeda } from '../utils/Maskers';
 
 const Registro = ({ registro, onRegistroPress }) => {
     return (
@@ -18,11 +18,27 @@ const Registro = ({ registro, onRegistroPress }) => {
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.estoq_ie_codigo)}
             >
-                <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
+                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text>
+                            # {registro.estoq_ie_codigo}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Estoque {': '}
+                        </Text>
+                        <Text>
+                            {maskValorMoeda(parseFloat(registro.estoq_ef_estoque_atual))}
+                        </Text>
+                    </View>
+                </View>
+
+                {/* <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
                         #{registro.estoq_ie_codigo}
                     </Text>
-                </View>
+                </View> */}
 
                 <Divider />
 
@@ -89,12 +105,13 @@ class ItemEstoqueSelect extends PureComponent {
 
     buscaRegistros = (value) => {
         this.setState({ carregando: true });
-        const { id, onChange, buscaEstoque } = this.props;
+        const { id, onChange, buscaEstoque, comSaldo } = this.props;
 
         axios.get('/listaItens', {
             params: {
                 codItem: value,
-                buscaEstoque: buscaEstoque,
+                buscaEstoque,
+                comSaldo,
             }
         }).then(response => {
             const { data } = response;
@@ -142,6 +159,7 @@ class ItemEstoqueSelect extends PureComponent {
 
     getListaRegistros = () => {
         const { buscaNome, pagina, listaRegistros } = this.state;
+        const { buscaEstoque, comSaldo } = this.props;
         this.setState({ carregando: true });
 
         axios.get('/listaItensBusca', {
@@ -149,6 +167,8 @@ class ItemEstoqueSelect extends PureComponent {
                 page: pagina,
                 limite: 10,
                 nome: buscaNome,
+                buscaEstoque,
+                comSaldo,
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -242,8 +262,14 @@ class ItemEstoqueSelect extends PureComponent {
 
         const codConta = codItem ? codItem : (value ? value.estoq_ie_codigo : '');
         const descricao = value ? String(value.estoq_ie_descricao).trim() : '';
-        // const buscaEst = buscaEstoque ? buscaEstoque : 1;
-        this.setState({ codItem: codConta });
+        // const buscaEstoque = buscaEstoque ? buscaEstoque : 0;
+        // const comSaldo = comSaldo ? comSaldo : 0;
+
+        this.setState({
+            codItem: codConta,
+            // buscaEstoque,
+            // comSaldo,
+        });
 
         return (
             <View style={{ flexDirection: 'row' }}>
