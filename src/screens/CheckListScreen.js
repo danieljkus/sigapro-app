@@ -627,18 +627,28 @@ export default class CheckListScreen extends Component {
     // SETA O UPDATE DA ORDEM DE SERVICO
     onOSPressPut = async (adm_spcl_idf, man_sp_obs1, man_sp_obs2, man_sp_obs3, man_sp_obs4, man_sp_obs5, visible) => {
         try {
-            if ((!visible) && (adm_spcl_idf) && (man_sp_obs1)) {
+            if ((!visible) && (adm_spcl_idf)) {
                 this.setState({ aguarde: true });
-                axios.put(`${"/checkList/ordemServico/" + adm_spcl_idf + "/" + man_sp_obs1}`).then(response => {
-                    this.setState({
-                        aguarde: false,
-                        modalOSVisible: false
-                    }, this.getListaRegistros);
 
-                }).catch(ex => {
-                    Alert.showAlert(`${'ERROR ' + ex?.response?.status + ' ' + ex?.response?.data?.message?.slice(0, 50) + '...'} `)
-                    this.setState({ aguarde: false, modalOSVisible: false });
-                })
+                const reg = {
+                    man_sp_obs1,
+                    man_sp_obs2,
+                    man_sp_obs3,
+                    man_sp_obs4,
+                    man_sp_obs5,
+                };
+
+                axios.put(`${"/checkList/ordemServico/" + adm_spcl_idf + "/XXXXXXXXX"}`, reg)
+                    .then(response => {
+                        this.setState({
+                            aguarde: false,
+                            modalOSVisible: false
+                        }, this.getListaRegistros);
+
+                    }).catch(ex => {
+                        Alert.showAlert(`${'ERROR ' + ex?.response?.status + ' ' + ex?.response?.data?.message?.slice(0, 50) + '...'} `)
+                        this.setState({ aguarde: false, modalOSVisible: false });
+                    })
             }
         } catch (error) {
             // console.log('catch error', error);
