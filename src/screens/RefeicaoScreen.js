@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     View,
     Text,
@@ -8,8 +8,8 @@ import {
     SafeAreaView,
     ActivityIndicator
 } from 'react-native';
-import {Card, Divider, CheckBox} from 'react-native-elements';
-import {checkFormIsValid} from '../utils/Validator';
+import { Card, Divider, CheckBox } from 'react-native-elements';
+import { checkFormIsValid } from '../utils/Validator';
 
 import TextInput from '../components/TextInput';
 import moment from 'moment';
@@ -17,15 +17,15 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import axios from 'axios';
 import Alert from '../components/Alert';
-import {ProgressDialog} from 'react-native-simple-dialogs';
-import {maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat} from "../utils/Maskers";
-import {getEmpresa, getToken} from '../utils/LoginManager';
+import { ProgressDialog } from 'react-native-simple-dialogs';
+import { maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat } from "../utils/Maskers";
+import { getEmpresa, getToken } from '../utils/LoginManager';
 import NetInfo from '@react-native-community/netinfo';
 import GetLocation from 'react-native-get-location';
 import HeaderComponent from "../components/HeaderComponent";
-import {verifyGeolocationActive, verifyLocationPermission} from "../components/getGeolocation";
+import { verifyGeolocationActive, verifyLocationPermission } from "../components/getGeolocation";
 
-const {OS} = Platform;
+const { OS } = Platform;
 
 
 export default class RefeicaoScreen extends Component {
@@ -71,12 +71,12 @@ export default class RefeicaoScreen extends Component {
 
     componentDidMount() {
         getEmpresa().then(empresa => {
-            this.setState({empresa});
+            this.setState({ empresa });
         })
     }
 
     onInputChange = (id, value) => {
-        const {registro} = this.state;
+        const { registro } = this.state;
         this.setState({
             registro: {
                 ...registro,
@@ -111,8 +111,8 @@ export default class RefeicaoScreen extends Component {
         }
 
         Alert.showConfirm("Deseja salvar essa Refeição?", {
-                text: "Cancelar"
-            },
+            text: "Cancelar"
+        },
             {
                 text: "OK",
                 onPress: this.onSalvar,
@@ -124,7 +124,7 @@ export default class RefeicaoScreen extends Component {
         if (!this.state.netStatus) {
             Alert.showAlert('Dispositivo sem conexão');
         } else {
-            this.setState({salvado: true});
+            this.setState({ salvado: true });
 
             return this.requestLocationPermission().then(() => {
                 GetLocation.getCurrentPosition({
@@ -132,8 +132,8 @@ export default class RefeicaoScreen extends Component {
                     timeout: 30000,
                 }).then(location => {
                     const local = String(location.latitude) + ',' + String(location.longitude);
-                    const {registro} = this.state;
-                    this.setState({salvado: true, salvando: true});
+                    const { registro } = this.state;
+                    this.setState({ salvado: true, salvando: true });
                     registro.rhref_cod_rest = this.state.rhref_cod_rest;
                     registro.rhref_tipo_refeicao = this.state.tipoRefeicao;
                     registro.rhref_localizacao = local;
@@ -144,8 +144,8 @@ export default class RefeicaoScreen extends Component {
                             this.props.navigation.goBack(null);
                             this.props.navigation.state.params.onRefresh();
                         }).catch(ex => {
-                            const {response} = ex;
-                            this.setState({salvado: false, salvando: false});
+                            const { response } = ex;
+                            this.setState({ salvado: false, salvando: false });
 
                             return axios
                                 .post('/refeicoes/store', registro)
@@ -153,8 +153,8 @@ export default class RefeicaoScreen extends Component {
                                     this.props.navigation.goBack(null);
                                     this.props.navigation.state.params.onRefresh();
                                 }).catch(ex => {
-                                    const {response} = ex;
-                                    this.setState({salvado: false, salvando: false});
+                                    const { response } = ex;
+                                    this.setState({ salvado: false, salvando: false });
                                     if (ex.response) {
                                         // erro no servidor
                                         alert('Não foi possível gravar. ' + ex.response.data);
@@ -172,7 +172,7 @@ export default class RefeicaoScreen extends Component {
 
 
     oncancellQRbuscar = (status) => {
-        this.setState({loadingAdd: status})
+        this.setState({ loadingAdd: status })
     }
 
     onEscanearPress = async () => {
@@ -199,23 +199,23 @@ export default class RefeicaoScreen extends Component {
     }
 
     onBarCodeRead = event => {
-        const {data, rawData, type} = event;
+        const { data, rawData, type } = event;
         this.setState({
-                rhref_cod_rest: data,
-                restaurante: [],
-            },
+            rhref_cod_rest: data,
+            restaurante: [],
+        },
             this.buscaRestaurante(data)
         );
     }
 
     buscaRestaurante = (value) => {
-        this.setState({carregando: true});
+        this.setState({ carregando: true });
         axios.get('/buscaRestaurante', {
             params: {
                 codRestaurante: value
             }
         }).then(response => {
-            const {data} = response;
+            const { data } = response;
 
             let checkedCafe = true;
             let checkedAlmoco = false;
@@ -290,7 +290,7 @@ export default class RefeicaoScreen extends Component {
 
 
     cancelSearch = (status) => {
-        this.setState({buscar: status})
+        this.setState({ buscar: status })
     };
 
     onAbrirBuscaModal = async () => {
@@ -392,21 +392,21 @@ export default class RefeicaoScreen extends Component {
             registro, restaurante, checkedCafe, checkedAlmoco, checkedJanta, checkedMarmita,
             salvado, carregando, netStatus
         } = this.state;
-        const {rhref_obs} = registro;
+        const { rhref_obs } = registro;
 
         // console.log('STATE: ', this.state)
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: '#1F829C', flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Refeições'}
                     pressLeftComponen={() => this?.props?.navigation?.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />
-                <View style={{flex: 1, backgroundColor: Colors.background}}>
+                <View style={{ flex: 1, backgroundColor: Colors.background }}>
                     <ScrollView
-                        style={{flex: 1}}
+                        style={{ flex: 1 }}
                         keyboardShouldPersistTaps="always"
                     >
 
@@ -436,40 +436,40 @@ export default class RefeicaoScreen extends Component {
                                 Restaurante
                             </Text>
 
-                            <View style={{paddingHorizontal: 16, paddingVertical: 8}}>
-                                <View style={{flexDirection: 'row', marginVertical: 2}}>
+                            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+                                <View style={{ flexDirection: 'row', marginVertical: 2 }}>
                                     <Text
-                                        style={{color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold'}}>
+                                        style={{ color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold' }}>
                                         Código: {' '}
                                     </Text>
-                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18}}>
+                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
                                         {restaurante.rhrest_codigo}
                                     </Text>
                                 </View>
 
-                                <View style={{flexDirection: 'row', marginVertical: 2}}>
+                                <View style={{ flexDirection: 'row', marginVertical: 2 }}>
                                     <Text
-                                        style={{color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold'}}>
+                                        style={{ color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold' }}>
                                         Nome: {' '}
                                     </Text>
-                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18}}>
+                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
                                         {restaurante.adm_pes_nome}
                                     </Text>
                                 </View>
 
-                                <View style={{flexDirection: 'row', marginVertical: 2}}>
+                                <View style={{ flexDirection: 'row', marginVertical: 2 }}>
                                     <Text
-                                        style={{color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold'}}>
+                                        style={{ color: Colors.textSecondaryDark, fontSize: 18, fontWeight: 'bold' }}>
                                         Cidade: {' '}
                                     </Text>
-                                    <Text style={{color: Colors.textSecondaryDark, fontSize: 18}}>
+                                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 18 }}>
                                         {restaurante.ceps_loc_descricao} - {restaurante.ceps_loc_uf}
                                     </Text>
                                 </View>
                             </View>
 
-                            <View style={{flexDirection: 'row', justifyContent: "center", marginHorizontal: 20}}>
-                                <View style={{flex: 2, marginRight: 2}}>
+                            <View style={{ flexDirection: 'row', justifyContent: "center", marginHorizontal: 20 }}>
+                                <View style={{ flex: 2, marginRight: 2 }}>
                                     {this?.state?.QRbuscar ?
 
                                         <View style={{
@@ -479,14 +479,14 @@ export default class RefeicaoScreen extends Component {
                                             borderRadius: 2,
                                             justifyContent: 'center'
                                         }}>
-                                            <ActivityIndicator size="small" color="white"/>
+                                            <ActivityIndicator size="small" color="white" />
                                         </View>
                                         :
                                         <Button
                                             title="ESCANEAR"
                                             backgroundColor={Colors.primaryLight}
                                             color={Colors.textOnPrimary}
-                                            buttonStyle={{margin: 5, marginTop: 10}}
+                                            buttonStyle={{ margin: 5, marginTop: 10 }}
                                             onPress={this.onEscanearPress}
                                             icon={{
                                                 name: 'qrcode',
@@ -496,7 +496,7 @@ export default class RefeicaoScreen extends Component {
                                         />
                                     }
                                 </View>
-                                <View style={{flex: 2, marginLeft: 2}}>
+                                <View style={{ flex: 2, marginLeft: 2 }}>
 
                                     {this?.state?.buscar ?
 
@@ -507,7 +507,7 @@ export default class RefeicaoScreen extends Component {
                                             borderRadius: 2,
                                             justifyContent: 'center'
                                         }}>
-                                            <ActivityIndicator size="small" color="white"/>
+                                            <ActivityIndicator size="small" color="white" />
                                         </View>
 
                                         :
@@ -516,7 +516,7 @@ export default class RefeicaoScreen extends Component {
                                             title="BUSCAR"
                                             backgroundColor={Colors.primaryLight}
                                             color={Colors.textOnPrimary}
-                                            buttonStyle={{margin: 5, marginTop: 10}}
+                                            buttonStyle={{ margin: 5, marginTop: 10 }}
                                             onPress={() => {
                                                 this.onAbrirBuscaModal()
                                             }}
@@ -551,7 +551,7 @@ export default class RefeicaoScreen extends Component {
                                 Refeição
                             </Text>
 
-                            <View style={{paddingHorizontal: 10, paddingVertical: 8, flexDirection: 'row'}}>
+                            <View style={{ paddingHorizontal: 10, paddingVertical: 8, flexDirection: 'row' }}>
                                 <CheckBox
                                     center
                                     title='Café'
@@ -599,7 +599,7 @@ export default class RefeicaoScreen extends Component {
                                     }}
                                 />
                             </View>
-                            <View style={{paddingHorizontal: 10, paddingVertical: 8, flexDirection: 'row'}}>
+                            <View style={{ paddingHorizontal: 10, paddingVertical: 8, flexDirection: 'row' }}>
                                 <CheckBox
                                     center
                                     title='Jantar'
@@ -668,7 +668,7 @@ export default class RefeicaoScreen extends Component {
                             }}>
                                 Observação
                             </Text>
-                            <View style={{paddingHorizontal: 10, marginTop: 10}}>
+                            <View style={{ paddingHorizontal: 10, marginTop: 10 }}>
                                 <TextInput
                                     label=""
                                     id="rhref_obs"
@@ -676,7 +676,7 @@ export default class RefeicaoScreen extends Component {
                                     value={rhref_obs}
                                     onChange={this.onInputChange}
                                     multiline={true}
-                                    style={{height: 70,}}
+                                    style={{ height: 70, }}
                                 />
                             </View>
                         </Card>
@@ -690,7 +690,7 @@ export default class RefeicaoScreen extends Component {
                         title="Salvar"
                         backgroundColor='#4682B4'
                         color={Colors.textOnPrimary}
-                        buttonStyle={{margin: 5, marginTop: 10}}
+                        buttonStyle={{ margin: 5, marginTop: 10 }}
                         onPress={this.onSubmitForm}
                         icon={{
                             name: 'check',

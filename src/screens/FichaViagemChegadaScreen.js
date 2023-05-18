@@ -25,6 +25,7 @@ const DATE_FORMAT = 'DD/MM/YYYY';
 
 const stateInicial = {
     veiculo_select: null,
+    veiculo_select_bald: null,
     funcionario_select: null,
 
     listaRegistrosFunc: [],
@@ -41,6 +42,7 @@ const stateInicial = {
     nomeFunc: '',
 
     codVeiculo: '',
+    codVeiculoBald: '',
 
     man_fv_data_ini: moment(new Date()).format(DATE_FORMAT),
     man_fv_odo_ini: 0,
@@ -59,6 +61,7 @@ const stateInicial = {
     man_fv_obs: '',
     checkedFinalRota: false,
     checkedGeraOS: false,
+    checkedBaldeacao: false,
     defeito_mec_ele_lub: 'Nada Consta',
     defeito_chap_borr: 'Nada Consta',
 
@@ -242,6 +245,23 @@ export default class FichaViagemChegadaScreen extends Component {
         })
     }
 
+    onInputChangeVeiculoBald = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        if (value) {
+            this.setState({
+                codVeiculoBald: value.codVeic,
+            });
+        }
+    }
+
+    onErroChange = msgErro => {
+        this.setState({
+            msgErroVeiculo: msgErro
+        })
+    }
+
     onInputChangeFunc = (id, value) => {
         const state = {};
         state[id] = value;
@@ -353,6 +373,13 @@ export default class FichaViagemChegadaScreen extends Component {
             return;
         }
 
+        if ((this.state.checkedBaldeacao) && (!this.state.veiculo_select_bald) && (!this.state.veiculo_select_bald.codVeic)) {
+            Alert.showAlert('Informe o veículo para a baldeação');
+            return;
+        }
+
+
+
         if (checkFormIsValid(this.refs)) {
             this.onSalvarRegistro();
         } else {
@@ -366,7 +393,8 @@ export default class FichaViagemChegadaScreen extends Component {
         const { veiculo_select, funcionario_select, codFunc, empFunc, man_fvm_nome_mot,
             man_fv_odo_fim, man_fv_km_fim, man_fv_km_viagem, man_fv_km_rota, man_fv_qtde_comb,
             man_fv_qtde_comb_extra, man_fv_media, man_fv_qtde_arla, man_fv_media_arla, man_fv_ocorrencia,
-            man_fv_obs, man_fvd_disco, servico, servicoExtra, checkedFinalRota, checkedGeraOS, checkedLinhasRegulares,
+            man_fv_obs, man_fvd_disco, servico, servicoExtra, veiculo_select_bald,
+            checkedFinalRota, checkedGeraOS, checkedBaldeacao, checkedLinhasRegulares,
             defeito_mec_ele_lub, defeito_chap_borr } = this.state;
 
         // let codFunc = 0
@@ -403,6 +431,7 @@ export default class FichaViagemChegadaScreen extends Component {
             man_fv_ocorrencia: man_fv_ocorrencia,
             man_fv_sit_rota: checkedFinalRota ? 'F' : 'A',
             geraOS: checkedGeraOS ? 'S' : 'N',
+            baldeacao: checkedBaldeacao ? veiculo_select_bald.codVeic : '',
 
             man_fvd_disco: man_fvd_disco,
             // pas_serv_codigo: pas_serv_codigo,
@@ -686,9 +715,9 @@ export default class FichaViagemChegadaScreen extends Component {
             man_fv_qtde_comb_extra, man_fv_qtde_arla, man_fv_media_arla, man_fv_ocorrencia,
             ocorrenciaSelect, man_fv_sit_rota, geraOS, defeito_mec_ele_lub, defeito_chap_borr,
             man_fvm_data_hora_ini, man_fvm_data_hora_fim, servicoSelect, veiculo_select,
-            funcionariosSelect, man_fvm_nome_mot,
+            funcionariosSelect, man_fvm_nome_mot, baldeacao, veiculo_select_bald, codVeiculoBald,
             carregandoFunc, carregandoServico, loading, salvado,
-            checkedFinalRota, checkedGeraOS, checkedLinhasRegulares, checkedTodosServicos,
+            checkedFinalRota, checkedGeraOS, checkedBaldeacao, checkedLinhasRegulares, checkedTodosServicos,
             refreshing, listaRegistrosFunc,
         } = this.state;
 
@@ -727,13 +756,6 @@ export default class FichaViagemChegadaScreen extends Component {
                             onErro={this.onErroChange}
                             tipo="fichaChegada"
                         />
-
-                        {/* <FuncionariosSelect
-                            id="funcionario_select"
-                            label="Motorista"
-                            codFunc={veiculo_select && veiculo_select.codFunc ? veiculo_select.codFunc : ''}
-                            onChange={this.onInputChange}
-                        /> */}
 
                         <View style={{ flexDirection: 'row' }} >
                             <View style={{ width: "25%" }}>
@@ -1109,6 +1131,28 @@ export default class FichaViagemChegadaScreen extends Component {
                                 </View>
                             ) : null
                         }
+
+
+
+                        <CheckBox
+                            title='Baldeação do Veículo'
+                            key={baldeacao}
+                            checked={checkedBaldeacao}
+                            onPress={() => this.setState({ checkedBaldeacao: !checkedBaldeacao })}
+                            containerStyle={{ padding: 0, margin: 0, marginBottom: 15, backgroundColor: 'transparent' }}
+                        />
+
+                        {checkedBaldeacao ? (
+                            <VeiculosSelect
+                                label="Veículo"
+                                id="veiculo_select_bald"
+                                value={veiculo_select_bald}
+                                codVeiculo={codVeiculoBald}
+                                onChange={this.onInputChangeVeiculoBald}
+                                onErro={this.onErroChangeBald}
+                                tipo="fichaSaida"
+                            />
+                        ) : null}
 
                     </View>
 

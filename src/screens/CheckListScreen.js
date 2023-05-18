@@ -736,7 +736,7 @@ export default class CheckListScreen extends Component {
 
                 <FlatList
                     style={{
-                        backgroundColor: 'white'
+                        backgroundColor: Colors.backgroundColor
                     }}
                     data={listaRegistros}
                     renderItem={this.renderItem}

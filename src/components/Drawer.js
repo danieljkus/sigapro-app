@@ -156,6 +156,13 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            {getTemPermissao('CHECKLISTCONFERENCIASCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Check-List - Conferência"
+                                    onPress={() => navigation.navigate('CheckListConferenciaScreen')}
+                                />
+                            ) : null}
+
                             {getTemPermissao('REFEICOESSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Refeições"

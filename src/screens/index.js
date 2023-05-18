@@ -21,6 +21,7 @@ import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
 import CheckListScreen from './CheckListScreen';
 import CheckListItemScreen from './CheckListItemScreen';
+import CheckListConferenciaScreen from './CheckListConferenciaScreen';
 
 import RefeicoesScreen from './RefeicoesScreen';
 import RefeicaoScreen from './RefeicaoScreen';
@@ -207,6 +208,14 @@ const HomeStackNavigator = createStackNavigator({
         navigationOptions: {
             headerShown: false,
             title: "Check-List",
+            ...defaultNavigationOptions
+        }
+    },
+    CheckListConferenciaScreen: {
+        screen: CheckListConferenciaScreen,
+        navigationOptions: {
+            headerShown: false,
+            title: "Check-List Conferência",
             ...defaultNavigationOptions
         }
     },
