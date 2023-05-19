@@ -413,7 +413,7 @@ export default class FichaViagemChegadaScreen extends Component {
             man_fv_idf: veiculo_select.idfViagem,
             man_fv_veiculo: veiculo_select.codVeic,
             man_fv_rota: 0,
-            checkedLinhasRegulares: checkedLinhasRegulares ? 'N' : 'S',
+            // checkedLinhasRegulares: checkedLinhasRegulares ? 'N' : 'S',
 
             man_fvm_motorista: codFunc,
             man_fvm_empresa_mot: empFunc,
