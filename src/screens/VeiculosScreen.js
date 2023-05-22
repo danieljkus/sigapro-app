@@ -229,8 +229,8 @@ export default class VeiculosScreen extends Component {
 
         const temFiltro = adm_vei_idf !== '' || adm_veiloc_codigo !== '' || adm_veiesp_codigo !== '' || adm_veitp_codigo !== '' || adm_veimotor_codigo !== '';
 
-        console.log('adm_vei_idf: ', adm_vei_idf)
-        console.log('veiculoSelect: ', veiculoSelect)
+        // console.log('adm_vei_idf: ', adm_vei_idf)
+        // console.log('veiculoSelect: ', veiculoSelect)
 
         axios.get('/escalaVeiculos/listaVeiculos', {
             params: {

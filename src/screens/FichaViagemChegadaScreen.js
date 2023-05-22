@@ -43,6 +43,9 @@ const stateInicial = {
 
     codVeiculo: '',
     codVeiculoBald: '',
+    man_fv_odo_ini_bald: 0,
+    man_fv_km_ini_bald: 0,
+
 
     man_fv_data_ini: moment(new Date()).format(DATE_FORMAT),
     man_fv_odo_ini: 0,
@@ -252,6 +255,8 @@ export default class FichaViagemChegadaScreen extends Component {
         if (value) {
             this.setState({
                 codVeiculoBald: value.codVeic,
+                man_fv_odo_ini_bald: value.kmOdo,
+                man_fv_km_ini_bald: value.kmAcum,
             });
         }
     }
@@ -393,7 +398,7 @@ export default class FichaViagemChegadaScreen extends Component {
         const { veiculo_select, funcionario_select, codFunc, empFunc, man_fvm_nome_mot,
             man_fv_odo_fim, man_fv_km_fim, man_fv_km_viagem, man_fv_km_rota, man_fv_qtde_comb,
             man_fv_qtde_comb_extra, man_fv_media, man_fv_qtde_arla, man_fv_media_arla, man_fv_ocorrencia,
-            man_fv_obs, man_fvd_disco, servico, servicoExtra, veiculo_select_bald,
+            man_fv_obs, man_fvd_disco, servico, servicoExtra, veiculo_select_bald, man_fv_odo_ini_bald, man_fv_km_ini_bald,
             checkedFinalRota, checkedGeraOS, checkedBaldeacao, checkedLinhasRegulares,
             defeito_mec_ele_lub, defeito_chap_borr } = this.state;
 
@@ -431,7 +436,6 @@ export default class FichaViagemChegadaScreen extends Component {
             man_fv_ocorrencia: man_fv_ocorrencia,
             man_fv_sit_rota: checkedFinalRota ? 'F' : 'A',
             geraOS: checkedGeraOS ? 'S' : 'N',
-            baldeacao: checkedBaldeacao ? veiculo_select_bald.codVeic : '',
 
             man_fvd_disco: man_fvd_disco,
             // pas_serv_codigo: pas_serv_codigo,
@@ -447,20 +451,59 @@ export default class FichaViagemChegadaScreen extends Component {
             lista_defeito_chap_borr,
         };
 
-        // console.log(registro);
+        // console.log('onSalvarRegistro CHEGADA: ', registro);
+
         // return;
 
         axios.put('/fichaViagem/chegada/' + registro.man_fv_idf, registro)
             .then(response => {
 
-                Alert.showAlert("Chegada gravada com sucesso.")
+                if (!checkedBaldeacao) {
+                    this.setState({
+                        loading: false,
+                        salvado: false,
+                    })
+                    Alert.showAlert("Chegada gravada com sucesso.")
+                    this.onLimparTela();
+                } else {
 
-                this.setState({
-                    loading: false,
-                    salvado: false,
-                })
-                this.onLimparTela();
+                    const reg = {
+                        man_fv_veiculo: veiculo_select_bald.codVeic,
+                        linhaRegular: checkedLinhasRegulares ? 'S' : 'N',
+                        servico: checkedLinhasRegulares && servico ? servico : 0,
+                        servicoExtra: checkedLinhasRegulares && servicoExtra ? servicoExtra : 0,
 
+                        man_fvm_motorista: codFunc,
+                        man_fvm_empresa_mot: empFunc,
+                        man_fvm_nome_mot: codFunc ? '.' : man_fvm_nome_mot,
+
+                        man_fv_odo_ini: man_fv_odo_ini_bald,
+                        man_fv_km_ini: man_fv_km_ini_bald,
+                        man_fv_obs: '',
+                        man_fvd_disco: 0,
+                        baldeacao: true
+                    };
+
+                    // console.log('onSalvarRegistro SAIDA: ', reg);
+
+                    axios.post('/fichaViagem/saida', reg)
+                        .then(response => {
+                            // console.log('onSalvarRegistro: ', response);
+                            this.setState({
+                                loading: false,
+                                salvado: false,
+                            })
+                            Alert.showAlert("Baldeação gravada com sucesso.")
+                            this.onLimparTela();
+                        }).catch(ex => {
+                            this.setState({ salvado: false });
+                            // console.log('onSalvarRegistro ERRO: ', ex.response);
+                            Alert.showAlert(ex.response.data)
+                            console.warn(ex);
+                            console.warn(ex.response);
+                        })
+
+                }
             }).catch(ex => {
                 this.setState({ salvado: false });
                 console.warn(ex);
