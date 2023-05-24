@@ -33,7 +33,15 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_sos_situacao === 'A' ? 'red' : '#10734a' }}>
                 <TouchableOpacity
-                    onPress={() => onRegistroPress(registro)}
+                    onPress={() => Alert.alert("Situação do Serviço", `Deseja alterar a situação deste serviço?`, [
+                        { text: "Não" },
+                        {
+                            text: "Sim",
+                            onPress: () => onRegistroPress(registro),
+                            style: "destructive"
+                        }
+                    ])}
+                    // onPress={() => onRegistroPress(registro)}
                     onLongPress={() => onRegistroLongPress(registro.man_sos_servico)}
                 >
 
@@ -118,30 +126,23 @@ export default class OrdemServicoCorretivoScreen extends Component {
     getListaRegistros = () => {
         const { pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
-
         axios.get('/ordemServicos/listaCorretivas/' + this.state.man_os_idf, {
             params: {
                 grupo: this.state.man_grupo_servico,
             }
-        })
-            .then(response => {
-                const novosRegistros = pagina === 1
-                    ? response.data.data
-                    : listaRegistros.concat(response.data.data);
-                const total = response.data.total;
-                this.setState({
-                    listaRegistros: novosRegistros,
-                    refreshing: false,
-                    carregando: false,
-                    carregarMais: novosRegistros.length < total
-                })
-            }).catch(ex => {
-                console.warn('Erro Busca:', ex);
-                this.setState({
-                    refreshing: false,
-                    carregando: false,
-                });
+        }).then(response => {
+            this.setState({
+                listaRegistros: response.data,
+                refreshing: false,
+                carregando: false,
             })
+        }).catch(ex => {
+            console.warn('Erro Busca:', ex);
+            this.setState({
+                refreshing: false,
+                carregando: false,
+            });
+        })
     }
 
     onRegistroPress = (registro) => {
@@ -319,72 +320,67 @@ export default class OrdemServicoCorretivoScreen extends Component {
 
                 <StatusBar />
 
-                <ScrollView
-                    style={{ flex: 1, }}
-                    keyboardShouldPersistTaps="always"
+
+                <View
+                    style={{ paddingVertical: 8, paddingHorizontal: 16, paddingVertical: 20 }}
                 >
-                    <View
-                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
-                    >
-                        <ServicosOSSelect
-                            label="Serviço"
-                            id="servico_select"
-                            codServico={codServico}
-                            tipoServico={'C'}
-                            onChange={this.onInputChangeServico}
-                            value={servico_select}
-                            select={false}
-                            grupo={this.state.man_grupo_servico}
-                            veiculo=''
-                        />
-
-                        <TextInput
-                            label="Observação"
-                            id="man_sos_complemento"
-                            ref="man_sos_complemento"
-                            value={man_sos_complemento}
-                            maxLength={100}
-                            onChange={this.onInputChange}
-                            multiline={true}
-                            height={50}
-                        />
-
-
-                        {this.state.man_os_situacao === 'A' ? (
-                            <Button
-                                title="SALVAR SERVIÇO"
-                                loading={salvado}
-                                onPress={this.onFormSubmit}
-                                buttonStyle={{ height: 45 }}
-                                backgroundColor={Colors.buttonPrimary}
-                                // disabled={true}
-                                textStyle={{
-                                    fontWeight: 'bold',
-                                    fontSize: 15
-                                }}
-                                icon={{
-                                    name: 'check',
-                                    type: 'font-awesome',
-                                    color: Colors.textOnPrimary
-                                }}
-                            />
-                        ) : null}
-
-                    </View>
-
-
-                    <FlatList
-                        data={listaRegistros}
-                        renderItem={this.renderItem}
-                        contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
-                        keyExtractor={registro => String(registro.man_sos_servico)}
-                        onRefresh={this.onRefresh}
-                        refreshing={refreshing}
-                        onEndReached={this.carregarMaisRegistros}
-                        ListFooterComponent={this.renderListFooter}
+                    <ServicosOSSelect
+                        label="Serviço"
+                        id="servico_select"
+                        codServico={codServico}
+                        tipoServico={'C'}
+                        onChange={this.onInputChangeServico}
+                        value={servico_select}
+                        select={false}
+                        grupo={this.state.man_grupo_servico}
+                        veiculo=''
                     />
 
-                </ScrollView>
+                    <TextInput
+                        label="Observação"
+                        id="man_sos_complemento"
+                        ref="man_sos_complemento"
+                        value={man_sos_complemento}
+                        maxLength={100}
+                        onChange={this.onInputChange}
+                        multiline={true}
+                        height={50}
+                    />
+
+
+                    {this.state.man_os_situacao === 'A' ? (
+                        <Button
+                            title="SALVAR SERVIÇO"
+                            loading={salvado}
+                            onPress={this.onFormSubmit}
+                            buttonStyle={{ height: 45 }}
+                            backgroundColor={Colors.buttonPrimary}
+                            // disabled={true}
+                            textStyle={{
+                                fontWeight: 'bold',
+                                fontSize: 15
+                            }}
+                            icon={{
+                                name: 'check',
+                                type: 'font-awesome',
+                                color: Colors.textOnPrimary
+                            }}
+                        />
+                    ) : null}
+
+                </View>
+
+
+                <FlatList
+                    data={listaRegistros}
+                    renderItem={this.renderItem}
+                    contentContainerStyle={{ paddingBottom: 20, paddingTop: 10 }}
+                    keyExtractor={registro => String(registro.man_sos_servico)}
+                    onRefresh={this.onRefresh}
+                    refreshing={refreshing}
+                    onEndReached={this.carregarMaisRegistros}
+                    ListFooterComponent={this.renderListFooter}
+                />
 
                 <ProgressDialog
                     visible={carregarRegistro}

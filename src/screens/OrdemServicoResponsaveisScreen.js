@@ -26,12 +26,11 @@ import HeaderComponent from "../components/HeaderComponent";
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
 
-const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinalizarPress, onAbrirPress }) => {
+const CardViewItem = ({ registro, onRegistroLongPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: Colors.primary }}>
                 <TouchableOpacity
-                    onPress={() => onRegistroPress(registro.man_osf_sequencia)}
                     onLongPress={() => onRegistroLongPress(registro.man_osf_sequencia)}
                 >
 
@@ -146,30 +145,23 @@ export default class OrdemServicoResponsaveisScreen extends Component {
     getListaRegistros = () => {
         const { pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
-
         axios.get('/ordemServicos/listaResponsaveis/' + this.state.man_os_idf, {
             params: {
                 grupo: this.state.man_grupo_servico,
             }
-        })
-            .then(response => {
-                const novosRegistros = pagina === 1
-                    ? response.data.data
-                    : listaRegistros.concat(response.data.data);
-                const total = response.data.total;
-                this.setState({
-                    listaRegistros: novosRegistros,
-                    refreshing: false,
-                    carregando: false,
-                    carregarMais: novosRegistros.length < total
-                })
-            }).catch(ex => {
-                console.warn('Erro Busca:', ex);
-                this.setState({
-                    refreshing: false,
-                    carregando: false,
-                });
+        }).then(response => {
+            this.setState({
+                listaRegistros: response.data,
+                refreshing: false,
+                carregando: false,
             })
+        }).catch(ex => {
+            console.warn('Erro Busca:', ex);
+            this.setState({
+                refreshing: false,
+                carregando: false,
+            });
+        })
     }
 
 
@@ -230,10 +222,7 @@ export default class OrdemServicoResponsaveisScreen extends Component {
         return (
             <CardViewItem
                 registro={item}
-                onRegistroPress={this.onRegistroPress}
                 onRegistroLongPress={this.onRegistroLongPress}
-                onFinalizarPress={this.onFinalizarPress}
-                onAbrirPress={this.onAbrirPress}
             />
         )
     }
@@ -441,121 +430,117 @@ export default class OrdemServicoResponsaveisScreen extends Component {
                 />
                 <StatusBar />
 
-                <ScrollView
-                    style={{ flex: 1, }}
-                    keyboardShouldPersistTaps="always"
+
+                <View
+                    style={{ paddingVertical: 8, paddingHorizontal: 16, paddingVertical: 20 }}
                 >
-                    <View
-                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
-                    >
-                        <View style={{ flexDirection: 'row' }} >
-                            <View style={{ width: "25%" }}>
-                                <TextInput
-                                    label="Motorista"
-                                    id="codFunc"
-                                    ref="codFunc"
-                                    value={codFunc}
-                                    maxLength={6}
-                                    keyboardType="numeric"
-                                    onChange={this.onInputChangeFunc}
-                                />
-                            </View>
+                    <View style={{ flexDirection: 'row' }} >
+                        <View style={{ width: "25%" }}>
+                            <TextInput
+                                label="Motorista"
+                                id="codFunc"
+                                ref="codFunc"
+                                value={codFunc}
+                                maxLength={6}
+                                keyboardType="numeric"
+                                onChange={this.onInputChangeFunc}
+                            />
+                        </View>
 
-                            <View style={{ width: "7%", }}>
-                                <Button
-                                    title=""
-                                    loading={loading}
-                                    onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                    buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
-                                    backgroundColor={Colors.transparent}
-                                    icon={{
-                                        name: 'search',
-                                        type: 'font-awesome',
-                                        color: Colors.textPrimaryDark
-                                    }}
-                                />
-                            </View>
-
-                            <View style={{ width: "75%", marginLeft: -23 }}>
-                                {carregandoFunc
-                                    ? (
-                                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                            <ActivityIndicator style={{ margin: 10 }} />
-                                            <Text> Buscando... </Text>
-                                        </View>
-                                    ) : (
-                                        <TextInput
-                                            type="select"
-                                            label=" "
-                                            id="nomeFunc"
-                                            ref="nomeFunc"
-                                            value={nomeFunc}
-                                            selectedValue=""
-                                            options={funcionariosSelect}
-                                            onChange={this.onInputChangeListaFunc}
-                                        />
-                                    )
-                                }
-
-                            </View>
-                        </View >
-
-
-                        <TextInput
-                            label="Terceirizado"
-                            id="man_osf_nome_funcionario"
-                            ref="man_osf_nome_funcionario"
-                            value={man_osf_nome_funcionario}
-                            maxLength={100}
-                            onChange={this.onInputChange}
-                            multiline={true}
-                        />
-
-                        <TextInput
-                            label="Observação"
-                            id="man_osf_obs"
-                            ref="man_osf_obs"
-                            value={man_osf_obs}
-                            maxLength={100}
-                            onChange={this.onInputChange}
-                            multiline={true}
-                        />
-
-
-                        {this.state.man_os_situacao === 'A' ? (
+                        <View style={{ width: "7%", }}>
                             <Button
-                                title="SALVAR SERVIÇO"
-                                loading={salvado}
-                                onPress={this.onFormSubmit}
-                                buttonStyle={{ height: 45 }}
-                                backgroundColor={Colors.buttonPrimary}
-                                textStyle={{
-                                    fontWeight: 'bold',
-                                    fontSize: 15
-                                }}
+                                title=""
+                                loading={loading}
+                                onPress={() => { this.onAbrirFuncBuscaModal(true) }}
+                                buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                backgroundColor={Colors.transparent}
                                 icon={{
-                                    name: 'check',
+                                    name: 'search',
                                     type: 'font-awesome',
-                                    color: Colors.textOnPrimary
+                                    color: Colors.textPrimaryDark
                                 }}
                             />
-                        ) : null}
+                        </View>
 
-                    </View>
+                        <View style={{ width: "75%", marginLeft: -23 }}>
+                            {carregandoFunc
+                                ? (
+                                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                        <ActivityIndicator style={{ margin: 10 }} />
+                                        <Text> Buscando... </Text>
+                                    </View>
+                                ) : (
+                                    <TextInput
+                                        type="select"
+                                        label=" "
+                                        id="nomeFunc"
+                                        ref="nomeFunc"
+                                        value={nomeFunc}
+                                        selectedValue=""
+                                        options={funcionariosSelect}
+                                        onChange={this.onInputChangeListaFunc}
+                                    />
+                                )
+                            }
+
+                        </View>
+                    </View >
 
 
-                    <FlatList
-                        data={listaRegistros}
-                        renderItem={this.renderItem}
-                        contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
-                        keyExtractor={registro => String(registro.man_osf_sequencia)}
-                        onRefresh={this.onRefresh}
-                        refreshing={refreshing}
-                        onEndReached={this.carregarMaisRegistros}
-                        ListFooterComponent={this.renderListFooter}
+                    <TextInput
+                        label="Terceirizado"
+                        id="man_osf_nome_funcionario"
+                        ref="man_osf_nome_funcionario"
+                        value={man_osf_nome_funcionario}
+                        maxLength={100}
+                        onChange={this.onInputChange}
+                        multiline={true}
                     />
 
-                </ScrollView>
+                    <TextInput
+                        label="Observação"
+                        id="man_osf_obs"
+                        ref="man_osf_obs"
+                        value={man_osf_obs}
+                        maxLength={100}
+                        onChange={this.onInputChange}
+                        multiline={true}
+                    />
+
+
+                    {this.state.man_os_situacao === 'A' ? (
+                        <Button
+                            title="SALVAR SERVIÇO"
+                            loading={salvado}
+                            onPress={this.onFormSubmit}
+                            buttonStyle={{ height: 45 }}
+                            backgroundColor={Colors.buttonPrimary}
+                            textStyle={{
+                                fontWeight: 'bold',
+                                fontSize: 15
+                            }}
+                            icon={{
+                                name: 'check',
+                                type: 'font-awesome',
+                                color: Colors.textOnPrimary
+                            }}
+                        />
+                    ) : null}
+
+                </View>
+
+
+                <FlatList
+                    data={listaRegistros}
+                    renderItem={this.renderItem}
+                    contentContainerStyle={{ paddingBottom: 20, paddingTop: 10 }}
+                    keyExtractor={registro => String(registro.man_osf_sequencia)}
+                    onRefresh={this.onRefresh}
+                    refreshing={refreshing}
+                    onEndReached={this.carregarMaisRegistros}
+                    ListFooterComponent={this.renderListFooter}
+                />
+
 
                 <ProgressDialog
                     visible={carregarRegistro}

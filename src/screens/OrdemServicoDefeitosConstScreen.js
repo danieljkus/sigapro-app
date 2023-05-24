@@ -29,7 +29,14 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.man_osd_situacao === 'A' ? 'red' : '#10734a' }}>
                 <TouchableOpacity
-                    onPress={() => onRegistroPress(registro)}
+                    onPress={() => Alert.alert("Situação do Serviço", `Deseja alterar a situação deste serviço?`, [
+                        { text: "Não" },
+                        {
+                            text: "Sim",
+                            onPress: () => onRegistroPress(registro),
+                            style: "destructive"
+                        }
+                    ])}
                     onLongPress={() => onRegistroLongPress(registro.man_osd_sequencia)}
                 >
                     <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5, paddingTop: 5 }}>
@@ -96,25 +103,19 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
             params: {
                 grupo: this.state.man_grupo_servico,
             }
-        })
-            .then(response => {
-                const novosRegistros = pagina === 1
-                    ? response.data.data
-                    : listaRegistros.concat(response.data.data);
-                const total = response.data.total;
-                this.setState({
-                    listaRegistros: novosRegistros,
-                    refreshing: false,
-                    carregando: false,
-                    carregarMais: novosRegistros.length < total
-                })
-            }).catch(ex => {
-                console.warn('Erro Busca:', ex);
-                this.setState({
-                    refreshing: false,
-                    carregando: false,
-                });
+        }).then(response => {
+            this.setState({
+                listaRegistros: response.data,
+                refreshing: false,
+                carregando: false,
             })
+        }).catch(ex => {
+            console.warn('Erro Busca:', ex);
+            this.setState({
+                refreshing: false,
+                carregando: false,
+            });
+        })
     }
 
     onRegistroPress = (registro) => {
@@ -263,58 +264,52 @@ export default class OrdemServicoDefeitosConstScreen extends Component {
                 />
                 <StatusBar />
 
-                <ScrollView
-                    style={{ flex: 1, }}
-                    keyboardShouldPersistTaps="always"
+
+                <View
+                    style={{ paddingVertical: 8, paddingHorizontal: 16, paddingVertical: 20 }}
                 >
-
-                    <View
-                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
-                    >
-                        <TextInput
-                            label="Descrição do Defeito"
-                            id="man_osd_defeitos"
-                            ref="man_osd_defeitos"
-                            value={man_osd_defeitos}
-                            maxLength={1000}
-                            onChange={this.onInputChange}
-                            multiline={true}
-                            height={50}
-                        />
-
-                        {this.state.man_os_situacao === 'A' ? (
-                            <Button
-                                title="SALVAR DEFEITO"
-                                loading={salvado}
-                                onPress={this.onFormSubmit}
-                                buttonStyle={{ height: 45 }}
-                                backgroundColor={Colors.buttonPrimary}
-                                textStyle={{
-                                    fontWeight: 'bold',
-                                    fontSize: 15
-                                }}
-                                icon={{
-                                    name: 'check',
-                                    type: 'font-awesome',
-                                    color: Colors.textOnPrimary
-                                }}
-                            />
-                        ) : null}
-
-                    </View>
-
-                    <FlatList
-                        data={listaRegistros}
-                        renderItem={this.renderItem}
-                        contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
-                        keyExtractor={registro => String(registro.man_osd_sequencia)}
-                        onRefresh={this.onRefresh}
-                        refreshing={refreshing}
-                        onEndReached={this.carregarMaisRegistros}
-                        ListFooterComponent={this.renderListFooter}
+                    <TextInput
+                        label="Descrição do Defeito"
+                        id="man_osd_defeitos"
+                        ref="man_osd_defeitos"
+                        value={man_osd_defeitos}
+                        maxLength={1000}
+                        onChange={this.onInputChange}
+                        multiline={true}
+                        height={50}
                     />
 
-                </ScrollView>
+                    {this.state.man_os_situacao === 'A' ? (
+                        <Button
+                            title="SALVAR DEFEITO"
+                            loading={salvado}
+                            onPress={this.onFormSubmit}
+                            buttonStyle={{ height: 45 }}
+                            backgroundColor={Colors.buttonPrimary}
+                            textStyle={{
+                                fontWeight: 'bold',
+                                fontSize: 15
+                            }}
+                            icon={{
+                                name: 'check',
+                                type: 'font-awesome',
+                                color: Colors.textOnPrimary
+                            }}
+                        />
+                    ) : null}
+
+                </View>
+
+                <FlatList
+                    data={listaRegistros}
+                    renderItem={this.renderItem}
+                    contentContainerStyle={{ paddingBottom: 20, paddingTop: 10 }}
+                    keyExtractor={registro => String(registro.man_osd_sequencia)}
+                    onRefresh={this.onRefresh}
+                    refreshing={refreshing}
+                    onEndReached={this.carregarMaisRegistros}
+                    ListFooterComponent={this.renderListFooter}
+                />
 
                 <ProgressDialog
                     visible={carregarRegistro}
