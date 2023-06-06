@@ -42,12 +42,12 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onCheckO
             >
 
                 <View style={{ paddingLeft: 10, marginTop: 20, fontSize: 13, flexDirection: 'row', display: 'flex' }}>
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 2 }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, width: 65 }} numberOfLines={1}>
                             #{registro.adm_spcl_idf}
                         </Text>
                     </View>
-                    <View style={{ flex: 4, flexDirection: 'row', paddingLeft: '5%' }}>
+                    <View style={{ flex: 3, flexDirection: 'row', paddingLeft: '5%' }}>
                         {/* <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Data {': '}
                         </Text> */}
@@ -308,6 +308,10 @@ export default class CheckListScreen extends Component {
 
     getListaRegistros = () => {
         const { adm_spcl_veiculo, dataIni, dataFim, pagina, listaRegistros } = this.state;
+
+        console.log('getListaRegistros: ', dataIni)
+        console.log('getListaRegistros: ', dataFim)
+
         axios.get('/checkList', {
             params: {
                 tipoDig: 2,
@@ -717,7 +721,10 @@ export default class CheckListScreen extends Component {
             dataIni, dataFim, netStatus
         } = this.state;
 
-        // console.log('CheckListScreen: ', this.state.netStatus);
+        console.log('-------------------------------------------------------------------------------')
+        console.log('CheckListScreen: ', dataIni)
+        console.log('CheckListScreen: ', dataFim)
+        // console.log('CheckListScreen: ', this.state);
 
         return (
             <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>

@@ -91,10 +91,7 @@ class TextInput extends PureComponent {
                     <View style={{
                         paddingBottom: 2,
                         paddingLeft: 16,
-                        // alignItems: 'center',
-                        // justifyContent: 'center',
-                        height: 20,
-                        // backgroundColor: 'red',
+                        height: 22,
                     }}>
                         <DatePickerComponent
                             dateText={dateText || null}
