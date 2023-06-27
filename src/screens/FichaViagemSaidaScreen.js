@@ -188,9 +188,8 @@ export default class zFichaViagemSaidaScreen extends Component {
             }
         }
 
-
         if (this.state.checkedLinhasRegulares) {
-            if (!this.state.pas_serv_codigo) {
+            if (!this.state.servico) {
                 Alert.showAlert('Selecione um Serviço');
                 return;
             }
@@ -237,6 +236,7 @@ export default class zFichaViagemSaidaScreen extends Component {
         };
 
         // console.log(registro);
+        // return;
 
         axios.post('/fichaViagem/saida', registro)
             .then(response => {
@@ -332,13 +332,17 @@ export default class zFichaViagemSaidaScreen extends Component {
             });
 
             let servico = 0;
+            let servicoExtra = 0;
             if (data.length > 0) {
                 servico = servicoSelect[0].key;
+                servicoExtra = servicoSelect[0].servicoExtra ? servicoSelect[0].servicoExtra : '0';
             }
 
             this.setState({
                 servicoSelect,
                 pas_serv_codigo: servico,
+                servico,
+                servicoExtra,
                 carregandoServico: false,
             })
 

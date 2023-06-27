@@ -229,6 +229,8 @@ export default class FichaViagemChegadaScreen extends Component {
                 man_fvm_nome_mot: value.codFunc ? '' : value.nomeFunc,
 
                 pas_serv_codigo: value.man_fvd_servico_extra ? value.man_fvd_servico_extra : value.man_fvd_servico,
+                servico: value.man_fvd_servico,
+                servicoExtra: value.man_fvd_servico_extra,
                 checkedLinhasRegulares: value.man_fvd_servico ? true : false,
 
                 man_fv_odo_ini: value.kmOdo,
@@ -322,7 +324,7 @@ export default class FichaViagemChegadaScreen extends Component {
 
 
         if (this.state.checkedLinhasRegulares) {
-            if (!this.state.pas_serv_codigo) {
+            if (!this.state.servico) {
                 Alert.showAlert('Selecione um Serviço');
                 return;
             }
@@ -402,14 +404,6 @@ export default class FichaViagemChegadaScreen extends Component {
             checkedFinalRota, checkedGeraOS, checkedBaldeacao, checkedLinhasRegulares,
             defeito_mec_ele_lub, defeito_chap_borr } = this.state;
 
-        // let codFunc = 0
-        // let empFunc = 0
-        // if (funcionario_select) {
-        //     const ind = funcionario_select.key.indexOf("_");
-        //     const tam = funcionario_select.key.length;
-        //     codFunc = funcionario_select.key.substr(0, ind).trim();
-        //     empFunc = funcionario_select.key.substr(ind + 1, tam).trim();
-        // }
 
         const lista_defeito_mec_ele_lub = defeito_mec_ele_lub.split(".");
         const lista_defeito_chap_borr = defeito_chap_borr.split(".");
@@ -418,7 +412,6 @@ export default class FichaViagemChegadaScreen extends Component {
             man_fv_idf: veiculo_select.idfViagem,
             man_fv_veiculo: veiculo_select.codVeic,
             man_fv_rota: 0,
-            // checkedLinhasRegulares: checkedLinhasRegulares ? 'N' : 'S',
 
             man_fvm_motorista: codFunc,
             man_fvm_empresa_mot: empFunc,
@@ -587,13 +580,24 @@ export default class FichaViagemChegadaScreen extends Component {
             });
 
             let servico = 0;
+            let servicoExtra = 0;
             if (data.length > 0) {
-                servico = pas_serv_codigo ? String(pas_serv_codigo) : servicoSelect[0].key;
+                if (pas_serv_codigo) {
+                    let indServ = servicoSelect.findIndex(registro => String(registro.key) === String(pas_serv_codigo));
+                    servico = indServ >= 0 ? servicoSelect[indServ].key : servicoSelect[0].key;
+                    servicoExtra = indServ >= 0 && servicoSelect[indServ].servicoExtra ? servicoSelect[indServ].servicoExtra : servicoSelect[0].servicoExtra ? servicoSelect[0].servicoExtra : '0';
+
+                } else {
+                    servico = servicoSelect[0].key;
+                    servicoExtra = servicoSelect[0].servicoExtra ? servicoSelect[0].servicoExtra : '0';
+                }
             }
 
             this.setState({
                 servicoSelect,
                 pas_serv_codigo: servico,
+                servico,
+                servicoExtra,
                 carregandoServico: false,
             })
 

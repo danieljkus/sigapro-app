@@ -309,8 +309,8 @@ export default class CheckListScreen extends Component {
     getListaRegistros = () => {
         const { adm_spcl_veiculo, dataIni, dataFim, pagina, listaRegistros } = this.state;
 
-        console.log('getListaRegistros: ', dataIni)
-        console.log('getListaRegistros: ', dataFim)
+        // console.log('getListaRegistros: ', dataIni)
+        // console.log('getListaRegistros: ', dataFim)
 
         axios.get('/checkList', {
             params: {
@@ -721,9 +721,9 @@ export default class CheckListScreen extends Component {
             dataIni, dataFim, netStatus
         } = this.state;
 
-        console.log('-------------------------------------------------------------------------------')
-        console.log('CheckListScreen: ', dataIni)
-        console.log('CheckListScreen: ', dataFim)
+        // console.log('-------------------------------------------------------------------------------')
+        // console.log('CheckListScreen: ', dataIni)
+        // console.log('CheckListScreen: ', dataFim)
         // console.log('CheckListScreen: ', this.state);
 
         return (
