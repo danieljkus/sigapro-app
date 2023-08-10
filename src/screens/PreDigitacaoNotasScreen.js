@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, Alert, FlatList, Platform, TouchableOpacity, ActivityIndicator, SafeAreaView} from 'react-native';
+import { View, Text, Alert, FlatList, Platform, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -16,38 +16,119 @@ const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }]
 const CardViewItem = ({ registro, onRegistroLongPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
-            <TouchableOpacity
-                onLongPress={() => onRegistroLongPress(registro.estoq_nfpd_chave)}
-            >
-                <View
-                    style={{ paddingHorizontal: 16, paddingVertical: 8, flexDirection: 'row' }}
+            <View style={{ borderLeftWidth: 5, borderLeftColor: registro.estoq_nfpd_sit_nfe === 'PEN' ? "#d32f2f" : registro.estoq_nfpd_sit_nfe === 'BAI' ? "#DAA520" : Colors.primary }}>
+                <TouchableOpacity
+                    onLongPress={() => onRegistroLongPress(registro.estoq_nfpd_chave)}
                 >
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Data: {' '}
+                    <View style={{ paddingLeft: 10, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                NFe {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_nfpd_num_nfe}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Data {': '}
+                            </Text>
+                            <Text>
+                                {moment(registro.estoq_nfpd_data).format('DD/MM/YYYY')}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View style={{ paddingLeft: 10, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 1.8, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                                Filial {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_nfpd_filial}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 1.2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
+                                Sit {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_nfpd_sit_nfe}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Valor {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_nfpd_valor_nfe}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View style={{ paddingLeft: 10, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Emit {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_nfpd_cnpj_emit}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Dest {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_nfpd_cnpj_dest}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View style={{ paddingLeft: 10, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Razão Social: {' '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_nfpd_razao_social}
+                            </Text>
                         </Text>
-                        <Text>
-                            {moment(registro.estoq_nfpd_data).format('DD/MM/YYYY [às] HH:mm')}
+                    </View>
+
+                    {registro.estoq_nfpd_nome ? (
+                        <View style={{ paddingLeft: 10, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                    Nome: {' '}
+                                </Text>
+                                <Text>
+                                    {registro.estoq_nfpd_nome}
+                                </Text>
+                            </Text>
+                        </View>
+                    ) : null}
+
+                    <Divider />
+
+                    <View style={{ paddingLeft: 10, marginTop: 2, fontSize: 13 }}>
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Chave: {' '}
+                            </Text>
                         </Text>
-                    </Text>
-                </View>
+                    </View>
+                    <View style={{ paddingLeft: 10, marginBottom: 5 }}>
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                            <Text style={{ fontSize: 13 }}>
+                                {registro.estoq_nfpd_chave}
+                            </Text>
+                        </Text>
+                    </View>
 
-                <Divider />
 
-                <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
-                    <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
-                        Chave NFe
-                    </Text>
-                </View>
-
-                <View style={{ paddingLeft: 15, paddingVertical: 1 }}>
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 12, marginBottom: 5 }}>
-                        {registro.estoq_nfpd_chave}
-                    </Text>
-                </View>
-
-            </TouchableOpacity>
-
+                </TouchableOpacity>
+            </View>
         </Card>
     )
 }
@@ -183,7 +264,7 @@ export default class PreDigitacaoNotasScreen extends Component {
     render() {
         const { listaRegistros, refreshing, carregando } = this.state;
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'NFEs Pré-Digitadas'}
