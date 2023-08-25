@@ -128,7 +128,7 @@ const CardViewItem = ({ registro, onRegistroPress, onCheckPress }) => {
                                         fontSize: 14,
                                         marginLeft: 5,
                                     }}>
-                                        {registro.adm_spcli_situacao === 'SIM' ? 'Checado' : 'Não Checado'}
+                                        {registro.adm_spcli_situacao === 'SIM' ? 'Desmarcar Checagem' : 'Marcar Checagem'}
                                     </Text>
                                     {registro.adm_spcli_data_checagem ? (
                                         <Text style={{ color: "#10734a", fontSize: 13, marginLeft: 10 }}>
@@ -218,6 +218,7 @@ export default class CheckListConferenciaScreen extends Component {
             veic: String(adm_spcl_veiculo),
         }
 
+        // console.log('getListaRegistros ---------------------------------------------------------------------- ')
         // console.log('getListaRegistros: ', param)
 
         axios.get('/checkList/listaItens', { params: param })
@@ -359,8 +360,11 @@ export default class CheckListConferenciaScreen extends Component {
             axios.put('/checkList/mudaSituacao', registro)
                 .then(response => {
                     this.setState({
+                        refreshing: true,
                         aguarde: false
-                    }, this.getListaRegistros);
+                    });
+
+                    this.getListaRegistros();
                 }).catch(ex => {
                     console.warn(ex, ex.response);
                     this.setState({ aguarde: false });
@@ -368,18 +372,6 @@ export default class CheckListConferenciaScreen extends Component {
         }
     }
 
-
-    onFocus() {
-        this.setState({
-            borderColor: '#000',
-        });
-    }
-
-    onBlur() {
-        this.setState({
-            borderColor: '#fff',
-        });
-    }
 
 
 
@@ -556,6 +548,16 @@ export default class CheckListConferenciaScreen extends Component {
                     </Pressable>
                 </Modal>
 
+
+
+                <FloatActionButton
+                    iconFamily="MaterialIcons"
+                    iconName="cached"
+                    iconColor={Colors.textOnPrimary}
+                    onPress={this.onRefresh}
+                    backgroundColor={Colors.primary}
+                    marginBottom={90}
+                />
 
                 <FloatActionButton
                     iconFamily="MaterialIcons"

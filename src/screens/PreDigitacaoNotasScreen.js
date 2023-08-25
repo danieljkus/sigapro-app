@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Alert, FlatList, Platform, TouchableOpacity, ActivityIndicator, SafeAreaView, Modal, ScrollView } from 'react-native';
+import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, SafeAreaView, Modal, ScrollView } from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
 import axios from 'axios';
-import { Card, Divider } from 'react-native-elements';
+import { Card, Divider, Icon } from 'react-native-elements';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import { ProgressDialog } from 'react-native-simple-dialogs';
@@ -13,19 +13,21 @@ import TextInput from '../components/TextInput';
 import { maskDate, maskValorMoeda } from '../utils/Maskers';
 import Button from '../components/Button';
 import { getFilial } from '../utils/LoginManager';
+import Alert from '../components/Alert';
+import NetInfo from '@react-native-community/netinfo';
 
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const CardViewItem = ({ registro, onRegistroLongPress }) => {
+const CardViewItem = ({ registro, onRegistroLongPress, onBaixarXML }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: registro.estoq_nfpd_sit_nfe === 'PEN' ? "#d32f2f" : registro.estoq_nfpd_sit_nfe === 'BAI' ? "#DAA520" : Colors.primary }}>
                 <TouchableOpacity
-                // onLongPress={() => onRegistroLongPress(registro.estoq_nfpd_chave)}
+                    onLongPress={() => onRegistroLongPress(registro.estoq_nfpd_chave)}
                 >
                     <View style={{ paddingLeft: 10, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
-                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <View style={{ flex: 1.8, flexDirection: 'row' }}>
                             <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                                 NFe {': '}
                             </Text>
@@ -33,7 +35,12 @@ const CardViewItem = ({ registro, onRegistroLongPress }) => {
                                 {registro.estoq_nfpd_num_nfe}
                             </Text>
                         </View>
-                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <View style={{ flex: 1.2, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                {registro.estoq_nfpd_empresa === '1' ? 'EN' : registro.estoq_nfpd_empresa === '2' ? 'NT' : 'NS'}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
                             <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                                 Data {': '}
                             </Text>
@@ -131,6 +138,53 @@ const CardViewItem = ({ registro, onRegistroLongPress }) => {
                     </View>
 
 
+                    {registro.estoq_nfpd_sit_nfe === 'PEN' ? (
+                        <View
+                            style={{
+                                flex: 1,
+                                paddingVertical: 5,
+                                borderTopWidth: 1,
+                                borderColor: Colors.dividerDark,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                            }}
+                        >
+
+                            <View style={{ flex: 1, }}>
+                                <TouchableOpacity
+                                    onPress={() => onBaixarXML(registro)}
+                                >
+                                    <View style={{
+                                        flex: 1,
+                                        paddingVertical: 5,
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+
+                                    }}>
+                                        <Icon
+                                            name='download'
+                                            type='font-awesome'
+                                            color="#10734a"
+                                            size={22}
+                                            containerStyle={{
+                                                height: 10
+                                            }}
+                                        />
+                                        <Text style={{
+                                            color: "#10734a",
+                                            fontSize: 14,
+                                            marginLeft: 5,
+                                        }}>
+                                            Baixar XML NFe
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    ) : null}
+
+
                 </TouchableOpacity>
             </View>
         </Card>
@@ -139,51 +193,64 @@ const CardViewItem = ({ registro, onRegistroLongPress }) => {
 
 export default class PreDigitacaoNotasScreen extends Component {
 
-    termoBusca = '';
-    state = {
-        listaRegistros: [],
-        refreshing: false,
-        carregando: false,
-        carregarMais: false,
-        buscandoNotas: false,
-        pagina: 1,
+    constructor(props) {
+        super(props);
+        this.state = {
+            listaRegistros: [],
+            refreshing: false,
+            carregando: false,
+            carregarMais: false,
+            baixandoXML: false,
+            pagina: 1,
+            netStatus: 1,
 
-        modalFiltrosVisible: false,
-        // dataIni: moment(moment().subtract(2, 'days')).format(DATE_FORMAT),
-        dataIni: moment(new Date()).format(DATE_FORMAT),
-        dataFim: moment(new Date()).format(DATE_FORMAT),
-        filial: 0,
-        nfe: '',
-        cnpj: '',
-    };
+            modalFiltrosVisible: false,
+            dataIni: moment(moment().subtract(30, 'days')).format(DATE_FORMAT),
+            // dataIni: moment(new Date()).format(DATE_FORMAT),
+            dataFim: moment(new Date()).format(DATE_FORMAT),
+            filial: '',
+            nfe: '',
+            cnpj: '',
+        };
+        NetInfo.addEventListener(state => {
+            this.onNetEvento(state)
+        });
+    }
+
+    onNetEvento = (info) => {
+        let state = this.state;
+        if (info.isConnected) {
+            state.netStatus = 1;
+        } else {
+            state.netStatus = 0;
+        }
+        this.setState(state);
+    }
 
     componentDidMount() {
-        getFilial().then(filial => {
-            this.setState({
-                filial,
-                refreshing: false,
-            }, this.getListaRegistros());
-        })
-        // this.setState({ refreshing: false });
-        // this.getListaRegistros();
+        // getFilial().then(filial => {
+        //     this.setState({
+        //         filial,
+        //         refreshing: false,
+        //     }, this.getListaRegistros());
+        // })
+        this.setState({ refreshing: false });
+        this.getListaRegistros();
     }
 
-    onRefresh = () => {
-        this.setState({
-            pagina: 1,
-            refreshing: true,
-        }, this.getListaRegistros);
-    }
+
 
     getListaRegistros = () => {
         const { dataIni, dataFim, filial, nfe, cnpj, pagina, listaRegistros } = this.state;
         this.setState({ refreshing: true, });
 
+        // console.log('getListaRegistros: ', dataIni)
+        // console.log('getListaRegistros: ', dataFim)
+
         axios.get('/preDigitacaoNotas', {
             params: {
                 page: pagina,
                 limite: 10,
-
                 dtIni: moment(dataIni, DATE_FORMAT).format("YYYY-MM-DD"),
                 dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
                 filial,
@@ -226,43 +293,16 @@ export default class PreDigitacaoNotasScreen extends Component {
 
 
 
-    onBuscarNotasPress = () => {
-        const { dataIni, dataFim } = this.state;
-        this.setState({ buscandoNotas: true, refreshing: true, });
-
-        axios.get('/notasFiscais/buscaNotas', {
-            params: {
-                date_ini: moment(dataIni, DATE_FORMAT).format("YYYY-MM-DD"),
-                date_end: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
-            }
-        }).then(response => {
-
-            // console.log('onBuscarNotasPress: ', response)
-
-            this.setState({ buscandoNotas: false, refreshing: true, });
-            this.getListaRegistros();
-
-        }).catch(ex => {
-            console.warn('Erro Busca Notas:', ex);
-            this.setState({
-                buscandoNotas: false,
-                refreshing: false,
-                carregando: false,
-            });
-        })
-    }
-
-
 
     onRegistroLongPress = (estoq_nfpd_chave) => {
-        Alert.alert("Excluir registro", `Deseja excluir esta Chave?`, [
+        Alert.showConfirm("Deseja excluir este registro?",
             { text: "Cancelar" },
             {
                 text: "Excluir",
                 onPress: () => this.onExcluirRegistro(estoq_nfpd_chave),
                 style: "destructive"
             }
-        ])
+        )
     }
 
     onExcluirRegistro = (estoq_nfpd_chave) => {
@@ -287,6 +327,62 @@ export default class PreDigitacaoNotasScreen extends Component {
     }
 
 
+    onBaixarXML = (registro) => {
+        if (!this.state.netStatus) {
+            Alert.showAlert('Não é possível baixar. Dispositivo sem conexão');
+        } else {
+            Alert.showConfirm("Baixar XML da NFe?",
+                {
+                    text: "Não",
+                    style: "destructive"
+                },
+                {
+                    text: "Sim",
+                    onPress: () => this.onBaixarXMLNFe(registro),
+                    style: "destructive"
+                }
+            )
+        }
+    }
+
+    onBaixarXMLNFe = (registro) => {
+        if (!this.state.netStatus) {
+            Alert.showAlert('Não é possível baixar. Dispositivo sem conexão');
+        } else {
+            this.setState({ baixandoXML: true });
+
+            const reg = {
+                chave: registro.estoq_nfpd_chave,
+                cpf_cnpj: registro.estoq_nfpd_cnpj_dest,
+            };
+
+            axios.get('/notasFiscais/buscaNFe', {
+                params: {
+                    chave: registro.estoq_nfpd_chave,
+                    cpf_cnpj: registro.estoq_nfpd_cnpj_dest,
+                }
+            }).then(response => {
+
+                Alert.showAlert('XML baixado com sucesso');
+
+                this.setState({
+                    baixandoXML: false
+                }, this.getListaRegistros);
+
+            }).catch(ex => {
+                console.warn(ex, ex.response);
+                this.setState({ baixandoXML: false });
+            })
+        }
+    }
+
+    onRefresh = () => {
+        this.setState({
+            pagina: 1,
+            refreshing: true,
+        }, this.getListaRegistros);
+    }
+
     carregarMaisRegistros = () => {
         const { carregarMais, refreshing, carregando, pagina } = this.state;
         if (carregarMais && !refreshing && !carregando) {
@@ -299,7 +395,6 @@ export default class PreDigitacaoNotasScreen extends Component {
 
     renderListFooter = () => {
         const { carregando } = this.state;
-
         if (carregando) {
             return (
                 <View style={{ marginTop: 8 }}>
@@ -307,7 +402,6 @@ export default class PreDigitacaoNotasScreen extends Component {
                 </View>
             )
         }
-
         return null;
     }
 
@@ -316,6 +410,7 @@ export default class PreDigitacaoNotasScreen extends Component {
             <CardViewItem
                 registro={item}
                 onRegistroLongPress={this.onRegistroLongPress}
+                onBaixarXML={this.onBaixarXML}
             />
         )
     }
@@ -343,7 +438,7 @@ export default class PreDigitacaoNotasScreen extends Component {
 
     render() {
         const { listaRegistros, dataIni, dataFim, filial, nfe, cnpj,
-            refreshing, carregando, buscandoNotas } = this.state;
+            refreshing, baixandoXML, } = this.state;
 
         return (
             <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
@@ -371,28 +466,18 @@ export default class PreDigitacaoNotasScreen extends Component {
                     iconColor={Colors.textOnPrimary}
                     onPress={() => { this.onSearchPress(true) }}
                     backgroundColor={Colors.primary}
-                    marginBottom={158}
+                    // marginBottom={90}
                     marginRight={10}
                 />
 
-                <FloatActionButton
+                {/* <FloatActionButton
                     iconFamily="MaterialIcons"
                     iconName="add"
                     iconColor={Colors.textOnAccent}
                     onPress={this.onAddPress}
                     backgroundColor={Colors.primary}
-                    marginBottom={90}
                     marginRight={10}
-                />
-
-                <FloatActionButton
-                    iconFamily="MaterialIcons"
-                    iconName="cloud-download"
-                    iconColor={Colors.textOnAccent}
-                    onPress={this.onBuscarNotasPress}
-                    backgroundColor={Colors.primary}
-                    marginRight={10}
-                />
+                /> */}
 
 
 
@@ -529,9 +614,9 @@ export default class PreDigitacaoNotasScreen extends Component {
                 </Modal>
 
                 <ProgressDialog
-                    visible={buscandoNotas}
+                    visible={baixandoXML}
                     title="SIGA PRO"
-                    message="Buscando Notas Fiscais. Isso pode levar alguns minutos. Aguarde..."
+                    message="Baixando XML da Nota. Aguarde..."
                 />
             </SafeAreaView>
         )
