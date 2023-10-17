@@ -442,12 +442,6 @@ export default class CheckListItemScreen extends Component {
                                                 alignItems: "center",
                                                 zIndex: 100,
                                             }}>
-                                                <Text style={{
-                                                    fontSize: 25,
-                                                    color: Colors.textOnPrimary,
-                                                    fontWeight: "bold",
-                                                    height: 40,
-                                                }}>{adm_spicl_descricao}</Text>
                                                 <View style={{
                                                     flex: 1,
                                                     margin: 0,
@@ -462,8 +456,20 @@ export default class CheckListItemScreen extends Component {
                                                         height: 20,
                                                     }}>{(adm_spcli_seq + 1) + '/' + this.state.listaRegistros.length}</Text>
                                                 </View>
+
+                                                <View>
+                                                    <Text style={{
+                                                        marginTop: 20,
+                                                        fontSize: 23,
+                                                        color: Colors.textOnPrimary,
+                                                        fontWeight: "bold",
+                                                        height: 300,
+                                                        textAlign: 'center'
+                                                    }}>{adm_spicl_descricao}</Text>
+                                                </View>
+
                                             </View>
-                                            <View style={{ flex: 25, margin: 10, marginTop: -10 }}>
+                                            <View style={{ flex: 25, margin: 10, marginTop: -10, marginTop: 70 }}>
                                                 <Text style={{
                                                     fontSize: 15,
                                                     color: Colors.textOnPrimary
