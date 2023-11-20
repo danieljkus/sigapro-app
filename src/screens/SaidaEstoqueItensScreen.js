@@ -427,7 +427,7 @@ export default class SaidaEstoqueItensScreen extends Component {
                 estoq_mei_seq: listaItens.length + 1,
                 estoq_mei_item: this.state.item_select.estoq_ie_codigo,
                 estoq_ie_descricao: this.state.item_select.estoq_ie_descricao,
-                estoq_mei_qtde_mov: vlrStringParaFloat(this.state.estoq_mei_qtde_mov),
+                estoq_mei_qtde_mov: this.state.estoq_mei_qtde_mov,
                 estoq_mei_valor_unit: this.state.estoq_mei_valor_unit,
                 estoq_mei_total_mov: this.state.estoq_mei_total_mov,
                 tipo_origem: this.state.tipo_origem,
