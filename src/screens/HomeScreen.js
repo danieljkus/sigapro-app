@@ -24,7 +24,6 @@ export default class HomeScreen extends Component {
 
     onNetEvento = (info) => {
         let state = this.state;
-        // console.log('onNetEvento: ', info)
         if (info.isConnected) {
             state.netStatus = 1;
         } else {

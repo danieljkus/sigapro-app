@@ -17,7 +17,6 @@ import { maskDate, maskValorMoeda, vlrStringParaFloat } from '../utils/Maskers';
 import { getFilial } from '../utils/LoginManager';
 import FiliaisSelect from '../components/FiliaisSelect';
 import VeiculosSelect from '../components/VeiculosSelect';
-import RotasSelect from '../components/RotasSelect';
 import HeaderComponent from "../components/HeaderComponent";
 
 const DATE_FORMAT = 'DD/MM/YYYY';
@@ -77,7 +76,6 @@ export default class OrdemServicoScreen extends Component {
             man_osm_motorista: props.navigation.state.params.registro.man_osm_motorista ? props.navigation.state.params.registro.man_osm_motorista : '',
             man_osm_nome_motorista: props.navigation.state.params.registro.man_osm_nome_motorista ? props.navigation.state.params.registro.man_osm_nome_motorista : '',
             man_osm_oficina: props.navigation.state.params.registro.man_osm_oficina ? props.navigation.state.params.registro.man_osm_oficina : '',
-            man_osm_rota: props.navigation.state.params.registro.man_osm_rota ? props.navigation.state.params.registro.man_osm_rota : '',
 
             man_grupo_servico: '00010001',
 
@@ -94,9 +92,6 @@ export default class OrdemServicoScreen extends Component {
             carregandoFunc: false,
             modalFuncBuscaVisible: false,
 
-            rota_select: null,
-            codRota: '',
-
             refreshing: false,
             carregarRegistro: false,
             carregando: false,
@@ -110,8 +105,6 @@ export default class OrdemServicoScreen extends Component {
     }
 
     componentDidMount() {
-        // console.log('PROPS: ', this.props.navigation.state.params.registro);
-
         getFilial().then(filial => {
             this.setState({
                 filial,
@@ -122,8 +115,6 @@ export default class OrdemServicoScreen extends Component {
                 codFunc: this.props.navigation.state.params.registro.man_osm_motorista ? this.props.navigation.state.params.registro.man_osm_motorista : '',
                 empFunc: this.props.navigation.state.params.registro.man_osm_empresa_motorista ? this.props.navigation.state.params.registro.man_osm_empresa_motorista : '',
                 nomeFunc: this.props.navigation.state.params.registro.nome_motorista ? this.props.navigation.state.params.registro.nome_motorista : '',
-
-                codRota: this.props.navigation.state.params.registro.man_osm_rota ? this.props.navigation.state.params.registro.man_osm_rota : '',
             });
 
             if (this.props.navigation.state.params.registro.man_osm_motorista) {
@@ -163,18 +154,6 @@ export default class OrdemServicoScreen extends Component {
         }
     }
 
-    onInputChangeRota = (id, value) => {
-        const state = {};
-        state[id] = value;
-        this.setState(state);
-        if (value) {
-            this.setState({
-                codRota: value.man_rt_codigo,
-                man_rt_flag_eventual: value.man_rt_flag_eventual,
-            });
-        }
-    }
-
 
     onErroChange = msgErro => {
         this.setState({
@@ -186,7 +165,6 @@ export default class OrdemServicoScreen extends Component {
 
 
     onFormSubmit = (event) => {
-
 
         if ((!this?.state?.filial_select) || (!this?.state?.filial_select?.adm_fil_codigo)) {
             Alert.showAlert('Informe uma Filial');
@@ -210,7 +188,7 @@ export default class OrdemServicoScreen extends Component {
     onSalvarRegistro = () => {
         const { man_os_idf, man_os_valor, man_os_data_prevista, man_osm_km_acumulado, man_osm_oficina,
             codFunc, empFunc, man_osm_nome_motorista,
-            filial_select, veiculo_select, rota_select, funcionariosSelect } = this.state;
+            filial_select, veiculo_select } = this.state;
 
         const registro = {
             man_os_idf,
@@ -225,12 +203,8 @@ export default class OrdemServicoScreen extends Component {
             man_osm_empresa_motorista: empFunc,
             man_osm_nome_motorista: codFunc ? '.' : man_osm_nome_motorista,
 
-            man_osm_rota: rota_select && rota_select.man_rt_codigo ? rota_select.man_rt_codigo : '',
             man_osm_oficina: null,
         };
-
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
 
         this.setState({ salvado: true });
 
@@ -359,7 +333,7 @@ export default class OrdemServicoScreen extends Component {
 
     onAbrirFuncBuscaModal = (visible) => {
         if (visible) {
-            this.setState({modalFuncBuscaVisible: visible});
+            this.setState({ modalFuncBuscaVisible: visible });
         } else {
             this.setState({
                 buscaNome: '',
@@ -452,15 +426,15 @@ export default class OrdemServicoScreen extends Component {
     render() {
         const { man_os_idf, man_os_data_inicial, man_os_data_fim, man_os_filial, man_os_situacao, man_os_situacao_descr, man_os_valor, man_os_data_prevista,
             man_osm_controle, man_osm_veiculo, man_osm_motorista, man_osm_empresa_motorista, man_osm_km_acumulado, man_osm_km_odometro,
-            man_osm_oficina, man_osm_rota, man_grupo_servico,
-            filial_select, codFilial, veiculo_select, codVeiculo, rota_select, codRota,
+            man_osm_oficina, man_grupo_servico,
+            filial_select, codFilial, veiculo_select, codVeiculo, 
             funcionariosSelect, codFunc, nomeFunc, listaRegistrosFunc, carregandoFunc,
             usuario, carregarRegistro, loading, refreshing, salvado } = this.state;
 
         // console.log('OrdemServicoScreen - STATE: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Ordem Serviço'}
@@ -648,13 +622,6 @@ export default class OrdemServicoScreen extends Component {
                             </View>
                         </View >
 
-                        <RotasSelect
-                            label="Rota"
-                            id="rota_select"
-                            value={rota_select}
-                            codRota={codRota}
-                            onChange={this.onInputChangeRota}
-                        />
 
                         <Divider style={{ backgroundColor: Colors.dividerDark }} />
 
@@ -822,12 +789,9 @@ export default class OrdemServicoScreen extends Component {
                     <Modal
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => {
-                            console.log("Modal FUNCIONARIO FECHOU.")
-                        }}
                         animationType={"slide"}
                     >
-                        <SafeAreaView style={{backgroundColor: Colors.primary, flex: 1}}>
+                        <SafeAreaView style={{ backgroundColor: Colors.primary, flex: 1 }}>
 
                             <HeaderComponent
                                 color={'white'}
@@ -840,8 +804,8 @@ export default class OrdemServicoScreen extends Component {
                                 placeholder="Busca por Nome"
                                 lightTheme={true}
                                 onChangeText={this.onBuscaNomeChange}
-                                inputStyle={{backgroundColor: 'white'}}
-                                containerStyle={{backgroundColor: Colors.primaryLight}}
+                                inputStyle={{ backgroundColor: 'white' }}
+                                containerStyle={{ backgroundColor: Colors.primaryLight }}
                                 clearIcon={true}
                             />
 
@@ -851,14 +815,14 @@ export default class OrdemServicoScreen extends Component {
                             }}>
 
                                 <ScrollView
-                                    style={{flex: 1,}}
+                                    style={{ flex: 1, }}
                                     keyboardShouldPersistTaps="always"
                                 >
-                                    <View style={{marginTop: 4}}>
+                                    <View style={{ marginTop: 4 }}>
                                         <FlatList
                                             data={listaRegistrosFunc}
                                             renderItem={this.renderItemFunc}
-                                            contentContainerStyle={{paddingBottom: 100}}
+                                            contentContainerStyle={{ paddingBottom: 100 }}
                                             keyExtractor={registro => String(registro.rh_func_codigo) + String(registro.rh_func_empresa)}
                                             onRefresh={this.onRefreshFunc}
                                             refreshing={refreshing}

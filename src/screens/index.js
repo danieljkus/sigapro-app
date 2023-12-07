@@ -21,6 +21,7 @@ import EscalaVeiculoLogScreen from './EscalaVeiculoLogScreen';
 
 import CheckListScreen from './CheckListScreen';
 import CheckListItemScreen from './CheckListItemScreen';
+import CheckListConferenciaScreen from './CheckListConferenciaScreen';
 
 import RefeicoesScreen from './RefeicoesScreen';
 import RefeicaoScreen from './RefeicaoScreen';
@@ -70,6 +71,7 @@ import PreDigitacaoNotasScreen from './PreDigitacaoNotasScreen';
 import BarCodeScreen from '../components/BarCodeScreen';
 
 import FichaViagemScreen from './FichaViagemScreen';
+import AbastecimentoTransitoScreen from './AbastecimentoTransitoScreen';
 
 import ViagensTurismoScreen from './ViagensTurismoScreen';
 
@@ -183,6 +185,16 @@ const HomeStackNavigator = createStackNavigator({
     },
 
 
+    AbastecimentoTransitoScreen: {
+        screen: AbastecimentoTransitoScreen,
+        navigationOptions: {
+            headerShown: false,
+            title: "Abastecimento em Trânsito",
+            ...defaultNavigationOptions
+        }
+    },
+
+
     CheckListScreen: {
         screen: CheckListScreen,
         navigationOptions: {
@@ -196,6 +208,14 @@ const HomeStackNavigator = createStackNavigator({
         navigationOptions: {
             headerShown: false,
             title: "Check-List",
+            ...defaultNavigationOptions
+        }
+    },
+    CheckListConferenciaScreen: {
+        screen: CheckListConferenciaScreen,
+        navigationOptions: {
+            headerShown: false,
+            title: "Check-List Conferência",
             ...defaultNavigationOptions
         }
     },

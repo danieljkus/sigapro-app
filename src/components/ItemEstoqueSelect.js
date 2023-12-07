@@ -10,7 +10,7 @@ import Colors from '../values/Colors';
 import Icon from './Icon';
 import { Card, Divider, SearchBar } from 'react-native-elements';
 import HeaderComponent from "./HeaderComponent";
-
+import { maskValorMoeda } from '../utils/Maskers';
 
 const Registro = ({ registro, onRegistroPress }) => {
     return (
@@ -18,11 +18,27 @@ const Registro = ({ registro, onRegistroPress }) => {
             <TouchableOpacity
                 onPress={() => onRegistroPress(registro.estoq_ie_codigo)}
             >
-                <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
+                <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text>
+                            # {registro.estoq_ie_codigo}
+                        </Text>
+                    </View>
+                    <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                            Estoque {': '}
+                        </Text>
+                        <Text>
+                            {maskValorMoeda(parseFloat(registro.estoq_ef_estoque_atual))}
+                        </Text>
+                    </View>
+                </View>
+
+                {/* <View style={{ paddingHorizontal: 16, paddingVertical: 5, flexDirection: 'row' }}>
                     <Text style={{ color: Colors.textSecondaryDark, fontSize: 13, flex: 1, marginTop: 5, }}>
                         #{registro.estoq_ie_codigo}
                     </Text>
-                </View>
+                </View> */}
 
                 <Divider />
 
@@ -55,10 +71,6 @@ class ItemEstoqueSelect extends PureComponent {
 
     componentDidUpdate(propsAnterior, stateAnterior) {
         const { codItem, onChange, id } = this.props;
-
-        // console.log('componentDidUpdate.this.props: ', this.props);
-        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
-
         if (codItem !== propsAnterior.codItem) {
             this.setState({
                 codItem,
@@ -71,7 +83,6 @@ class ItemEstoqueSelect extends PureComponent {
     }
 
     componentDidMount() {
-        // console.log('ItemEstoqueSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
                 item_select: {
@@ -86,9 +97,6 @@ class ItemEstoqueSelect extends PureComponent {
         const state = {};
         state[id] = value;
         this.setState(state);
-
-        // console.log('ItemEstoqueSelect.onInputChange: ', state);
-
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -97,17 +105,16 @@ class ItemEstoqueSelect extends PureComponent {
 
     buscaRegistros = (value) => {
         this.setState({ carregando: true });
-        const { id, onChange, buscaEstoque } = this.props;
+        const { id, onChange, buscaEstoque, comSaldo } = this.props;
 
         axios.get('/listaItens', {
             params: {
                 codItem: value,
-                buscaEstoque: buscaEstoque,
+                buscaEstoque,
+                comSaldo,
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('ItemEstoqueSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -152,6 +159,7 @@ class ItemEstoqueSelect extends PureComponent {
 
     getListaRegistros = () => {
         const { buscaNome, pagina, listaRegistros } = this.state;
+        const { buscaEstoque, comSaldo } = this.props;
         this.setState({ carregando: true });
 
         axios.get('/listaItensBusca', {
@@ -159,6 +167,8 @@ class ItemEstoqueSelect extends PureComponent {
                 page: pagina,
                 limite: 10,
                 nome: buscaNome,
+                buscaEstoque,
+                comSaldo,
             }
         }).then(response => {
             const novosRegistros = pagina === 1
@@ -252,8 +262,14 @@ class ItemEstoqueSelect extends PureComponent {
 
         const codConta = codItem ? codItem : (value ? value.estoq_ie_codigo : '');
         const descricao = value ? String(value.estoq_ie_descricao).trim() : '';
-        // const buscaEst = buscaEstoque ? buscaEstoque : 1;
-        this.setState({ codItem: codConta });
+        // const buscaEstoque = buscaEstoque ? buscaEstoque : 0;
+        // const comSaldo = comSaldo ? comSaldo : 0;
+
+        this.setState({
+            codItem: codConta,
+            // buscaEstoque,
+            // comSaldo,
+        });
 
         return (
             <View style={{ flexDirection: 'row' }}>
@@ -317,13 +333,10 @@ class ItemEstoqueSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => {
-                        console.log("Modal FECHOU.")
-                    }}
                     animationType={"slide"}
                 >
 
-                    <SafeAreaView style={{backgroundColor: Colors.primary, flex: 1}}>
+                    <SafeAreaView style={{ backgroundColor: Colors.primary, flex: 1 }}>
 
                         <HeaderComponent
                             color={'white'}
@@ -336,8 +349,8 @@ class ItemEstoqueSelect extends PureComponent {
                             placeholder="Pesquisar"
                             lightTheme={true}
                             onChangeText={this.onBuscaNomeChange}
-                            inputStyle={{backgroundColor: 'white'}}
-                            containerStyle={{backgroundColor: Colors.primaryLight}}
+                            inputStyle={{ backgroundColor: 'white' }}
+                            containerStyle={{ backgroundColor: Colors.primaryLight }}
                             clearIcon={true}
                         />
 
@@ -347,14 +360,14 @@ class ItemEstoqueSelect extends PureComponent {
                         }}>
 
                             <ScrollView
-                                style={{flex: 1,}}
+                                style={{ flex: 1, }}
                                 keyboardShouldPersistTaps="always"
                             >
-                                <View style={{marginTop: 4}}>
+                                <View style={{ marginTop: 4 }}>
                                     <FlatList
                                         data={listaRegistros}
                                         renderItem={this.renderItem}
-                                        contentContainerStyle={{paddingBottom: 100}}
+                                        contentContainerStyle={{ paddingBottom: 100 }}
                                         keyExtractor={registro => registro.estoq_ie_codigo}
                                         onRefresh={this.onRefresh}
                                         refreshing={refreshing}

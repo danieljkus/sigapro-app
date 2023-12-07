@@ -1,21 +1,17 @@
-import React, {Component} from 'react';
-import {
-    View, ScrollView, Dimensions, RefreshControl, Text, FlatList,
-    ActivityIndicator, Modal, TouchableOpacity, SafeAreaView
-} from 'react-native';
-
+import React, { Component } from 'react';
+import { View, ScrollView, Dimensions, Text, FlatList, ActivityIndicator, Modal, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import Colors from '../values/Colors';
-import {ProgressDialog} from 'react-native-simple-dialogs';
+import { ProgressDialog } from 'react-native-simple-dialogs';
 import Alert from '../components/Alert';
 import Icon from '../components/Icon';
 import VeiculosSelect from '../components/VeiculosSelect';
 import NetInfo from '@react-native-community/netinfo';
 import HeaderComponent from "../components/HeaderComponent";
-import {verifyGeolocationActive, verifyLocationPermission} from "../components/getGeolocation";
+import { verifyGeolocationActive, verifyLocationPermission } from "../components/getGeolocation";
 import * as Platfom from "react-native";
 
 export default class CheckListItemScreen extends Component {
@@ -56,7 +52,6 @@ export default class CheckListItemScreen extends Component {
 
     onNetEvento = (info) => {
         let state = this.state;
-        // console.log('onNetEvento: ', info)
         if (info.isConnected) {
             state.netStatus = 1;
         } else {
@@ -66,16 +61,14 @@ export default class CheckListItemScreen extends Component {
     }
 
     componentDidMount() {
-        // console.log('componentDidMount: ', this.props.navigation.state.params.registro)
-
         if (this?.props?.navigation?.state?.params?.registro?.adm_spcl_idf) {
             this.setState({
                 codVeiculo: this?.props?.navigation?.state?.params?.registro?.adm_spcl_veiculo ? this?.props?.navigation?.state?.params?.registro?.adm_spcl_veiculo : '',
             });
         } else {
             this.setState({
-                    refreshing: true,
-                },
+                refreshing: true,
+            },
                 this.getListaRegistros()
             );
         }
@@ -108,12 +101,12 @@ export default class CheckListItemScreen extends Component {
                     })
                 }
             }).catch(ex => {
-            console.warn('Erro checkList/listaItens:');
-            this.setState({
-                refreshing: false,
-                carregando: false,
-            });
-        })
+                console.warn('Erro checkList/listaItens:');
+                this.setState({
+                    refreshing: false,
+                    carregando: false,
+                });
+            })
     };
 
     onInputChange = (id, value) => {
@@ -133,7 +126,7 @@ export default class CheckListItemScreen extends Component {
                     adm_spcli_seq: 0,
                 }, (
                     this.buscaEscala(value?.codVeic),
-                        this.onMudaItem('')
+                    this.onMudaItem('')
                 ));
             }
         } catch (e) {
@@ -145,7 +138,7 @@ export default class CheckListItemScreen extends Component {
 
     buscaEscala = (value) => {
         try {
-            this.setState({adm_spcl_escala: '', carregandoEscala: true});
+            this.setState({ adm_spcl_escala: '', carregandoEscala: true });
             if ((this.state.adm_spcl_idf === 0) && (value)) {
                 axios.get('/escalaVeiculos/escalaAtual', {
                     params: {
@@ -158,12 +151,11 @@ export default class CheckListItemScreen extends Component {
                     })
                 }).catch(error => {
                     console.warn(error.response);
-                    this.setState({adm_spcl_escala: '', carregandoEscala: false});
+                    this.setState({ adm_spcl_escala: '', carregandoEscala: false });
                 })
             }
         } catch (e) {
-            console.log(e)
-            this.setState({adm_spcl_escala: '', carregandoEscala: false, codVeiculo: ''});
+            this.setState({ adm_spcl_escala: '', carregandoEscala: false, codVeiculo: '' });
         }
     };
 
@@ -193,11 +185,9 @@ export default class CheckListItemScreen extends Component {
                 listaItens: this?.state?.listaRegistros,
             };
 
-            this.setState({salvando: true});
+            this.setState({ salvando: true });
             return axios.post('/checkList/store', registro)
                 .then(response => {
-                    console.log(response)
-
                     if (response?.status === 200) {
                         Alert.showAlert('Check-List salvo com sucesso');
                     }
@@ -206,7 +196,7 @@ export default class CheckListItemScreen extends Component {
                         this.props.navigation.state.params.onRefresh();
                     }
                 }).catch(ex => {
-                    this.setState({salvado: false});
+                    this.setState({ salvado: false });
                     console.warn(ex);
                 })
         }
@@ -218,10 +208,6 @@ export default class CheckListItemScreen extends Component {
 
 
             if (this.state.codVeiculo) {
-                // console.log('onMudaItem: ', tipo);
-                // console.log('onMudaItem total: ', this.state.listaRegistros.length);
-                // console.log('onMudaItem atual: ', this.state.adm_spcli_seq);
-
                 let total = this.state.listaRegistros.length;
                 let seq = this.state.adm_spcli_seq;
 
@@ -234,8 +220,6 @@ export default class CheckListItemScreen extends Component {
                         seq = this.state.adm_spcli_seq - 1;
                     }
                 }
-
-                // console.log('onMudaItem novo: ', seq);
 
                 let ok = true;
                 if ((this.state.adm_spcl_idf === 0) && (seq === total - 1)) {
@@ -256,7 +240,7 @@ export default class CheckListItemScreen extends Component {
 
 
                         Alert.showConfirm("Check-List Concluído. Deseja salvar?",
-                            {text: "Não"},
+                            { text: "Não" },
                             {
                                 text: "Sim",
                                 onPress: () => this.onGravarRegistro(),
@@ -296,7 +280,7 @@ export default class CheckListItemScreen extends Component {
             if (this.state.adm_spcl_idf === 0) {
                 this.state.listaRegistros[this.state.adm_spcli_seq].adm_spcli_check = tipo;
                 if (tipo === 'NC') {
-                    this.setState({modalOBSVisible: true});
+                    this.setState({ modalOBSVisible: true });
                 } else {
                     this.onMudaItem('P');
                 }
@@ -307,11 +291,9 @@ export default class CheckListItemScreen extends Component {
     };
 
     onOBSPress = (visible) => {
-        // console.log('onOBSPress: ', visible);
         if (this.state.listaRegistros[this.state.adm_spcli_seq].adm_spcli_check === 'NC') {
-            this.setState({modalOBSVisible: visible});
+            this.setState({ modalOBSVisible: visible });
             if ((this.state.adm_spcl_idf === 0) && (!visible)) {
-                // console.log('onOBSPress: ', this.state.adm_spcli_obs);
                 this.state.listaRegistros[this.state.adm_spcli_seq].adm_spcli_obs = this.state.adm_spcli_obs;
                 this.onMudaItem('P');
             }
@@ -334,18 +316,18 @@ export default class CheckListItemScreen extends Component {
 
         return (
 
-            <SafeAreaView style={{flex: 1}}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Check-List'}
                     pressLeftComponen={() => this?.props?.navigation?.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />
-                <View style={{flex: 1, backgroundColor: Colors.background}}>
-                    <StatusBar/>
+                <View style={{ flex: 1, backgroundColor: Colors.background }}>
+                    <StatusBar />
 
                     <ScrollView
-                        style={{flex: 1,}}
+                        style={{ flex: 1, }}
                         keyboardShouldPersistTaps="always"
                     >
                         {/*{this?.state?.netStatus ? null : (*/}
@@ -354,13 +336,13 @@ export default class CheckListItemScreen extends Component {
                         {/*</Text>*/}
                         {/*)}*/}
                         <ScrollView
-                            style={{flex: 1,}}
+                            style={{ flex: 1, }}
                             keyboardShouldPersistTaps="always"
                         >
 
                             <View>
-                                <View style={{margin: 15, marginBottom: -10}}>
-                                    <View style={{marginTop: -5}}>
+                                <View style={{ margin: 15, marginBottom: -10 }}>
+                                    <View style={{ marginTop: -5 }}>
                                         <VeiculosSelect
                                             label="Veículo"
                                             id="veiculo_select"
@@ -373,7 +355,7 @@ export default class CheckListItemScreen extends Component {
                                         />
                                     </View>
 
-                                    <View style={{marginTop: -15}}>
+                                    <View style={{ marginTop: -15 }}>
 
                                         {carregandoEscala ?
                                             <View style={{
@@ -386,7 +368,7 @@ export default class CheckListItemScreen extends Component {
                                                 top: 10,
                                                 paddingLeft: 10
                                             }}>
-                                                <ActivityIndicator style={{margin: 10}} color={Colors.mediumGray}/>
+                                                <ActivityIndicator style={{ margin: 10 }} color={Colors.mediumGray} />
                                                 {/*<Text> Buscando... </Text>*/}
                                             </View>
                                             : null}
@@ -402,7 +384,7 @@ export default class CheckListItemScreen extends Component {
                                         />
                                     </View>
 
-                                    <View style={{marginTop: -15}}>
+                                    <View style={{ marginTop: -15 }}>
                                         <TextInput
                                             label="Observação Geral"
                                             id="adm_spcl_obs"
@@ -460,12 +442,6 @@ export default class CheckListItemScreen extends Component {
                                                 alignItems: "center",
                                                 zIndex: 100,
                                             }}>
-                                                <Text style={{
-                                                    fontSize: 25,
-                                                    color: Colors.textOnPrimary,
-                                                    fontWeight: "bold",
-                                                    height: 40,
-                                                }}>{adm_spicl_descricao}</Text>
                                                 <View style={{
                                                     flex: 1,
                                                     margin: 0,
@@ -480,8 +456,20 @@ export default class CheckListItemScreen extends Component {
                                                         height: 20,
                                                     }}>{(adm_spcli_seq + 1) + '/' + this.state.listaRegistros.length}</Text>
                                                 </View>
+
+                                                <View>
+                                                    <Text style={{
+                                                        marginTop: 20,
+                                                        fontSize: 23,
+                                                        color: Colors.textOnPrimary,
+                                                        fontWeight: "bold",
+                                                        height: 300,
+                                                        textAlign: 'center'
+                                                    }}>{adm_spicl_descricao}</Text>
+                                                </View>
+
                                             </View>
-                                            <View style={{flex: 25, margin: 10, marginTop: -10}}>
+                                            <View style={{ flex: 25, margin: 10, marginTop: -10, marginTop: 70 }}>
                                                 <Text style={{
                                                     fontSize: 15,
                                                     color: Colors.textOnPrimary
@@ -506,7 +494,7 @@ export default class CheckListItemScreen extends Component {
                                                 }}>
                                                     <TouchableOpacity
                                                         onPress={() => this.onMudaItem('A')}
-                                                        style={{alignItems: "center", justifyContent: 'center'}}
+                                                        style={{ alignItems: "center", justifyContent: 'center' }}
                                                     >
                                                         <View style={{
                                                             width: "50%",
@@ -548,7 +536,7 @@ export default class CheckListItemScreen extends Component {
                                                 }}>
                                                     <TouchableOpacity
                                                         onPress={() => this.onMudaItem('P')}
-                                                        style={{alignItems: "center", justifyContent: 'center'}}
+                                                        style={{ alignItems: "center", justifyContent: 'center' }}
                                                     >
                                                         <View style={{
                                                             width: "50%",
@@ -582,7 +570,7 @@ export default class CheckListItemScreen extends Component {
                                             }}>
                                                 <TouchableOpacity
                                                     onPress={() => this.onMudaResposta('CO')}
-                                                    style={{alignItems: "center", justifyContent: 'center'}}
+                                                    style={{ alignItems: "center", justifyContent: 'center' }}
                                                 >
                                                     <View style={{
                                                         width: 100,
@@ -606,7 +594,7 @@ export default class CheckListItemScreen extends Component {
                                                 <TouchableOpacity
                                                     onPress={() => this.onMudaResposta('NC')}
                                                     onLongPress={() => this.onOBSPress(true)}
-                                                    style={{alignItems: "center", justifyContent: 'center'}}
+                                                    style={{ alignItems: "center", justifyContent: 'center' }}
                                                 >
                                                     <View style={{
                                                         width: 100,
@@ -631,7 +619,7 @@ export default class CheckListItemScreen extends Component {
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
                                                     onPress={() => this.onMudaResposta('NA')}
-                                                    style={{alignItems: "center", justifyContent: 'center'}}
+                                                    style={{ alignItems: "center", justifyContent: 'center' }}
                                                 >
                                                     <View style={{
                                                         width: 100,
@@ -667,9 +655,6 @@ export default class CheckListItemScreen extends Component {
                             {/* ----------------------------- */}
                             <Modal
                                 visible={this.state.modalOBSVisible}
-                                onRequestClose={() => {
-                                    console.log("Modal OBS FECHOU.")
-                                }}
                                 animationType={"slide"}
                                 transparent={true}
                             >
@@ -691,7 +676,7 @@ export default class CheckListItemScreen extends Component {
                                             borderRadius: 5,
                                         }}>
 
-                                            <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                            <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
                                                 <Text style={{
                                                     color: Colors.textOnPrimary,
                                                     marginTop: 15,
@@ -703,7 +688,7 @@ export default class CheckListItemScreen extends Component {
                                                 }}>Observação</Text>
                                             </View>
 
-                                            <View style={{marginTop: 4, paddingVertical: 10}}>
+                                            <View style={{ marginTop: 4, paddingVertical: 10 }}>
                                                 <TextInput
                                                     label="Observação"
                                                     id="adm_spcli_obs"
@@ -720,7 +705,7 @@ export default class CheckListItemScreen extends Component {
                                                     onPress={() => {
                                                         this.onOBSPress(!this.state.modalOBSVisible)
                                                     }}
-                                                    buttonStyle={{marginTop: 15}}
+                                                    buttonStyle={{ marginTop: 15 }}
                                                     backgroundColor={Colors.buttonPrimary}
                                                     icon={{
                                                         name: 'check',

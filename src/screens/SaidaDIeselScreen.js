@@ -61,8 +61,6 @@ export default class SaidaDieselScreen extends Component {
             pagina: 1,
 
         }
-
-        // console.log('SaidaDieselScreen - PROPS: ', props.navigation.state.params.registro);
     }
 
     async componentWillUnmount() {
@@ -72,10 +70,7 @@ export default class SaidaDieselScreen extends Component {
     componentDidMount() {
         getFilial().then(filial => { this.setState({ filial }); })
         this.calculoTotalPedido();
-        // if (!this.state.estoq_me_idf) {
-        // console.log('SaidaDieselScreen - componentDidMount: ', this.props.navigation.state.params.registro.listaItens[0].estoq_mei_item);
         this.onMudaTipoSaida(this.state.estoq_me_tipo_saida);
-        // }
     }
 
     onInputChange = (id, value) => {
@@ -85,8 +80,6 @@ export default class SaidaDieselScreen extends Component {
     }
 
     onMudaTipoSaida = (tipo) => {
-        // console.log('onMudaTipoSaida: ', tipo);
-
         if (tipo === 'D') {
             this.setState({
                 estoq_me_tipo_saida: 'D',
@@ -113,8 +106,6 @@ export default class SaidaDieselScreen extends Component {
                 codItem: tipo === 'D' ? 19 : 166048,
             }
         }).then(response => {
-            // console.log('onRegistroPress: ', response.data);
-
             this.setState({
                 carregarRegistro: false,
                 estoq_mei_item: response.data.codItem,
@@ -150,9 +141,6 @@ export default class SaidaDieselScreen extends Component {
 
             listaItens,
         };
-
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
 
         let axiosMethod;
         if (estoq_me_idf) {
@@ -205,7 +193,6 @@ export default class SaidaDieselScreen extends Component {
     }
 
     onCarregaProdutos = (listaItens) => {
-        // console.log('onCarregaProdutos: ', listaItens);
         this.setState({ listaItens });
         this.calculoTotalPedido();
     }

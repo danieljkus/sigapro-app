@@ -1,20 +1,9 @@
 import React, { Component } from 'react';
-import {
-    View,
-    ScrollView,
-    RefreshControl,
-    Text,
-    FlatList,
-    ActivityIndicator,
-    Modal,
-    TouchableOpacity,
-    SafeAreaView
-} from 'react-native';
-import { Card, Divider, SearchBar } from 'react-native-elements';
+import { View, ScrollView, Text, FlatList, ActivityIndicator, Modal, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Card, Divider, SearchBar, CheckBox } from 'react-native-elements';
 
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
-import { checkFormIsValid } from '../utils/Validator';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import Colors from '../values/Colors';
@@ -25,6 +14,7 @@ import { maskValorMoeda } from '../utils/Maskers';
 import moment from 'moment';
 import Icon from '../components/Icon';
 import HeaderComponent from "../components/HeaderComponent";
+import VeiculosSelect from '../components/VeiculosSelect';
 
 const RegistroItem = ({ registro }) => {
     return (
@@ -116,6 +106,12 @@ export default class EscalaVeiculoScreen extends Component {
             filial: 0,
             descFilial: '',
 
+            veiculo_select: null,
+            codVeiculo: '',
+
+            idfFichaViagem: 0,
+            viagemDiaAtual: false,
+
             listaRegistrosFunc: [],
             modalFuncBuscaVisible: false,
             carregandoFunc: false,
@@ -126,19 +122,34 @@ export default class EscalaVeiculoScreen extends Component {
             nomeFunc: '',
             nomeFuncFL: '',
 
+            checkedFichaSaida: false,
+
+            permissaoTrocarVeic: false,
+            permissaoTrocarVeicAdmin: false,
+
             ...props.navigation.state.params.registro,
         }
     }
 
     componentDidMount() {
-        const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
         getPermissoes().then(permissoes => {
-            this.setState({ permissoes });
+            const permissaoTrocarVeic = getTemPermissao('ESCALAVEICULOSTROCARVEICSCREEN', permissoes);
+            const permissaoTrocarVeicAdmin = getTemPermissao('ESCALAVEICULOSTROCARVEICADMINSCREEN', permissoes);
+
+            this.setState({
+                permissoes,
+                permissaoTrocarVeic,
+                permissaoTrocarVeicAdmin,
+            });
         })
 
+
+        const veiculo = this.state.registro.veic2 ? this.state.registro.veic2 : (this.state.registro.veic1 ? this.state.registro.veic1 : '');
+
         this.setState({
-            man_ev_veiculo_trocar: veiculo,
+            viagemDiaAtual: this.state.registro.pas_via_data_viagem <= moment().format('YYYY-MM-DD') ? true : false,
         });
+
 
         if ((veiculo) && (veiculo !== '')) {
             this.setState({ carregarRegistro: true });
@@ -152,8 +163,6 @@ export default class EscalaVeiculoScreen extends Component {
                 }
             }).then(response => {
                 this.setState({ carregarRegistro: false });
-
-                // console.log('registro: ', response.data);
 
                 let funcionariosSelect = [];
                 if (response.data.codMot) {
@@ -169,6 +178,9 @@ export default class EscalaVeiculoScreen extends Component {
                     dataComb: response.data.dataComb,
                     filial: response.data.filial,
                     descFilial: response.data.descFilial,
+
+                    codVeiculo: veiculo,
+                    idfFichaViagem: response.data.idfFichaViagem,
 
                     codFunc: response.data.codMot,
                     empFunc: response.data.empMot,
@@ -193,8 +205,27 @@ export default class EscalaVeiculoScreen extends Component {
         this.setState(state);
     }
 
+
+    onInputChangeVeiculo = (id, value) => {
+        const state = {};
+        state[id] = value;
+        this.setState(state);
+        if (value) {
+            this.setState({
+                codVeiculo: value.codVeic,
+            });
+        }
+    }
+
+    onErroChange = msgErro => {
+        this.setState({
+            listaRegistros: [],
+            msgErroVeiculo: msgErro,
+        })
+    }
+
+
     onInputChangeFunc = (id, value) => {
-        // console.log('onInputChangeFunc: ', value)
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -206,7 +237,6 @@ export default class EscalaVeiculoScreen extends Component {
     }
 
     onInputChangeListaFunc = (id, value) => {
-        // console.log('onInputChangeListaFunc: ', value)
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -227,8 +257,6 @@ export default class EscalaVeiculoScreen extends Component {
         this.setState({ funcionariosSelect: [], empFunc: '', });
         const { codFunc } = this.state;
 
-        // console.log('buscaFuncionários: ', value)
-
         if (value) {
             this.setState({ carregandoFunc: true });
             axios.get('/listaFuncionarios', {
@@ -238,9 +266,6 @@ export default class EscalaVeiculoScreen extends Component {
                 }
             }).then(response => {
                 const { data } = response;
-
-                // console.log('buscaFuncionários: ', data)
-
                 if (data) {
                     const funcionariosSelect = data.map(regList => {
                         return {
@@ -281,11 +306,25 @@ export default class EscalaVeiculoScreen extends Component {
 
 
     onFormSubmit = (event) => {
-        if (this.state.man_ev_veiculo_trocar !== '') {
-            this.onSalvarRegistro();
-        } else {
-            Alert.showAlert('Preencha todos os campos obrigatórios');
+        if ((this?.state?.veiculo_select === undefined) || (!this?.state?.veiculo_select) || (!this?.state?.veiculo_select?.codVeic)) {
+            Alert.showAlert('Informe o Veículo');
+            return;
         }
+        if (this?.state?.msgErroVeiculo?.trim() !== '') {
+            Alert.showAlert(this?.state?.msgErroVeiculo);
+            return;
+        }
+
+        if (this.state.checkedFichaSaida) {
+            if ((this.state.funcionariosSelect) && (!this.state.empFunc)) {
+                if (!this.state.man_fvm_nome_mot) {
+                    Alert.showAlert("Informe o Motorista");
+                    return;
+                }
+            }
+        }
+
+        this.onSalvarRegistro();
     }
 
     onSalvarRegistro = () => {
@@ -293,9 +332,11 @@ export default class EscalaVeiculoScreen extends Component {
 
         const idf = this.state.registro.idf2 ? this.state.registro.idf2 : (this.state.registro.idf1 ? this.state.registro.idf1 : 0);
 
-        axios.put('/escalaVeiculos/trocaCarro', {
-            idf,
-            man_ev_veiculo: this.state.man_ev_veiculo_trocar,
+        const reg = {
+            idf: idf,
+            idfFichaViagem: this.state.idfFichaViagem,
+
+            man_ev_veiculo: this.state.veiculo_select.codVeic,
             man_ev_data_ini: this.state.registro.pas_via_data_viagem,
             man_ev_servico: this.state.registro.pas_via_servico,
             man_ev_servico_estra: this.state.registro.pas_via_servico_extra,
@@ -303,7 +344,13 @@ export default class EscalaVeiculoScreen extends Component {
             codMot: this.state.codFunc,
             empMot: this.state.empFunc,
             nomeMot: this.state.codFunc ? this.state.funcionariosSelect[0].label : this.state.nomeFuncFL,
-        })
+
+            gravarFichaSaida: this.state.checkedFichaSaida,
+        };
+
+        // console.log('onSalvarRegistro: ', reg)
+
+        axios.put('/escalaVeiculos/trocaCarro', reg)
             .then(response => {
                 if (response.data === 'OK') {
                     this.props.navigation.goBack(null);
@@ -348,7 +395,6 @@ export default class EscalaVeiculoScreen extends Component {
     // ---------------------------------------------------------------------------
 
     onAbrirFuncBuscaModal = (visible) => {
-        // console.log('onAbrirFuncBuscaModal: ', visible)
         this.setState({ modalFuncBuscaVisible: visible });
         if (visible) {
             this.getListaRegistrosFunc();
@@ -367,8 +413,6 @@ export default class EscalaVeiculoScreen extends Component {
     getListaRegistrosFunc = () => {
         const { buscaNome, pagina, listaRegistrosFunc } = this.state;
         this.setState({ carregando: true });
-        // console.log('getListaRegistrosFunc')
-
         axios.get('/listaFuncionariosBusca', {
             params: {
                 page: pagina,
@@ -380,8 +424,6 @@ export default class EscalaVeiculoScreen extends Component {
                 ? response.data.data
                 : listaRegistrosFunc.concat(response.data.data);
             const total = response.data.total;
-
-            // console.log('getListaRegistrosFunc: ', novosRegistros)
 
             this.setState({
                 listaRegistrosFunc: novosRegistros,
@@ -455,14 +497,14 @@ export default class EscalaVeiculoScreen extends Component {
         const { pas_via_data_viagem, pas_via_servico, pas_serv_linha, pas_via_servico_extra,
             idf1, idf2, veic1, veic2, desc_sec_ini, desc_sec_fim, hora_ini, hora_fim,
         } = this.state.registro;
-        const { man_ev_veiculo_trocar, salvando, loading, refreshing, carregarRegistro, permissoes,
-            codFunc, nomeFunc, nomeFuncFL, funcionariosSelect, carregandoFunc, listaRegistrosFunc,
+        const { viagemDiaAtual, man_ev_veiculo_trocar, salvando, loading, refreshing, carregarRegistro, permissoes,
+            veiculo_select, codVeiculo, codFunc, nomeFunc, nomeFuncFL, funcionariosSelect, carregandoFunc, listaRegistrosFunc, checkedFichaSaida,
         } = this.state;
 
         // console.log('this.state', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Detalhes da Escala'}
@@ -476,19 +518,86 @@ export default class EscalaVeiculoScreen extends Component {
                     keyboardShouldPersistTaps="always"
                 >
 
+                    <View style={{ marginBottom: 0, paddingHorizontal: 16, }}>
+                        <Text style={{
+                            color: Colors.textSecondaryDark,
+                            fontWeight: 'bold',
+                            fontSize: 20,
+                            marginBottom: 15,
+                            marginTop: 20,
+                            borderBottomWidth: 2,
+                            borderColor: Colors.dividerDark,
+                        }}>
+                            Dados da Viagem
+                        </Text>
+
+                        <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                            <View style={{ flex: 2, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                    Data{': '}
+                                </Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                    {moment(pas_via_data_viagem).format("DD/MM/YYYY")}
+                                </Text>
+                            </View>
+                            {/* <View style={{ flex: 2, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                    Veículo{': '}
+                                </Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                    {veic2 ? veic2 : veic1}
+                                </Text>
+                            </View> */}
+                        </View>
+
+                        <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                            <View style={{ flex: 2, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                    Serviço{': '}
+                                </Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                    {pas_via_servico + (pas_via_servico_extra ? ' / ' + pas_via_servico_extra : '')}
+                                </Text>
+                            </View>
+                            <View style={{ flex: 2, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
+                                    Horário{': '}
+                                </Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
+                                    {hora_ini + ' / ' + hora_fim}
+                                </Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Linha {': '}
+                            </Text>
+                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }}>
+                                {desc_sec_ini + ' a ' + desc_sec_fim}
+                            </Text>
+                        </View>
+
+                    </View>
+
+
+
                     <View
-                        style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginVertical: 20 }}
+                        style={{ flex: 1, paddingVertical: 30, paddingHorizontal: 16 }}
                     >
-                        {getTemPermissao('ESCALAVEICULOSTROCARVEICSCREEN', permissoes) ? (
-                            <View>
-                                <TextInput
-                                    label="Trocar Veículo"
-                                    id="man_ev_veiculo_trocar"
-                                    ref="man_ev_veiculo_trocar"
-                                    value={man_ev_veiculo_trocar}
-                                    maxLength={9}
-                                    onChange={this.onInputChange}
-                                    keyboardType="numeric"
+                        {this.state.permissaoTrocarVeic ? (
+                            <View style={{}}>
+
+                                <VeiculosSelect
+                                    label="Veículo"
+                                    id="veiculo_select"
+                                    value={veiculo_select}
+                                    codVeiculo={codVeiculo}
+                                    onChange={this.onInputChangeVeiculo}
+                                    onErro={this.onErroChange}
+                                    tipo=""
+                                // enabled={!this.state.idfFichaViagem}
+                                // enabled={this.state.permissaoTrocarVeicAdmin ? true : false}
                                 />
 
                                 <View style={{ flexDirection: 'row' }} >
@@ -501,22 +610,26 @@ export default class EscalaVeiculoScreen extends Component {
                                             maxLength={6}
                                             keyboardType="numeric"
                                             onChange={this.onInputChangeFunc}
+                                        // enabled={!this.state.idfFichaViagem}
+                                        // enabled={this.state.permissaoTrocarVeicAdmin ? true : false}
                                         />
                                     </View>
 
                                     <View style={{ width: "7%", }}>
-                                        <Button
-                                            title=""
-                                            loading={loading}
-                                            onPress={() => { this.onAbrirFuncBuscaModal(true) }}
-                                            buttonStyle={{width: 30, padding: 0, paddingTop: 20, marginLeft: -18}}
-                                            backgroundColor={Colors.transparent}
-                                            icon={{
-                                                name: 'search',
-                                                type: 'font-awesome',
-                                                color: Colors.textPrimaryDark
-                                            }}
-                                        />
+                                        {this.state.idfFichaViagem ? null : (
+                                            <Button
+                                                title=""
+                                                loading={loading}
+                                                onPress={() => { this.onAbrirFuncBuscaModal(true) }}
+                                                buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
+                                                backgroundColor={Colors.transparent}
+                                                icon={{
+                                                    name: 'search',
+                                                    type: 'font-awesome',
+                                                    color: Colors.textPrimaryDark
+                                                }}
+                                            />
+                                        )}
                                     </View>
 
                                     <View style={{ width: "75%", marginLeft: -23 }}>
@@ -536,10 +649,11 @@ export default class EscalaVeiculoScreen extends Component {
                                                     selectedValue=""
                                                     options={funcionariosSelect}
                                                     onChange={this.onInputChangeListaFunc}
+                                                // enabled={!this.state.idfFichaViagem}
+                                                // enabled={this.state.permissaoTrocarVeicAdmin ? true : false}
                                                 />
                                             )
                                         }
-
                                     </View>
                                 </View >
 
@@ -550,89 +664,34 @@ export default class EscalaVeiculoScreen extends Component {
                                     value={nomeFuncFL}
                                     maxLength={60}
                                     onChange={this.onInputChange}
+                                // enabled={!this.state.idfFichaViagem}
+                                // enabled={this.state.permissaoTrocarVeicAdmin ? true : false}
                                 />
 
-                                <Button
-                                    title="TROCAR"
-                                    loading={salvando}
-                                    onPress={this.onFormSubmit}
-                                    color={Colors.textOnPrimary}
-                                    buttonStyle={{ marginBottom: 30, marginTop: 10 }}
-                                    icon={{
-                                        name: 'check',
-                                        type: 'font-awesome',
-                                        color: Colors.textOnPrimary
-                                    }}
-                                />
+                                {this.state.idfFichaViagem || !viagemDiaAtual ? null : (
+                                    <CheckBox
+                                        title='Gravar Ficha de Saída'
+                                        checked={checkedFichaSaida}
+                                        onPress={() => this.setState({ checkedFichaSaida: !checkedFichaSaida })}
+                                        size={25}
+                                        textStyle={{ fontSize: 18 }}
+                                        containerStyle={{ padding: 0, margin: 0, marginBottom: 30, backgroundColor: 'transparent' }}
+                                    />
+                                )}
+
                             </View>
                         ) : null}
 
 
-
-                        <View style={{ marginBottom: 30 }}>
-                            <Text style={{
-                                color: Colors.textSecondaryDark,
-                                fontWeight: 'bold',
-                                fontSize: 20,
-                                marginBottom: 15,
-                                marginTop: 20,
-                                borderBottomWidth: 2,
-                                borderColor: Colors.dividerDark,
-                            }}>
-                                Dados da Viagem
+                        {this.state.idfFichaViagem ? (
+                            <Text style={{ color: "red", fontSize: 15, textAlign: 'center', fontWeight: 'bold' }}>
+                                FICHA DE SAÍDA JÁ GRAVADA
                             </Text>
+                        ) : null}
 
-                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <View style={{ flex: 2, flexDirection: 'row' }}>
-                                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                        Data{': '}
-                                    </Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                        {moment(pas_via_data_viagem).format("DD/MM/YYYY")}
-                                    </Text>
-                                </View>
-                                <View style={{ flex: 2, flexDirection: 'row' }}>
-                                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                        Veículo{': '}
-                                    </Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                        {veic2 ? veic2 : veic1}
-                                    </Text>
-                                </View>
-                            </View>
-
-                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <View style={{ flex: 2, flexDirection: 'row' }}>
-                                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                        Serviço{': '}
-                                    </Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                        {pas_via_servico + (pas_via_servico_extra ? ' / ' + pas_via_servico_extra : '')}
-                                    </Text>
-                                </View>
-                                <View style={{ flex: 2, flexDirection: 'row' }}>
-                                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }} >
-                                        Horário{': '}
-                                    </Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }} >
-                                        {hora_ini + ' / ' + hora_fim}
-                                    </Text>
-                                </View>
-                            </View>
-
-                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                                <Text style={{ fontSize: 15, fontWeight: 'bold', color: Colors.primaryDark }} >
-                                    Linha {': '}
-                                </Text>
-                                <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }}>
-                                    {desc_sec_ini + ' a ' + desc_sec_fim}
-                                </Text>
-                            </View>
-
-                        </View>
 
                         {this.state.filial ? (
-                            <View style={{ marginBottom: 30 }}>
+                            <View style={{ marginBottom: 30, marginTop: 30 }}>
                                 <Text style={{
                                     color: Colors.textSecondaryDark,
                                     fontWeight: 'bold',
@@ -673,28 +732,26 @@ export default class EscalaVeiculoScreen extends Component {
                             </View>
                         ) : null}
 
+                        <View style={{ flexDirection: 'row', justifyContent: "center" }}>
+                            <Button
+                                title="Log"
+                                onPress={this.onAbrirLog}
+                                color={Colors.textOnPrimary}
+                                buttonStyle={{ margin: 5, marginTop: 10, height: 20, width: 150 }}
+                                // buttonStyle={{ margin: 5, marginTop: 10, height: 20 }}
+                                // buttonStyle={{ marginBottom: 0, marginTop: 0, height: 10, width: 150 }}
+                                icon={{
+                                    name: 'file-text-o',
+                                    type: 'font-awesome',
+                                    color: Colors.textOnPrimary,
+                                }}
+                            />
+                        </View>
                     </View>
 
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 8 , textAlign : 'center'}}>
+                    {/* <Text style={{ color: Colors.textSecondaryDark, fontSize: 8, textAlign: 'center' }}>
                         {idf2 ? idf2 : idf1}
-                    </Text>
-
-
-                    <View style={{flexDirection: 'row', justifyContent: "center"}}>
-                        <Button
-                            title="Log"
-                            onPress={this.onAbrirLog}
-                            color={Colors.textOnPrimary}
-                            buttonStyle={{marginBottom: 20, marginTop: 20, width: 200, marginRight: 10}}
-                            icon={{
-                                name: 'file-text-o',
-                                type: 'font-awesome',
-                                color: Colors.textOnPrimary
-                            }}
-                        />
-                    </View>
-
-
+                    </Text> */}
 
 
                     {/* -------------------------------- */}
@@ -706,10 +763,9 @@ export default class EscalaVeiculoScreen extends Component {
                         }}
                         transparent={false}
                         visible={this.state.modalFuncBuscaVisible}
-                        onRequestClose={() => { console.log("Modal FUNCIONARIO FECHOU.") }}
                         animationType={"slide"}
                     >
-                        <SafeAreaView style={{backgroundColor: Colors.white, flex: 0, flexDirection: 'row'}}/>
+                        <SafeAreaView style={{ backgroundColor: Colors.white, flex: 0, flexDirection: 'row' }} />
 
                         <HeaderComponent
                             color={'white'}
@@ -752,14 +808,29 @@ export default class EscalaVeiculoScreen extends Component {
                         </View>
                     </Modal>
 
-
-
                     <ProgressDialog
                         visible={carregarRegistro}
                         title="SIGA PRO"
                         message="Carregando. Aguarde..."
                     />
+
                 </ScrollView>
+
+                {this.state.idfFichaViagem && pas_via_data_viagem < moment().format('YYYY-MM-DD') ? null : (
+                    <Button
+                        title="SALVAR"
+                        loading={salvando}
+                        onPress={this.onFormSubmit}
+                        color={Colors.textOnPrimary}
+                        buttonStyle={{ margin: 5, marginTop: 10 }}
+                        icon={{
+                            name: 'check',
+                            type: 'font-awesome',
+                            color: Colors.textOnPrimary
+                        }}
+                    />
+                )}
+
             </SafeAreaView>
         )
     }

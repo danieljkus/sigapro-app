@@ -7,11 +7,7 @@ import {
 import { Icon, Card, Divider } from 'react-native-elements';
 import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
-import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
-import Button from '../components/Button';
-import TextInput from '../components/TextInput';
-import { maskDate } from '../utils/Maskers';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -76,8 +72,6 @@ export default class EscalaVeiculoLogScreen extends Component {
 
     getListaRegistros = () => {
         const { man_ev_idf, pagina, listaRegistros } = this.state;
-
-        // console.log('man_ev_idf: ', man_ev_idf)
 
         axios.get('/escalaVeiculos/log', {
             params: {

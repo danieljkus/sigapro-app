@@ -56,10 +56,6 @@ class ServicosOSSelect extends PureComponent {
 
     componentDidUpdate(propsAnterior, stateAnterior) {
         const { codServico, onChange, id } = this.props;
-
-        // console.log('componentDidUpdate.this.props: ', this.props);
-        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
-
         if (codServico !== propsAnterior.codServico) {
             this.setState({
                 codServico,
@@ -72,7 +68,6 @@ class ServicosOSSelect extends PureComponent {
     }
 
     componentDidMount() {
-        // console.log('ServicosOSSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             if (this.props.select) {
                 this.getServicosSelect()
@@ -91,8 +86,6 @@ class ServicosOSSelect extends PureComponent {
         const state = {};
         state[id] = value;
         this.setState(state);
-
-        // console.log('ServicosOSSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -111,8 +104,6 @@ class ServicosOSSelect extends PureComponent {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('ServicosOSSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -135,9 +126,6 @@ class ServicosOSSelect extends PureComponent {
     getServicosSelect = () => {
         const { pagina } = this.state;
         this.setState({ carregando: true });
-
-        // console.log('getServicosSelect');
-
         axios.get('/listaServicosBusca', {
             params: {
                 page: pagina,
@@ -148,11 +136,7 @@ class ServicosOSSelect extends PureComponent {
                 veiculo: this.props.veiculo,
             }
         }).then(response => {
-
             const { data } = response;
-
-            // console.log('getServicosSelect: ', data);
-
             const servicoSelectCombo = data.map(regList => {
                 return {
                     key: regList.man_sos_servico,
@@ -212,8 +196,6 @@ class ServicosOSSelect extends PureComponent {
                 grupo: this.props.grupo,
             }
         }).then(response => {
-            // console.log('getServicosSelect: ', response.data);
-
             if (this.props.tipoServico === 'P') {
                 
                 const listaRegistros = response.data.map(regList => {
@@ -402,7 +384,6 @@ class ServicosOSSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
                     <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>

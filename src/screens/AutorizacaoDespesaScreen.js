@@ -1,17 +1,7 @@
-import React, {Component} from 'react';
-import {
-    View,
-    Text,
-    ScrollView,
-    RefreshControl,
-    Platform,
-    Modal,
-    TouchableOpacity,
-    Linking,
-    SafeAreaView
-} from 'react-native';
-import {Card, Divider} from 'react-native-elements';
-import {checkFormIsValid} from '../utils/Validator';
+import React, { Component } from 'react';
+import { View, Text, ScrollView, Platform, Modal, TouchableOpacity, Linking, SafeAreaView } from 'react-native';
+import { Card, Divider } from 'react-native-elements';
+import { checkFormIsValid } from '../utils/Validator';
 
 import TextInput from '../components/TextInput';
 import moment from 'moment';
@@ -19,13 +9,13 @@ import Button from '../components/Button';
 import Colors from '../values/Colors';
 import axios from 'axios';
 import Alert from '../components/Alert';
-import {ProgressDialog} from 'react-native-simple-dialogs';
-import {maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat} from "../utils/Maskers";
+import { ProgressDialog } from 'react-native-simple-dialogs';
+import { maskValorMoeda, maskDigitarVlrMoeda, vlrStringParaFloat } from "../utils/Maskers";
 import FiliaisSelect from '../components/FiliaisSelect';
 import CtaFinancSelect from '../components/CtaFinancSelect';
 import HeaderComponent from "../components/HeaderComponent";
 
-const {OS} = Platform;
+const { OS } = Platform;
 
 export const OPCOES_COMBO_TIPO = [
     {
@@ -96,13 +86,11 @@ export default class AutorizacaoDespesaScreen extends Component {
 
 
     onSalvar = () => {
-        this.setState({salvado: true});
+        this.setState({ salvado: true });
 
         const registro = this.state;
 
         registro.fin_ad_valor = parseFloat(vlrStringParaFloat(registro.fin_ad_valor));
-
-        // console.log('onSalvar: ', registro)
 
         let axiosMethod;
         if (registro.fin_ad_documento) {
@@ -111,8 +99,6 @@ export default class AutorizacaoDespesaScreen extends Component {
             axiosMethod = axios.post('/autorzacaoDespesas/store', registro);
         }
         axiosMethod.then(response => {
-
-            // console.log('onSalvar response: ', response.data)
 
             if (registro.fin_ad_documento) {
                 this.props.navigation.goBack(null);
@@ -131,14 +117,14 @@ export default class AutorizacaoDespesaScreen extends Component {
             }
 
         }).catch(ex => {
-            this.setState({salvado: false});
+            this.setState({ salvado: false });
             console.warn(ex);
         })
     }
 
 
     onModalWhatsApp = (visible, fin_ad_documento) => {
-        this.setState({modalZap: visible});
+        this.setState({ modalZap: visible });
 
         if (fin_ad_documento) {
             Linking.openURL(
@@ -160,25 +146,20 @@ export default class AutorizacaoDespesaScreen extends Component {
         // console.log('AutorizacaoDespesaScreen: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: '#1F829C', flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Autorização de Despesa'}
                     pressLeftComponen={() => this.props.navigation.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />
-                <View style={{flex: 1, backgroundColor: Colors.background}}>
+                <View style={{ flex: 1, backgroundColor: Colors.background }}>
                     <ScrollView
-                        style={{flex: 1,}}
+                        style={{ flex: 1, }}
                         keyboardShouldPersistTaps="always"
-                        refreshControl={(
-                            <RefreshControl
-                                refreshing={loading}
-                            />
-                        )}
                     >
                         <View
-                            style={{flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20}}
+                            style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
                         >
 
                             {fin_ad_documento ? (
@@ -215,8 +196,8 @@ export default class AutorizacaoDespesaScreen extends Component {
                                 onChange={this.onInputChange}
                             />
 
-                            <View style={{flexDirection: 'row'}}>
-                                <View style={{width: "47%", marginRight: 20}}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ width: "47%", marginRight: 20 }}>
                                     <TextInput
                                         label="Repetições"
                                         id="fin_ad_repetir"
@@ -228,7 +209,7 @@ export default class AutorizacaoDespesaScreen extends Component {
                                     />
                                 </View>
 
-                                <View style={{width: "47%"}}>
+                                <View style={{ width: "47%" }}>
                                     <TextInput
                                         label="Valor"
                                         id="fin_ad_valor"
@@ -285,9 +266,6 @@ export default class AutorizacaoDespesaScreen extends Component {
                         {/* ----------------------------- */}
                         <Modal
                             visible={this.state.modalZap}
-                            onRequestClose={() => {
-                                console.log("Modal ZAP FECHOU.")
-                            }}
                             animationType={"slide"}
                             transparent={true}
                         >
@@ -308,7 +286,7 @@ export default class AutorizacaoDespesaScreen extends Component {
                                         backgroundColor: Colors.background,
                                         borderRadius: 5,
                                     }}>
-                                        <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                        <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
                                             <Text style={{
                                                 color: Colors.textOnPrimary,
                                                 marginTop: 10,
@@ -321,7 +299,7 @@ export default class AutorizacaoDespesaScreen extends Component {
                                         </View>
 
                                         <View
-                                            style={{paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row'}}>
+                                            style={{ paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row' }}>
                                             <Text style={{
                                                 color: Colors.textSecondaryDark,
                                                 fontSize: 15,
@@ -337,7 +315,7 @@ export default class AutorizacaoDespesaScreen extends Component {
                                             onPress={() => {
                                                 this.onModalWhatsApp(false, fin_ad_documento)
                                             }}
-                                            buttonStyle={{marginTop: 20, height: 32}}
+                                            buttonStyle={{ marginTop: 20, height: 32 }}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
                                                 name: 'whatsapp',
@@ -351,7 +329,7 @@ export default class AutorizacaoDespesaScreen extends Component {
                                             onPress={() => {
                                                 this.onModalWhatsApp(false, '')
                                             }}
-                                            buttonStyle={{marginTop: 20, height: 32}}
+                                            buttonStyle={{ marginTop: 20, height: 32 }}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
                                                 name: 'close',
@@ -373,7 +351,7 @@ export default class AutorizacaoDespesaScreen extends Component {
                             loading={loading}
                             onPress={this.onFormSubmit}
                             color={Colors.textOnPrimary}
-                            buttonStyle={{margin: 5, marginTop: 10}}
+                            buttonStyle={{ margin: 5, marginTop: 10 }}
                             icon={{
                                 name: 'check',
                                 type: 'font-awesome',

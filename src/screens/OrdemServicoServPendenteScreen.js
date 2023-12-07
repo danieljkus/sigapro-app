@@ -169,25 +169,19 @@ export default class OrdemServicoServPendenteScreen extends Component {
             params: {
                 grupo: this.state.man_grupo_servico,
             }
-        })
-            .then(response => {
-                const novosRegistros = pagina === 1
-                    ? response.data.data
-                    : listaRegistros.concat(response.data.data);
-                const total = response.data.total;
-                this.setState({
-                    listaRegistros: novosRegistros,
-                    refreshing: false,
-                    carregando: false,
-                    carregarMais: novosRegistros.length < total
-                })
-            }).catch(ex => {
-                console.warn('Erro Busca:', ex);
-                this.setState({
-                    refreshing: false,
-                    carregando: false,
-                });
+        }).then(response => {
+            this.setState({
+                listaRegistros: response.data,
+                refreshing: false,
+                carregando: false,
             })
+        }).catch(ex => {
+            console.warn('Erro Busca:', ex);
+            this.setState({
+                refreshing: false,
+                carregando: false,
+            });
+        })
     }
 
 
@@ -225,7 +219,6 @@ export default class OrdemServicoServPendenteScreen extends Component {
     }
 
     onAddPress = () => {
-        // console.log('onAddPress');
         this.setState({
             man_sp_idf: 0,
             man_sp_obs: '',
@@ -272,9 +265,6 @@ export default class OrdemServicoServPendenteScreen extends Component {
             man_sp_obs_execucao,
         };
 
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
-
         this.setState({ salvado: true });
         axios.post('/ordemServicos/storeServPendentes', registro)
             .then(response => {
@@ -309,7 +299,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
         // console.log('OrdemServicoServPendenteScreen: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Serviços Pendentes'}
@@ -318,23 +308,16 @@ export default class OrdemServicoServPendenteScreen extends Component {
                 />
                 <StatusBar />
 
-                <ScrollView
-                    style={{ flex: 1, }}
-                    keyboardShouldPersistTaps="always"
-                >
-
-                    <FlatList
-                        data={listaRegistros}
-                        renderItem={this.renderItem}
-                        contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
-                        keyExtractor={registro => String(registro.man_sp_idf)}
-                        onRefresh={this.onRefresh}
-                        refreshing={refreshing}
-                        onEndReached={this.carregarMaisRegistros}
-                        ListFooterComponent={this.renderListFooter}
-                    />
-
-                </ScrollView>
+                <FlatList
+                    data={listaRegistros}
+                    renderItem={this.renderItem}
+                    contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
+                    keyExtractor={registro => String(registro.man_sp_idf)}
+                    onRefresh={this.onRefresh}
+                    refreshing={refreshing}
+                    onEndReached={this.carregarMaisRegistros}
+                    ListFooterComponent={this.renderListFooter}
+                />
 
 
                 {/* ----------------------------- */}
@@ -342,7 +325,6 @@ export default class OrdemServicoServPendenteScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalBaixaVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
                     transparent={true}
                 >
@@ -435,7 +417,7 @@ export default class OrdemServicoServPendenteScreen extends Component {
                                     <Button
                                         title="FECHAR"
                                         onPress={() => { this.onClosePress(!this.state.modalBaixaVisible) }}
-                                        buttonStyle={{ marginTop: 10}}
+                                        buttonStyle={{ marginTop: 10 }}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',

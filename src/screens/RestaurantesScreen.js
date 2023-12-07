@@ -98,7 +98,6 @@ export default class RestaurantesScreen extends Component {
     }
 
     onInputChangeData = (id, value) => {
-        // console.log('onInputChangeData')
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -111,11 +110,8 @@ export default class RestaurantesScreen extends Component {
 
 
     getListaRegistros = async () => {
-
         const {buscaNome, pagina, listaRegistros} = this.state;
         this.setState({refreshing: true, onClick: false});
-
-        // console.log('getListaRegistros')
 
         await axios.get('/listaRestaurantes', {
 
@@ -129,8 +125,6 @@ export default class RestaurantesScreen extends Component {
                 ? response.data.data
                 : listaRegistros.concat(response.data.data);
             const total = response.data.total;
-            // console.log('getListaRegistros: ', novosRegistros)
-
             this.setState({
                 listaRegistros: novosRegistros,
                 refreshing: false,
@@ -138,7 +132,6 @@ export default class RestaurantesScreen extends Component {
                 carregarMais: novosRegistros.length < total,
             })
         }).catch(ex => {
-            console.log(ex.response);
             this.setState({
                 refreshing: false,
                 carregando: false,
@@ -147,7 +140,6 @@ export default class RestaurantesScreen extends Component {
     }
 
     onRefresh = () => {
-        // console.log('onRefresh')
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -155,7 +147,6 @@ export default class RestaurantesScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        // console.log('carregarMaisRegistros')
         const {carregarMais, refreshing, carregando, pagina} = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
@@ -190,7 +181,6 @@ export default class RestaurantesScreen extends Component {
     }
 
     onRefreshPress = (visible) => {
-        // console.log('onRefreshPress')
         this.setState({
             pagina: 1,
             refreshing: true,

@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     View, Text, FlatList, Modal,
     Platform, TouchableOpacity,
     Alert, ActivityIndicator, ScrollView, SafeAreaView, DatePickerIOS
 } from 'react-native';
-import {Icon, Card, Divider, CheckBox} from 'react-native-elements';
-import {ProgressDialog} from 'react-native-simple-dialogs';
+import { Icon, Card, Divider, CheckBox } from 'react-native-elements';
+import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
 import FloatActionButton from '../components/FloatActionButton';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import {maskDate} from '../utils/Maskers';
+import { maskDate } from '../utils/Maskers';
 
 import moment from 'moment';
 import 'moment/locale/pt-br';
@@ -19,10 +19,10 @@ import HeaderComponent from "../components/HeaderComponent";
 
 moment.locale('pt-BR');
 
-const {OS} = Platform;
+const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
-const RegistroItem = ({registro, onRegistroPress, man_ev_veiculo}) => {
+const RegistroItem = ({ registro, onRegistroPress, man_ev_veiculo }) => {
     return (
         <Card containerStyle={{
             padding: 0,
@@ -32,7 +32,7 @@ const RegistroItem = ({registro, onRegistroPress, man_ev_veiculo}) => {
             backgroundColor: Colors.textDisabledLight,
             elevation: 0,
         }}>
-            <View style={{borderLeftWidth: 5, borderLeftColor: registro.veic1 ? Colors.primary : "#d32f2f"}}>
+            <View style={{ borderLeftWidth: 5, borderLeftColor: registro.veic1 ? Colors.primary : "#d32f2f" }}>
                 <TouchableOpacity
                     onPress={() => onRegistroPress(registro)}
                 >
@@ -44,31 +44,31 @@ const RegistroItem = ({registro, onRegistroPress, man_ev_veiculo}) => {
                             fontSize: 13,
                             flexDirection: 'row'
                         }}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 {moment(registro.pas_via_data_viagem).format("DD/MM/YYYY")}
                             </Text>
                         </View>
                     )}
 
-                    <View style={{paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row'}}>
-                        <View style={{flex: 3, flexDirection: 'row'}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                    <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 Horário {': '}
                             </Text>
                             <Text>
                                 {registro.pas_via_servico_extra ? registro.pas_ext_horario_extra : (registro.hora_fim ? registro.hora_ini : registro.hora_ini + ' / ' + registro.hora_fim)}
                             </Text>
                         </View>
-                        <View style={{flex: 3, flexDirection: 'row'}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 Serviço {': '}
                             </Text>
                             <Text>
                                 {registro.pas_via_servico_extra ? registro.pas_via_servico_extra : registro.pas_via_servico}
                             </Text>
                         </View>
-                        <View style={{flex: 3, flexDirection: 'row'}}>
-                            <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                        <View style={{ flex: 3, flexDirection: 'row' }}>
+                            <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                 Veículo {': '}
                             </Text>
                             <Text>
@@ -77,19 +77,19 @@ const RegistroItem = ({registro, onRegistroPress, man_ev_veiculo}) => {
                         </View>
                     </View>
 
-                    <Divider/>
+                    <Divider />
 
-                    <View style={{paddingLeft: 20, paddingVertical: 4}}>
-                        <Text style={{color: Colors.textPrimaryDark, fontSize: 15}}>
+                    <View style={{ paddingLeft: 20, paddingVertical: 4 }}>
+                        <Text style={{ color: Colors.textPrimaryDark, fontSize: 15 }}>
                             {registro.pas_via_servico_extra ? (registro.desc_sec_ini_extra + ' a ' + registro.desc_sec_fim_extra) : (registro.desc_sec_ini + ' a ' + registro.desc_sec_fim)}
                         </Text>
                     </View>
 
                     {registro.motorista ? (
                         <View>
-                            <Divider/>
-                            <View style={{paddingLeft: 10, paddingVertical: 4, marginRight: 50, flexDirection: 'row'}}>
-                                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                            <Divider />
+                            <View style={{ paddingLeft: 10, paddingVertical: 4, marginRight: 50, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                     Motorista {': '}
                                 </Text>
                                 <Text>
@@ -119,6 +119,7 @@ export default class EscalaVeiculosScreen extends Component {
         man_ev_data_ini: moment(new Date()).format(DATE_FORMAT),
         man_ev_veiculo: '',
         man_ev_servico: '',
+        man_ev_filial: '',
         man_ev_od: '',
         somente_escala_filial: true,
         temFiltro: false,
@@ -126,7 +127,7 @@ export default class EscalaVeiculosScreen extends Component {
     };
 
     componentDidMount() {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.getListaRegistros();
     }
 
@@ -149,11 +150,11 @@ export default class EscalaVeiculosScreen extends Component {
 
     getListaRegistros = () => {
         const {
-            man_ev_data_ini, man_ev_servico, man_ev_veiculo, man_ev_od,
+            man_ev_data_ini, man_ev_servico, man_ev_filial, man_ev_veiculo, man_ev_od,
             somente_escala_filial, pagina, listaRegistros
         } = this.state;
 
-        const temFiltro = man_ev_servico !== '' || man_ev_veiculo !== '' || man_ev_od !== '';
+        const temFiltro = man_ev_servico !== '' || man_ev_veiculo !== '' || man_ev_od !== '' || man_ev_filial !== '';
 
         // this.setState({ refreshing: true });
 
@@ -164,25 +165,11 @@ export default class EscalaVeiculosScreen extends Component {
                 data: moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD"),
                 veiculo: man_ev_veiculo,
                 servico: man_ev_servico,
+                filial: man_ev_filial,
                 cidade: man_ev_od,
                 somente_escala_filial: somente_escala_filial ? 1 : 0,
             }
         }).then(response => {
-
-            // console.log('getListaRegistros ATUAL: ', listaRegistros);
-            // console.log('getListaRegistros DATA: ', response.data);
-
-            // const novosRegistros = pagina === 1
-            //     ? response.data.data
-            //     : listaRegistros.concat(response.data.data);
-            // const total = response.data.total;
-            // console.log('getListaRegistros NOVO: ', novosRegistros);
-            // this.setState({
-            //     listaRegistros: novosRegistros,
-            //     refreshing: false,
-            //     carregando: false,
-            //     carregarMais: novosRegistros.length < total
-            // })
 
             this.setState({
                 listaRegistros: response.data,
@@ -204,7 +191,6 @@ export default class EscalaVeiculosScreen extends Component {
 
 
     onRefresh = () => {
-        // console.log('onRefresh');
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -212,7 +198,6 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onRegistroPress = (registro) => {
-        // console.log('onRegistroPress: ', registro);
         this.props.navigation.navigate('EscalaVeiculoScreen', {
             registro: {
                 registro: registro,
@@ -222,7 +207,6 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        // console.log('carregarMaisRegistros');
         // const { carregarMais, refreshing, carregando, pagina } = this.state;
         // if (carregarMais && !refreshing && !carregando) {
         //     this.setState({
@@ -233,18 +217,18 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     renderListFooter = () => {
-        const {carregando} = this.state;
+        const { carregando } = this.state;
         if (carregando) {
             return (
-                <View style={{marginTop: 8}}>
-                    <ActivityIndicator size="large"/>
+                <View style={{ marginTop: 8 }}>
+                    <ActivityIndicator size="large" />
                 </View>
             )
         }
         return null;
     }
 
-    renderItem = ({item, index}) => {
+    renderItem = ({ item, index }) => {
         return (
             <RegistroItem
                 registro={item}
@@ -256,8 +240,7 @@ export default class EscalaVeiculosScreen extends Component {
 
 
     onSearchPress = (visible) => {
-        // console.log('onSearchPress');
-        this.setState({modalFiltrosVisible: visible});
+        this.setState({ modalFiltrosVisible: visible });
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -265,27 +248,25 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onClosePress = (visible) => {
-        // console.log('onClosePress');
-        this.setState({modalFiltrosVisible: visible});
+        this.setState({ modalFiltrosVisible: visible });
     }
 
     onClearSearchPress = () => {
-        // console.log('onClearSearchPress');
         this.setState({
             pagina: 1,
             refreshing: true,
             temFiltro: false,
             man_ev_veiculo: '',
             man_ev_servico: '',
+            man_ev_filial: '',
             somente_escala_filial: true,
         }, this.getListaRegistros);
     }
 
     onAntPress = () => {
-        const {man_ev_data_ini} = this.state;
+        const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).subtract(1, 'days').format(DATE_FORMAT);
-        // console.log('onAntPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -294,10 +275,9 @@ export default class EscalaVeiculosScreen extends Component {
     }
 
     onProxPress = () => {
-        const {man_ev_data_ini} = this.state;
+        const { man_ev_data_ini } = this.state;
         const data = moment(man_ev_data_ini, DATE_FORMAT).format("YYYY-MM-DD");
         const dataNova = moment(data).add(1, 'days').format(DATE_FORMAT);
-        // console.log('onProxPress: ', dataNova);
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -309,11 +289,11 @@ export default class EscalaVeiculosScreen extends Component {
     render() {
         const {
             listaRegistros, refreshing, carregarRegistro, temFiltro, somente_escala_filial,
-            man_ev_data_ini, man_ev_veiculo, man_ev_servico
+            man_ev_data_ini, man_ev_veiculo, man_ev_servico, man_ev_filial
         } = this.state;
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: '#1F829C', flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Escala dos Veículos'}
@@ -321,14 +301,14 @@ export default class EscalaVeiculosScreen extends Component {
                     iconLeftComponen={'chevron-left'}
                 />
 
-                <View style={{flex: 1, backgroundColor: Colors.background}}>
+                <View style={{ flex: 1, backgroundColor: Colors.background }}>
 
                     {this.state.man_ev_veiculo !== '' ? null : (
-                        <View style={{marginBottom: 3}}>
+                        <View style={{ marginBottom: 3 }}>
                             <ScrollView
-                                style={{height: 45, width: "100%", borderWidth: 1, borderColor: Colors.dividerDark}}>
-                                <View style={{flex: 1, flexDirection: 'row', marginBottom: 2}}>
-                                    <View style={{flex: 2, padding: 0}}>
+                                style={{ height: 45, width: "100%", borderWidth: 1, borderColor: Colors.dividerDark }}>
+                                <View style={{ flex: 1, flexDirection: 'row', marginBottom: 2 }}>
+                                    <View style={{ flex: 2, padding: 0 }}>
                                         <Button
                                             title=""
                                             onPress={() => {
@@ -380,7 +360,7 @@ export default class EscalaVeiculosScreen extends Component {
                                         />
                                     </View>
 
-                                    <View style={{flex: 2, padding: 0}}>
+                                    <View style={{ flex: 2, padding: 0 }}>
                                         <Button
                                             title=""
                                             onPress={() => {
@@ -402,7 +382,7 @@ export default class EscalaVeiculosScreen extends Component {
                     <FlatList
                         data={listaRegistros}
                         renderItem={this.renderItem}
-                        contentContainerStyle={{paddingBottom: 150}}
+                        contentContainerStyle={{ paddingBottom: 150 }}
                         keyExtractor={registro => String(registro.pas_via_empresa) + '_' + String(registro.pas_via_servico) + '_' + (registro.pas_via_servico_extra ? String(registro.pas_via_servico_extra) : String(registro.pas_via_servico)) + '_' + String(registro.veic1) + '_' + String(registro.veic2)}
                         onRefresh={this.onRefresh}
                         refreshing={refreshing}
@@ -416,9 +396,6 @@ export default class EscalaVeiculosScreen extends Component {
                     {/* ----------------------------- */}
                     <Modal
                         visible={this.state.modalFiltrosVisible}
-                        onRequestClose={() => {
-                            console.log("Modal FILTROS FECHOU.")
-                        }}
                         animationType={"slide"}
                         transparent={true}
                     >
@@ -438,7 +415,7 @@ export default class EscalaVeiculosScreen extends Component {
                                     borderRadius: 5,
                                 }}>
 
-                                    <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                    <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
                                         <Text style={{
                                             color: Colors.textOnPrimary,
                                             marginTop: 15,
@@ -450,7 +427,7 @@ export default class EscalaVeiculosScreen extends Component {
                                         }}>Filtrar Escala</Text>
                                     </View>
 
-                                    <View style={{marginTop: 4, paddingVertical: 10}}>
+                                    <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
                                         <TextInput
                                             label="Veículo"
@@ -472,12 +449,22 @@ export default class EscalaVeiculosScreen extends Component {
                                             keyboardType="numeric"
                                         />
 
+                                        <TextInput
+                                            label="Filial"
+                                            id="man_ev_filial"
+                                            ref="man_ev_filial"
+                                            value={man_ev_filial}
+                                            maxLength={20}
+                                            onChange={this.onInputChange}
+                                            keyboardType="numeric"
+                                        />
+
                                         <CheckBox
                                             title='Somente escala da sua filial'
                                             key={somente_escala_filial}
                                             checked={somente_escala_filial}
-                                            onPress={() => this.setState({somente_escala_filial: !somente_escala_filial})}
-                                            containerStyle={{padding: 0, margin: 0, backgroundColor: 'transparent'}}
+                                            onPress={() => this.setState({ somente_escala_filial: !somente_escala_filial })}
+                                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
                                         />
 
                                         <Button
@@ -485,7 +472,7 @@ export default class EscalaVeiculosScreen extends Component {
                                             onPress={() => {
                                                 this.onSearchPress(!this.state.modalFiltrosVisible)
                                             }}
-                                            buttonStyle={{marginTop: 15}}
+                                            buttonStyle={{ marginTop: 15 }}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
                                                 name: 'filter',
@@ -498,7 +485,7 @@ export default class EscalaVeiculosScreen extends Component {
                                             onPress={() => {
                                                 this.onClosePress(!this.state.modalFiltrosVisible)
                                             }}
-                                            buttonStyle={{marginTop: 10}}
+                                            buttonStyle={{ marginTop: 10 }}
                                             backgroundColor={Colors.buttonPrimary}
                                             icon={{
                                                 name: 'close',

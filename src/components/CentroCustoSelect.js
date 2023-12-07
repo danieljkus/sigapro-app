@@ -52,10 +52,6 @@ class CentroCustoSelect extends PureComponent {
 
     componentDidUpdate(propsAnterior, stateAnterior) {
         const { codCC, onChange, id } = this.props;
-
-        // console.log('componentDidUpdate.this.props: ', this.props);
-        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
-
         if (codCC !== propsAnterior.codCC) {
             this.setState({
                 codCC,
@@ -68,7 +64,6 @@ class CentroCustoSelect extends PureComponent {
     }
 
     componentDidMount() {
-        // console.log('CentroCustoSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
                 cc_select: {
@@ -83,8 +78,6 @@ class CentroCustoSelect extends PureComponent {
         const state = {};
         state[id] = value;
         this.setState(state);
-
-        // console.log('CentroCustoSelect.onInputChange: ', state);
 
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
@@ -102,8 +95,6 @@ class CentroCustoSelect extends PureComponent {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('CentroCustoSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -307,7 +298,6 @@ class CentroCustoSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => { console.log("Modal FECHOU.") }}
                     animationType={"slide"}
                 >
                     <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>

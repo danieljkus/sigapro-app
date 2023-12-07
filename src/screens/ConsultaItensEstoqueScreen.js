@@ -1,18 +1,18 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     View, Text, FlatList, Modal,
     Platform, ActivityIndicator, ScrollView, SafeAreaView
 } from 'react-native';
-import {Icon, Card, Divider} from 'react-native-elements';
-import {ProgressDialog} from 'react-native-simple-dialogs';
+import { Icon, Card, Divider } from 'react-native-elements';
+import { ProgressDialog } from 'react-native-simple-dialogs';
 import axios from 'axios';
 import Colors from '../values/Colors';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import {maskDate, maskValorMoeda} from '../utils/Maskers';
+import { maskDate, maskValorMoeda } from '../utils/Maskers';
 import FloatActionButton from '../components/FloatActionButton';
 import Alert from '../components/Alert';
-import {getFilial} from '../utils/LoginManager';
+import { getFilial } from '../utils/LoginManager';
 
 import ItemEstoqueSelect from '../components/ItemEstoqueSelect';
 import FiliaisSelect from '../components/FiliaisSelect';
@@ -23,7 +23,7 @@ import HeaderComponent from "../components/HeaderComponent";
 
 moment.locale('pt-BR');
 
-const {OS} = Platform;
+const { OS } = Platform;
 const DATE_FORMAT = 'DD/MM/YYYY';
 
 export const combolistas = [
@@ -54,7 +54,7 @@ export const combolistas = [
 ]
 
 
-const RegistroItemFiliais = ({registro}) => {
+const RegistroItemFiliais = ({ registro }) => {
     return (
         <Card containerStyle={{
             padding: 0,
@@ -64,8 +64,8 @@ const RegistroItemFiliais = ({registro}) => {
             backgroundColor: Colors.textDisabledLight,
             elevation: 0,
         }}>
-            <View style={{paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                     Filial {': '}
                 </Text>
                 <Text>
@@ -86,22 +86,22 @@ const RegistroItemFiliais = ({registro}) => {
                 </Text>
             </View>
 
-            <Divider/>
+            <Divider />
 
-            <View style={{paddingLeft: 10, marginBottom: 8, marginTop: 3, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 2, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+            <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 2, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                         Qtde Est{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {maskValorMoeda(parseFloat(registro.estoq_ef_estoque_atual))}
                     </Text>
                 </View>
-                <View style={{flex: 2, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 2, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Custo Médio{': '}
                     </Text>
-                    <Text style={{fontSize: 12, marginTop: 2}}>
+                    <Text style={{ fontSize: 12, marginTop: 2 }}>
                         {maskValorMoeda(parseFloat(registro.estoq_ef_custo_medio))}
                     </Text>
                 </View>
@@ -110,7 +110,7 @@ const RegistroItemFiliais = ({registro}) => {
     )
 }
 
-const RegistroItemSaidas = ({registro}) => {
+const RegistroItemSaidas = ({ registro }) => {
     return (
         <Card containerStyle={{
             padding: 0,
@@ -120,83 +120,83 @@ const RegistroItemSaidas = ({registro}) => {
             backgroundColor: Colors.textDisabledLight,
             elevation: 0,
         }}>
-            <View style={{paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+            <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                         Data{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {moment(registro.estoq_me_data).format("DD/MM/YYYY")}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         IDF{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_me_idf}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Nº{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_me_numero}
                     </Text>
                 </View>
             </View>
 
-            <Divider/>
+            <Divider />
 
-            <View style={{paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+            <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Filial{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {registro.estoq_mei_filial}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Usuário {': '}
                     </Text>
                     <Text>
                         {registro.estoq_me_usuario}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Tipo{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_tme_abrev}
                     </Text>
                 </View>
             </View>
 
-            <Divider/>
+            <Divider />
 
-            <View style={{paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                         Qtde{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         C. Médio{': '}
                     </Text>
-                    <Text style={{fontSize: 12, marginTop: 2}}>
+                    <Text style={{ fontSize: 12, marginTop: 2 }}>
                         {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Total{': '}
                     </Text>
                     <Text>
@@ -205,14 +205,14 @@ const RegistroItemSaidas = ({registro}) => {
                 </View>
             </View>
 
-            <View style={{flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 3, fontSize: 20}}>
+            <View style={{ flexDirection: 'row', paddingLeft: 20, marginTop: 3, marginBottom: 3, fontSize: 20 }}>
                 <Text>
                     {registro.descr_origem_destino}
                 </Text>
             </View>
 
             {registro.estoq_me_obs ? (
-                <View style={{flexDirection: 'row', paddingLeft: 20, paddingBottom: 5}}>
+                <View style={{ flexDirection: 'row', paddingLeft: 20, paddingBottom: 5 }}>
                     <Text>
                         {registro.estoq_me_obs}
                     </Text>
@@ -223,7 +223,7 @@ const RegistroItemSaidas = ({registro}) => {
 }
 
 
-const RegistroItemCompras = ({registro}) => {
+const RegistroItemCompras = ({ registro }) => {
     return (
         <Card containerStyle={{
             padding: 0,
@@ -233,83 +233,83 @@ const RegistroItemCompras = ({registro}) => {
             backgroundColor: Colors.textDisabledLight,
             elevation: 0,
         }}>
-            <View style={{paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+            <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                         Data{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {moment(registro.estoq_nf_data_emissao).format("DD/MM/YYYY")}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         IDF{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_me_idf}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Nº{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_me_numero}
                     </Text>
                 </View>
             </View>
 
-            <Divider/>
+            <Divider />
 
-            <View style={{paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+            <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Filial{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {registro.estoq_me_filial}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Usuário {': '}
                     </Text>
                     <Text>
                         {registro.estoq_me_usuario}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Pedido{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_meinf_num_pedido}
                     </Text>
                 </View>
             </View>
 
-            <Divider/>
+            <Divider />
 
-            <View style={{paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                         Qtde{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         C. Médio{': '}
                     </Text>
-                    <Text style={{fontSize: 12, marginTop: 2}}>
+                    <Text style={{ fontSize: 12, marginTop: 2 }}>
                         {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Total{': '}
                     </Text>
                     <Text>
@@ -318,17 +318,17 @@ const RegistroItemCompras = ({registro}) => {
                 </View>
             </View>
 
-            <View style={{paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                     Fornecedor {': '}
                 </Text>
-                <Text style={{marginRight: 50}}>
+                <Text style={{ marginRight: 50 }}>
                     {registro.adm_pes_nome}
                 </Text>
             </View>
 
-            <View style={{paddingLeft: 10, marginBottom: 5, marginTop: 3, fontSize: 13, flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+            <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                     Marca {': '}
                 </Text>
                 <Text>
@@ -340,7 +340,7 @@ const RegistroItemCompras = ({registro}) => {
 }
 
 
-const RegistroItemNotas = ({registro}) => {
+const RegistroItemNotas = ({ registro }) => {
     return (
         <Card containerStyle={{
             padding: 0,
@@ -350,83 +350,83 @@ const RegistroItemNotas = ({registro}) => {
             backgroundColor: Colors.textDisabledLight,
             elevation: 0,
         }}>
-            <View style={{paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+            <View style={{ paddingLeft: 10, marginBottom: 8, marginTop: 10, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                         Data{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {moment(registro.estoq_nf_data_emissao).format("DD/MM/YYYY")}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         IDF{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_me_idf}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Nº{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_me_numero}
                     </Text>
                 </View>
             </View>
 
-            <Divider/>
+            <Divider />
 
-            <View style={{paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+            <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 5, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Filial{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {registro.estoq_me_filial}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Usuário {': '}
                     </Text>
                     <Text>
                         {registro.estoq_me_usuario}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Tipo{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
                         {registro.estoq_tme_abrev}
                     </Text>
                 </View>
             </View>
 
-            <Divider/>
+            <Divider />
 
-            <View style={{paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row'}}>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15}}>
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark, fontSize: 15 }}>
                         Qtde{': '}
                     </Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 12, marginTop: 3}}>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 3 }}>
                         {maskValorMoeda(parseFloat(registro.estoq_mei_qtde_mov))}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         C. Médio{': '}
                     </Text>
-                    <Text style={{fontSize: 12, marginTop: 2}}>
+                    <Text style={{ fontSize: 12, marginTop: 2 }}>
                         {maskValorMoeda(parseFloat(registro.estoq_mei_valor_unit))}
                     </Text>
                 </View>
-                <View style={{flex: 3, flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                <View style={{ flex: 3, flexDirection: 'row' }}>
+                    <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                         Total{': '}
                     </Text>
                     <Text>
@@ -435,8 +435,8 @@ const RegistroItemNotas = ({registro}) => {
                 </View>
             </View>
 
-            <View style={{paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 8, fontSize: 13, flexDirection: 'row' }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                     Destinatario {': '}
                 </Text>
                 <Text>
@@ -460,7 +460,7 @@ const RegistroItemNotas = ({registro}) => {
 }
 
 
-const RegistroItemFornecedores = ({registro}) => {
+const RegistroItemFornecedores = ({ registro }) => {
     return (
         <Card containerStyle={{
             padding: 0,
@@ -470,8 +470,8 @@ const RegistroItemFornecedores = ({registro}) => {
             backgroundColor: Colors.textDisabledLight,
             elevation: 0,
         }}>
-            <View style={{paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+            <View style={{ paddingLeft: 10, marginBottom: 0, marginTop: 3, fontSize: 13, flexDirection: 'row' }}>
+                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                     CNPJ/CPF {': '}
                 </Text>
                 <Text>
@@ -530,15 +530,14 @@ export default class ConsultaItensEstoqueScreen extends Component {
 
     componentDidMount() {
         getFilial().then(filial => {
-            this.setState({estoq_mei_filial: filial});
+            this.setState({ estoq_mei_filial: filial });
             if (filial) {
                 axios.get('/listaFiliais', {
                     params: {
                         codFilial: filial
                     }
                 }).then(response => {
-                    const {data} = response;
-                    // console.log('FiliaisSelect.componentDidMount: ', data);
+                    const { data } = response;
                     this.setState({
                         filialSelect: {
                             adm_fil_codigo: filial,
@@ -557,7 +556,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     onInputChangeItem = (id, value) => {
-        // console.log('onInputChangeItem')
         const state = {};
         state[id] = value;
         this.setState(state);
@@ -608,8 +606,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             state[id] = value;
             this.setState(state);
 
-            // console.log('onInputChangeLista: ', value);
-
             if ((this.state.item_select) && (this.state.item_select.estoq_ie_codigo)) {
                 this.setState({ refreshing: true });
 
@@ -634,7 +630,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeFilial: ', state);
         if (value) {
             this.setState({
                 estoq_mei_filial: value.adm_fil_codigo
@@ -643,19 +638,17 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     buscaEstoque = (codItem) => {
-        // console.log('buscaEstoque')
         axios.get('/estoque/buscaEstoque', {
             params: {
                 codItem,
             }
         }).then(response => {
-            // console.log('buscaEstoque: ', response.data);
             this.setState({
                 qtdeEstoque: response.data.qtde,
                 custo: response.data.custo,
             });
         }).catch(ex => {
-            this.setState({carregarRegistro: false});
+            this.setState({ carregarRegistro: false });
             console.warn(ex);
             console.warn(ex.response);
         });
@@ -681,9 +674,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     getListaFiliais = () => {
-        const {pagina, listaRegistrosFiliais, item_select} = this.state;
-
-        // console.log('getListaFiliais OK: ', item_select.estoq_ie_codigo)
+        const { pagina, listaRegistrosFiliais, item_select } = this.state;
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             axios.get('/estoque/itensEstoqueFiliais', {
                 params: {
@@ -692,8 +683,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     codItem: item_select.estoq_ie_codigo,
                 }
             }).then(response => {
-                // console.log('getListaFiliais: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosFiliais.concat(response.data.data);
@@ -721,7 +710,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             pagina, listaRegistrosSaidas, item_select
         } = this.state;
 
-        // console.log('getListaSaidas: ', item_select.estoq_ie_codigo)
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             const temFiltro = estoq_mei_filial !== '' || estoq_me_idf !== '' || estoq_me_numero !== '';
 
@@ -737,8 +725,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
                 }
             }).then(response => {
-                // console.log('getListaSaidas: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosSaidas.concat(response.data.data);
@@ -767,7 +753,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             estoq_mei_filial, dataIni, dataFim, estoq_me_idf, estoq_me_numero,
             pagina, listaRegistrosCompras, item_select
         } = this.state;
-        // console.log('getListaCompras: ', item_select.estoq_ie_codigo)
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             const temFiltro = estoq_mei_filial !== '' || estoq_me_idf !== '' || estoq_me_numero !== '';
             axios.get('/estoque/itensEstoqueCompras', {
@@ -782,8 +767,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
                 }
             }).then(response => {
-                // console.log('getListaCompras: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosCompras.concat(response.data.data);
@@ -810,7 +793,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
             estoq_mei_filial, dataIni, dataFim, estoq_me_idf, estoq_me_numero,
             pagina, listaRegistrosNotas, item_select
         } = this.state;
-        // console.log('getListaNotas: ', item_select.estoq_ie_codigo)
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             const temFiltro = estoq_mei_filial !== '' || estoq_me_idf !== '' || estoq_me_numero !== '';
             axios.get('/estoque/itensEstoqueNotasFiscais', {
@@ -825,8 +807,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     dtFim: moment(dataFim, DATE_FORMAT).format("YYYY-MM-DD"),
                 }
             }).then(response => {
-                // console.log('getListaNotas: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosNotas.concat(response.data.data);
@@ -850,8 +830,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
 
 
     getListaFornecedores = () => {
-        const {item_select, pagina, listaRegistrosFornec} = this.state;
-        // console.log('getListaFornecedores: ', item_select.estoq_ie_codigo)
+        const { item_select, pagina, listaRegistrosFornec } = this.state;
         if ((item_select) && (item_select.estoq_ie_codigo)) {
             axios.get('/estoque/itensEstoqueFornecedores', {
                 params: {
@@ -860,8 +839,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     codItem: item_select.estoq_ie_codigo,
                 }
             }).then(response => {
-                // console.log('getListaFornecedores: ', response.data.data)
-
                 const novosRegistros = pagina === 1
                     ? response.data.data
                     : listaRegistrosFornec.concat(response.data.data);
@@ -892,7 +869,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     carregarMaisRegistros = () => {
-        const {carregarMais, refreshing, carregando, pagina} = this.state;
+        const { carregarMais, refreshing, carregando, pagina } = this.state;
         if (carregarMais && !refreshing && !carregando) {
             this.setState({
                 carregando: true,
@@ -902,11 +879,11 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     renderListFooter = () => {
-        const {carregando} = this.state;
+        const { carregando } = this.state;
         if (carregando) {
             return (
-                <View style={{marginTop: 8}}>
-                    <ActivityIndicator size="large"/>
+                <View style={{ marginTop: 8 }}>
+                    <ActivityIndicator size="large" />
                 </View>
             )
         }
@@ -914,7 +891,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
 
-    renderItemFiliais = ({item, index}) => {
+    renderItemFiliais = ({ item, index }) => {
         return (
             <RegistroItemFiliais
                 registro={item}
@@ -922,7 +899,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
         )
     }
 
-    renderItemSaidas = ({item, index}) => {
+    renderItemSaidas = ({ item, index }) => {
         return (
             <RegistroItemSaidas
                 registro={item}
@@ -930,7 +907,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
         )
     }
 
-    renderItemCompras = ({item, index}) => {
+    renderItemCompras = ({ item, index }) => {
         return (
             <RegistroItemCompras
                 registro={item}
@@ -938,7 +915,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
         )
     }
 
-    renderItemNotas = ({item, index}) => {
+    renderItemNotas = ({ item, index }) => {
         return (
             <RegistroItemNotas
                 registro={item}
@@ -946,7 +923,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
         )
     }
 
-    renderItemFornec = ({item, index}) => {
+    renderItemFornec = ({ item, index }) => {
         return (
             <RegistroItemFornecedores
                 registro={item}
@@ -962,7 +939,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     onSearchPress = (visible) => {
-        this.setState({modalFiltrosVisible: visible});
+        this.setState({ modalFiltrosVisible: visible });
         this.setState({
             pagina: 1,
             refreshing: true,
@@ -970,7 +947,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     onClosePress = (visible) => {
-        this.setState({modalFiltrosVisible: visible});
+        this.setState({ modalFiltrosVisible: visible });
     }
 
     onClearSearchPress = () => {
@@ -995,28 +972,22 @@ export default class ConsultaItensEstoqueScreen extends Component {
     }
 
     onBarCodeRead = event => {
-        const {data, rawData, type} = event;
-        // console.log('ConsultaItensEstoqueScreen.onBarCodeRead: ', data);
-
+        const { data, rawData, type } = event;
         const codBar = String(data).substr(6, 6);
-        // console.log('ConsultaItensEstoqueScreen.onBarCodeRead: ', codBar);
-
         this.setState({
             codItem: codBar,
         }, this.buscaItem(codBar));
     }
 
     buscaItem = (value) => {
-        this.setState({carregando: true});
-        // console.log('ConsultaItensEstoqueScreen.buscaItem: ', value);
+        this.setState({ carregando: true });
         axios.get('/listaItens', {
             params: {
                 codItem: value,
                 buscaEstoque: 0,
             }
         }).then(response => {
-            const {data} = response;
-            // console.log('ConsultaItensEstoqueScreen.buscaItem: ', data);
+            const { data } = response;
             this.setState({
                 carregando: false,
             })
@@ -1042,7 +1013,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
         // console.log('FichaEstoqueScreen.this.state: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Consultar Produto'}
@@ -1050,7 +1021,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     iconLeftComponen={'chevron-left'}
                 />
 
-                <View style={{margin: 10, marginBottom: -10, padding: 0}}>
+                <View style={{ margin: 10, marginBottom: -10, padding: 0 }}>
 
                     <View>
                         <ItemEstoqueSelect
@@ -1062,11 +1033,11 @@ export default class ConsultaItensEstoqueScreen extends Component {
                             value={item_select}
                             enabled={true}
                         />
-                        <View style={{float: "right"}}>
+                        <View style={{ float: "right" }}>
                             <Button
                                 title=""
                                 onPress={this.onEscanearPress}
-                                buttonStyle={{width: 30, height: 30, padding: 0, marginTop: -50, marginLeft: 65}}
+                                buttonStyle={{ width: 30, height: 30, padding: 0, marginTop: -50, marginLeft: 65 }}
                                 backgroundColor={Colors.transparent}
                                 icon={{
                                     name: 'barcode',
@@ -1079,25 +1050,25 @@ export default class ConsultaItensEstoqueScreen extends Component {
 
                     {item_select && item_select.estoq_ie_codigo ? (
 
-                        <View style={{flexDirection: 'row', marginTop: -10, marginBottom: 25, marginLeft: 5}}>
-                            <View style={{flex: 3, flexDirection: 'row'}}>
-                                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                        <View style={{ flexDirection: 'row', marginTop: -10, marginBottom: 25, marginLeft: 5 }}>
+                            <View style={{ flex: 3, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                     Estoq{': '}
                                 </Text>
-                                <Text style={{fontSize: 12, marginTop: 2}}>
+                                <Text style={{ fontSize: 12, marginTop: 2 }}>
                                     {maskValorMoeda(parseFloat(qtdeEstoque))}
                                 </Text>
                             </View>
-                            <View style={{flex: 3, flexDirection: 'row'}}>
-                                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                            <View style={{ flex: 3, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                     C Médio{': '}
                                 </Text>
-                                <Text style={{fontSize: 12, marginTop: 2}}>
+                                <Text style={{ fontSize: 12, marginTop: 2 }}>
                                     {maskValorMoeda(parseFloat(custo))}
                                 </Text>
                             </View>
-                            <View style={{flex: 3, flexDirection: 'row'}}>
-                                <Text style={{fontWeight: 'bold', color: Colors.primaryDark}}>
+                            <View style={{ flex: 3, flexDirection: 'row' }}>
+                                <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }}>
                                     Total{': '}
                                 </Text>
                                 <Text>
@@ -1108,7 +1079,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     ) : null}
                 </View>
 
-                <View style={{marginHorizontal: 10, marginTop: 5, marginBottom: 0}}>
+                <View style={{ marginHorizontal: 10, marginTop: 5, marginBottom: 0 }}>
                     <TextInput
                         type="select"
                         label=""
@@ -1126,7 +1097,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     <FlatList
                         data={listaRegistrosFiliais}
                         renderItem={this.renderItemFiliais}
-                        contentContainerStyle={{paddingBottom: 80}}
+                        contentContainerStyle={{ paddingBottom: 80 }}
                         keyExtractor={registro => String(registro.estoq_ef_filial)}
                         onRefresh={this.onRefresh}
                         refreshing={refreshing}
@@ -1139,7 +1110,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     <FlatList
                         data={listaRegistrosSaidas}
                         renderItem={this.renderItemSaidas}
-                        contentContainerStyle={{paddingBottom: 80}}
+                        contentContainerStyle={{ paddingBottom: 80 }}
                         keyExtractor={registro => String(registro.estoq_me_idf) + '_' + String(registro.estoq_mei_seq)}
                         onRefresh={this.onRefresh}
                         refreshing={refreshing}
@@ -1152,7 +1123,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     <FlatList
                         data={listaRegistrosCompras}
                         renderItem={this.renderItemCompras}
-                        contentContainerStyle={{paddingBottom: 80}}
+                        contentContainerStyle={{ paddingBottom: 80 }}
                         keyExtractor={registro => String(registro.estoq_me_idf) + '_' + String(registro.estoq_mei_seq)}
                         onRefresh={this.onRefresh}
                         refreshing={refreshing}
@@ -1165,7 +1136,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     <FlatList
                         data={listaRegistrosNotas}
                         renderItem={this.renderItemNotas}
-                        contentContainerStyle={{paddingBottom: 80}}
+                        contentContainerStyle={{ paddingBottom: 80 }}
                         keyExtractor={registro => String(registro.estoq_me_idf) + '_' + String(registro.estoq_mei_seq)}
                         onRefresh={this.onRefresh}
                         refreshing={refreshing}
@@ -1178,7 +1149,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                     <FlatList
                         data={listaRegistrosFornec}
                         renderItem={this.renderItemFornec}
-                        contentContainerStyle={{paddingBottom: 80}}
+                        contentContainerStyle={{ paddingBottom: 80 }}
                         keyExtractor={registro => String(registro.estoq_ifor_fornecedor)}
                         onRefresh={this.onRefresh}
                         refreshing={refreshing}
@@ -1193,9 +1164,6 @@ export default class ConsultaItensEstoqueScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => {
-                        console.log("Modal FILTROS FECHOU.")
-                    }}
                     animationType={"slide"}
                     transparent={true}
                 >
@@ -1215,7 +1183,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                                 borderRadius: 5,
                             }}>
 
-                                <View style={{backgroundColor: Colors.primary, flexDirection: 'row'}}>
+                                <View style={{ backgroundColor: Colors.primary, flexDirection: 'row' }}>
                                     <Text style={{
                                         color: Colors.textOnPrimary,
                                         marginTop: 15,
@@ -1227,11 +1195,11 @@ export default class ConsultaItensEstoqueScreen extends Component {
                                     }}>Filtrar</Text>
                                 </View>
 
-                                <View style={{marginTop: 4, paddingVertical: 10}}>
+                                <View style={{ marginTop: 4, paddingVertical: 10 }}>
 
-                                    <ScrollView style={{height: 50, width: "100%", marginBottom: 10}}>
-                                        <View style={{flexDirection: 'row'}}>
-                                            <View style={{width: "47%", marginRight: 20}}>
+                                    <ScrollView style={{ height: 50, width: "100%", marginBottom: 10 }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <View style={{ width: "47%", marginRight: 20 }}>
                                                 <TextInput
                                                     type="date"
                                                     label="Data Início"
@@ -1245,7 +1213,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                                                     fontSize={12}
                                                 />
                                             </View>
-                                            <View style={{width: "47%"}}>
+                                            <View style={{ width: "47%" }}>
                                                 <TextInput
                                                     type="date"
                                                     label="Data Fim"
@@ -1271,8 +1239,8 @@ export default class ConsultaItensEstoqueScreen extends Component {
                                         enabled={true}
                                     />
 
-                                    <View style={{flexDirection: 'row'}}>
-                                        <View style={{width: "47%", marginRight: 20}}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <View style={{ width: "47%", marginRight: 20 }}>
                                             <TextInput
                                                 label="IDF"
                                                 id="estoq_me_idf"
@@ -1283,7 +1251,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                                                 keyboardType="numeric"
                                             />
                                         </View>
-                                        <View style={{width: "47%"}}>
+                                        <View style={{ width: "47%" }}>
                                             <TextInput
                                                 label="Número"
                                                 id="estoq_me_numero"
@@ -1302,7 +1270,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                                         onPress={() => {
                                             this.onSearchPress(!this.state.modalFiltrosVisible)
                                         }}
-                                        buttonStyle={{marginTop: 10}}
+                                        buttonStyle={{ marginTop: 10 }}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'filter',
@@ -1315,7 +1283,7 @@ export default class ConsultaItensEstoqueScreen extends Component {
                                         onPress={() => {
                                             this.onClosePress(!this.state.modalFiltrosVisible)
                                         }}
-                                        buttonStyle={{marginTop: 10}}
+                                        buttonStyle={{ marginTop: 10 }}
                                         backgroundColor={Colors.buttonPrimary}
                                         icon={{
                                             name: 'close',

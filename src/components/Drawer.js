@@ -54,10 +54,6 @@ class Drawer extends PureComponent {
             this.setState({empresa});
         })
         getPermissoes().then(permissoes => {
-
-            // const per = getTemPermissao('ESCALAVEICULOSSCREEN', permissoes);
-            // console.log('refreshUsuario: ', per);
-
             this.setState({permissoes});
         })
         getFilial().then(filial => {
@@ -89,7 +85,6 @@ class Drawer extends PureComponent {
 
         // console.log('Drawer.state: ', this.state);
         // console.log('Drawer.permissoes: ', permissoes);
-        // console.log('Drawer.getTemPermissao: ', getTemPermissao('VIAGENSTURISMOSCREEN', permissoes));
 
         return (
             <View style={{flex: 1}}>
@@ -161,6 +156,13 @@ class Drawer extends PureComponent {
                                 />
                             ) : null}
 
+                            {getTemPermissao('CHECKLISTCONFERENCIASCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Check-List - Conferência"
+                                    onPress={() => navigation.navigate('CheckListConferenciaScreen')}
+                                />
+                            ) : null}
+
                             {getTemPermissao('REFEICOESSCREEN', permissoes) ? (
                                 <DrawerItem
                                     text="Refeições"
@@ -172,6 +174,13 @@ class Drawer extends PureComponent {
                                 <DrawerItem
                                     text="Ficha de Viagem"
                                     onPress={() => navigation.navigate('FichaViagemScreen')}
+                                />
+                            ) : null}
+
+                            {empresa && getTemPermissao('ABASTECIMENTOTRANSITOSCREEN', permissoes) ? (
+                                <DrawerItem
+                                    text="Abastecimento em Trânsito"
+                                    onPress={() => navigation.navigate('AbastecimentoTransitoScreen')}
                                 />
                             ) : null}
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, ScrollView, SafeAreaView} from 'react-native';
+import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { CheckBox, Divider } from 'react-native-elements';
 import axios from 'axios';
 import StatusBar from '../components/StatusBar';
@@ -131,8 +131,6 @@ export default class SaidaEstoqueScreen extends Component {
 
 
     onMudaTipoDestino = (tipo) => {
-        // console.log('onMudaTipoDestino: ', tipo);
-
         if (!this.state.estoq_me_idf) {
             if (tipo === 'VEIC') {
                 this.setState({
@@ -298,9 +296,6 @@ export default class SaidaEstoqueScreen extends Component {
             listaItens: lista,
         };
 
-        // console.log('onSalvarRegistro: ', registro);
-        // return;
-
         let axiosMethod;
         if (estoq_me_idf) {
             axiosMethod = axios.put('/saidasEstoque/update/' + estoq_me_idf, registro);
@@ -384,7 +379,6 @@ export default class SaidaEstoqueScreen extends Component {
     }
 
     onCarregaProdutos = (listaItens) => {
-        // console.log('onCarregaProdutos: ', listaItens);
         this.setState({ listaItens });
         this.calculoTotalPedido();
     }
@@ -403,9 +397,6 @@ export default class SaidaEstoqueScreen extends Component {
     }
 
     buscaOS = (value) => {
-        // this.setState({ carregando: true });
-
-        // console.log('buscaOS: ', value);
 
         axios.get('/ordemServicos/buscaOS', {
             params: {
@@ -413,8 +404,6 @@ export default class SaidaEstoqueScreen extends Component {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('buscaOS: ', data);
 
             this.setState({
                 estoq_mei_ordem_servico: data.idf,
@@ -463,7 +452,7 @@ export default class SaidaEstoqueScreen extends Component {
         // console.log('SaidaEstoqueScreen - STATE: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Baixa do Estoque'}
@@ -478,7 +467,7 @@ export default class SaidaEstoqueScreen extends Component {
                         style={{ flex: 1, paddingVertical: 8, paddingHorizontal: 16, marginTop: 20 }}
                     >
 
-                        <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
                                     label="Controle"
@@ -502,10 +491,10 @@ export default class SaidaEstoqueScreen extends Component {
                                     enabled={false}
                                 />
                             </View>
-                        </View>
+                        </View> */}
 
 
-                        <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}>
                             <View style={{ width: "47%", marginRight: 20 }}>
                                 <TextInput
                                     type="date"
@@ -542,6 +531,18 @@ export default class SaidaEstoqueScreen extends Component {
                             maxLength={100}
                             onChange={this.onInputChange}
                             multiline={true}
+                        /> */}
+
+
+
+                        <TextInput
+                            label="Data"
+                            id="estoq_me_data"
+                            ref="estoq_me_data"
+                            value={estoq_me_data}
+                            maxLength={60}
+                            onChange={this.onInputChange}
+                            enabled={false}
                         />
 
                         <Divider />

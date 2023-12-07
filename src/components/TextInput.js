@@ -1,9 +1,9 @@
-import React, {PureComponent} from 'react';
-import {View, TextInput as TI, Picker, Platform, ActionSheetIOS} from 'react-native';
-import {Text} from 'react-native-elements';
+import React, { PureComponent } from 'react';
+import { View, TextInput as TI, Picker, Platform, ActionSheetIOS } from 'react-native';
+import { Text } from 'react-native-elements';
 import Colors from '../values/Colors';
-import {TouchableOpacity} from "react-native-gesture-handler";
-import {formatDate} from "../utils/Maskers";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { formatDate } from "../utils/Maskers";
 import DatePickerComponent from "./DatePiker";
 
 class TextInput extends PureComponent {
@@ -15,24 +15,24 @@ class TextInput extends PureComponent {
     };
 
     onChange = (text) => {
-        const {validator, masker, id, onChange} = this.props;
+        const { validator, masker, id, onChange } = this.props;
         if (masker) {
             text = masker(text);
         }
         if (validator) {
-            this.setState({valid: !!validator(text)});
+            this.setState({ valid: !!validator(text) });
         }
         onChange(id, text);
     };
 
     onChangeDate = (event, date) => {
         let selectedDate = formatDate(date);
-        const {validator, masker, id, onChange} = this.props;
+        const { validator, masker, id, onChange } = this.props;
         if (masker) {
             selectedDate = masker(selectedDate);
         }
         if (validator) {
-            this.setState({valid: !!validator(selectedDate)});
+            this.setState({ valid: !!validator(selectedDate) });
         }
         onChange(id, selectedDate);
     };
@@ -41,14 +41,14 @@ class TextInput extends PureComponent {
         if (!this.props.required)
             return true;
 
-        const {validator, value} = this.props;
+        const { validator, value } = this.props;
         let valid = false;
         if (validator) {
             valid = !!validator(value);
         } else {
             valid = !!value;
         }
-        this.setState({valid});
+        this.setState({ valid });
 
         return valid;
     }
@@ -61,7 +61,7 @@ class TextInput extends PureComponent {
             options = [], iniciarVazio, placeholder, minDate, maxDate, fontSize,
             maxLength, height, borderWidth, pickerItemsFefault, ...others
         } = this.props;
-        const {valid} = this.state;
+        const { valid } = this.state;
 
         const borderColor = valid === false ? 'red' : Colors.accent;
 
@@ -91,10 +91,7 @@ class TextInput extends PureComponent {
                     <View style={{
                         paddingBottom: 2,
                         paddingLeft: 16,
-                        // alignItems: 'center',
-                        // justifyContent: 'center',
-                        height: 20,
-                        // backgroundColor: 'red',
+                        height: 22,
                     }}>
                         <DatePickerComponent
                             dateText={dateText || null}
@@ -121,10 +118,10 @@ class TextInput extends PureComponent {
         } else if (type === "select") {
             const pickerItems = [];
             if (iniciarVazio) {
-                pickerItems.push(<Picker.Item key={0} label="Todos" value={0}/>);
+                pickerItems.push(<Picker.Item key={0} label="Todos" value={0} />);
             }
             options.forEach((i, index) => (
-                pickerItems.push(<Picker.Item key={index + 1} label={i.label} value={i.key}/>)
+                pickerItems.push(<Picker.Item key={index + 1} label={i.label} value={i.key} />)
             ))
             CustomInput = (
                 <View style={{
@@ -189,7 +186,7 @@ class TextInput extends PureComponent {
                                 onPress={() => {
                                     let optionsItems = ['Cancelar'];
                                     optionsItems = optionsItems.concat(
-                                        pickerItems?.map(({props}) => {
+                                        pickerItems?.map(({ props }) => {
                                             if (props?.label) {
                                                 return props?.label;
                                             }
@@ -206,22 +203,22 @@ class TextInput extends PureComponent {
                                         (buttonIndex) => {
                                             if (buttonIndex !== 0) {
                                                 this.onChange(`${buttonIndex}`)
-                                                this.setState({selected: optionsItems[buttonIndex]})
+                                                this.setState({ selected: optionsItems[buttonIndex] })
                                             }
 
                                         },
                                     );
                                 }}>
                                 <View
-                                numberOfLines={1}
-                                style={{
-                                    height: height ? height : 25,
-                                    justifyContent: 'center',
-                                }}>
-                                <Text style={{textAlign: 'left', fontSize}}>
-                                    {this?.state?.selected || pickerItems[pickerItemsFefault || 0]?.props?.label || 'Selecione'}
-                                </Text>
-                            </View>
+                                    numberOfLines={1}
+                                    style={{
+                                        height: height ? height : 25,
+                                        justifyContent: 'center',
+                                    }}>
+                                    <Text style={{ textAlign: 'left', fontSize }}>
+                                        {this?.state?.selected || pickerItems[pickerItemsFefault || 0]?.props?.label || 'Selecione'}
+                                    </Text>
+                                </View>
                             </TouchableOpacity>
 
                         }
@@ -258,7 +255,6 @@ class TextInput extends PureComponent {
                         placeholder={placeholder}
                         placeholderTextColor={Colors.textHintDark}
                         value={strValue}
-                        editable={editable}
                         onChangeText={this.onChange}
                         autoCapitalize={autoCapitalize}
                         keyboardType={keyboardType}
@@ -280,17 +276,17 @@ class TextInput extends PureComponent {
                             borderWidth: 0,
                             borderRadius: 2,
                             ...style
-                        }}/>
+                        }} />
                 </View>
             )
         }
 
         return (
-            <View style={{width: '100%'}}>
+            <View style={{ width: '100%' }}>
 
                 {CustomInput}
 
-                <Text style={{color: 'red'}}>{valid === false ? errorMessage : ''}</Text>
+                <Text style={{ color: 'red' }}>{valid === false ? errorMessage : ''}</Text>
             </View>
         )
     }

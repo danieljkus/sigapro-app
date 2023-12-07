@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import {View, ScrollView, Text, FlatList, TouchableOpacity, Modal, Keyboard, SafeAreaView} from 'react-native';
+import { View, ScrollView, Text, FlatList, TouchableOpacity, Modal, Keyboard, SafeAreaView } from 'react-native';
 import { Card, Divider, CheckBox } from 'react-native-elements';
 import StatusBar from '../components/StatusBar';
 import TextInput from '../components/TextInput';
@@ -11,7 +11,9 @@ import { maskDigitarVlrMoeda, maskValorMoeda, vlrStringParaFloat } from '../util
 import ItemEstoqueSelect from '../components/ItemEstoqueSelect';
 import axios from 'axios';
 import HeaderComponent from "../components/HeaderComponent";
+import moment from 'moment';
 
+const DATE_FORMAT = 'DD/MM/YYYY';
 
 const RegistroItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
     return (
@@ -109,27 +111,32 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             listaItens: props.navigation.state.params.listaItens ? props.navigation.state.params.listaItens : [],
 
             ...props.navigation.state.params.registro,
+
+            estoq_sf_controle: props.navigation.state.params.registro.estoq_sf_controle ? props.navigation.state.params.registro.estoq_sf_controle : 0,
+            estoq_sf_data: props.navigation.state.params.registro.estoq_sf_data ? moment(props.navigation.state.params.registro.estoq_sf_data).format('DD/MM/YYYY HH:mm') : moment(new Date()).format('DD/MM/YYYY HH:mm'),
+            estoq_sf_situacao: props.navigation.state.params.registro.estoq_sf_situacao ? props.navigation.state.params.registro.estoq_sf_situacao : 'G',
+            estoq_sf_obs: props.navigation.state.params.registro.estoq_sf_obs ? props.navigation.state.params.registro.estoq_sf_obs : '',
         }
     }
 
     componentDidMount() {
+        // console.log('estoq_sf_data: ', this.props.navigation.state.params.registro.estoq_sf_data);
+
+        // this.setState({
+        //     estoq_sf_data: 'ssssssssssssssssss' //this.props.navigation.state.params.registro.estoq_sf_data
+        // });
+
         this.calculoTotalPedido();
     }
 
     componentWillUnmount() {
-        if (this.props.navigation.state.params.onCarregaProdutos) {
-            this.props.navigation.state.params.onCarregaProdutos(this.state.listaItens);
-        }
-    }
-
-    onFecharTela = () => {
-        this.props.navigation.goBack(null);
+        // if (this.props.navigation.state.params.onCarregaProdutos) {
+        //     this.props.navigation.state.params.onCarregaProdutos(this.state.listaItens);
+        // }
     }
 
 
     onMudaTipoSaida = (tipo) => {
-        // console.log('onMudaTipoSaida: ', tipo);
-
         if (tipo === 'S') {
             this.setState({
                 estoq_sfi_situacao: 'S',
@@ -184,13 +191,8 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
         }
     }
 
-    onFormSubmit = (event) => {
-        this.onSalvarRegistro();
-    }
-
 
     onRegistroPress = (estoq_sfi_seq, estoq_sfi_item, estoq_sfi_qtde_solicitada, estoq_sfi_qtde_atendida, estoq_sfi_situacao, estoq_sfi_obs) => {
-        // console.log('-------------onRegistroPress---------------');
         this.setState({
             estoq_sfi_seq,
             codItem: String(estoq_sfi_item),
@@ -205,7 +207,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onRegistroLongPress = (estoq_sfi_seq) => {
-        // console.log('-------------onRegistroLongPress---------------');
         if (!this.state.vendaEnviada) {
             Alert.showConfirm("Deseja excluir este item?",
                 { text: "Cancelar" },
@@ -219,8 +220,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
     }
 
     onExcluirRegistro = (estoq_sfi_seq) => {
-        // console.log('-------------onExcluirRegistro---------------');
-
         const listaItens = [...this.state.listaItens];
         const index = listaItens.findIndex(registro => registro.estoq_sfi_seq === estoq_sfi_seq);
 
@@ -250,7 +249,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onFormIncluirProduto = (event) => {
-        // console.log('-------------onFormIncluirProduto---------------');
         if ((this.state.estoq_sfi_qtde_solicitada == '') || (vlrStringParaFloat(this.state.estoq_sfi_qtde_solicitada) <= 0)) {
             Alert.showAlert('Informe a Quantidade Solicitada');
             return;
@@ -264,24 +262,19 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             return;
         }
 
-        this.onGravar();
+        this.onGravarItem();
     }
 
-    onGravar = () => {
-        // console.log('-----------------onGravar-----------------------');
-
+    onGravarItem = () => {
         const { listaItens } = this.state;
-
         const iIndItem = listaItens.findIndex(registro => registro.estoq_sfi_seq === this.state.estoq_sfi_seq);
-        if (iIndItem >= 0) {
 
+        if (iIndItem >= 0) {
             listaItens[iIndItem].estoq_sfi_qtde_solicitada = vlrStringParaFloat(this.state.estoq_sfi_qtde_solicitada);
             listaItens[iIndItem].estoq_sfi_qtde_atendida = vlrStringParaFloat(this.state.estoq_sfi_qtde_atendida);
             listaItens[iIndItem].estoq_sfi_obs = vlrStringParaFloat(this.state.estoq_sfi_obs);
             listaItens[iIndItem].estoq_sfi_situacao = this.state.estoq_sfi_situacao;
-
         } else {
-
             listaItens.push({
                 estoq_sfi_seq: listaItens.length + 1,
                 estoq_sfi_item: this.state.item_select.estoq_ie_codigo,
@@ -291,7 +284,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
                 estoq_sfi_situacao: this.state.estoq_sfi_situacao,
                 estoq_sfi_obs: this.state.estoq_sfi_obs,
             })
-
         }
 
         this.setState({
@@ -316,7 +308,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     calculoTotalPedido = () => {
-        // console.log('-------------calculoTotalPedido---------------');
         const { listaItens } = this.state;
         let qtdeSol = 0;
         let qtdeAten = 0;
@@ -351,14 +342,12 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onSomarQtdeSol = () => {
-        // console.log('-------------onSomarQtde---------------');
         let { estoq_sfi_qtde_solicitada } = this.state;
         estoq_sfi_qtde_solicitada = maskValorMoeda(parseFloat(estoq_sfi_qtde_solicitada) + 1);
         this.setState({ estoq_sfi_qtde_solicitada });
     }
 
     onDiminuirQtdeSol = () => {
-        // console.log('-------------onDiminuirQtde---------------');
         let { estoq_sfi_qtde_solicitada } = this.state;
         if (vlrStringParaFloat(estoq_sfi_qtde_solicitada) > 1) {
             estoq_sfi_qtde_solicitada = maskValorMoeda(vlrStringParaFloat(estoq_sfi_qtde_solicitada) - 1);
@@ -368,14 +357,12 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
     onSomarQtdeAten = () => {
-        // console.log('-------------onSomarQtde---------------');
         let { estoq_sfi_qtde_atendida } = this.state;
         estoq_sfi_qtde_atendida = maskValorMoeda(parseFloat(estoq_sfi_qtde_atendida) + 1);
         this.setState({ estoq_sfi_qtde_atendida });
     }
 
     onDiminuirQtdeAten = () => {
-        // console.log('-------------onDiminuirQtde---------------');
         let { estoq_sfi_qtde_atendida } = this.state;
         if (vlrStringParaFloat(estoq_sfi_qtde_atendida) >= 1) {
             estoq_sfi_qtde_atendida = maskValorMoeda(vlrStringParaFloat(estoq_sfi_qtde_atendida) - 1);
@@ -394,11 +381,7 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
     onBarCodeRead = event => {
         const { data, rawData, type } = event;
-        // console.log('FichaEstoqueScreen.onBarCodeRead: ', data);
-
         const codBar = String(data).substr(6, 6);
-        // console.log('FichaEstoqueScreen.onBarCodeRead: ', codBar);
-
         this.setState({
             codItem: codBar,
         }, this.buscaItem(codBar));
@@ -406,7 +389,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
     buscaItem = (value) => {
         this.setState({ carregando: true });
-        // console.log('FichaEstoqueScreen.buscaItem: ', value);
         axios.get('/listaItens', {
             params: {
                 codItem: value,
@@ -414,7 +396,6 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
             }
         }).then(response => {
             const { data } = response;
-            // console.log('FichaEstoqueScreen.buscaItem: ', data);
             this.setState({
                 carregando: false,
             })
@@ -430,15 +411,59 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
 
 
+    onFormSubmit = (event) => {
+        if ((!this.state.listaItens) || (this.state.listaItens.length === 0)) {
+            Alert.showAlert('Inclua algum Item.');
+            return;
+        }
+        this.onSalvarRegistro();
+    }
+
+    onSalvarRegistro = () => {
+        const { listaItens, estoq_sf_controle, estoq_sf_data, estoq_sf_situacao, estoq_sf_obs } = this.state;
+
+        const registro = {
+            estoq_sf_controle,
+            estoq_sf_data: moment(estoq_sf_data, DATE_FORMAT).format("YYYY-MM-DD HH:mm"),
+            estoq_sf_situacao: estoq_sf_situacao ? estoq_sf_situacao : 'G',
+            estoq_sf_obs,
+
+            listaItens,
+        };
+
+        this.setState({ salvado: true });
+
+        let axiosMethod;
+        if (estoq_sf_controle) {
+            axiosMethod = axios.put('/solicitacoesEstoqueFiliais/update/' + estoq_sf_controle, registro);
+        } else {
+            axiosMethod = axios.post('/solicitacoesEstoqueFiliais/store', registro);
+        }
+        axiosMethod.then(response => {
+            this.props.navigation.goBack(null);
+            if (this.props.navigation.state.params.onRefresh) {
+                this.props.navigation.state.params.onRefresh();
+            }
+        }).catch(ex => {
+            this.setState({ salvado: false });
+            console.warn(ex);
+        })
+
+    }
+
+
+
+
+
     render() {
-        const { estoq_sfi_seq, estoq_sfi_item, estoq_sfi_qtde_solicitada, estoq_sfi_qtde_atendida, estoq_sfi_situacao, estoq_sfi_obs,
+        const { estoq_sf_data, estoq_sf_obs, estoq_sfi_seq, estoq_sfi_item, estoq_sfi_qtde_solicitada, estoq_sfi_qtde_atendida, estoq_sfi_obs,
             checkedSolicitado, checkedAtendido, checkedPendente, checkedCancelado,
             listaItens, item_select, codItem, refreshing, loading, salvado } = this.state;
 
         // console.log('SolicitacaoEstoqueItensScreen STATE: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Itens da Solicitação'}
@@ -455,9 +480,31 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
 
                         <View style={{ flex: 1, backgroundColor: Colors.background }}>
 
-                            <View style={{ paddingHorizontal: 10, marginTop: 20 }}>
+                            <View style={{ paddingHorizontal: 10, marginTop: 10, marginBottom: 10 }}>
 
-                                <View>
+                                <TextInput
+                                    label="Data da Solicitação"
+                                    id="estoq_sf_data"
+                                    ref="estoq_sf_data"
+                                    value={estoq_sf_data}
+                                    maxLength={60}
+                                    onChange={this.onInputChange}
+                                    enabled={false}
+                                />
+
+                                <TextInput
+                                    label="Observação"
+                                    id="estoq_sf_obs"
+                                    ref="estoq_sf_obs"
+                                    value={estoq_sf_obs}
+                                    maxLength={100}
+                                    onChange={this.onInputChange}
+                                    multiline={true}
+                                />
+
+                                <View style={{ height: 1, backgroundColor: Colors.grayBackground }} />
+
+                                <View style={{ marginTop: 10 }}>
                                     <ItemEstoqueSelect
                                         label="Item"
                                         id="item_select"
@@ -620,75 +667,40 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
                                 </View>
 
 
-                                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                                    <View style={{ flex: 2, marginRight: 2 }}>
-                                        <Button
-                                            title="GRAVAR"
-                                            loading={loading}
-                                            onPress={this.onFormIncluirProduto}
-                                            buttonStyle={{ height: 40, marginTop: 15, marginHorizontal: 10 }}
-                                            backgroundColor={Colors.buttonSecondary}
-                                            textStyle={{
-                                                fontWeight: 'bold',
-                                                fontSize: 15
-                                            }}
-                                            icon={{
-                                                name: 'check',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    </View>
-                                    <View style={{ flex: 2, marginLeft: 2 }}>
-                                        <Button
-                                            title="FECHAR"
-                                            onPress={() => { this.onFecharTela() }}
-                                            buttonStyle={{ height: 40, marginTop: 15, marginHorizontal: 10 }}
-                                            backgroundColor={Colors.buttonPrimary}
-                                            icon={{
-                                                name: 'sign-out',
-                                                type: 'font-awesome',
-                                                color: Colors.textOnPrimary
-                                            }}
-                                        />
-                                    </View>
+                                <View style={{}}>
+                                    <Button
+                                        title="GRAVAR ITEM"
+                                        loading={loading}
+                                        onPress={this.onFormIncluirProduto}
+                                        buttonStyle={{ height: 40, marginTop: 15, marginHorizontal: 10 }}
+                                        backgroundColor={Colors.buttonSecondary}
+                                        textStyle={{
+                                            fontWeight: 'bold',
+                                            fontSize: 15
+                                        }}
+                                        icon={{
+                                            name: 'check',
+                                            type: 'font-awesome',
+                                            color: Colors.textOnPrimary
+                                        }}
+                                    />
                                 </View>
-
-
                             </View>
 
+                            <View style={{ height: 1, backgroundColor: Colors.grayBackground }} />
 
                             {((!listaItens) || (listaItens.length === 0))
                                 ? null : (
                                     <View style={{}}>
-                                        <View style={{ backgroundColor: Colors.dividerDark, marginTop: 20, marginBottom: 5 }}>
+                                        <View style={{ marginTop: 5, marginBottom: 0 }}>
                                             <Text style={{
-                                                color: Colors.primaryLight,
+                                                color: Colors.primary,
                                                 textAlign: 'center',
-                                                fontSize: 20,
+                                                fontSize: 25,
                                                 fontWeight: 'bold',
                                                 height: 30,
+                                                paddingTop: 0,
                                             }}>Lista dos Itens</Text>
-                                        </View>
-
-                                        <View style={{ paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row' }} >
-                                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
-                                                <Text style={{ fontWeight: 'bold' }} >
-                                                    Qtde Itens: {' '}
-                                                </Text>
-                                                <Text>
-                                                    {this.state.estoq_me_qtde}
-                                                </Text>
-                                            </Text>
-
-                                            <Text style={{ color: Colors.textSecondaryDark, fontSize: 17 }} >
-                                                <Text style={{ fontWeight: 'bold' }} >
-                                                    Valor Total: {' '}
-                                                </Text>
-                                                <Text>
-                                                    {maskValorMoeda(this.state.estoq_me_total)}
-                                                </Text>
-                                            </Text>
                                         </View>
 
                                         <FlatList
@@ -705,14 +717,34 @@ export default class SolicitacaoEstoqueItensScreen extends Component {
                         </View>
                     </View>
 
-
-
-                    <ProgressDialog
-                        visible={salvado}
-                        title="SIGA PRO"
-                        message="Gravando. Aguarde..."
-                    />
                 </ScrollView>
+
+
+                <View style={{ margin: 5, marginTop: 10 }}>
+                    <Button
+                        title="SALVAR SOLICITAÇÃO"
+                        loading={loading}
+                        onPress={this.onFormSubmit}
+                        buttonStyle={{ height: 45 }}
+                        backgroundColor={Colors.primaryDark}
+                        textStyle={{
+                            fontWeight: 'bold',
+                            fontSize: 15
+                        }}
+                        icon={{
+                            name: 'check',
+                            type: 'font-awesome',
+                            color: Colors.textOnPrimary
+                        }}
+                    />
+                </View>
+
+
+                <ProgressDialog
+                    visible={salvado}
+                    title="SIGA PRO"
+                    message="Gravando. Aguarde..."
+                />
             </SafeAreaView>
         )
     }

@@ -327,7 +327,6 @@ export default class PneusVeiculosScreen extends Component {
                 timeout: 30000,
             })
                 .then(location => {
-                    // console.log('onCheckinPress1: ', location);
                     const registro = {
                         pneus_os_veiculo: this.state.veiculo_select.codVeic,
                         pneus_os_latitude: location.latitude,

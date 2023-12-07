@@ -26,7 +26,7 @@ import HeaderComponent from "../components/HeaderComponent";
 const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }] } : undefined;
 
 
-const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress }) => {
+const CardViewItem = ({ registro }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
             <View style={{ borderLeftWidth: 5, borderLeftColor: '#10734a' }}>
@@ -133,15 +133,10 @@ export default class OrdemServicoPecasScreen extends Component {
 
         axios.get('/ordemServicos/listaPecas/' + this.state.man_os_idf)
             .then(response => {
-                const novosRegistros = pagina === 1
-                    ? response.data.data
-                    : listaRegistros.concat(response.data.data);
-                const total = response.data.total;
                 this.setState({
-                    listaRegistros: novosRegistros,
+                    listaRegistros: response.data,
                     refreshing: false,
                     carregando: false,
-                    carregarMais: novosRegistros.length < total
                 })
             }).catch(ex => {
                 console.warn('Erro Busca:', ex);
@@ -180,8 +175,6 @@ export default class OrdemServicoPecasScreen extends Component {
         return (
             <CardViewItem
                 registro={item}
-                onRegistroPress={this.onRegistroPress}
-                onRegistroLongPress={this.onRegistroLongPress}
             />
         )
     }
@@ -199,7 +192,7 @@ export default class OrdemServicoPecasScreen extends Component {
         // console.log('OrdemServicoPreventivoScreen: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Peças Utilizadas'}

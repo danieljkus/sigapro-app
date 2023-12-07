@@ -78,9 +78,6 @@ class VeiculosSelect extends PureComponent {
 
             request.then(response => {
                 const {data} = response;
-
-                // console.log('VEICULO: ', data);
-
                 if (data.msgErro === 'OK') {
                     this.setState({
                         msgErro: '',
@@ -111,7 +108,7 @@ class VeiculosSelect extends PureComponent {
             })
 
         } catch (error) {
-            console.log(error.response);
+            // console.log(error.response);
             this.setState({
                 carregando: false,
             });

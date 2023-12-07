@@ -121,7 +121,6 @@ export default class MedicoesTanqueArlaScreen extends Component {
     getListaRegistros = () => {
         const { filial, pagina, listaRegistros } = this.state;
         this.setState({ carregando: true });
-        // console.log('getListaRegistros: ', filial);
 
         axios.get('/saidasEstoque', {
             params: {
@@ -156,14 +155,10 @@ export default class MedicoesTanqueArlaScreen extends Component {
     }
 
     onRegistroPress = (estoq_me_idf) => {
-        // console.log('onRegistroPress: ', estoq_me_idf);
-
         this.setState({ carregarRegistro: true });
         axios.get('/saidasEstoque/show/' + estoq_me_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
-
-                // console.log('onRegistroPress: ', response.data);
 
                 this.props.navigation.navigate('SaidaDieselScreen', {
                     registro: {
@@ -188,8 +183,6 @@ export default class MedicoesTanqueArlaScreen extends Component {
     }
 
     onAddPress = () => {
-        // console.log('onAddPress');
-
         this.props.navigation.navigate('SaidaDieselScreen', {
             registro: {
                 estoq_me_idf: 0,

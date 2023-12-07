@@ -44,11 +44,25 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
                     <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 0, fontSize: 13, flexDirection: 'row' }}>
                         <View style={{ flex: 2, flexDirection: 'row' }}>
                             <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
+                                Filial Solicitante {': '}
+                            </Text>
+                            <Text>
+                                {registro.estoq_sf_filial_solicitante}
+                            </Text>
+                        </View>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                        <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                                 Filial Solicitada {': '}
                             </Text>
                             <Text>
                                 {registro.estoq_sf_filial_solicitada} {registro.estoq_sf_setor_solicitada ? ' / ' + registro.estoq_sf_setor_solicitada : ''}
                             </Text>
+                        </View>
+                    </View>
+
+                    <View style={{ paddingLeft: 10, marginBottom: 5, marginTop: 0, fontSize: 13, flexDirection: 'row' }}>
+                        <View style={{ flex: 2, flexDirection: 'row' }}>
+
                         </View>
                         <View style={{ flex: 2, flexDirection: 'row' }}>
                             <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
@@ -60,14 +74,14 @@ const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onFinali
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', paddingLeft: 10, paddingBottom: 5 }}>
+                    {/* <View style={{ flexDirection: 'row', paddingLeft: 10, paddingBottom: 5 }}>
                         <Text style={{ fontWeight: 'bold', color: Colors.primaryDark }} >
                             Tipo Solicitação {': '}
                         </Text>
                         <Text style={{ marginRight: 50 }}>
                             {registro.compras_sugtip_descricao}
                         </Text>
-                    </View>
+                    </View> */}
 
                     {registro.estoq_sf_obs ? (
                         <View style={{ flexDirection: 'row', paddingLeft: 10, paddingBottom: 5 }}>
@@ -190,16 +204,11 @@ export default class SolicitacoesEstoqueScreen extends Component {
     }
 
     onRegistroPress = (estoq_sf_controle) => {
-        // console.log('onRegistroPress: ', estoq_sf_controle);
-
         this.setState({ carregarRegistro: true });
         axios.get('/solicitacoesEstoqueFiliais/show/' + estoq_sf_controle)
             .then(response => {
                 this.setState({ carregarRegistro: false });
-
-                // console.log('onRegistroPress: ', response.data);
-
-                this.props.navigation.navigate('SolicitacaoEstoqueScreen', {
+                this.props.navigation.navigate('SolicitacaoEstoqueItensScreen', {
                     registro: {
                         ...response.data,
                     },
@@ -213,9 +222,7 @@ export default class SolicitacoesEstoqueScreen extends Component {
     }
 
     onAddPress = () => {
-        // console.log('onAddPress');
-
-        this.props.navigation.navigate('SolicitacaoEstoqueScreen', {
+        this.props.navigation.navigate('SolicitacaoEstoqueItensScreen', {
             registro: {
                 estoq_sf_controle: 0,
 

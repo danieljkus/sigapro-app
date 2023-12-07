@@ -127,7 +127,6 @@ export default class SaidasEstoqueScreen extends Component {
                     }
                 }).then(response => {
                     const { data } = response;
-                    // console.log('FiliaisSelect.componentDidMount: ', data);
                     this.setState({
                         filialSelect: {
                             adm_fil_codigo: filial,
@@ -151,7 +150,6 @@ export default class SaidasEstoqueScreen extends Component {
         const state = {};
         state[id] = value;
         this.setState(state);
-        // console.log('onInputChangeFilial: ', state);
         if (value) {
             this.setState({
                 estoq_mei_filial: value.adm_fil_codigo
@@ -194,14 +192,10 @@ export default class SaidasEstoqueScreen extends Component {
     }
 
     onRegistroPress = (estoq_me_idf) => {
-        // console.log('onRegistroPress: ', estoq_me_idf);
-
         this.setState({ carregarRegistro: true });
         axios.get('/saidasEstoque/show/' + estoq_me_idf)
             .then(response => {
                 this.setState({ carregarRegistro: false });
-
-                // console.log('onRegistroPress: ', response.data);
 
                 let tipo_destino = '';
                 let codVeiculo = '';
@@ -229,7 +223,7 @@ export default class SaidasEstoqueScreen extends Component {
                     cod_ccdestino = response.data.listaItens[0].estoq_mei_cc_dest;
                 }
 
-                this.props.navigation.navigate('SaidaEstoqueScreen', {
+                this.props.navigation.navigate('SaidaEstoqueItensScreen', {
                     registro: {
                         ...response.data,
                         checkedVeiculo: response.data.listaItens[0].estoq_mei_veic_dest ? true : false,
@@ -255,9 +249,7 @@ export default class SaidasEstoqueScreen extends Component {
     }
 
     onAddPress = () => {
-        // console.log('onAddPress');
-
-        this.props.navigation.navigate('SaidaEstoqueScreen', {
+        this.props.navigation.navigate('SaidaEstoqueItensScreen', {
             registro: {
                 estoq_me_idf: 0,
                 estoq_me_data: '', //moment(new Date()).format('DD/MM/YYYY'),
@@ -413,7 +405,6 @@ export default class SaidasEstoqueScreen extends Component {
                 {/* ----------------------------- */}
                 <Modal
                     visible={this.state.modalFiltrosVisible}
-                    onRequestClose={() => { console.log("Modal FILTROS FECHOU.") }}
                     animationType={"slide"}
                     transparent={true}
                 >

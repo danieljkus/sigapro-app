@@ -163,12 +163,10 @@ export default class FichaEstoqueScreen extends Component {
     }
 
     onInputChangeItem = (id, value) => {
-        // console.log('onInputChangeItem')
         const state = {};
         state[id] = value;
         this.setState(state);
         if (value) {
-            // console.log('onInputChangeItem OK ')
             this.setState({
                 codItem: value.estoq_ie_codigo,
                 estoq_ie_descricao: value.estoq_ie_descricao,
@@ -180,7 +178,6 @@ export default class FichaEstoqueScreen extends Component {
                 this.getListaRegistros()
             });
         } else {
-            // console.log('onInputChangeItem NÂO')
             this.setState({
                 // codItem: '',
                 // estoq_ie_descricao: '',
@@ -199,15 +196,11 @@ export default class FichaEstoqueScreen extends Component {
     }
 
     buscaEstoque = (codItem) => {
-        // console.log('buscaEstoque')
-
         axios.get('/estoque/buscaEstoque', {
             params: {
                 codItem,
             }
         }).then(response => {
-            // console.log('buscaEstoque: ', response.data);
-
             this.setState({
                 qtdeEstoque: response.data.qtde,
                 custo: response.data.custo,
@@ -223,8 +216,6 @@ export default class FichaEstoqueScreen extends Component {
     getListaRegistros = () => {
         const {item_select, pagina, listaRegistros} = this.state;
 
-        // console.log('getListaRegistros')
-
         axios.get('/estoque/fichaEstoque', {
             params: {
                 page: pagina,
@@ -232,8 +223,6 @@ export default class FichaEstoqueScreen extends Component {
                 codItem: item_select.estoq_ie_codigo,
             }
         }).then(response => {
-            // console.log('getListaRegistros: ', response.data.data)
-
             const novosRegistros = pagina === 1
                 ? response.data.data
                 : listaRegistros.concat(response.data.data);
@@ -316,11 +305,7 @@ export default class FichaEstoqueScreen extends Component {
 
     onBarCodeRead = event => {
         const {data, rawData, type} = event;
-        // console.log('FichaEstoqueScreen.onBarCodeRead: ', data);
-
         const codBar = String(data).substr(6, 6);
-        // console.log('FichaEstoqueScreen.onBarCodeRead: ', codBar);
-
         this.setState({
             codItem: codBar,
         }, this.buscaItem(codBar));
@@ -328,7 +313,6 @@ export default class FichaEstoqueScreen extends Component {
 
     buscaItem = (value) => {
         this.setState({carregando: true});
-        // console.log('FichaEstoqueScreen.buscaItem: ', value);
         axios.get('/listaItens', {
             params: {
                 codItem: value,
@@ -336,7 +320,6 @@ export default class FichaEstoqueScreen extends Component {
             }
         }).then(response => {
             const {data} = response;
-            // console.log('FichaEstoqueScreen.buscaItem: ', data);
             this.setState({
                 carregando: false,
             })

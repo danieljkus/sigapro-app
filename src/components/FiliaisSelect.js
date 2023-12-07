@@ -53,10 +53,6 @@ class FiliaisSelect extends PureComponent {
 
     componentDidUpdate(propsAnterior, stateAnterior) {
         const { codFilial, onChange, id } = this.props;
-
-        // console.log('componentDidUpdate.this.props: ', this.props);
-        // console.log('componentDidUpdate.propsAnterior: ', propsAnterior);
-
         if (codFilial !== propsAnterior.codFilial) {
             this.setState({
                 codFilial,
@@ -69,7 +65,6 @@ class FiliaisSelect extends PureComponent {
     }
 
     componentDidMount() {
-        // console.log('FiliaisSelect.componentDidMount.this.props: ', this.props);
         if (this.props) {
             this.setState({
                 pneus_mov_filial: this.props.adm_fil_codigo,
@@ -86,7 +81,6 @@ class FiliaisSelect extends PureComponent {
         state[id] = value;
         this.setState(state);
 
-        // console.log('FiliaisSelect.onInputChange: ', state);
         clearTimeout(this.buscaRegistrosId);
         this.buscaRegistrosId = setTimeout(() => {
             this.buscaRegistros(value);
@@ -103,8 +97,6 @@ class FiliaisSelect extends PureComponent {
             }
         }).then(response => {
             const { data } = response;
-
-            // console.log('FiliaisSelect.buscaRegistros: ', data);
 
             if (data.length > 0) {
                 onChange(id, data[0])
@@ -274,7 +266,7 @@ class FiliaisSelect extends PureComponent {
                             onPress={() => {
                                 this.onAbrirBuscaModal(true)
                             }}
-                            buttonStyle={{width: 30, padding: 0, paddingTop: 20, marginLeft: -18}}
+                            buttonStyle={{ width: 30, padding: 0, paddingTop: 20, marginLeft: -18 }}
                             backgroundColor={Colors.transparent}
                             icon={{
                                 name: 'search',
@@ -312,13 +304,10 @@ class FiliaisSelect extends PureComponent {
                 <Modal
                     transparent={false}
                     visible={this.state.modalBuscaVisible}
-                    onRequestClose={() => {
-                        console.log("Modal FECHOU.")
-                    }}
                     animationType={"slide"}
                 >
 
-                    <SafeAreaView style={{backgroundColor: Colors.background, flex: 1}}>
+                    <SafeAreaView style={{ backgroundColor: Colors.background, flex: 1 }}>
                         <HeaderComponent
                             color={'white'}
                             titleCenterComponent={'Buscar Filial'}
@@ -331,8 +320,8 @@ class FiliaisSelect extends PureComponent {
                             placeholder="Pesquisar"
                             lightTheme={true}
                             onChangeText={this.onBuscaNomeChange}
-                            inputStyle={{backgroundColor: 'white'}}
-                            containerStyle={{backgroundColor: Colors.primaryLight}}
+                            inputStyle={{ backgroundColor: 'white' }}
+                            containerStyle={{ backgroundColor: Colors.primaryLight }}
                             clearIcon={true}
                         />
 
@@ -342,14 +331,14 @@ class FiliaisSelect extends PureComponent {
                         }}>
 
                             <ScrollView
-                                style={{flex: 1,}}
+                                style={{ flex: 1, }}
                                 keyboardShouldPersistTaps="always"
                             >
-                                <View style={{marginTop: 4}}>
+                                <View style={{ marginTop: 4 }}>
                                     <FlatList
                                         data={listaRegistros}
                                         renderItem={this.renderItem}
-                                        contentContainerStyle={{paddingBottom: 100}}
+                                        contentContainerStyle={{ paddingBottom: 100 }}
                                         keyExtractor={registro => registro.adm_fil_codigo}
                                         onRefresh={this.onRefresh}
                                         refreshing={refreshing}
