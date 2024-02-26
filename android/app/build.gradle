@@ -200,6 +200,19 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
+    implementation ("androidx.core:core-ktx:1.6.0"){
+        force = true
+    }
+
+    implementation ("androidx.annotation:annotation-experimental:1.1.0"){
+        force = true
+    }
+
+    implementation("androidx.core:core:1.6.0") {
+        force = true
+    }
+
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }
