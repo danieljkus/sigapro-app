@@ -43,9 +43,14 @@ export default class AutorizacaoDespesaScreen extends Component {
             modalZap: false,
 
             filialSelect: null,
+            categoriaSelect: [],
 
             ...props.navigation.state.params.registro,
         }
+    }
+
+    componentDidMount() {
+        this.buscaCategorias();
     }
 
     onInputChange = (id, value) => {
@@ -136,14 +141,45 @@ export default class AutorizacaoDespesaScreen extends Component {
     }
 
 
+    buscaCategorias = () => {
+        this.setState({ categoriaSelect: [] });
+        axios.get('/autorzacaoDespesas/listaCategorias')
+            .then(response => {
+                const { data } = response;
+                const categoriaSelect = data.map(regList => {
+                    return {
+                        key: regList.fin_adc_codigo,
+                        label: regList.fin_adc_descricao
+                    }
+                });
+                this.setState({
+                    categoriaSelect,
+                    // fin_ad_categoria: categoriaSelect.length > 0 ? categoriaSelect[0].key : 0,
+                })
+            }).catch(error => {
+                console.warn(error.response);
+            })
+    }
+
+
+
+
+
+
+
+
+
+
     render() {
         const {
             loading, salvado, filialSelect, ctaFinancSelect,
             fin_ad_documento, fin_ad_descricao_aut, fin_ad_autorizado_por, fin_ad_repetir, fin_ad_filial,
-            fin_ad_conta_fin, fin_ad_valor, fin_ad_tipo, fin_ad_situacao, fin_ad_idf_lanc
+            fin_ad_conta_fin, fin_ad_valor, fin_ad_tipo, fin_ad_situacao, fin_ad_idf_lanc,
+            fin_ad_categoria, categoriaSelect
         } = this.state;
 
-        // console.log('AutorizacaoDespesaScreen: ', this.state);
+        // console.log('AutorizacaoDespesaScreen: ', this.state.fin_ad_categoria);
+        // console.log('AutorizacaoDespesaScreen: ', this.state.categoriaSelect);
 
         return (
             <SafeAreaView style={{ backgroundColor: '#1F829C', flex: 1 }}>
@@ -175,13 +211,25 @@ export default class AutorizacaoDespesaScreen extends Component {
                             ) : null}
 
                             <TextInput
+                                label="Categoria"
+                                type="select"
+                                id="fin_ad_categoria"
+                                ref="fin_ad_categoria"
+                                options={categoriaSelect}
+                                onChange={this.onInputChange}
+                                required={true}
+                                errorMessage="Selecione uma Categoria"
+                                value={fin_ad_categoria}
+                            />
+
+                            <TextInput
                                 label="Descrição"
                                 id="fin_ad_descricao_aut"
                                 ref="fin_ad_descricao_aut"
                                 value={fin_ad_descricao_aut}
                                 onChange={this.onInputChange}
                                 multiline={true}
-                                maxLength={100}
+                                maxLength={240}
                                 style={{
                                     height: 70
                                 }}
@@ -345,7 +393,7 @@ export default class AutorizacaoDespesaScreen extends Component {
 
                     </ScrollView>
 
-                    {fin_ad_situacao === 'P' && !fin_ad_idf_lanc ? (
+                    {(fin_ad_situacao === 'A' || fin_ad_situacao === 'P') && !fin_ad_idf_lanc ? (
                         <Button
                             title="SALVAR"
                             loading={loading}

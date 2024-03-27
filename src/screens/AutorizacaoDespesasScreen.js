@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Linking, SafeAreaView} from 'react-native';
+import { View, Text, FlatList, Platform, TouchableOpacity, ActivityIndicator, Linking, SafeAreaView } from 'react-native';
 const { OS } = Platform;
 
 import moment from 'moment';
@@ -19,134 +19,152 @@ const SwitchStyle = OS === 'ios' ? { transform: [{ scaleX: .7 }, { scaleY: .7 }]
 const CardViewItem = ({ registro, onRegistroPress, onRegistroLongPress, onWhatsAppPress }) => {
     return (
         <Card containerStyle={{ padding: 0, margin: 0, marginVertical: 7, borderRadius: 0, backgroundColor: Colors.textDisabledLight, elevation: 0, }}>
-            {/* <Card containerStyle={{ padding: 0, margin: 10, borderRadius: 2, }}> */}
-            <TouchableOpacity
-                onPress={() => onRegistroPress(registro.fin_ad_documento)}
-                onLongPress={() => onRegistroLongPress(registro.fin_ad_documento)}
-            >
-                <View
-                    style={{
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
-                        flexDirection: 'row'
-                    }}
-                >
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Doc: {' '}
-                        </Text>
-                        <Text>
-                            {registro.fin_ad_documento}
-                        </Text>
-                    </Text>
+            <View style={{
+                borderLeftWidth: 5,
+                borderLeftColor: registro.fin_ad_situacao === 'A' ? "#faf443" : registro.fin_ad_situacao === 'P' ? "#e3a034" : registro.fin_ad_situacao === 'J' ? "#d32f2f" : registro.fin_ad_situacao === 'R' ? "#d32f2f" : Colors.primary
+            }}>
 
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }} >
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Data: {' '}
-                        </Text>
-                        <Text>
-                            {moment(registro.fin_ad_data_autorizacao).format('DD/MM/YYYY')}
-                        </Text>
-                    </Text>
-                </View>
-
-                <Divider />
-
-                <View
-                    style={{
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
-                        flexDirection: 'row'
-                    }}
-                >
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Situação: {' '}
-                        </Text>
-                        <Text>
-                            {registro.fin_ad_situacao}
-                        </Text>
-                    </Text>
-
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }} >
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Valor: {' '}
-                        </Text>
-                        <Text>
-                            {parseFloat(registro.fin_ad_valor).toFixed(2)}
-                        </Text>
-                    </Text>
-                </View>
-
-                <Divider />
-
-                <View
-                    style={{ paddingHorizontal: 16, paddingTop: 8, flexDirection: 'row' }}
-                >
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Descrição: {' '}
-                        </Text>
-                        <Text>
-                            {registro.fin_ad_descricao_aut}
-                        </Text>
-                    </Text>
-                </View>
-
-                <View
-                    style={{ paddingHorizontal: 16, paddingTop: 5, flexDirection: 'row' }}
-                >
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Criado por: {' '}
-                        </Text>
-                        <Text>
-                            {registro.fin_ad_nome_criacao}
-                        </Text>
-                    </Text>
-                </View>
-
-                <View
-                    style={{ paddingHorizontal: 16, paddingTop: 5, paddingBottom: 8, flexDirection: 'row' }}
-                >
-                    <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
-                        <Text style={{ fontWeight: 'bold' }} >
-                            Autorizado por: {' '}
-                        </Text>
-                        <Text>
-                            {registro.fin_ad_autorizado_por}
-                        </Text>
-                    </Text>
-                </View>
-            </TouchableOpacity>
-            <View
-                style={{
-                    flex: 1,
-                    margin: 0,
-                    marginTop: 5,
-                    height: 40,
-                    borderTopWidth: 1,
-                    borderColor: Colors.dividerDark,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                }}
-            >
                 <TouchableOpacity
-                    onPress={() => onWhatsAppPress(registro)}
+                    onPress={() => onRegistroPress(registro.fin_ad_documento)}
+                    onLongPress={() => onRegistroLongPress(registro.fin_ad_documento, registro.fin_ad_situacao)}
                 >
-                    <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
-                        <Icon
-                            name='whatsapp'
-                            type='font-awesome'
-                            color={Colors.primaryLight}
-                            size={17}
-                        />
-                        <Text style={{ color: Colors.primaryLight, fontSize: 13, marginLeft: 5 }} >
-                            WhatsApp
+                    <View
+                        style={{
+                            paddingHorizontal: 16,
+                            paddingVertical: 8,
+                            flexDirection: 'row'
+                        }}
+                    >
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
+                            <Text style={{ fontWeight: 'bold' }} >
+                                Doc: {' '}
+                            </Text>
+                            <Text>
+                                {registro.fin_ad_documento}
+                            </Text>
+                        </Text>
+
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }} >
+                            <Text style={{ fontWeight: 'bold' }} >
+                                Data: {' '}
+                            </Text>
+                            <Text>
+                                {moment(registro.fin_ad_data_autorizacao).format('DD/MM/YYYY')}
+                            </Text>
+                        </Text>
+                    </View>
+
+                    <Divider />
+
+                    <View
+                        style={{
+                            paddingHorizontal: 16,
+                            paddingVertical: 8,
+                            flexDirection: 'row'
+                        }}
+                    >
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 15, flex: 1 }}>
+                            <Text style={{ fontWeight: 'bold' }} >
+                                Situação: {' '}
+                            </Text>
+                            <Text>
+                                {registro.desc_sit}
+                            </Text>
+                        </Text>
+
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 15 }} >
+                            <Text style={{ fontWeight: 'bold' }} >
+                                Valor: {' '}
+                            </Text>
+                            <Text>
+                                {parseFloat(registro.fin_ad_valor).toFixed(2)}
+                            </Text>
+                        </Text>
+                    </View>
+
+                    <Divider />
+
+                    <View
+                        style={{ paddingHorizontal: 16, paddingTop: 8, flexDirection: 'row' }}
+                    >
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                            <Text style={{ fontWeight: 'bold' }} >
+                                Descrição: {' '}
+                            </Text>
+                            <Text>
+                                {registro.fin_ad_descricao_aut}
+                            </Text>
+                        </Text>
+                    </View>
+
+                    <View
+                        style={{ paddingHorizontal: 16, paddingTop: 5, flexDirection: 'row' }}
+                    >
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                            <Text style={{ fontWeight: 'bold' }} >
+                                Categoria: {' '}
+                            </Text>
+                            <Text>
+                                {registro.fin_adc_descricao}
+                            </Text>
+                        </Text>
+                    </View>
+
+                    <View
+                        style={{ paddingHorizontal: 16, paddingTop: 5, flexDirection: 'row' }}
+                    >
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                            <Text style={{ fontWeight: 'bold' }} >
+                                Criado por: {' '}
+                            </Text>
+                            <Text>
+                                {registro.fin_ad_nome_criacao}
+                            </Text>
+                        </Text>
+                    </View>
+
+                    <View
+                        style={{ paddingHorizontal: 16, paddingTop: 5, paddingBottom: 8, flexDirection: 'row' }}
+                    >
+                        <Text style={{ color: Colors.textSecondaryDark, fontSize: 16, flex: 1 }}>
+                            <Text style={{ fontWeight: 'bold' }} >
+                                Autorizado por: {' '}
+                            </Text>
+                            <Text>
+                                {registro.fin_ad_autorizado_por}
+                            </Text>
                         </Text>
                     </View>
                 </TouchableOpacity>
+                <View
+                    style={{
+                        flex: 1,
+                        margin: 0,
+                        marginTop: 5,
+                        height: 40,
+                        borderTopWidth: 1,
+                        borderColor: Colors.dividerDark,
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => onWhatsAppPress(registro)}
+                    >
+                        <View style={{ width: 100, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Icon
+                                name='whatsapp'
+                                type='font-awesome'
+                                color={Colors.primaryLight}
+                                size={17}
+                            />
+                            <Text style={{ color: Colors.primaryLight, fontSize: 13, marginLeft: 5 }} >
+                                WhatsApp
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
             </View>
         </Card>
     )
@@ -224,8 +242,10 @@ export default class AutorizacaoDespesasScreen extends Component {
                 fin_ad_emp_conta_fin: '',
                 fin_ad_filial: '',
                 fin_ad_situacao: 'P',
+                fin_ad_categoria: { key: 0, label: "" },
                 filialSelect: '',
                 modalZap: false,
+                categoriaSelect: [],
             },
             onRefresh: this.onRefresh
         });
@@ -275,17 +295,15 @@ export default class AutorizacaoDespesasScreen extends Component {
             })
     }
 
-    onRegistroLongPress = (fin_ad_documento) => {
-        if (!this.state.parSinc) {
-            Alert.showConfirm("Deseja excluir este registro?",
-                { text: "Cancelar" },
-                {
-                    text: "Excluir",
-                    onPress: () => this.onExcluirRegistro(fin_ad_documento),
-                    style: "destructive"
-                }
-            )
-        }
+    onRegistroLongPress = (fin_ad_documento, fin_ad_situacao) => {
+        Alert.showConfirm("Deseja excluir este registro?",
+            { text: "Cancelar" },
+            {
+                text: "Excluir",
+                onPress: () => this.onExcluirRegistro(fin_ad_documento),
+                style: "destructive"
+            }
+        )
     }
 
     carregarMaisRegistros = () => {
@@ -354,67 +372,76 @@ export default class AutorizacaoDespesasScreen extends Component {
         // console.log('AutorizacaoDespesasScreen: ', this.state);
 
         return (
-            <SafeAreaView style={{backgroundColor: '#1F829C', flex: 1}}>
+            <SafeAreaView style={{ backgroundColor: '#1F829C', flex: 1 }}>
                 <HeaderComponent
                     color={'white'}
                     titleCenterComponent={'Autorização de Despesas'}
                     pressLeftComponen={() => this.props.navigation.goBack()}
                     iconLeftComponen={'chevron-left'}
                 />
-                <View style={{flex: 1, backgroundColor: Colors.background}}>
+                <View style={{ flex: 1, backgroundColor: Colors.background }}>
 
-                <SearchBar
-                    placeholder="Buscar Documento"
-                    lightTheme={true}
-                    onChangeText={this.onBuscaDescricaoChange}
-                    inputStyle={{ backgroundColor: 'white' }}
-                    containerStyle={{ backgroundColor: Colors.primaryLight }}
-                    clearIcon={true}
-            />
-
-                <View style={{ alignItems: "flex-end", marginTop: -40, marginBottom: 15 }}>
-                    <CheckBox
-                        title='Pendentes'
-                        key={buscaSituacao}
-                        checked={buscaSituacao === 'P' ? true : false}
-                        onPress={() => this.setState({
-                            buscaSituacao: buscaSituacao === 'P' ? '' : 'P',
-                            refreshing: true,
-                            pagina: 1,
-                        }, this.getListaRegistros)}
-                        checkedColor={Colors.primaryLight}
-                        containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                    <SearchBar
+                        placeholder="Buscar Documento"
+                        lightTheme={true}
+                        onChangeText={this.onBuscaDescricaoChange}
+                        inputStyle={{ backgroundColor: 'white' }}
+                        containerStyle={{ backgroundColor: Colors.primaryLight }}
+                        clearIcon={true}
                     />
+
+                    <View style={{ alignItems: "flex-end", marginTop: -42, marginBottom: 15, marginRight: 25 }}>
+                        <CheckBox
+                            title='Pendentes'
+                            key={buscaSituacao}
+                            checked={buscaSituacao === 'P' ? true : false}
+                            onPress={() => this.setState({
+                                buscaSituacao: buscaSituacao === 'P' ? '' : 'P',
+                                refreshing: true,
+                                pagina: 1,
+                            }, this.getListaRegistros)}
+                            checkedColor={Colors.primaryLight}
+                            containerStyle={{ padding: 0, margin: 0, backgroundColor: 'transparent' }}
+                        />
+                    </View>
+
+                    <FlatList
+                        data={listaRegistros}
+                        renderItem={this.renderItem}
+                        contentContainerStyle={{ paddingBottom: 100 }}
+                        keyExtractor={registro => String(registro.fin_ad_documento) + '_' + String(registro.fin_ad_seq)}
+                        onRefresh={this.onRefresh}
+                        refreshing={refreshing}
+                        onEndReached={this.carregarMaisRegistros}
+                        ListFooterComponent={this.renderListFooter}
+                    />
+
+                    <FloatActionButton
+                        iconFamily="MaterialIcons"
+                        iconName="cached"
+                        iconColor={Colors.textOnPrimary}
+                        onPress={this.onRefresh}
+                        backgroundColor={Colors.primary}
+                        marginBottom={90}
+                    />
+
+                    <FloatActionButton
+                        iconFamily="MaterialIcons"
+                        iconName="add"
+                        iconColor={Colors.textOnAccent}
+                        onPress={this.onAddPress}
+                        backgroundColor={Colors.primary}
+                    />
+
+                    <ProgressDialog
+                        visible={carregarRegistro}
+                        title="SIGA PRO"
+                        message="Aguarde..."
+                    />
+
+
+
                 </View>
-
-                <FlatList
-                    data={listaRegistros}
-                    renderItem={this.renderItem}
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    keyExtractor={registro => String(registro.fin_ad_documento) + '_' + String(registro.fin_ad_seq)}
-                    onRefresh={this.onRefresh}
-                    refreshing={refreshing}
-                    onEndReached={this.carregarMaisRegistros}
-                    ListFooterComponent={this.renderListFooter}
-                />
-
-                <FloatActionButton
-                    iconFamily="MaterialIcons"
-                    iconName="add"
-                    iconColor={Colors.textOnAccent}
-                    onPress={this.onAddPress}
-                    backgroundColor={Colors.primary}
-                />
-
-                <ProgressDialog
-                    visible={carregarRegistro}
-                    title="SIGA PRO"
-                    message="Aguarde..."
-                />
-
-
-
-            </View>
             </SafeAreaView>
         )
     }
